@@ -1,0 +1,104 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 3,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.121836673189446, 48.153539088938238]
+      },
+      "properties": { "OBJECTID": 3, "web": "ano", "Rezidentská zóna": "SM1" }
+    },
+    {
+      "type": "Feature",
+      "id": 6,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.116508039752205, 48.155040156586622]
+      },
+      "properties": { "OBJECTID": 6, "web": "ano", "Rezidentská zóna": "SM1" }
+    },
+    {
+      "type": "Feature",
+      "id": 20,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.115319401561781, 48.150607462586805]
+      },
+      "properties": { "OBJECTID": 20, "web": "ano", "Rezidentská zóna": "SM1" }
+    },
+    {
+      "type": "Feature",
+      "id": 21,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.1213243255275, 48.155515825297968]
+      },
+      "properties": { "OBJECTID": 21, "web": "ano", "Rezidentská zóna": "SM1" }
+    },
+    {
+      "type": "Feature",
+      "id": 23,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.114706893744728, 48.157625814790677]
+      },
+      "properties": { "OBJECTID": 23, "web": "ano", "Rezidentská zóna": "SM1" }
+    },
+    {
+      "type": "Feature",
+      "id": 24,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.111293025014348, 48.157348462265617]
+      },
+      "properties": { "OBJECTID": 24, "web": "ano", "Rezidentská zóna": "SM1" }
+    },
+    {
+      "type": "Feature",
+      "id": 25,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.106472017686322, 48.157301689293206]
+      },
+      "properties": { "OBJECTID": 25, "web": "ano", "Rezidentská zóna": "SM1" }
+    },
+    {
+      "type": "Feature",
+      "id": 29,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.113682119714447, 48.152854266852785]
+      },
+      "properties": { "OBJECTID": 29, "web": "ano", "Rezidentská zóna": "SM1" }
+    },
+    {
+      "type": "Feature",
+      "id": 30,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.123265811717797, 48.150931071121889]
+      },
+      "properties": { "OBJECTID": 30, "web": "ano", "Rezidentská zóna": "SM1" }
+    },
+    {
+      "type": "Feature",
+      "id": 33,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.118376700164681, 48.152066306886724]
+      },
+      "properties": { "OBJECTID": 33, "web": "ano", "Rezidentská zóna": "SM1" }
+    },
+    {
+      "type": "Feature",
+      "id": 34,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.122035242284245, 48.153241204300627]
+      },
+      "properties": { "OBJECTID": 34, "web": "ano", "Rezidentská zóna": "SM1" }
+    }
+  ]
+}

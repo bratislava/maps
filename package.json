@@ -1,0 +1,11 @@
+{
+  "name": "@bratislava/mapbox-maps",
+  "private": true,
+  "workspaces": [
+    "libs/icons",
+    "libs/ui",
+    "libs/core",
+    "libs/geocoding",
+    "apps/paas-map"
+  ]
+}
