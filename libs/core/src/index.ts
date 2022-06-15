@@ -2,6 +2,7 @@ export * from "./types";
 export * from "./geocoding";
 export * from "./hooks/useMap";
 export { default as Layer } from "./components/Layer";
+export { Slot } from "./components/Slot";
 export { default as StyleCustomLayerController } from "./components/StyleCustomLayerController";
 export * from "./components/Main";
 export * from "./utils/districts";

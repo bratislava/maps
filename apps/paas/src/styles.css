@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
+@include "react-spring-bottom-sheet/dist/style.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -51,6 +53,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 :root {
+  --rsbs-overlay-rounded: 0px;
+
   --primary-color: #71ca55;
   --primary-color--transparent: #71ca5500;
   --secondary-color: #16254c;

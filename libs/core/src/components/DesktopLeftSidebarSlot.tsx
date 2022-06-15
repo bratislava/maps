@@ -6,7 +6,7 @@ import { getDistrictOptions } from "../utils/districts";
 import { Select } from "@bratislava/mapbox-maps-ui";
 import { TemporalQuery } from "@js-joda/core";
 
-interface FilterProps {
+interface DesktopLeftSidebarSlotProps {
   title: string;
   isOpen: boolean;
   onClose: () => void;
@@ -17,7 +17,10 @@ interface FilterProps {
   showDistrictSelect?: boolean;
 }
 
-export const Filter = forwardRef<HTMLDivElement, FilterProps>(
+export const DesktopLeftSidebarSlot = forwardRef<
+  HTMLDivElement,
+  DesktopLeftSidebarSlotProps
+>(
   (
     {
       isOpen,
@@ -76,19 +79,6 @@ export const Filter = forwardRef<HTMLDivElement, FilterProps>(
           <ChevronLeftSmall width={20} height={20} className="text-secondary" />
           <span className="text-md font-medium">{title}</span>
         </button>
-        {showDistrictSelect && (
-          <div className="px-8 pb-4 flex flex-col gap-4">
-            <div className="flex justify-between">
-              <span className="font-bold text-[20px]">Filter</span>
-            </div>
-            <Select
-              className="w-full"
-              value={selectedDistrictObject}
-              options={districtOptions}
-              onChange={setSelectedDistrictObject}
-            />
-          </div>
-        )}
         <div className="flex-1 flex">{children}</div>
         <div className="py-4 sm:hidden left-0 md:left-auto bottom-8 md:bottom-auto md:top-6 md:right-4 flex justify-center w-full md:w-auto">
           <button onClick={onClose} className="flex items-center group">
@@ -101,4 +91,4 @@ export const Filter = forwardRef<HTMLDivElement, FilterProps>(
   }
 );
 
-export default Filter;
+export default DesktopLeftSidebarSlot;

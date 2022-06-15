@@ -1,0 +1,10 @@
+{
+  "name": "@bratislava/mapbox-maps-esri",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/geojson": "^7946.0.8",
+    "react": "17.0.2"
+  }
+}

@@ -20,6 +20,13 @@ export {
   default as DarkmodeUrl,
 } from "./svg/darkmode.svg";
 
+export { ReactComponent as Eye, default as EyeUrl } from "./svg/eye.svg";
+
+export {
+  ReactComponent as EyeCrossed,
+  default as EyeCrossedUrl,
+} from "./svg/eye-crossed.svg";
+
 export {
   ReactComponent as FullscreenActive,
   default as FullscreenActiveUrl,
@@ -73,3 +80,5 @@ export {
   ReactComponent as Search,
   default as SearchUrl,
 } from "./svg/search.svg";
+
+export { ReactComponent as Tick, default as TickUrl } from "./svg/tick.svg";

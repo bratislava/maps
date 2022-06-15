@@ -2,3 +2,8 @@ export * from "./atoms/LoadingSpinner/LoadingSpinner";
 export * from "./atoms/SearchBar/SearchBar";
 export * from "./atoms/Select/Select";
 export * from "./atoms/BottomSheet/BottomSheet";
+export * from "./atoms/Accordion/Accordion";
+export * from "./atoms/Accordion/AccordionItem";
+export * from "./atoms/Checkbox/Checkbox";
+export * from "./atoms/Divider/Divider";
+export * from "./atoms/Tag/Tag";

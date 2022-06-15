@@ -2,15 +2,15 @@ import {
   useState,
   useRef,
   useCallback,
-  MutableRefObject,
+  RefObject,
   RefAttributes,
   ForwardRefExoticComponent,
-} from 'react';
-import { MapProps, Map } from '../components/Main';
-import { MapHandle } from '../types';
-import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
-import 'mapbox-gl/dist/mapbox-gl.css';
-import { i18n } from 'i18next';
+} from "react";
+import { MapProps, MapHandle, Map } from "../components/Main";
+import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import "mapbox-gl/dist/mapbox-gl.css";
+import { i18n } from "i18next";
+import { ALL_DISTRICTS_KEY } from "../utils/districts";
 
 export interface IUseMap {
   mapboxAccessToken: string;
@@ -22,12 +22,8 @@ export interface IUseMap {
   i18next: i18n;
 }
 
-interface useMapComponentProps extends MapProps {
-  ref: MutableRefObject<MapHandle>;
-  closeFiltering: () => void;
-  closeDetail: () => void;
-  fitToDisplayedData: () => void;
-  fitToDistrict: (district: string) => void;
+interface useMapComponentProps extends MapProps, MapHandle {
+  ref: RefObject<MapHandle>;
   selectedFeatures: any[];
   Map: ForwardRefExoticComponent<MapProps & RefAttributes<MapHandle>>;
 }
@@ -47,15 +43,17 @@ export const useMap = ({ mapboxAccessToken, mapStyles, i18next }: IUseMap) => {
   const satelliteState = useState<boolean>(false);
   const loadingState = useState(true);
 
-  const selectedDistrictState = useState<string>(null);
+  const selectedDistrictState = useState<string>(ALL_DISTRICTS_KEY);
 
   const props: useMapComponentProps = {
     //helpers
     ref,
+    setViewport: (wantedViewport) => ref.current?.setViewport(wantedViewport),
     closeFiltering: () => ref.current?.closeFiltering(),
     closeDetail: () => ref.current?.closeDetail(),
     fitToDisplayedData: () => ref.current?.fitToDisplayedData(),
     fitToDistrict: (district) => ref.current?.fitToDistrict(district),
+    isSlotVisible: (name) => ref.current?.isSlotVisible(name),
     //map component props
     mapboxgl,
     mobileState,

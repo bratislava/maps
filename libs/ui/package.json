@@ -39,6 +39,10 @@
     "webpack": "5"
   },
   "dependencies": {
+    "@radix-ui/react-accordion": "^0.1.6",
+    "@radix-ui/react-checkbox": "^0.1.5",
+    "@stitches/react": "^1.2.8",
+    "react-spring": "9.4.5",
     "react-spring-bottom-sheet": "^3.4.0"
   },
   "scripts": {

@@ -6,13 +6,14 @@ import {
 import "react-spring-bottom-sheet/dist/style.css";
 
 export interface IBottomSheet {
+  isOpen?: boolean;
   children?: ReactNode;
 }
 
-export const BottomSheet = ({ children }: IBottomSheet) => {
+export const BottomSheet = ({ isOpen = false, children }: IBottomSheet) => {
   const sheetRef = useRef<ReactSpringBottomSheetRef>(null);
   return (
-    <ReactSpringBottomSheet ref={sheetRef} open>
+    <ReactSpringBottomSheet ref={sheetRef} open={isOpen}>
       {children}
     </ReactSpringBottomSheet>
   );

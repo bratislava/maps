@@ -5,7 +5,10 @@
     "libs/icons",
     "libs/ui",
     "libs/core",
+    "libs/esri",
+    "libs/utils",
     "libs/geocoding",
-    "apps/paas-map"
+    "apps/paas",
+    "apps/greenary-care"
   ]
 }

@@ -1,14 +1,15 @@
-import { useContext, useEffect } from 'react';
-import { usePrevious } from '../hooks/usePrevious';
-import { ALL_DISTRICTS_KEY } from '../utils/districts';
-import { log } from '../utils/log';
-import { mapContext } from './Mapbox';
+import { useContext, useEffect } from "react";
+import { usePrevious } from "../hooks/usePrevious";
+import { ALL_DISTRICTS_KEY } from "../utils/districts";
+import { log } from "../utils/log";
+import { mapContext } from "./Mapbox";
 
+type Filter = string | null | boolean | Filter[];
 export interface ILayerProps {
   source: string;
   styles: any;
   isVisible?: boolean;
-  filters?: [string, string, string][];
+  filters?: Filter[];
   ignoreFilters?: boolean;
   ignoreClick?: boolean;
 }
@@ -17,7 +18,7 @@ const Layer = ({
   source,
   styles,
   isVisible = true,
-  filters,
+  filters = [],
   ignoreFilters = false,
   ignoreClick = false,
 }: ILayerProps) => {
@@ -30,8 +31,8 @@ const Layer = ({
     districtFiltering,
   } = useContext(mapContext);
 
-  const labelId = 'road-label';
-  const roadPathLayerId = 'road-path';
+  const labelId = "road-label";
+  const roadPathLayerId = "road-path";
 
   const previousLoading = usePrevious(isLoading);
   const previousVisible = usePrevious(isVisible);
@@ -49,9 +50,9 @@ const Layer = ({
               ...style,
               id: getPrefixedLayer(style.id),
             },
-            style.type === 'line'
+            style.type === "line" || style.type === "circle"
               ? labelId
-              : style.type === 'fill'
+              : style.type === "fill"
               ? roadPathLayerId
               : undefined
           );
@@ -67,38 +68,42 @@ const Layer = ({
 
             map.setLayoutProperty(
               getPrefixedLayer(style.id),
-              'visibility',
-              'visible'
+              "visibility",
+              "visible"
             );
           } else {
             log(`SETTING LAYER ${getPrefixedLayer(style.id)} HIDDEN`);
 
             map.setLayoutProperty(
               getPrefixedLayer(style.id),
-              'visibility',
-              'none'
+              "visibility",
+              "none"
             );
           }
         }
 
-        const resultFilters = [];
+        const resultFilters: Filter[] = [];
 
         if (!ignoreFilters) {
           if (filters && filters.length) {
-            resultFilters.push(filters);
+            resultFilters.push(...filters);
           }
 
-          if (districtFiltering && !(selectedDistrict === ALL_DISTRICTS_KEY)) {
-            resultFilters.push(['==', 'district', selectedDistrict]);
+          if (
+            districtFiltering &&
+            selectedDistrict &&
+            !(selectedDistrict === ALL_DISTRICTS_KEY)
+          ) {
+            resultFilters.push(["==", "district", selectedDistrict]);
           }
         }
 
-        map.setFilter(getPrefixedLayer(style.id), [
-          'all',
-          ...resultFilters.filter(
-            (filter) => filter[0] && filter[1] && filter[2]
-          ),
-        ]);
+        if (resultFilters && resultFilters.length) {
+          map.setFilter(
+            getPrefixedLayer(style.id),
+            resultFilters.filter((filter) => filter)
+          );
+        }
       });
     }
   }, [

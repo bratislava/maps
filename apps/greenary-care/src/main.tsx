@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import App from "./components/App";
 
 const rootElement = document.getElementById("root");
@@ -7,9 +7,10 @@ const rootElement = document.getElementById("root");
 if (!rootElement) {
   console.error("No #root element...");
 } else {
-  ReactDOM.createRoot(rootElement).render(
+  ReactDOM.render(
     <React.StrictMode>
       <App />
-    </React.StrictMode>
+    </React.StrictMode>,
+    rootElement
   );
 }

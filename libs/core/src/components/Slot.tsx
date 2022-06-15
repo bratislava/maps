@@ -6,46 +6,71 @@ import React, {
   useState,
 } from "react";
 import cx from "classnames";
+import { SlotAnimation } from "src/types";
+import { BottomSheet } from "react-spring-bottom-sheet";
 
 export interface ISlotProps {
   containerRef?: MutableRefObject<any>;
-  alignHorizontally: "left" | "right";
-  alignVertically: "top" | "bottom";
+  animation?: SlotAnimation;
   children?: ReactNode;
-  isOpen?: boolean;
+  isVisible?: boolean;
   className?: string;
+  bottomSheetOptions?: any;
+  onClose?: () => void;
 }
 
 export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
   (
-    { children, isOpen = false, alignHorizontally, alignVertically, className },
+    {
+      children,
+      isVisible = false,
+      animation = "none",
+      className,
+      bottomSheetOptions,
+      onClose,
+    },
     ref
   ) => {
     const [displayedChildren, setDisplayedChildren] = useState(children);
 
     useEffect(() => {
-      if (isOpen) {
+      if (isVisible) {
         setDisplayedChildren(children);
       }
-    }, [isOpen, children, setDisplayedChildren]);
+    }, [isVisible, children, setDisplayedChildren]);
 
-    return (
+    const animationClasses = {
+      none: ["", ""],
+      "slide-left": ["left-0 translate-x-0", "left-0 -translate-x-full"],
+      "slide-right": ["right-0 translate-x-0", "right-0 translate-x-full"],
+    };
+
+    return bottomSheetOptions ? (
+      <BottomSheet
+        snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2]}
+        defaultSnap={({ snapPoints }) => snapPoints[1]}
+        blocking={false}
+        onDismiss={onClose}
+        open={isVisible}
+        className={cx(className, "relative z-30")}
+        expandOnContentDrag
+      >
+        {displayedChildren}
+      </BottomSheet>
+    ) : (
       <div
         ref={ref}
         className={cx(
           className,
-          "fixed bg-background z-20 transform duration-500 ease-in-out transition-all max-h-full",
+          "fixed z-20 transform duration-500 ease-in-out transition-all max-h-full",
           {
-            "shadow-lg": isOpen,
-            "translate-x-full shadow-none": !isOpen,
-            "left-0": alignHorizontally === "left",
-            "right-0": alignHorizontally === "right",
-            "top-0": alignVertically === "top",
-            "bottom-0": alignVertically === "bottom",
+            "shadow-none": !isVisible,
+            [animationClasses[animation][0]]: isVisible,
+            [animationClasses[animation][1]]: !isVisible,
           }
         )}
       >
-        {displayedChildren}
+        {children}
       </div>
     );
   }

@@ -288,70 +288,97 @@ export const App = () => {
         ASSISTANTS_RU_DATA,
 
         PARKOMATS_DATA,
-
         PARTNERS_DATA,
-
         BRANCHES_DATA,
       }}
-      filter={
-        <Sidebar
-          filteringOpenState={filteringOpenState}
-          mapboxgl={mapboxgl}
-          mapRef={mapRef.current}
-          mainLayers={mainLayers}
-          secondaryLayers={secondaryLayers}
-          selectedMainLayer={selectedMainLayer}
-          onMainLayerSelect={(filter) => setSelectedMainLayer(filter)}
-        />
-      }
-      mobileTopSlot={
-        <MobileTopSlot
-          leftText={t("layers.visitorsLayer.title")}
-          rightText={t("layers.residentsLayer.title")}
-          onLeftClick={() => setSelectedMainLayer(mainLayers[0])}
-          onRightClick={() => setSelectedMainLayer(mainLayers[1])}
-          selectedIndex={selectedMainLayer.key === "visitors" ? 0 : 1}
-        />
-      }
-      searchBar={
-        <div className="relative">
-          <SearchBar
-            value={searchQuery}
-            placeholder={t("search")}
-            className="w-full relative"
-            onFocus={(e) => {
-              forwardGeocode(mapboxgl, e.target.value).then((results) =>
-                setSearchFeatures(results)
-              );
-            }}
-            onBlur={() => setSearchFeatures([])}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              forwardGeocode(mapboxgl, e.target.value).then((results) =>
-                setSearchFeatures(results)
-              );
-            }}
-            isGeolocation={isGeolocation}
-            onGeolocationClick={() => setGeolocation(!isGeolocation)}
-          />
-          {!!searchFeatures.length && (
-            <div className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-white rounded-lg py-4">
-              {searchFeatures.map((feature, i) => {
-                return (
-                  <button
-                    className="text-left w-full hover:bg-background px-4 py-2"
-                    onMouseDown={() => onSearchFeatureClick(feature)}
-                    key={i}
-                  >
-                    {feature.place_name_sk.split(",")[0]}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      }
-      detail={<Detail features={selectedFeatures} />}
+      slots={[
+        {
+          name: "desktop-sidebar",
+          isVisible: true,
+          className: "top-0 left-0 w-96 h-full bg-background shadow-lg",
+          animation: "slide-left",
+          isDesktopOnly: true,
+          component: () => (
+            <Sidebar
+              filteringOpenState={filteringOpenState}
+              mapboxgl={mapboxgl}
+              mapRef={mapRef.current}
+              mainLayers={mainLayers}
+              secondaryLayers={secondaryLayers}
+              selectedMainLayer={selectedMainLayer}
+              onMainLayerSelect={(filter) => setSelectedMainLayer(filter)}
+            />
+          ),
+        },
+        {
+          name: "desktop-detail",
+          animation: "slide-right",
+          isDesktopOnly: true,
+          isVisible: !!selectedFeatures.length,
+          className: "top-0 right-0 w-96 bg-background shadow-lg",
+          component: () => <Detail features={selectedFeatures} />,
+        },
+        {
+          name: "mobile-detail",
+          bottomSheetOptions: {},
+          isMobileOnly: true,
+          isVisible: !!selectedFeatures.length,
+          component: () => <Detail features={selectedFeatures} />,
+        },
+        {
+          name: "mobile-top-buttons",
+          isMobileOnly: true,
+          isVisible: true,
+          className: "w-full top-0 left-0 right-0",
+          component: () => (
+            <MobileTopSlot
+              leftText={t("layers.visitorsLayer.title")}
+              rightText={t("layers.residentsLayer.title")}
+              onLeftClick={() => setSelectedMainLayer(mainLayers[0])}
+              onRightClick={() => setSelectedMainLayer(mainLayers[1])}
+              selectedIndex={selectedMainLayer.key === "visitors" ? 0 : 1}
+            />
+          ),
+        },
+      ]}
+      // searchBar={
+      //   <div className="relative">
+      //     <SearchBar
+      //       value={searchQuery}
+      //       placeholder={t("search")}
+      //       className="w-full relative"
+      //       onFocus={(e) => {
+      //         forwardGeocode(mapboxgl, e.target.value).then((results) =>
+      //           setSearchFeatures(results)
+      //         );
+      //       }}
+      //       onBlur={() => setSearchFeatures([])}
+      //       onChange={(e) => {
+      //         setSearchQuery(e.target.value);
+      //         forwardGeocode(mapboxgl, e.target.value).then((results) =>
+      //           setSearchFeatures(results)
+      //         );
+      //       }}
+      //       isGeolocation={isGeolocation}
+      //       onGeolocationClick={() => setGeolocation(!isGeolocation)}
+      //     />
+      //     {!!searchFeatures.length && (
+      //       <div className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-white rounded-lg py-4">
+      //         {searchFeatures.map((feature, i) => {
+      //           return (
+      //             <button
+      //               className="text-left w-full hover:bg-background px-4 py-2"
+      //               onMouseDown={() => onSearchFeatureClick(feature)}
+      //               key={i}
+      //             >
+      //               {feature.place_name_sk.split(",")[0]}
+      //             </button>
+      //           );
+      //         })}
+      //       </div>
+      //     )}
+      //   </div>
+      // }
     >
       <Layer
         source="OKP_DATA"

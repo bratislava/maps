@@ -11,15 +11,15 @@ import {
   MutableRefObject,
   forwardRef,
   useImperativeHandle,
-} from 'react';
-import { Sources, IViewportProps, MapIcon } from '../types';
-import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
-import { ILayerProps } from './Layer';
-import { usePrevious } from '../hooks/usePrevious';
-import { log } from '../utils/log';
-import { createGeolocationMarkerElement } from '../utils/createGeolocationMarkerElement';
-import bbox from '@turf/bbox';
-import DATA_DISTRICTS from '../assets/layers/districts.json';
+} from "react";
+import { Sources, IViewportProps, MapIcon } from "../types";
+import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import { ILayerProps } from "./Layer";
+import { usePrevious } from "../hooks/usePrevious";
+import { log } from "../utils/log";
+import { createGeolocationMarkerElement } from "../utils/createGeolocationMarkerElement";
+import bbox from "@turf/bbox";
+import DATA_DISTRICTS from "../assets/layers/districts.json";
 
 export interface MapboxProps {
   mapboxgl: typeof mapboxgl;
@@ -69,7 +69,7 @@ const createMap = (
   return new mapboxgl.Map({
     pitchWithRotate: false,
     touchPitch: false,
-    container: mapContainer.current || '',
+    container: mapContainer.current || "",
     style: isSatellite ? satelliteStyle : isDarkmode ? darkStyle : lightStyle,
     center: [viewport.lng || 17.107748, viewport.lat || 48.148598],
     zoom: viewport.zoom || 13,
@@ -84,7 +84,7 @@ export const mapContext = createContext<IContext>(null);
 
 type MapboxHandle = {
   fitToDisplayedData: () => void;
-  fitToDistrict: (district: string) => void;
+  fitToDistrict: (district: string | null) => void;
 };
 
 export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
@@ -97,16 +97,16 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       satelliteState,
       selectedFeatures,
       mapStyles: {
-        light: lightStyle = 'mapbox://styles/mapbox/streets-v11',
-        dark: darkStyle = 'mapbox://styles/mapbox/streets-v11',
-        satellite: satelliteStyle = 'mapbox://styles/mapbox/streets-v11',
+        light: lightStyle = "mapbox://styles/mapbox/streets-v11",
+        dark: darkStyle = "mapbox://styles/mapbox/streets-v11",
+        satellite: satelliteStyle = "mapbox://styles/mapbox/streets-v11",
       },
       onFeatureClick,
       viewportState,
       mapboxgl,
       children,
       geolocationState,
-      layerPrefix = 'BRATISLAVA',
+      layerPrefix = "BRATISLAVA",
       onBearingChange,
       selectedDistrict,
       districtFiltering = true,
@@ -186,11 +186,11 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       const MAP = map.current;
       if (isGeolocation !== previousGeolocation) {
         if (isGeolocation) {
-          log('GEOLOCATION TURNED ON');
-          if ('geolocation' in navigator) {
+          log("GEOLOCATION TURNED ON");
+          if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(
               (position) => {
-                log('ADDING GEOLOCATION MARKER');
+                log("ADDING GEOLOCATION MARKER");
                 setGeolocationMarker(
                   new mapboxgl.Marker(createGeolocationMarkerElement())
                     .setLngLat([
@@ -210,12 +210,12 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
               }
             );
           } else {
-            alert('Your device does not support Geolocation');
+            alert("Your device does not support Geolocation");
           }
         } else {
-          log('GEOLOCATION TURNED OFF');
+          log("GEOLOCATION TURNED OFF");
           if (geolocationMarker) {
-            log('REMOVING GEOLOCATION MARKER');
+            log("REMOVING GEOLOCATION MARKER");
             geolocationMarker.remove();
             setGeolocationMarker(null);
           }
@@ -236,10 +236,10 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       setLoading(true);
       //if map exists then remove it
       if (map.current) {
-        log('REMOVING MAP');
+        log("REMOVING MAP");
         map.current.remove();
       }
-      log('CREATING MAP');
+      log("CREATING MAP");
       map.current = createMap(
         mapboxgl,
         mapContainer,
@@ -257,11 +257,11 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     const loadSources = useCallback(() => {
       if (!map.current) return;
       const MAP = map.current;
-      log('LOADING SOURCES');
+      log("LOADING SOURCES");
       Object.keys(sources).forEach((sourceKey) => {
         if (!MAP.getSource(sourceKey)) {
           MAP.addSource(sourceKey, {
-            type: 'geojson',
+            type: "geojson",
             data: sources[sourceKey],
           });
         }
@@ -273,10 +273,10 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       if (!map.current) return;
       const MAP = map.current;
 
-      log('LOADING ICONS');
+      log("LOADING ICONS");
       Object.keys(icons).forEach(async (key) => {
         const icon = icons[key];
-        if (typeof icon === 'string') {
+        if (typeof icon === "string") {
           MAP.loadImage(icon, (error, image) => {
             if (error) throw error;
             if (!MAP.hasImage(key)) {
@@ -334,7 +334,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
 
           //if there is a symbol feature, ignore others
           const foundSymbolFeature = filteredFeatures.find((feature) => {
-            return feature.layer.type === 'symbol';
+            return feature.layer.type === "symbol";
           });
 
           if (foundSymbolFeature) {
@@ -384,7 +384,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         const MAP = map.current;
 
         let hoveredFeatureId: string | number | undefined = undefined;
-        MAP.on('mousemove', customLayer.id, (e) => {
+        MAP.on("mousemove", customLayer.id, (e) => {
           if (e.features && e.features.length > 0) {
             const feature = e.features[0];
 
@@ -398,7 +398,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
                 {
                   source: feature.source,
                   id: hoveredFeatureId,
-                  sourceLayer: customLayer['source-layer'],
+                  sourceLayer: customLayer["source-layer"],
                 },
                 { hover: false }
               );
@@ -408,7 +408,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
               {
                 source: feature.source,
                 id: feature.id,
-                sourceLayer: customLayer['source-layer'],
+                sourceLayer: customLayer["source-layer"],
               },
               { hover: true }
             );
@@ -419,24 +419,24 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
                 (clickableLayerId) => clickableLayerId === feature.layer.id
               )
             ) {
-              MAP.getCanvas().style.cursor = 'pointer';
+              MAP.getCanvas().style.cursor = "pointer";
             }
           }
         });
 
-        MAP.on('mouseleave', customLayer.id, (e) => {
+        MAP.on("mouseleave", customLayer.id, (e) => {
           if (hoveredFeatureId !== undefined) {
             MAP.setFeatureState(
               {
                 source: customLayer.source as string,
                 id: hoveredFeatureId,
-                sourceLayer: customLayer['source-layer'],
+                sourceLayer: customLayer["source-layer"],
               },
               { hover: false }
             );
           }
           hoveredFeatureId = undefined;
-          MAP.getCanvas().style.cursor = 'default';
+          MAP.getCanvas().style.cursor = "default";
         });
       },
       [clickableLayerIds]
@@ -453,7 +453,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           JSON.stringify(prevClickableLayerIds) !==
             JSON.stringify(clickableLayerIds))
       ) {
-        log('REGISTERING MAP EVENTS');
+        log("REGISTERING MAP EVENTS");
 
         //get custom layers (prefixed)
         const customLayers = MAP.getStyle().layers.reduce(
@@ -475,14 +475,14 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         });
       }
 
-      MAP.on('move', onMapMove);
-      MAP.on('moveend', onMapMoveEnd);
-      MAP.on('click', onMapClick);
+      MAP.on("move", onMapMove);
+      MAP.on("moveend", onMapMoveEnd);
+      MAP.on("click", onMapClick);
 
       return () => {
-        MAP.off('move', onMapMove);
-        MAP.off('moveend', onMapMoveEnd);
-        MAP.off('click', onMapClick);
+        MAP.off("move", onMapMove);
+        MAP.off("moveend", onMapMoveEnd);
+        MAP.off("click", onMapClick);
       };
     }, [
       previousLoading,
@@ -509,16 +509,16 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         previousDarkmode !== isDarkmode ||
         previousSatellite !== isSatellite
       ) {
-        log('LOADING MAP');
+        log("LOADING MAP");
         setReloadingLayers(true);
 
-        MAP.on('load', () => {
+        MAP.on("load", () => {
           MAP.resize();
           loadSources();
           loadIcons();
           setReloadingLayers(false);
           setLoading(false);
-          log('MAP LOADED');
+          log("MAP LOADED");
         });
       }
     }, [
@@ -558,7 +558,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       const MAP = map.current;
 
       if (JSON.stringify(previousViewport) !== JSON.stringify(viewport)) {
-        log('VIEWPORT CHANGED');
+        log("VIEWPORT CHANGED");
 
         const center = MAP.getCenter();
         const zoom = MAP.getZoom();
@@ -607,7 +607,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
             {
               source: feature.source,
               id: feature.id,
-              sourceLayer: feature.layer['source-layer'],
+              sourceLayer: feature.layer["source-layer"],
             },
             { selected: false }
           );
@@ -621,7 +621,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
             {
               source: feature.source,
               id: feature.id,
-              sourceLayer: feature.layer['source-layer'],
+              sourceLayer: feature.layer["source-layer"],
             },
             { selected: true }
           );
@@ -638,16 +638,16 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         isSatellite !== previousSatellite ||
         (!isSatellite && isDarkmode !== previousDarkmode)
       ) {
-        log('SETTING NEW STYLE');
+        log("SETTING NEW STYLE");
         MAP.setStyle(
           isSatellite ? satelliteStyle : isDarkmode ? darkStyle : lightStyle
         );
 
-        MAP.on('style.load', () => {
+        MAP.on("style.load", () => {
           loadSources();
           loadIcons();
           setReloadingLayers(false);
-          log('STYLE LOADED');
+          log("STYLE LOADED");
         });
       }
     }, [
@@ -666,7 +666,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       if (!map.current && !isLoading) return;
       const MAP = map.current;
 
-      log('FITTING TO DISPLAYED DATA');
+      log("FITTING TO DISPLAYED DATA");
     }, [map, isLoading]);
 
     //EXPOSING METHODS FOR PARENT COMPONENT
@@ -678,7 +678,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           if (!map.current) return;
           const MAP = map.current;
 
-          log('FITTING TO DISTRICT');
+          log("FITTING TO DISTRICT");
 
           const districtFeature = DATA_DISTRICTS.features.find(
             (feature) => feature.properties.name === district

@@ -10,7 +10,7 @@ import React, {
   SetStateAction,
   useRef,
 } from "react";
-import { LoadingSpinner, BottomSheet } from "@bratislava/mapbox-maps-ui";
+import { LoadingSpinner } from "@bratislava/mapbox-maps-ui";
 import { Mapbox } from "./Mapbox";
 import { useResizeDetector } from "react-resize-detector";
 import Layer, { ILayerProps } from "./Layer";
@@ -19,8 +19,18 @@ import DATA_DISTRICTS from "../assets/layers/districts.json";
 
 import { Header } from "./Header";
 import DetailPlaceholder from "./DetailPlaceholder";
+import { ISlotProps, Slot } from "./Slot";
 import FilterPlaceholder from "./FilterPlaceholder";
-import { Sources, IViewportProps, MapboxHandle, MapIcon } from "../types";
+import { MobileBottomSheetSlot } from "./MobileBottomSheetSlot";
+import { DesktopLeftSidebarSlot } from "./DesktopLeftSidebarSlot";
+
+import {
+  Sources,
+  IViewportProps,
+  MapboxHandle,
+  MapIcon,
+  IComponentSlot,
+} from "../types";
 import { ThemeController } from "./ThemeController";
 import { ViewportController } from "./ViewportController";
 import mapboxgl from "mapbox-gl";
@@ -39,6 +49,30 @@ import {
 import { SearchBarPlaceholder } from "./SearchBarPlaceholder";
 
 type useStateType<T> = [T, Dispatch<SetStateAction<T>>];
+
+export interface KeyStateRecord<T> {
+  key: string;
+  state: T;
+}
+
+export const getKeyStateValue = <T,>(
+  state: KeyStateRecord<T>[],
+  key: string
+) => {
+  const foundState = state.find((item) => item.key == key);
+  return foundState ? foundState.state : undefined;
+};
+
+export const toggleKeyStateValue = (
+  state: KeyStateRecord<boolean>[],
+  key: string
+) => {
+  const foundState = state.find((item) => item.key == key);
+  if (foundState) {
+    foundState.state = !foundState.state;
+  }
+  return [...state];
+};
 
 export interface MapProps {
   i18next: i18n;
@@ -63,24 +97,28 @@ export interface MapProps {
   fullscreenState: useStateType<boolean>;
   satelliteState: useStateType<boolean>;
   loadingState: useStateType<boolean>;
-  selectedDistrictState: useStateType<string>;
+  selectedDistrictState: useStateType<string | null>;
   detail?: ReactNode;
-  filter?: ReactNode;
-  mobileTopSlot?: ReactNode;
+  isOutsideLoading?: boolean;
+
+  slots?: IComponentSlot[];
+
   searchBar?: ReactNode;
+  // slots?: ReactElement<ISlotProps> | Array<ReactElement<ISlotProps>>;
   children?: ReactElement<ILayerProps> | Array<ReactElement<ILayerProps>>;
   layerPrefix?: string;
   onSelectedFeaturesChange?: (features: any[]) => void;
-  onDistrictChange?: (district: string) => void;
+  onDistrictChange?: (district: string | null) => void;
   moveSearchBarOutsideOfSideBarOnLargeScreen?: boolean;
 }
 
-type MapHandle = {
+export type MapHandle = {
   setViewport: (viewport: Partial<IViewportProps>) => void;
   closeFiltering: () => void;
   closeDetail: () => void;
   fitToDisplayedData: () => void;
-  fitToDistrict: (district: string) => void;
+  fitToDistrict: (district: string | null) => void;
+  isSlotVisible: (name: string) => boolean;
 };
 
 export const Map = forwardRef<MapHandle, MapProps>(
@@ -95,8 +133,7 @@ export const Map = forwardRef<MapHandle, MapProps>(
       icons = {},
       mapStyles,
       detail,
-      filter,
-      mobileTopSlot,
+      slots = [],
       children,
       mobileState,
       darkmodeState,
@@ -129,6 +166,10 @@ export const Map = forwardRef<MapHandle, MapProps>(
     const [isLoading, setLoading] = loadingState;
     const [isFilteringOpen, setFilteringOpen] = filteringOpenState;
     const [selectedDistrict, setSelectedDistrict] = selectedDistrictState;
+
+    const [slotVisibilities, setSlotVisibilities] = useState<
+      KeyStateRecord<boolean>[]
+    >([]);
 
     const extendedSources = {
       ...sources,
@@ -256,6 +297,10 @@ export const Map = forwardRef<MapHandle, MapProps>(
 
         fitToDistrict(district) {
           mapboxRef?.current?.fitToDistrict(district);
+        },
+
+        isSlotVisible(name: string) {
+          return false;
         },
       }),
       [setViewport, setFilteringOpen, setDetailOpen]
@@ -390,7 +435,40 @@ export const Map = forwardRef<MapHandle, MapProps>(
             isGeolocation={isGeolocation}
             onLocationClick={() => setGeolocation(!isGeolocation)}
           />
-          <SearchBarPlaceholder
+
+          {slots.map(
+            (
+              {
+                component: Component,
+                isMobileOnly,
+                isDesktopOnly,
+                animation,
+                className,
+                isVisible = false,
+                bottomSheetOptions,
+              },
+              index
+            ) => {
+              return (isMobileOnly && !isMobile) ||
+                (isDesktopOnly && isMobile) ? null : (
+                <Slot
+                  key={index}
+                  animation={animation}
+                  className={className}
+                  isVisible={isVisible}
+                  bottomSheetOptions={bottomSheetOptions}
+                >
+                  {typeof Component == "function" ? (
+                    <Component isVisible={true} setVisible={() => false} />
+                  ) : (
+                    Component
+                  )}
+                </Slot>
+              );
+            }
+          )}
+
+          {/* <SearchBarPlaceholder
             moveSearchBarOutsideOfSideBarOnLargeScreen={
               moveSearchBarOutsideOfSideBarOnLargeScreen
             }
@@ -405,14 +483,14 @@ export const Map = forwardRef<MapHandle, MapProps>(
           />
           <MobileTopSlot>{mobileTopSlot}</MobileTopSlot>
           <DetailPlaceholder
-            ref={detailPlaceholderRef}
+            // ref={detailPlaceholderRef}
             title={title}
-            isOpen={isDetailOpen}
+            isOpen={false}
             onClose={() => setDetailOpen(false)}
           >
             {detail}
           </DetailPlaceholder>
-          <FilterPlaceholder
+          <DesktopLeftSidebarSlot
             showDistrictSelect={showDistrictSelect}
             moveSearchBarOutsideOfSideBarOnLargeScreen={
               moveSearchBarOutsideOfSideBarOnLargeScreen
@@ -424,9 +502,17 @@ export const Map = forwardRef<MapHandle, MapProps>(
             isOpen={isFilteringOpen}
             onClose={() => setFilteringOpen(false)}
           >
-            {filter}
-          </FilterPlaceholder>
-          <BottomSheet>Sheet</BottomSheet>
+            {desktopLeftSidebarSlot}
+          </DesktopLeftSidebarSlot>
+          <MobileBottomSheetSlot
+            isMobile={isMobile}
+            ref={detailPlaceholderRef}
+            title={title}
+            isOpen={isDetailOpen}
+            onClose={() => setDetailOpen(false)}
+          >
+            {detail}
+          </MobileBottomSheetSlot> */}
         </div>
       </>
     );

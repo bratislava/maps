@@ -1,0 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+@include "react-spring-bottom-sheet/dist/style.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .base-input {
+    @apply appearance-none box-border inline-block border-3 px-6 py-0 text-font rounded-10 font-medium h-14;
+    @apply bg-input-nav-bg border-input-stroke focus:outline-none focus:border-primary hover:border-primary;
+  }
+
+  .base-input--with-error {
+    @apply border-error;
+  }
+
+  .base-input--disabled {
+    @apply bg-gray-100;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--input-nav-background-color) inset !important;
+  }
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  right: 0px;
+  position: absolute;
+  background: none no-repeat;
+  width: 100%;
+  height: 100%;
+}
+
+:root {
+  --rsbs-overlay-rounded: 0px;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-inter {
+  font-family: "Inter", sans-serif;
+}
