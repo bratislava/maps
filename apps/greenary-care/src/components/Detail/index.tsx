@@ -54,7 +54,7 @@ export const Detail = ({ features, arcgeoServerUrl }: DetailProps) => {
           />
           <Row label={t(`layers.esri.detail.district`)} text={feature?.properties?.["district"]} />
 
-          {attachments && attachments.length && (
+          {attachments && !!attachments.length && (
             <div>
               <div>{t(`layers.esri.detail.document`)}</div>
               <div>
