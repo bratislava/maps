@@ -54,9 +54,7 @@ export const Detail = ({ features, arcgeoServerUrl }: DetailProps) => {
           />
           <Row label={t(`layers.esri.detail.district`)} text={feature?.properties?.["district"]} />
 
-          {attachments == null ? (
-            <Row label={t(`layers.esri.detail.document`)} text={t("loading") + "..."} />
-          ) : attachments.length > 0 ? (
+          {attachments && attachments.length && (
             <div>
               <div>{t(`layers.esri.detail.document`)}</div>
               <div>
@@ -76,17 +74,12 @@ export const Detail = ({ features, arcgeoServerUrl }: DetailProps) => {
                 })}
               </div>
             </div>
-          ) : (
-            <Row
-              label={t(`layers.esri.detail.document`)}
-              text={t("layers.esri.detail.noDocuments")}
-            />
           )}
         </div>
       </div>
-      <pre className="p-2 h-72 bg-black text-white overflow-auto">
+      {/* <pre className="p-2 h-72 bg-black text-white overflow-auto">
         <code>{JSON.stringify(feature?.properties, null, 2)}</code>
-      </pre>
+      </pre> */}
     </>
   );
 };

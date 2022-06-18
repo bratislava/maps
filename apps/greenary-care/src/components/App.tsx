@@ -534,7 +534,10 @@ export const App = () => {
                       return (
                         <AccordionItem
                           isOpenable={types.length > 1}
-                          className={cx("border-l-4 border-white")}
+                          className={cx("border-l-4", {
+                            "bg-gray bg-opacity-10 border-primary": isAnyTypeEnabled(types),
+                            "border-transparent": !isAnyTypeEnabled(types),
+                          })}
                           key={index}
                           title={label}
                           rightSlot={
@@ -565,7 +568,10 @@ export const App = () => {
                       );
                     })}
                     <AccordionItem
-                      className={cx("border-l-4 border-white")}
+                      className={cx("border-l-4", {
+                        "bg-gray bg-opacity-10 border-primary": isAnyTypeEnabled(otherTypes),
+                        "border-transparent": !isAnyTypeEnabled(otherTypes),
+                      })}
                       title="Ostatná starostlivosť"
                       rightSlot={
                         <button
@@ -609,9 +615,15 @@ export const App = () => {
         },
         {
           name: "mobile-detail",
-          bottomSheetOptions: {
-            footer: (
-              <div className="bg-gray bg-opacity-10 -m-4">
+          bottomSheetOptions: {},
+          isMobileOnly: true,
+          className: "z-20",
+          isVisible: !!selectedFeatures.length,
+          component: (
+            <div className="relative h-full">
+              <Detail arcgeoServerUrl={URL} features={selectedFeatures} />
+
+              <div className="sticky top-full bg-gray bg-opacity-10">
                 <button
                   onClick={closeDetail}
                   className="p-3 flex items-center hover:underline justify-center mx-auto"
@@ -620,12 +632,8 @@ export const App = () => {
                   <Close className="text-primary" width={32} height={32} />
                 </button>
               </div>
-            ),
-          },
-          isMobileOnly: true,
-          className: "z-20",
-          isVisible: !!selectedFeatures.length,
-          component: <Detail arcgeoServerUrl={URL} features={selectedFeatures} />,
+            </div>
+          ),
         },
         {
           name: "mobile-search",
