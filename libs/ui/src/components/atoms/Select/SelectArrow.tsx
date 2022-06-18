@@ -1,14 +1,10 @@
 import React from "react";
 
-export interface ISelectArrowProps {
-  className?: string;
-}
-
-export const SelectArrow = ({ className }: ISelectArrowProps) => {
+export const SelectArrow = () => {
   return (
     <>
       <svg
-        className="absolute left-4 -top-2 -z-10"
+        className="absolute w-[100px] max-w-full -top-2 -z-10"
         width={100}
         height={10}
         x="0px"
@@ -21,7 +17,7 @@ export const SelectArrow = ({ className }: ISelectArrowProps) => {
         <path fill="white" d="M60,6L30,0L0,6h1.1H60z" />
       </svg>
       <svg
-        className="absolute left-4 -top-2 z-20"
+        className="absolute w-[100px] max-w-full -top-2 z-20"
         width={100}
         height={10}
         x="0px"
