@@ -68,8 +68,8 @@ export const getSeasonFromDate = (
   return season;
 };
 
-export const getRandomItemFrom = <T>(items: T[]) => {
-  return items[getRandomInt(items.length)];
+export const getRandomItemFrom = <T>(items: T[] | T) => {
+  return Array.isArray(items) ? items[getRandomInt(items.length)] : items;
 };
 
 export const getUniqueValuesFromFeatures = (

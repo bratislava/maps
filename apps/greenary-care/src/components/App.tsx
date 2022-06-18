@@ -11,7 +11,6 @@ import {
   addDistrictPropertyToLayer,
   forwardGeocode,
   DISTRICTS_GEOJSON,
-  ALL_DISTRICTS_KEY,
   usePrevious,
 } from "@bratislava/mapbox-maps-core";
 import {
@@ -19,12 +18,12 @@ import {
   AccordionItem,
   Checkbox,
   Divider,
+  ISelectOption,
   LoadingSpinner,
   SearchBar,
   Select,
   SelectOption,
   Tag,
-  UNSELECTED_OPTION_KEY,
 } from "@bratislava/mapbox-maps-ui";
 import { Close, Eye, ChevronLeftSmall, EyeCrossed, Funnel } from "@bratislava/mapbox-maps-icons";
 import { useArcgeo } from "@bratislava/mapbox-maps-esri";
@@ -48,12 +47,13 @@ import {
   toggleKeyStateValue,
 } from "../utils/utils";
 import AnimateHeight from "react-animate-height";
+import { Feature } from "geojson";
 
 const URL =
   "https://services8.arcgis.com/pRlN1m0su5BYaFAS/ArcGIS/rest/services/orezy_a_vyruby_2022_OTMZ_zobrazenie/FeatureServer/0";
 
 // predefined colors for points
-const mapCircleColors: { [index: string]: string } = {
+const mapCircleColors: { [index: string]: string | string[] } = {
   "výrub inváznej dreviny": "#F4B056",
   "výrub havarijný": "#E57D00",
   "výrub z rozhodnutia": "#E03F00",
@@ -61,9 +61,8 @@ const mapCircleColors: { [index: string]: string } = {
   "injektáž inváznej dreviny": "#351900",
   "odstránenie padnutého stromu": "#BC9F82",
   "frézovanie pňa": "#54463B",
+  orez: ["#FFD400", "#FCE304", "#FFF500", "#FCE300", "#FFE045", "#FEE980", "#FFE600"],
 };
-
-const orezColors = ["#FFD400", "#FCE304", "#FFF500", "#FCE300", "#FFE045", "#FEE980", "#FFE600"];
 
 const CATEGORIES = [
   {
@@ -105,12 +104,7 @@ export const App = () => {
             const dateString = feature.properties?.TERMIN_REAL_1;
             const year = dateString ? new Date(dateString).getFullYear().toString() : undefined;
             const season = getSeasonFromDate(dateString);
-            const color =
-              typeof type === "string"
-                ? type === "orez"
-                  ? getRandomItemFrom(orezColors)
-                  : mapCircleColors[type]
-                : "#54463B";
+            const color = getRandomItemFrom(mapCircleColors[type]) ?? "#54463B";
 
             return {
               ...feature,
@@ -137,11 +131,20 @@ export const App = () => {
 
   const [filters, setFilters] = useState<any[]>([]);
 
-  const [yearOptions, setYearOptions] = useState<SelectOption[]>([]);
-  const [districtOptions, setDistrictOptions] = useState<SelectOption[]>([]);
-  const [selectedYear, setSelectedYear] = useState<string>(UNSELECTED_OPTION_KEY);
+  // USE STATE
+
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchFeatures, setSearchFeatures] = useState<Feature[]>([]);
+
+  const [yearOptions, setYearOptions] = useState<ISelectOption[]>([]);
+  const [districtOptions, setDistrictOptions] = useState<ISelectOption[]>([]);
+
+  const [selectedYearOptions, setSelectedYearOptions] = useState<ISelectOption[]>([]);
+  const [selectedDistrictOptions, setSelectedDistrictOptions] = useState<ISelectOption[]>([]);
 
   const [activeFilters, setActiveFilters] = useState<{ title: string; items: string[] }[]>([]);
+
+  const [isSidebarVisible, setSidebarVisible] = useState(true);
 
   useEffect(() => {
     if (esriGeojson) {
@@ -155,7 +158,7 @@ export const App = () => {
       setTypeFiltersState(typeFiltersState);
       setLoading(false);
     }
-  }, [esriGeojson]); 
+  }, [esriGeojson]);
 
   const { Map, ...mapProps } = useMap({
     mapboxAccessToken: import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN,
@@ -167,19 +170,19 @@ export const App = () => {
     },
   });
 
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [searchFeatures, setSearchFeatures] = useState<any[]>([]);
-
   const {
     geolocationState: [isGeolocation, setGeolocation],
     mapboxgl,
     ref: mapRef,
-    selectedDistrictState: [selectedDistrict, setSelectedDistrict],
     fitToDistrict,
     selectedFeaturesState: [selectedFeatures, setSelectedFeatures],
     mobileState: [isMobile],
   } = mapProps;
+
+  // USE PREVIOUS
+
+  const previousSidebarVisible = usePrevious(isSidebarVisible);
+  const previousMobile = usePrevious(isMobile);
 
   const onSearchFeatureClick = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -270,23 +273,22 @@ export const App = () => {
 
   const onFilteringReset = () => {
     setSeasonFiltersState(JSON.parse(JSON.stringify(DEFAULT_SEASON_FILTER_STATE)));
-    if (selectedYear != UNSELECTED_OPTION_KEY) setSelectedYear(UNSELECTED_OPTION_KEY);
-    if (selectedDistrict != ALL_DISTRICTS_KEY) setSelectedDistrict(ALL_DISTRICTS_KEY);
+    setSelectedYearOptions([]);
+    setSelectedDistrictOptions([]);
   };
-
-  const [isSidebarVisible, setSidebarVisible] = useState(true);
-  const previousSidebarVisible = usePrevious(isSidebarVisible);
 
   const areFiltersDefault = useCallback(() => {
     return (
-      selectedYear === UNSELECTED_OPTION_KEY &&
-      selectedDistrict === ALL_DISTRICTS_KEY &&
+      selectedYearOptions.length === 0 &&
+      selectedDistrictOptions.length === 0 &&
       JSON.stringify(seasonFiltersState) === JSON.stringify(DEFAULT_SEASON_FILTER_STATE)
     );
-  }, [selectedYear, selectedDistrict, seasonFiltersState]);
+  }, [selectedYearOptions, selectedDistrictOptions, seasonFiltersState]);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const typeFilters: any[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const seasonFilters: any[] = [];
 
     typeFiltersState.forEach((typeFilterState) => {
@@ -303,27 +305,38 @@ export const App = () => {
 
     const filters = ["all", ["any", ...typeFilters], ["any", ...seasonFilters]];
 
-    if (selectedYear && selectedYear != UNSELECTED_OPTION_KEY) {
-      filters.push(["==", "year", selectedYear]);
+    if (selectedYearOptions.length) {
+      filters.push(["any", ...selectedYearOptions.map((o) => ["==", "year", o.key])]);
     }
 
+    if (selectedDistrictOptions.length) {
+      filters.push(["any", ...selectedDistrictOptions.map((o) => ["==", "district", o.key])]);
+    }
+    console.log(filters);
+
     setFilters(filters);
-  }, [typeFiltersState, seasonFiltersState, setFilters, selectedYear]);
+  }, [
+    typeFiltersState,
+    seasonFiltersState,
+    setFilters,
+    selectedYearOptions,
+    selectedDistrictOptions,
+  ]);
 
   useEffect(() => {
     const activeFilters = [];
 
-    selectedYear && selectedYear != UNSELECTED_OPTION_KEY
+    selectedYearOptions.length
       ? activeFilters.push({
           title: t("filters.year.title"),
-          items: [selectedYear],
+          items: selectedYearOptions.map((o) => o.label),
         })
       : null;
 
-    selectedDistrict && selectedDistrict != ALL_DISTRICTS_KEY
+    selectedDistrictOptions.length
       ? activeFilters.push({
           title: t("filters.district.title"),
-          items: [selectedDistrict],
+          items: selectedDistrictOptions.map((o) => o.label),
         })
       : null;
 
@@ -339,7 +352,7 @@ export const App = () => {
       : null;
 
     setActiveFilters(activeFilters);
-  }, [selectedYear, selectedDistrict, areFiltersDefault]);
+  }, [selectedYearOptions, selectedDistrictOptions, areFiltersDefault]);
 
   // close detailbox when sidebar is opened on mobile
   useEffect(() => {
@@ -348,15 +361,26 @@ export const App = () => {
     }
   }, [isMobile, isSidebarVisible, previousSidebarVisible]);
 
+  // close sidebar on mobile and open on desktop
   useEffect(() => {
-    if (isMobile == false) {
+    // from mobile to desktop
+    if (previousMobile == true && isMobile == false) {
+      setSidebarVisible(true);
+    }
+    // from desktop to mobile
+    if (previousMobile == false && isMobile == true) {
       setSidebarVisible(false);
     }
-  }, [isMobile]);
+  }, [isMobile, previousMobile]);
 
   const closeDetail = useCallback(() => {
     setSelectedFeatures([]);
   }, [setSelectedFeatures]);
+
+  // fit to district
+  useEffect(() => {
+    selectedDistrictOptions.length == 1 && fitToDistrict(selectedDistrictOptions[0].key);
+  }, [selectedDistrictOptions]);
 
   const { height: mobileActiveFiltersContentHeight, ref: mobileActiveFiltersContentRef } =
     useResizeDetector();
@@ -380,7 +404,6 @@ export const App = () => {
       districtFiltering={true}
       showDistrictSelect={false}
       title={t("title")}
-      onDistrictChange={fitToDistrict}
       moveSearchBarOutsideOfSideBarOnLargeScreen
       sources={{
         ESRI_DATA: esriGeojson,
@@ -452,32 +475,40 @@ export const App = () => {
                   </div>
                   <h2 className="font-bold text-md py-1">{t("filters.title")}</h2>
                 </div>
-                <div className="w-full grid gap-4 px-8">
+                <div className="w-full">
                   <Select
                     className="w-full"
-                    value={selectedYear}
-                    options={[
-                      {
-                        key: UNSELECTED_OPTION_KEY,
-                        label: t("filters.year.allYears"),
-                      },
-                      ...yearOptions,
-                    ]}
-                    onChange={(year) => setSelectedYear(year)}
-                  />
+                    buttonClassName="px-5"
+                    isMultiple
+                    placeholder={t("filters.year.placeholder")}
+                    value={selectedYearOptions}
+                    onChange={setSelectedYearOptions}
+                    noBorder
+                    onReset={() => setSelectedYearOptions([])}
+                  >
+                    {yearOptions.map((option) => (
+                      <SelectOption key={option.key} value={option}>
+                        {option.label}
+                      </SelectOption>
+                    ))}
+                  </Select>
 
                   <Select
                     className="w-full"
-                    value={selectedDistrict}
-                    options={[
-                      {
-                        key: ALL_DISTRICTS_KEY,
-                        label: t("filters.district.allDistricts"),
-                      },
-                      ...districtOptions,
-                    ]}
-                    onChange={(district) => setSelectedDistrict(district)}
-                  />
+                    buttonClassName="px-5"
+                    isMultiple
+                    value={selectedDistrictOptions}
+                    onChange={setSelectedDistrictOptions}
+                    placeholder={t("filters.district.placeholder")}
+                    noBorder
+                    onReset={() => setSelectedDistrictOptions([])}
+                  >
+                    {districtOptions.map((option) => (
+                      <SelectOption key={option.key} value={option}>
+                        {option.label}
+                      </SelectOption>
+                    ))}
+                  </Select>
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="px-8">{t("filters.season.title")}</label>
@@ -728,29 +759,33 @@ export const App = () => {
                 <div className="w-full grid grid-cols-3 gap-4 px-8">
                   <Select
                     className="w-full"
-                    value={selectedYear}
-                    options={[
-                      {
-                        key: UNSELECTED_OPTION_KEY,
-                        label: t("filters.year.allYears"),
-                      },
-                      ...yearOptions,
-                    ]}
-                    onChange={(year) => setSelectedYear(year)}
-                  />
+                    value={selectedYearOptions}
+                    isMultiple
+                    onReset={() => setSelectedYearOptions([])}
+                    onChange={setSelectedYearOptions}
+                    placeholder={t("filters.year.placeholder")}
+                  >
+                    {yearOptions.map((option) => (
+                      <SelectOption key={option.key} value={option}>
+                        {option.label}
+                      </SelectOption>
+                    ))}
+                  </Select>
 
                   <Select
                     className="w-full col-span-2"
-                    value={selectedDistrict}
-                    options={[
-                      {
-                        key: ALL_DISTRICTS_KEY,
-                        label: t("filters.district.allDistricts"),
-                      },
-                      ...districtOptions,
-                    ]}
-                    onChange={(district) => setSelectedDistrict(district)}
-                  />
+                    value={selectedDistrictOptions}
+                    isMultiple
+                    placeholder={t("filters.district.placeholder")}
+                    onChange={setSelectedDistrictOptions}
+                    onReset={() => setSelectedDistrictOptions([])}
+                  >
+                    {districtOptions.map((option) => (
+                      <SelectOption key={option.key} value={option}>
+                        {option.label}
+                      </SelectOption>
+                    ))}
+                  </Select>
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -861,7 +896,7 @@ export const App = () => {
       ]}
     >
       <Layer filters={filters} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
-      <Layer ignoreFilters ignoreClick source="DISTRICTS_GEOJSON" styles={DISTRICTS_STYLE} />
+      <Layer ignoreClick source="DISTRICTS_GEOJSON" styles={DISTRICTS_STYLE} />
     </Map>
   );
 };

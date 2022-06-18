@@ -1,126 +1,103 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { MouseEventHandler, ReactElement, useCallback } from "react";
 import cx from "classnames";
-import { ChevronDownSmall } from "@bratislava/mapbox-maps-icons";
-import * as RadixSelect from "@radix-ui/react-select";
+import { ChevronDownSmall, Close } from "@bratislava/mapbox-maps-icons";
+import { Listbox, Transition } from "@headlessui/react";
+import { ISelectOption, ISelectOptionProps } from "./SelectOption";
+import { SelectArrow } from "./SelectArrow";
 
-export interface SelectOption {
-  key: string;
-  label: string;
-}
-
-export const UNSELECTED_OPTION_KEY = "none";
-
-interface ISelectProps {
+interface ISelectProps<T extends ISelectOption | ISelectOption[] | null> {
   className?: string;
-  unselectedOptionLabel?: string;
-  options: SelectOption[];
-  onChange?: (option: string) => void;
-  value?: string | null;
-  id?: string;
+  buttonClassName?: string;
+  isMultiple?: boolean;
+  noBorder?: boolean;
+  onChange?: (value: T) => void;
+  onReset?: () => void;
+  value: T;
+  placeholder?: string;
+  children:
+    | ReactElement<ISelectOptionProps>
+    | ReactElement<ISelectOptionProps>[];
 }
 
-export const Select = ({
+export const Select = <T extends (ISelectOption | ISelectOption[]) | null>({
   className,
-  options,
-  unselectedOptionLabel,
-  onChange,
+  buttonClassName,
+  onChange = () => void 0,
+  onReset = () => void 0,
   value,
-}: ISelectProps) => {
-  const [realValue, setRealValue] = useState<string>("");
-
-  const [unselectedOption, setUnselectedOption] =
-    useState<SelectOption | null>(null);
-
-  const handleChange = useCallback(
-    (key: string) => {
-      if (!onChange) return;
-      const option =
-        options.find((option) => option.key === key) ?? unselectedOption;
-      if (option) onChange(option.key);
+  isMultiple = false,
+  noBorder = false,
+  children,
+  placeholder,
+}: ISelectProps<T>) => {
+  const onResetClick: MouseEventHandler = useCallback(
+    (e) => {
+      e.stopPropagation();
+      onReset();
     },
-    [unselectedOption]
+    [onReset]
   );
-
-  useEffect(() => {
-    if (unselectedOptionLabel) {
-      setUnselectedOption({
-        key: UNSELECTED_OPTION_KEY,
-        label: unselectedOptionLabel,
-      });
-    }
-  }, [unselectedOptionLabel]);
-
-  useEffect(() => {
-    setRealValue(
-      value ?? (unselectedOption ? unselectedOption.key : options[0].key)
-    );
-    console.log(value);
-  }, [value]);
 
   return (
-    <div className={cx("inline-flex relative items-center", className)}>
-      <RadixSelect.Root value={realValue} onValueChange={handleChange}>
-        <RadixSelect.Trigger className="bg-white flex pl-4 rounded-lg border-2 border-highlight items-center cursor-pointer pr-16 w-full h-12 outline-none focus:border-primary">
-          <RadixSelect.Value />
-          <RadixSelect.Icon className="absolute right-4">
-            <ChevronDownSmall className="text-primary" />
-          </RadixSelect.Icon>
-        </RadixSelect.Trigger>
-
-        <RadixSelect.Content className="bg-white rounded-lg shadow-lg">
-          <RadixSelect.ScrollUpButton className="flex justify-center py-2">
-            <ChevronDownSmall className="text-primary transform rotate-180" />
-          </RadixSelect.ScrollUpButton>
-          <RadixSelect.Viewport className="py-4">
-            {unselectedOption && (
-              <RadixSelect.Item
-                className={cx(
-                  "px-4 py-1 relative focus:bg-gray focus:bg-gray focus:bg-opacity-10 outline-none"
+    <div className={cx("relative items-center w-full", className)}>
+      <Listbox value={value} onChange={onChange} multiple={isMultiple}>
+        <Listbox.Button className="flex w-full">
+          {({ open }) => (
+            <div
+              className={cx(
+                "bg-white flex items-center justify-between cursor-pointer w-full h-12 outline-none transition-all",
+                {
+                  "bg-gray bg-opacity-10": noBorder && open,
+                  "border-2 rounded-lg": !noBorder,
+                  "border-primary": open,
+                  "border-gray border-opacity-10 focus:border-primary focus:border-opacity-100":
+                    !open,
+                },
+                buttonClassName
+              )}
+            >
+              <div className="overflow-auto w-full">
+                {!value || (Array.isArray(value) && value.length == 0) ? (
+                  <div className="ml-3 flex">{placeholder}</div>
+                ) : Array.isArray(value) ? (
+                  <div className="ml-3 flex gap-2 whitespace-nowrap">
+                    {value.map((v) => v.label).join(", ")}
+                  </div>
+                ) : (
+                  <span className="ml-4">{value.label}</span>
                 )}
-                value={unselectedOption.key}
-              >
-                <RadixSelect.ItemIndicator className="relative bg-primary w-8 h-8" />
-                <RadixSelect.ItemText className="relative ">
-                  {unselectedOption.label}
-                </RadixSelect.ItemText>
-              </RadixSelect.Item>
-            )}
-            {options.map(({ key, label }) => (
-              <RadixSelect.Item
-                className={cx(
-                  "px-4 py-1 relative focus:bg-gray focus:bg-gray1 focus:bg-opacity-10 outline-none"
+              </div>
+              <div className="flex text-primary mr-1">
+                {!(!value || (Array.isArray(value) && value.length == 0)) && (
+                  <Close onClick={onResetClick} className="w-8 h-8 p-2" />
                 )}
-                value={key}
-                key={key}
-              >
-                <RadixSelect.ItemIndicator className="relative bg-primary w-8 h-8" />
-                <RadixSelect.ItemText className="relative ">
-                  {label}
-                </RadixSelect.ItemText>
-              </RadixSelect.Item>
-            ))}
-            <RadixSelect.Separator />
-          </RadixSelect.Viewport>
-          <RadixSelect.ScrollDownButton className="flex justify-center py-1">
-            <ChevronDownSmall className="text-primary" />
-          </RadixSelect.ScrollDownButton>
-        </RadixSelect.Content>
-      </RadixSelect.Root>
+                <ChevronDownSmall
+                  className={cx("w-8 h-8 p-2 transition-transform", {
+                    "rotate-180": open,
+                  })}
+                />
+              </div>
+            </div>
+          )}
+        </Listbox.Button>
+        <Transition
+          enter="transition duration-100 ease-out"
+          enterFrom="transform scale-95 opacity-0"
+          enterTo="transform scale-100 opacity-100"
+          leave="transition duration-75 ease-out"
+          leaveFrom="transform scale-100 opacity-100"
+          leaveTo="transform scale-95 opacity-0"
+          className={cx("absolute top-full w-full z-50", {
+            "": noBorder,
+            "translate-y-4": !noBorder,
+          })}
+        >
+          <Listbox.Options className="w-full py-4 bg-white rounded-lg shadow-lg overflow-hidden">
+            {!noBorder && <SelectArrow />}
+            {children}
+          </Listbox.Options>
+        </Transition>
+      </Listbox>
     </div>
   );
-};
-
-export default Select;
-
-export const getSelectOptionsFromStringArray = (
-  array: string[]
-): SelectOption[] => {
-  const options = array.sort().map((item) => {
-    return {
-      key: item,
-      label: item,
-    };
-  });
-
-  return options;
 };

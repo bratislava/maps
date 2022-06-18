@@ -9,11 +9,11 @@ export default {
     active: "Active filters",
     year: {
       title: "Year",
-      allYears: "Year",
+      placeholder: "Year",
     },
     district: {
       title: "District",
-      allDistricts: "District",
+      placeholder: "District",
     },
     season: {
       title: "Season",

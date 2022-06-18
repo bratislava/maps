@@ -51,7 +51,6 @@ export interface IContext {
   isLoading: boolean;
   getPrefixedLayer: (layerId: string) => string;
   isLayerPrefixed: (layerId: string) => boolean;
-  selectedDistrict: string | null;
   addClickableLayer: (layerId: string) => void;
   districtFiltering: boolean;
 }
@@ -108,7 +107,6 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       geolocationState,
       layerPrefix = "BRATISLAVA",
       onBearingChange,
-      selectedDistrict,
       districtFiltering = true,
     },
     forwardedRef
@@ -165,7 +163,6 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         isLoading: isLoading,
         getPrefixedLayer,
         isLayerPrefixed,
-        selectedDistrict,
         addClickableLayer,
         districtFiltering,
       }),
@@ -174,7 +171,6 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         isLoading,
         getPrefixedLayer,
         isLayerPrefixed,
-        selectedDistrict,
         addClickableLayer,
         districtFiltering,
       ]

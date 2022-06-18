@@ -91,7 +91,6 @@ export interface MapProps {
   fullscreenState: useStateType<boolean>;
   satelliteState: useStateType<boolean>;
   loadingState: useStateType<boolean>;
-  selectedDistrictState: useStateType<string | null>;
   detail?: ReactNode;
   isOutsideLoading?: boolean;
   selectedFeaturesState: useStateType<any[]>;
@@ -138,7 +137,6 @@ export const Map = forwardRef<MapHandle, MapProps>(
       satelliteState,
       loadingState,
       geolocationState,
-      selectedDistrictState,
       layerPrefix = "BRATISLAVA",
       onDistrictChange,
       moveSearchBarOutsideOfSideBarOnLargeScreen = false,
@@ -159,7 +157,6 @@ export const Map = forwardRef<MapHandle, MapProps>(
     const [isSatellite, setSatellite] = satelliteState;
     const [isLoading, setLoading] = loadingState;
     const [isFilteringOpen, setFilteringOpen] = filteringOpenState;
-    const [selectedDistrict, setSelectedDistrict] = selectedDistrictState;
     const [selectedFeatures, setSelectedFeatures] = selectedFeaturesState;
 
     const [slotVisibilities, setSlotVisibilities] = useState<
@@ -360,10 +357,6 @@ export const Map = forwardRef<MapHandle, MapProps>(
       isMobile,
     ]);
 
-    useEffect(() => {
-      onDistrictChange && onDistrictChange(selectedDistrict);
-    }, [selectedDistrict]);
-
     //SET MOBILE ACCORDING TO CONTAINER WIDTH
     useEffect(() => {
       setMobile((containerWidth ?? 0) < 640);
@@ -403,7 +396,6 @@ export const Map = forwardRef<MapHandle, MapProps>(
             selectedFeatures={selectedFeatures}
             onBearingChange={(bearing) => setBearing(bearing)}
             geolocationState={geolocationState}
-            selectedDistrict={selectedDistrict}
             districtFiltering={districtFiltering}
           >
             {children}

@@ -9,11 +9,11 @@ export default {
     active: "Aktívny filter",
     year: {
       title: "Rok",
-      allYears: "Rok",
+      placeholder: "Rok",
     },
     district: {
       title: "Mestská časť",
-      allDistricts: "Mestská časť",
+      placeholder: "Mestská časť",
     },
     season: {
       title: "Obdobie",

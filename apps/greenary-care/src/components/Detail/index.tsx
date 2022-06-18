@@ -2,8 +2,7 @@ import { Row } from "./Row";
 import { useTranslation } from "react-i18next";
 import { Feature } from "geojson";
 import { useArcgeoAttachments } from "@bratislava/mapbox-maps-esri";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export interface DetailProps {
   features: Feature[];
@@ -86,7 +85,7 @@ export const Detail = ({ features, arcgeoServerUrl }: DetailProps) => {
         </div>
       </div>
       <pre className="p-2 h-72 bg-black text-white overflow-auto">
-        <code>{JSON.stringify(feature.properties, null, 2)}</code>
+        <code>{JSON.stringify(feature?.properties, null, 2)}</code>
       </pre>
     </>
   );

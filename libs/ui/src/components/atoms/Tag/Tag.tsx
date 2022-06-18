@@ -5,15 +5,23 @@ export interface ITagProps {
   className?: string;
   onClick?: () => void;
   children: ReactNode;
+  isSmall?: boolean;
 }
 
-export const Tag = ({ className = "", onClick, children }: ITagProps) => {
+export const Tag = ({
+  className = "",
+  onClick,
+  children,
+  isSmall = false,
+}: ITagProps) => {
   return (
     <div
       className={cx(
-        "rounded px-3 py-1 select-none",
+        "rounded  select-none",
         {
           "bg-gray bg-opacity-10": !className.includes("bg-"),
+          "px-3 py-1": !isSmall,
+          "px-2": isSmall,
         },
         className
       )}

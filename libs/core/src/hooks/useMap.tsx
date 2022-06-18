@@ -12,7 +12,6 @@ import { MapProps, MapHandle, Map } from "../components/Main";
 import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import "mapbox-gl/dist/mapbox-gl.css";
 import { i18n } from "i18next";
-import { ALL_DISTRICTS_KEY } from "../utils/districts";
 
 export interface IUseMap {
   mapboxAccessToken: string;
@@ -45,8 +44,6 @@ export const useMap = ({ mapboxAccessToken, mapStyles, i18next }: IUseMap) => {
   const satelliteState = useState<boolean>(false);
   const loadingState = useState(true);
 
-  const selectedDistrictState = useState<string>(ALL_DISTRICTS_KEY);
-
   const props: useMapComponentProps = {
     //helpers
     ref,
@@ -65,7 +62,6 @@ export const useMap = ({ mapboxAccessToken, mapStyles, i18next }: IUseMap) => {
     fullscreenState,
     filteringOpenState,
     satelliteState,
-    selectedDistrictState,
     loadingState,
     mapStyles,
     i18next,

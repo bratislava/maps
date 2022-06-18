@@ -1,6 +1,5 @@
 import { useContext, useEffect } from "react";
 import { usePrevious } from "../hooks/usePrevious";
-import { ALL_DISTRICTS_KEY } from "../utils/districts";
 import { log } from "../utils/log";
 import { mapContext } from "./Mapbox";
 
@@ -87,14 +86,6 @@ const Layer = ({
         if (!ignoreFilters) {
           if (filters && filters.length) {
             resultFilters.push(...filters);
-          }
-
-          if (
-            districtFiltering &&
-            selectedDistrict &&
-            !(selectedDistrict === ALL_DISTRICTS_KEY)
-          ) {
-            resultFilters.push(["==", "district", selectedDistrict]);
           }
         }
 
