@@ -10,15 +10,14 @@ const styles = [
         ["get", "color"],
       ],
       "circle-stroke-color": ["get", "color"],
-      "circle-stroke-width": [
-        "case",
-        ["boolean", ["feature-state", "selected"], false],
-        4,
-        1,
-      ],
+      "circle-stroke-width": ["case", ["boolean", ["feature-state", "selected"], false], 4, 1],
       "circle-opacity": [
         "case",
-        ["boolean", ["feature-state", "hover"], false],
+        [
+          "any",
+          ["boolean", ["feature-state", "hover"], false],
+          ["boolean", ["feature-state", "selected"], false],
+        ],
         1,
         0.8,
       ],

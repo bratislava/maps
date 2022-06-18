@@ -1,53 +1,88 @@
-import React from "react";
 import { Row } from "./Row";
 import { useTranslation } from "react-i18next";
+import { Feature } from "geojson";
+import { useArcgeoAttachments } from "@bratislava/mapbox-maps-esri";
+import { useState } from "react";
+import { useEffect } from "react";
 
 export interface DetailProps {
-  features: any[];
+  features: Feature[];
+  arcgeoServerUrl: string;
 }
 
-export const Detail = ({ features }: DetailProps) => {
+export const Detail = ({ features, arcgeoServerUrl }: DetailProps) => {
   const { t } = useTranslation();
 
-  if (!(features && features[0])) return null;
+  const [feature, setFeature] = useState<Feature | null>(null);
+  const [objectId, setObjectId] = useState<string | number | null>(null);
 
-  const feature = features[0];
+  useEffect(() => {
+    setFeature(null);
+    setObjectId(null);
 
-  return (
+    const firstFeature = features[0];
+    if (firstFeature) {
+      setFeature(firstFeature);
+      if (firstFeature.properties?.["OBJECTID"]) setObjectId(firstFeature.properties?.["OBJECTID"]);
+    }
+  }, [features, setObjectId]);
+
+  const { data: attachments } = useArcgeoAttachments(arcgeoServerUrl, objectId);
+
+  return !features[0] ? null : (
     <>
       <div className="flex flex-col space-y-4 p-8 pt-4 overflow-auto">
         <div className="flex flex-col space-y-4">
-          <div className="font-bold font-md pt-4 text-[20px]">
-            {t(`layers.esri.detail.title`)}
+          <div className="first-letter:uppercase font-bold font-md pt-4 text-[20px]">
+            {feature?.properties?.["TYP_VYKONU_1"] ?? t(`layers.esri.detail.title`)}
           </div>
           <Row
             label={t(`layers.esri.detail.slovakName`)}
-            text={feature.properties["Drevina_SK"]}
+            text={feature?.properties?.["Drevina_SK"]}
           />
           <Row
             label={t(`layers.esri.detail.latinName`)}
-            text={feature.properties["Drevina_LAT"]}
+            text={feature?.properties?.["Drevina_LAT"]}
           />
-          <Row
-            label={t(`layers.esri.detail.street`)}
-            text={feature.properties["ULICA"]}
-          />
-          <Row
-            label={t(`layers.esri.detail.operation`)}
-            text={feature.properties["TYP_VYKONU_1"]}
-          />
+          <Row label={t(`layers.esri.detail.street`)} text={feature?.properties?.["ULICA"]} />
           <Row
             label={t(`layers.esri.detail.description`)}
-            text={feature.properties["POPIS_VYKONU_1"]}
+            text={feature?.properties?.["POPIS_VYKONU_1"]}
           />
           <Row
             label={t(`layers.esri.detail.date`)}
-            text={feature.properties["TERMIN_REALIZACIE_1"]}
+            text={feature?.properties?.["TERMIN_REALIZACIE_1"]}
           />
-          <Row
-            label={t(`layers.esri.detail.district`)}
-            text={feature.properties["district"]}
-          />
+          <Row label={t(`layers.esri.detail.district`)} text={feature?.properties?.["district"]} />
+
+          {attachments == null ? (
+            <Row label={t(`layers.esri.detail.document`)} text={t("loading") + "..."} />
+          ) : attachments.length > 0 ? (
+            <div>
+              <div>{t(`layers.esri.detail.document`)}</div>
+              <div>
+                {attachments.map((attachment, index) => {
+                  const attachmentUrl = `${arcgeoServerUrl}/${objectId}/attachment/${attachment.id}`;
+                  return (
+                    <a
+                      className="font-bold flex underline"
+                      rel="noreferrer"
+                      href={attachmentUrl}
+                      target="_blank"
+                      key={index}
+                    >
+                      {`${t("layers.esri.detail.showDocument")} ${index + 1}`}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <Row
+              label={t(`layers.esri.detail.document`)}
+              text={t("layers.esri.detail.noDocuments")}
+            />
+          )}
         </div>
       </div>
       <pre className="p-2 h-72 bg-black text-white overflow-auto">

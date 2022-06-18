@@ -2,6 +2,8 @@ import {
   useState,
   useRef,
   useCallback,
+  Dispatch,
+  SetStateAction,
   RefObject,
   RefAttributes,
   ForwardRefExoticComponent,
@@ -24,7 +26,7 @@ export interface IUseMap {
 
 interface useMapComponentProps extends MapProps, MapHandle {
   ref: RefObject<MapHandle>;
-  selectedFeatures: any[];
+  selectedFeaturesState: [any[], Dispatch<SetStateAction<any[]>>];
   Map: ForwardRefExoticComponent<MapProps & RefAttributes<MapHandle>>;
 }
 
@@ -32,7 +34,7 @@ export const useMap = ({ mapboxAccessToken, mapStyles, i18next }: IUseMap) => {
   mapboxgl.accessToken = mapboxAccessToken;
 
   const ref = useRef<MapHandle>(null);
-  const [selectedFeatures, setSelectedFeatures] = useState<any[]>([]);
+  const selectedFeaturesState = useState<any[]>([]);
 
   const mobileState = useState(false);
   const geolocationState = useState(false);
@@ -67,8 +69,7 @@ export const useMap = ({ mapboxAccessToken, mapStyles, i18next }: IUseMap) => {
     loadingState,
     mapStyles,
     i18next,
-    onSelectedFeaturesChange: setSelectedFeatures,
-    selectedFeatures,
+    selectedFeaturesState,
     Map,
   };
 

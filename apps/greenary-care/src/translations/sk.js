@@ -1,13 +1,18 @@
 export default {
   title: "Starostlivosť o dreviny",
   search: "Hľadať",
+  close: "Zrušiť",
+  loading: "Načítavanie",
   layersLabel: "Vrstvy",
   filters: {
     title: "Filter",
-    years: {
+    active: "Aktívny filter",
+    year: {
+      title: "Rok",
       allYears: "Rok",
     },
     district: {
+      title: "Mestská časť",
       allDistricts: "Mestská časť",
     },
     season: {
@@ -15,11 +20,12 @@ export default {
       seasons: {
         spring: "jar",
         summer: "leto",
-        autumn: "jedeň",
+        autumn: "jeseň",
         winter: "zima",
       },
     },
     reset: "Zrušiť",
+    resetFilter: "Zrušiť filter",
   },
   layers: {
     esri: {
@@ -32,6 +38,9 @@ export default {
         description: "Popis výkonu",
         date: "Dátum realizácie",
         district: "Mestská časť",
+        document: "Rozhodutie / posudok",
+        showDocument: "Zobraziť dokument",
+        noDocuments: "Žiadne dokumenty",
       },
     },
   },

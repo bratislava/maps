@@ -1,6 +1,7 @@
 export * from "./types";
 export * from "./geocoding";
 export * from "./hooks/useMap";
+export * from "./hooks/usePrevious";
 export { default as Layer } from "./components/Layer";
 export { Slot } from "./components/Slot";
 export { default as StyleCustomLayerController } from "./components/StyleCustomLayerController";

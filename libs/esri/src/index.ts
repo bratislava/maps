@@ -73,6 +73,26 @@ export const fetchAllFromArcgeo = async (
   });
 };
 
+export interface Attachment {
+  contentType: string;
+  globalId: string;
+  id: number;
+  name: string;
+  parentGlobalId: string;
+  size: number;
+}
+
+export const fetchAttachmentsFromArcgeo = async (
+  serverUrl: string,
+  objectId: string | number
+) => {
+  return new Promise<Attachment[]>(async (resolve, reject) => {
+    const res = await fetch(`${serverUrl}/${objectId}/attachments/?f=pjson`);
+    const json = await res.json();
+    resolve(json.attachmentInfos);
+  });
+};
+
 export const useArcgeo = (url: string, countPerRequest: number = 1000) => {
   const [data, setData] = useState<FeatureCollection | null>(null);
 
@@ -85,4 +105,22 @@ export const useArcgeo = (url: string, countPerRequest: number = 1000) => {
   return {
     data: data,
   };
+};
+
+export const useArcgeoAttachments = (
+  url: string,
+  objectId: string | number | null
+) => {
+  const [data, setData] = useState<Attachment[] | null>(null);
+
+  useEffect(() => {
+    setData(null);
+    if (objectId) {
+      fetchAttachmentsFromArcgeo(url, objectId).then((fetchedData) => {
+        setData(fetchedData);
+      });
+    }
+  }, [url, objectId]);
+
+  return { data };
 };

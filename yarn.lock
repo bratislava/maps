@@ -10415,6 +10415,13 @@ rbush@^3.0.1:
   dependencies:
     quickselect "^2.0.0"
 
+react-animate-height@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/react-animate-height/-/react-animate-height-3.0.3.tgz#bd14f40862d418062c854829b0fd0b777e20c71f"
+  integrity sha512-JDI9i4nNJKNoXN3VKZMMCc33Xfo75VjcR5VoYZTC4DMtkLndkyHrSA3lp8+72Cz5MmjKYR2zeJrJzHZWLZUGLQ==
+  dependencies:
+    classnames "^2.3.1"
+
 react-docgen-typescript@^2.1.1:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/react-docgen-typescript/-/react-docgen-typescript-2.2.2.tgz#4611055e569edc071204aadb20e1c93e1ab1659c"

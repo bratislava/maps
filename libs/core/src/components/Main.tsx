@@ -24,13 +24,7 @@ import FilterPlaceholder from "./FilterPlaceholder";
 import { MobileBottomSheetSlot } from "./MobileBottomSheetSlot";
 import { DesktopLeftSidebarSlot } from "./DesktopLeftSidebarSlot";
 
-import {
-  Sources,
-  IViewportProps,
-  MapboxHandle,
-  MapIcon,
-  IComponentSlot,
-} from "../types";
+import { Sources, IViewportProps, MapIcon, IComponentSlot } from "../types";
 import { ThemeController } from "./ThemeController";
 import { ViewportController } from "./ViewportController";
 import mapboxgl from "mapbox-gl";
@@ -100,6 +94,7 @@ export interface MapProps {
   selectedDistrictState: useStateType<string | null>;
   detail?: ReactNode;
   isOutsideLoading?: boolean;
+  selectedFeaturesState: useStateType<any[]>;
 
   slots?: IComponentSlot[];
 
@@ -107,7 +102,6 @@ export interface MapProps {
   // slots?: ReactElement<ISlotProps> | Array<ReactElement<ISlotProps>>;
   children?: ReactElement<ILayerProps> | Array<ReactElement<ILayerProps>>;
   layerPrefix?: string;
-  onSelectedFeaturesChange?: (features: any[]) => void;
   onDistrictChange?: (district: string | null) => void;
   moveSearchBarOutsideOfSideBarOnLargeScreen?: boolean;
 }
@@ -146,9 +140,9 @@ export const Map = forwardRef<MapHandle, MapProps>(
       geolocationState,
       selectedDistrictState,
       layerPrefix = "BRATISLAVA",
-      onSelectedFeaturesChange,
       onDistrictChange,
       moveSearchBarOutsideOfSideBarOnLargeScreen = false,
+      selectedFeaturesState,
     },
     forwardedRef
   ) => {
@@ -166,6 +160,7 @@ export const Map = forwardRef<MapHandle, MapProps>(
     const [isLoading, setLoading] = loadingState;
     const [isFilteringOpen, setFilteringOpen] = filteringOpenState;
     const [selectedDistrict, setSelectedDistrict] = selectedDistrictState;
+    const [selectedFeatures, setSelectedFeatures] = selectedFeaturesState;
 
     const [slotVisibilities, setSlotVisibilities] = useState<
       KeyStateRecord<boolean>[]
@@ -176,7 +171,6 @@ export const Map = forwardRef<MapHandle, MapProps>(
       DATA_DISTRICTS,
     };
 
-    const [selectedFeatures, setSelectedFeatures] = useState<any[]>([]);
     const [viewport, setViewport] = useState<IViewportProps>({
       lat: 48.1633,
       lng: 17.1202,
@@ -270,10 +264,10 @@ export const Map = forwardRef<MapHandle, MapProps>(
       setViewport((viewport) => ({ ...viewport, bearing: 0 }));
     }, []);
 
-    //CALLBACK WHEN SELECTED FEATURES CHANGE
-    useEffect(() => {
-      onSelectedFeaturesChange && onSelectedFeaturesChange(selectedFeatures);
-    }, [onSelectedFeaturesChange, selectedFeatures]);
+    // //CALLBACK WHEN SELECTED FEATURES CHANGE
+    // useEffect(() => {
+    //   onSelectedFeaturesChange && onSelectedFeaturesChange(selectedFeatures);
+    // }, [onSelectedFeaturesChange, selectedFeatures]);
 
     //EXPOSING METHODS FOR PARENT COMPONENT
     useImperativeHandle(

@@ -15,7 +15,10 @@ export interface ISlotProps {
   children?: ReactNode;
   isVisible?: boolean;
   className?: string;
-  bottomSheetOptions?: any;
+  bottomSheetOptions?: {
+    header?: ReactNode;
+    footer?: ReactNode;
+  };
   onClose?: () => void;
 }
 
@@ -47,13 +50,15 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
 
     return bottomSheetOptions ? (
       <BottomSheet
-        snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2]}
+        snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 88]}
         defaultSnap={({ snapPoints }) => snapPoints[1]}
         blocking={false}
         onDismiss={onClose}
         open={isVisible}
         className={cx(className, "relative z-30")}
         expandOnContentDrag
+        header={bottomSheetOptions.header}
+        footer={bottomSheetOptions.footer}
       >
         {displayedChildren}
       </BottomSheet>
