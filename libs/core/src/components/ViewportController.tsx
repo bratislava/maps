@@ -9,14 +9,12 @@ import {
   Location,
   LocationActive,
 } from "@bratislava/mapbox-maps-icons";
-import React, { forwardRef } from "react";
-import { IViewportProps } from "../types";
+import React, { CSSProperties, forwardRef } from "react";
+import { IViewport } from "../types";
 import { IconButton } from "./IconButton";
 
 interface ViewportControllerProps {
-  viewport: IViewportProps;
-  isDetailOpen: boolean;
-  isDetailFullHeight: boolean;
+  viewport?: IViewport;
   isGeolocation: boolean;
   isFullscreen: boolean;
   onZoomOutClick: () => void;
@@ -25,6 +23,7 @@ interface ViewportControllerProps {
   onCompassClick: () => void;
   onLocationClick: () => void;
   bearing: number;
+  style?: CSSProperties;
 }
 
 export const ViewportController = forwardRef<
@@ -34,8 +33,6 @@ export const ViewportController = forwardRef<
   (
     {
       viewport,
-      isDetailOpen,
-      isDetailFullHeight,
       onZoomOutClick,
       onZoomInClick,
       onFullscreenClick,
@@ -44,6 +41,7 @@ export const ViewportController = forwardRef<
       bearing,
       isGeolocation,
       isFullscreen,
+      style,
     },
     ref
   ) => {
@@ -51,12 +49,9 @@ export const ViewportController = forwardRef<
       <div
         ref={ref}
         className={cx(
-          "fixed right-4 bottom-24 sm:bottom-7 transform  duration-500 ease-in-out transition-transform pointer-events-none",
-          {
-            "lg:-translate-x-96 lg:translate-y-5":
-              isDetailOpen && isDetailFullHeight,
-          }
+          "fixed right-4 bottom-24 sm:bottom-7 transform  duration-500 ease-in-out transition-transform pointer-events-none"
         )}
+        style={style}
       >
         <div className="flex gap-2 items-end">
           <IconButton className={"hidden md:flex"} onClick={onLocationClick}>

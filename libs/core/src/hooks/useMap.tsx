@@ -1,73 +1,58 @@
-import {
-  useState,
-  useRef,
-  useCallback,
-  Dispatch,
-  SetStateAction,
-  RefObject,
-  RefAttributes,
-  ForwardRefExoticComponent,
-} from "react";
-import { MapProps, MapHandle, Map } from "../components/Main";
-import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import { useRef, FC, useCallback, useMemo } from "react";
+import { MapHandle } from "../components/Map/Map";
+import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { i18n } from "i18next";
-
-export interface IUseMap {
+export interface IUseMapProps {
   mapboxAccessToken: string;
-  mapStyles: {
-    light?: string;
-    dark?: string;
-    satellite?: string;
-  };
-  i18next: i18n;
 }
 
-interface useMapComponentProps extends MapProps, MapHandle {
-  ref: RefObject<MapHandle>;
-  selectedFeaturesState: [any[], Dispatch<SetStateAction<any[]>>];
-  Map: ForwardRefExoticComponent<MapProps & RefAttributes<MapHandle>>;
+export interface IUseMap extends MapHandle {
+  mapboxgl: typeof mapboxgl;
 }
 
-export const useMap = ({ mapboxAccessToken, mapStyles, i18next }: IUseMap) => {
+export const useMap = ({ mapboxAccessToken }: IUseMapProps) => {
+  const ref = useRef<MapHandle>(null);
+
   mapboxgl.accessToken = mapboxAccessToken;
 
-  const ref = useRef<MapHandle>(null);
-  const selectedFeaturesState = useState<any[]>([]);
+  const changeViewport = useCallback(
+    ref.current?.changeViewport ?? (() => void 0),
+    [ref]
+  );
 
-  const mobileState = useState(false);
-  const geolocationState = useState(false);
-  const darkmodeState = useState(false);
-  const detailOpenState = useState(false);
-  const filteringOpenState = useState(false);
-  const fullscreenState = useState<boolean>(false);
-  const satelliteState = useState<boolean>(false);
-  const loadingState = useState(true);
+  const deselectAllFeatures = useCallback(
+    ref.current?.deselectAllFeatures ?? (() => void 0),
+    [ref]
+  );
 
-  const props: useMapComponentProps = {
-    //helpers
+  const fitToDistrict = useCallback(
+    ref.current?.fitToDistrict ?? (() => void 0),
+    [ref]
+  );
+
+  const turnOnGeolocation = useCallback(
+    ref.current?.turnOnGeolocation ?? (() => void 0),
+    [ref]
+  );
+
+  const turnOffGeolocation = useCallback(
+    ref.current?.turnOffGeolocation ?? (() => void 0),
+    [ref]
+  );
+
+  const toggleGeolocation = useCallback(
+    ref.current?.toggleGeolocation ?? (() => void 0),
+    [ref]
+  );
+
+  return {
     ref,
-    setViewport: (wantedViewport) => ref.current?.setViewport(wantedViewport),
-    closeFiltering: () => ref.current?.closeFiltering(),
-    closeDetail: () => ref.current?.closeDetail(),
-    fitToDisplayedData: () => ref.current?.fitToDisplayedData(),
-    fitToDistrict: (district) => ref.current?.fitToDistrict(district),
-    isSlotVisible: (name) => ref.current?.isSlotVisible(name),
-    //map component props
     mapboxgl,
-    mobileState,
-    geolocationState,
-    darkmodeState,
-    detailOpenState,
-    fullscreenState,
-    filteringOpenState,
-    satelliteState,
-    loadingState,
-    mapStyles,
-    i18next,
-    selectedFeaturesState,
-    Map,
+    deselectAllFeatures,
+    changeViewport,
+    fitToDistrict,
+    turnOnGeolocation,
+    turnOffGeolocation,
+    toggleGeolocation,
   };
-
-  return props;
 };

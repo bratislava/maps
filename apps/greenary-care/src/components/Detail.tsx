@@ -1,16 +1,30 @@
-import { Row } from "./Row";
 import { useTranslation } from "react-i18next";
 import { Feature } from "geojson";
 import { useArcgeoAttachments } from "@bratislava/mapbox-maps-esri";
 import { useState, useEffect } from "react";
+import { X } from "@bratislava/mapbox-maps-icons";
+
+export const Row = ({ label, text }: { label: string; text: string }) => {
+  if (!text || (text === " " && !label)) {
+    return null;
+  } else {
+    return (
+      <div className="">
+        <div>{label}</div>
+        <div className="font-bold">{text}</div>
+      </div>
+    );
+  }
+};
 
 export interface DetailProps {
   features: Feature[];
   arcgeoServerUrl: string;
+  onClose: () => void;
 }
 
-export const Detail = ({ features, arcgeoServerUrl }: DetailProps) => {
-  const { t } = useTranslation();
+export const Detail = ({ features, arcgeoServerUrl, onClose }: DetailProps) => {
+  const { t, i18n } = useTranslation();
 
   const [feature, setFeature] = useState<Feature | null>(null);
   const [objectId, setObjectId] = useState<string | number | null>(null);
@@ -31,8 +45,11 @@ export const Detail = ({ features, arcgeoServerUrl }: DetailProps) => {
   return !features[0] ? null : (
     <>
       <div className="flex flex-col space-y-4 p-8 pt-4 overflow-auto">
+        <button className="hidden sm:block absolute right-4 top-8 p-2" onClick={onClose}>
+          <X />
+        </button>
         <div className="flex flex-col space-y-4">
-          <div className="first-letter:uppercase font-bold font-md pt-4 text-[20px]">
+          <div className="first-letter:uppercase font-bold font-md text-[20px]">
             {feature?.properties?.["TYP_VYKONU_1"] ?? t(`layers.esri.detail.title`)}
           </div>
           <Row
@@ -48,9 +65,14 @@ export const Detail = ({ features, arcgeoServerUrl }: DetailProps) => {
             label={t(`layers.esri.detail.description`)}
             text={feature?.properties?.["POPIS_VYKONU_1"]}
           />
+          {i18n.language}
           <Row
             label={t(`layers.esri.detail.date`)}
-            text={feature?.properties?.["TERMIN_REALIZACIE_1"]}
+            text={new Date(feature?.properties?.["TERMIN_REAL_1"]).toLocaleString(i18n.language, {
+              year: "numeric",
+              day: "numeric",
+              month: "numeric",
+            })}
           />
           <Row label={t(`layers.esri.detail.district`)} text={feature?.properties?.["district"]} />
 

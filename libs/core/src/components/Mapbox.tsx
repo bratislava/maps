@@ -1,31 +1,32 @@
-import {
+import React, {
   useEffect,
   useRef,
   Dispatch,
   SetStateAction,
-  ReactElement,
   createContext,
   useMemo,
   useCallback,
   useState,
-  MutableRefObject,
+  RefObject,
   forwardRef,
   useImperativeHandle,
+  ReactNode,
 } from "react";
-import { Sources, IViewportProps, MapIcon } from "../types";
-import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-import { ILayerProps } from "./Layer";
+import { Sources, MapIcon, IViewport, IPadding } from "../types";
+import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
 import { usePrevious } from "../hooks/usePrevious";
 import { log } from "../utils/log";
 import { createGeolocationMarkerElement } from "../utils/createGeolocationMarkerElement";
 import bbox from "@turf/bbox";
 import DATA_DISTRICTS from "../assets/layers/districts.json";
+import { DevelopmentInfo } from "./DevelopmentInfo/DevelopmentInfo";
 
 export interface MapboxProps {
   mapboxgl: typeof mapboxgl;
   sources: Sources;
-  isDarkmode: boolean;
-  satelliteState: [boolean, Dispatch<SetStateAction<boolean>>];
+  isDarkmode?: boolean;
+  isSatellite?: boolean;
+  isGeolocation?: boolean;
   icons?: {
     [index: string]: string | MapIcon;
   };
@@ -37,28 +38,39 @@ export interface MapboxProps {
   selectedFeatures: any[];
   onFeatureClick: (features: any[]) => void;
   loadingState: [boolean, Dispatch<SetStateAction<boolean>>];
-  viewportState: [IViewportProps, Dispatch<SetStateAction<IViewportProps>>];
-  children?: ReactElement<ILayerProps> | Array<ReactElement<ILayerProps>>;
+  children?: ReactNode;
   layerPrefix?: string;
-  onBearingChange?: (bearing: number) => void;
-  geolocationState: [boolean, Dispatch<SetStateAction<boolean>>];
-  selectedDistrict: string | null;
-  districtFiltering?: boolean;
+  onViewportChange?: (viewport: IViewport) => void;
+  onViewportChangeDebounced?: (viewport: IViewport) => void;
+  onControlsMarginChange?: (margin: IPadding) => void;
+  defaultCenter?: {
+    lat: number;
+    lng: number;
+  };
+  isDevelopment?: boolean;
+}
+
+export interface ISlotPadding {
+  isVisible: boolean;
+  padding: { top?: number; right?: number; bottom?: number; left?: number };
+  name: string;
+  avoidControls: boolean;
 }
 
 export interface IContext {
-  map: mapboxgl.Map;
+  map: mapboxgl.Map | null;
   isLoading: boolean;
   getPrefixedLayer: (layerId: string) => string;
   isLayerPrefixed: (layerId: string) => boolean;
   addClickableLayer: (layerId: string) => void;
-  districtFiltering: boolean;
+  considerPadding: (value: ISlotPadding) => void;
+  removePadding: (name: string) => void;
 }
 
 const createMap = (
   mapboxgl: any,
-  mapContainer: MutableRefObject<HTMLDivElement>,
-  viewport: IViewportProps,
+  mapContainer: RefObject<HTMLDivElement>,
+  viewport: IViewport,
   isSatellite: boolean,
   satelliteStyle: string,
   isDarkmode: boolean,
@@ -68,22 +80,34 @@ const createMap = (
   return new mapboxgl.Map({
     pitchWithRotate: false,
     touchPitch: false,
-    container: mapContainer.current || "",
+    container: mapContainer.current ?? "",
     style: isSatellite ? satelliteStyle : isDarkmode ? darkStyle : lightStyle,
-    center: [viewport.lng || 17.107748, viewport.lat || 48.148598],
-    zoom: viewport.zoom || 13,
-    pitch: viewport.pitch || 0,
-    bearing: viewport.bearing || 0,
+    center: [
+      viewport.center.lng ?? 17.107748,
+      viewport.center.lat ?? 48.148598,
+    ],
+    zoom: viewport.zoom ?? 13,
+    pitch: viewport.pitch ?? 0,
+    bearing: viewport.bearing ?? 0,
     maxZoom: 20,
     minZoom: 10.75,
   });
 };
 
-export const mapContext = createContext<IContext>(null);
+export const mapboxContext = createContext<IContext>({
+  map: null,
+  isLoading: true,
+  getPrefixedLayer: () => "",
+  isLayerPrefixed: () => false,
+  addClickableLayer: () => void 0,
+  considerPadding: () => void 0,
+  removePadding: () => void 0,
+});
 
-type MapboxHandle = {
-  fitToDisplayedData: () => void;
+export type MapboxHandle = {
   fitToDistrict: (district: string | null) => void;
+  viewport: IViewport;
+  changeViewport: (viewport: Partial<IViewport>) => void;
 };
 
 export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
@@ -92,8 +116,9 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       loadingState,
       sources,
       icons = {},
-      isDarkmode,
-      satelliteState,
+      isDarkmode = false,
+      isSatellite = false,
+      isGeolocation = false,
       selectedFeatures,
       mapStyles: {
         light: lightStyle = "mapbox://styles/mapbox/streets-v11",
@@ -101,13 +126,14 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         satellite: satelliteStyle = "mapbox://styles/mapbox/streets-v11",
       },
       onFeatureClick,
-      viewportState,
       mapboxgl,
       children,
-      geolocationState,
       layerPrefix = "BRATISLAVA",
-      onBearingChange,
-      districtFiltering = true,
+      onViewportChange = () => void 0,
+      onViewportChangeDebounced = () => void 0,
+      onControlsMarginChange = () => void 0,
+      defaultCenter,
+      isDevelopment = false,
     },
     forwardedRef
   ) => {
@@ -127,20 +153,178 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       [setClickableLayerIds]
     );
 
-    const [viewport, setViewport] = viewportState;
+    const [centerLng, setCenterLng] = useState(defaultCenter?.lng ?? 0);
+    const [centerLat, setCenterLat] = useState(defaultCenter?.lat ?? 0);
+    const [zoom, setZoom] = useState(0);
+    const [bearing, setBearing] = useState(0);
+    const [pitch, setPitch] = useState(0);
+    const [paddingTop, setPaddingTop] = useState(0);
+    const [paddingRight, setPaddingRight] = useState(0);
+    const [paddingBottom, setPaddingBottom] = useState(0);
+    const [paddingLeft, setPaddingLeft] = useState(0);
+
+    const [controlsMarginTop, setControlsMarginTop] = useState(0);
+    const [controlsMarginRight, setControlsMarginRight] = useState(0);
+    const [controlsMarginBottom, setControlsMarginBottom] = useState(0);
+    const [controlsMarginLeft, setControlsMarginLeft] = useState(0);
+
+    const [slotsPaddings, setSlotsPaddings] = useState<ISlotPadding[]>([]);
+
+    const considerPadding = useCallback(
+      (paddingToConsider: ISlotPadding) => {
+        log(`CONSIDERING PADDING: ${paddingToConsider.name}`);
+        setSlotsPaddings((slotsPaddings) => {
+          const filteredSlotsPaddigs = slotsPaddings.filter(
+            (slotPadding) => slotPadding.name != paddingToConsider.name
+          );
+          filteredSlotsPaddigs.push(paddingToConsider);
+          return filteredSlotsPaddigs;
+        });
+      },
+      [setSlotsPaddings]
+    );
+
+    const removePadding = useCallback(
+      (name: string) => {
+        log(`REMOVING PADDING: ${name}`);
+        setSlotsPaddings((slotsPaddings) => {
+          return slotsPaddings.filter(
+            (slotPadding) => slotPadding.name != name
+          );
+        });
+      },
+      [setSlotsPaddings]
+    );
+
+    useEffect(() => {
+      onControlsMarginChange({
+        top: controlsMarginTop,
+        right: controlsMarginRight,
+        bottom: controlsMarginBottom,
+        left: controlsMarginLeft,
+      });
+    }, [
+      controlsMarginTop,
+      controlsMarginRight,
+      controlsMarginBottom,
+      controlsMarginLeft,
+    ]);
+
+    useEffect(() => {
+      log("PADDINGS CHANGED");
+      const visibleSlotPaddings = slotsPaddings.filter((s) => s.isVisible);
+      const paddingTop = Math.max(
+        0,
+        ...visibleSlotPaddings.map((s) => s.padding.top ?? 0)
+      );
+      const paddingRight = Math.max(
+        0,
+        ...visibleSlotPaddings.map((s) => s.padding.right ?? 0)
+      );
+      const paddingBottom = Math.max(
+        0,
+        ...visibleSlotPaddings.map((s) => s.padding.bottom ?? 0)
+      );
+      const paddingLeft = Math.max(
+        0,
+        ...visibleSlotPaddings.map((s) => s.padding.left ?? 0)
+      );
+
+      setControlsMarginTop(
+        Math.max(
+          0,
+          ...visibleSlotPaddings
+            .filter((s) => s.avoidControls)
+            .map((s) => s.padding.top ?? 0)
+        )
+      );
+      setControlsMarginRight(
+        Math.max(
+          0,
+          ...visibleSlotPaddings
+            .filter((s) => s.avoidControls)
+            .map((s) => s.padding.right ?? 0)
+        )
+      );
+      setControlsMarginBottom(
+        Math.max(
+          0,
+          ...visibleSlotPaddings
+            .filter((s) => s.avoidControls)
+            .map((s) => s.padding.bottom ?? 0)
+        )
+      );
+      setControlsMarginLeft(
+        Math.max(
+          0,
+          ...visibleSlotPaddings
+            .filter((s) => s.avoidControls)
+            .map((s) => s.padding.left ?? 0)
+        )
+      );
+      changeViewport({
+        padding: {
+          top: paddingTop,
+          right: paddingRight,
+          bottom: paddingBottom,
+          left: paddingLeft,
+        },
+      });
+    }, [slotsPaddings]);
+
+    const padding = useMemo(() => {
+      return {
+        top: paddingTop,
+        right: paddingRight,
+        bottom: paddingBottom,
+        left: paddingLeft,
+      };
+    }, [paddingTop, paddingRight, paddingBottom, paddingLeft]);
+
+    const center = useMemo(() => {
+      return {
+        lng: centerLng,
+        lat: centerLat,
+      };
+    }, [centerLng, centerLat]);
+
+    const viewport = useMemo(() => {
+      return {
+        center,
+        zoom,
+        bearing,
+        pitch,
+        padding,
+      };
+    }, [center, zoom, bearing, pitch, padding]);
+
+    const changeViewport = useCallback(
+      (newViewport: Partial<IViewport>) => {
+        const MAP = map.current;
+        if (!MAP) return;
+
+        log("CHANGE VIEWPORT");
+
+        onViewportChangeDebounced({ ...viewport, ...newViewport });
+        MAP.flyTo({
+          ...viewport,
+          ...newViewport,
+          maxDuration: 5000,
+        });
+      },
+      [map, onViewportChange, viewport]
+    );
+
     const [isLoading, setLoading] = loadingState;
-    const [isGeolocation, setGeolocation] = geolocationState;
-    const [isSatellite, setSatellite] = satelliteState;
     const [isReloadingLayers, setReloadingLayers] = useState(false);
     const [geolocationMarker, setGeolocationMarker] =
-      useState<mapboxgl.Marker>(null);
+      useState<mapboxgl.Marker | null>(null);
 
     const previousMap = usePrevious(map);
     const previousLoading = usePrevious(isLoading);
     const previousDarkmode = usePrevious(isDarkmode);
     const previousSatellite = usePrevious(isSatellite);
     const previousGeolocation = usePrevious(isGeolocation);
-    const previousViewport = usePrevious(viewport);
     const prevSelectedFeatures = usePrevious(selectedFeatures);
     const prevClickableLayerIds = usePrevious(clickableLayerIds);
 
@@ -164,7 +348,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         getPrefixedLayer,
         isLayerPrefixed,
         addClickableLayer,
-        districtFiltering,
+        considerPadding,
+        removePadding,
       }),
       [
         map,
@@ -172,14 +357,16 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         getPrefixedLayer,
         isLayerPrefixed,
         addClickableLayer,
-        districtFiltering,
+        considerPadding,
+        removePadding,
       ]
     );
 
     //GEOLOCATION TOGGLING
     useEffect(() => {
-      if (!map.current && isLoading) return;
       const MAP = map.current;
+      if (!MAP || isLoading) return;
+
       if (isGeolocation !== previousGeolocation) {
         if (isGeolocation) {
           log("GEOLOCATION TURNED ON");
@@ -195,11 +382,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
                     ])
                     .addTo(MAP)
                 );
-                setViewport({
-                  ...viewport,
-                  lat: position.coords.latitude,
-                  lng: position.coords.longitude,
-                });
+                setCenterLat(position.coords.latitude);
+                setCenterLng(position.coords.longitude);
               },
               (error) => {
                 alert(error.message);
@@ -223,14 +407,14 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       previousGeolocation,
       isLoading,
       mapboxgl,
-      setViewport,
+      setCenterLat,
+      setCenterLng,
       viewport,
     ]);
 
     //CREATING MAP
     useEffect(() => {
       setLoading(true);
-      //if map exists then remove it
       if (map.current) {
         log("REMOVING MAP");
         map.current.remove();
@@ -246,7 +430,6 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         darkStyle,
         lightStyle
       );
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [setLoading]);
 
     //LOADING SOURCES
@@ -274,6 +457,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         const icon = icons[key];
         if (typeof icon === "string") {
           MAP.loadImage(icon, (error, image) => {
+            if (!image) return;
             if (error) throw error;
             if (!MAP.hasImage(key)) {
               MAP.addImage(key, image);
@@ -325,7 +509,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
               }
               return filteredFeatures;
             },
-            []
+            [] as MapboxGeoJSONFeature[]
           );
 
           //if there is a symbol feature, ignore others
@@ -344,34 +528,41 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     );
 
     //MAP MOVE HANDLER
-    const onMapMove = useCallback(
-      (
-        event: mapboxgl.MapboxEvent<MouseEvent | TouchEvent | WheelEvent> &
-          mapboxgl.EventData
-      ) => {
-        if (!map.current) return;
-        const MAP = map.current;
-        onBearingChange(MAP.getBearing());
-      },
-      [onBearingChange]
-    );
+    const onMapMove = useCallback(() => {
+      if (!map.current) return;
+      const MAP = map.current;
+      onViewportChange({
+        center: {
+          lat: MAP.getCenter().lat,
+          lng: MAP.getCenter().lng,
+        },
+        zoom: MAP.getZoom(),
+        bearing: MAP.getBearing(),
+        pitch: MAP.getPitch(),
+        padding: {
+          top: MAP.getPadding().top,
+          right: MAP.getPadding().right,
+          bottom: MAP.getPadding().bottom,
+          left: MAP.getPadding().left,
+        },
+      });
+    }, [onViewportChange]);
 
     //MAP MOVEEND HANDLER
     const onMapMoveEnd = useCallback(() => {
-      if (!map.current) return;
       const MAP = map.current;
+      if (!MAP) return;
       const center = MAP.getCenter();
-      setViewport({
-        lat: center.lat,
-        lng: center.lng,
-        zoom: MAP.getZoom(),
-        pitch: MAP.getPitch(),
-        bearing: MAP.getBearing(),
-        paddingLeft: MAP.getPadding().left,
-        paddingRight: MAP.getPadding().right,
-        paddingBottom: MAP.getPadding().bottom,
-      });
-    }, [setViewport]);
+      setCenterLat(center.lat);
+      setCenterLng(center.lng);
+      setZoom(MAP.getZoom());
+      setPitch(MAP.getPitch());
+      setBearing(MAP.getBearing());
+      setPaddingTop(MAP.getPadding().top);
+      setPaddingRight(MAP.getPadding().right);
+      setPaddingBottom(MAP.getPadding().bottom);
+      setPaddingLeft(MAP.getPadding().left);
+    }, [setCenterLat, setCenterLng, setZoom, setPitch, setBearing]);
 
     //REGISTER MAP LAYER EVENT CALLBACKS
     const registerMapLayerEvents = useCallback(
@@ -440,7 +631,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
 
     //REGISTER MAP EVENTS
     useEffect(() => {
-      if (!map.current) return () => null;
+      if (!map.current) return;
       const MAP = map.current;
 
       if (
@@ -494,11 +685,11 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
 
     //ON MAP LOAD
     useEffect(() => {
-      if (!map.current && !isLoading) return;
       const MAP = map.current;
+      if (!MAP || !isLoading) return;
 
       //disable satellite when darkmode changes
-      if (previousDarkmode !== isDarkmode) setSatellite(false);
+      // if (previousDarkmode !== isDarkmode) setSatellite(false);
 
       if (
         previousMap !== map ||
@@ -528,68 +719,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       isDarkmode,
       previousSatellite,
       isSatellite,
-      setSatellite,
     ]);
-
-    //SET PADDING ON LOAD
-    //because for some reason padding is not as available parameter in createMap
-    useEffect(() => {
-      if (!map.current) return;
-      const MAP = map.current;
-      if (previousLoading && !isLoading) {
-        MAP.jumpTo({
-          padding: {
-            top: 0,
-            left: viewport.paddingLeft,
-            right: viewport.paddingRight,
-            bottom: viewport.paddingBottom,
-          },
-        });
-      }
-    }, [previousLoading, isLoading, viewport]);
-
-    //REACT TO VIEWPORT STATE CHANGES
-    useEffect(() => {
-      if (!map.current) return;
-      const MAP = map.current;
-
-      if (JSON.stringify(previousViewport) !== JSON.stringify(viewport)) {
-        log("VIEWPORT CHANGED");
-
-        const center = MAP.getCenter();
-        const zoom = MAP.getZoom();
-        const bearing = MAP.getBearing();
-        const pitch = MAP.getPitch();
-        const padding = MAP.getPadding();
-
-        if (
-          center.lat !== viewport.lat ||
-          center.lng !== viewport.lng ||
-          zoom !== viewport.zoom ||
-          bearing !== viewport.bearing ||
-          pitch !== viewport.pitch ||
-          padding.left !== viewport.paddingLeft ||
-          padding.right !== viewport.paddingRight ||
-          padding.bottom !== viewport.paddingBottom
-        ) {
-          if (!MAP.isEasing()) {
-            MAP.flyTo({
-              center: [viewport.lng || 0, viewport.lat || 0],
-              zoom: viewport.zoom,
-              bearing: viewport.bearing,
-              pitch: viewport.pitch,
-              padding: {
-                top: 0,
-                left: viewport.paddingLeft,
-                right: viewport.paddingRight,
-                bottom: viewport.paddingBottom,
-              },
-              maxDuration: 5000,
-            });
-          }
-        }
-      }
-    }, [previousViewport, viewport]);
 
     //REACT TO SELECTED FEATURES STATE CHANGES
     useEffect(() => {
@@ -658,50 +788,45 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       loadIcons,
     ]);
 
-    const fitToDisplayedData = useCallback(() => {
-      if (!map.current && !isLoading) return;
-      const MAP = map.current;
-
-      log("FITTING TO DISPLAYED DATA");
-    }, [map, isLoading]);
-
     //EXPOSING METHODS FOR PARENT COMPONENT
-    useImperativeHandle(
-      forwardedRef,
-      () => ({
-        fitToDisplayedData,
-        fitToDistrict(district) {
-          if (!map.current) return;
-          const MAP = map.current;
+    useImperativeHandle(forwardedRef, () => ({
+      viewport,
 
-          log("FITTING TO DISTRICT");
+      changeViewport,
 
-          const districtFeature = DATA_DISTRICTS.features.find(
-            (feature) => feature.properties.name === district
-          );
+      fitToDistrict(district) {
+        if (!map.current) return;
+        const MAP = map.current;
 
-          if (!districtFeature) return;
+        log("FITTING TO DISTRICT");
 
-          const boundingBox = bbox(districtFeature) as [
-            number,
-            number,
-            number,
-            number
-          ];
+        const districtFeature = DATA_DISTRICTS.features.find(
+          (feature) => feature.properties.name === district
+        );
 
-          MAP.fitBounds(boundingBox, { padding: 128 });
-        },
-      }),
-      [fitToDisplayedData]
-    );
+        if (!districtFeature) return;
+
+        const boundingBox = bbox(districtFeature) as [
+          number,
+          number,
+          number,
+          number
+        ];
+
+        MAP.fitBounds(boundingBox, { padding: 128 });
+      },
+    }));
 
     return (
-      <mapContext.Provider value={mapContextValue}>
+      <mapboxContext.Provider value={mapContextValue}>
         <div ref={mapContainer} className="w-full h-full bg-background" />
         {isReloadingLayers ? null : children}
-      </mapContext.Provider>
+        <DevelopmentInfo isDevelopment={isDevelopment} viewport={viewport} />
+      </mapboxContext.Provider>
     );
   }
 );
+
+Mapbox.displayName = "Mapbox";
 
 export default Mapbox;

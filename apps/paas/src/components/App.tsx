@@ -227,8 +227,6 @@ export const App = () => {
       setSearchQuery(feature.place_name_sk.split(",")[0]);
       setSearchFeatures([]);
       if (mapRef && feature.geometry.type === "Point") {
-        console.log(mapRef.current);
-
         mapRef.current?.setViewport({
           lng: feature.geometry.coordinates[0],
           lat: feature.geometry.coordinates[1],
@@ -238,10 +236,6 @@ export const App = () => {
     },
     [mapRef]
   );
-
-  useEffect(() => {
-    console.log(mapRef);
-  }, [mapRef]);
 
   return (
     <Map

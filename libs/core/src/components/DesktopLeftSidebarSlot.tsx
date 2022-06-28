@@ -2,8 +2,6 @@ import React, { forwardRef, ReactNode, useEffect, useState } from "react";
 import { ChevronLeftSmall, Close } from "@bratislava/mapbox-maps-icons";
 import cx from "classnames";
 import { useTranslation } from "react-i18next";
-import { getDistrictOptions } from "../utils/districts";
-import { Select } from "@bratislava/mapbox-maps-ui";
 import { TemporalQuery } from "@js-joda/core";
 
 interface DesktopLeftSidebarSlotProps {
@@ -30,33 +28,13 @@ export const DesktopLeftSidebarSlot = forwardRef<
       onDistrictChange,
       selectedDistrict,
       moveSearchBarOutsideOfSideBarOnLargeScreen,
-      showDistrictSelect = TemporalQuery,
     },
     ref
   ) => {
     const { t } = useTranslation();
 
-    const [districtOptions, setDistrictOptions] = useState(
-      getDistrictOptions()
-    );
-
     const [selectedDistrictObject, setSelectedDistrictObject] =
       useState<{ key: string; label: string } | null>(null);
-
-    useEffect(() => {
-      setSelectedDistrictObject(
-        districtOptions.find(
-          (districtOption) => districtOption.key === selectedDistrict
-        ) ?? null
-      );
-    }, [districtOptions, selectedDistrict]);
-
-    useEffect(() => {
-      onDistrictChange(
-        selectedDistrictObject ? selectedDistrictObject.key : null
-      );
-    }, [onDistrictChange, selectedDistrictObject]);
-
     return (
       <div
         ref={ref}

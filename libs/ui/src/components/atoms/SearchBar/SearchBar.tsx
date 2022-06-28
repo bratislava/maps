@@ -1,6 +1,6 @@
 import React from "react";
 import cx from "classnames";
-import { Input } from "../../../../../core/src/components/Input";
+import { Input } from "../Input/Input";
 import {
   Search,
   Location,
@@ -38,7 +38,7 @@ export const SearchBar = ({
       <Search className="w-12 h-12 p-1" />
       {onGeolocationClick && (
         <>
-          <div className="md:hidden h-8 bg-highlight w-[2px]"></div>
+          <div className="md:hidden h-8 bg-gray opacity-20 w-[2px]"></div>
           <button onClick={onGeolocationClick}>
             {isGeolocation ? (
               <LocationActive className="md:hidden w-12 h-12 p-1" />

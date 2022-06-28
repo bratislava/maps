@@ -9,6 +9,7 @@
     "libs/utils",
     "libs/geocoding",
     "apps/paas",
-    "apps/greenary-care"
+    "apps/greenary-care",
+    "apps/fast-interventions"
   ]
 }

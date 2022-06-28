@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { usePrevious } from "../hooks/usePrevious";
 import { log } from "../utils/log";
-import { mapContext } from "./Mapbox";
+import { mapboxContext } from "./Mapbox";
 
 type Filter = string | null | boolean | Filter[];
 export interface ILayerProps {
@@ -21,27 +21,20 @@ const Layer = ({
   ignoreFilters = false,
   ignoreClick = false,
 }: ILayerProps) => {
-  const {
-    map,
-    getPrefixedLayer,
-    isLoading,
-    selectedDistrict,
-    addClickableLayer,
-    districtFiltering,
-  } = useContext(mapContext);
+  const { map, getPrefixedLayer, isLoading, addClickableLayer } =
+    useContext(mapboxContext);
 
   const labelId = "road-label";
   const roadPathLayerId = "road-path";
 
   const previousLoading = usePrevious(isLoading);
   const previousVisible = usePrevious(isVisible);
-  const previousSelectedDistrict = usePrevious(selectedDistrict);
   const previousIgnoreFilters = usePrevious(ignoreFilters);
   const previousFilters = usePrevious(filters);
 
   useEffect(() => {
-    if (!isLoading) {
-      styles.forEach((style) => {
+    if (map && !isLoading) {
+      styles.forEach((style: any) => {
         if (!map.getLayer(getPrefixedLayer(style.id))) {
           map.addLayer(
             {
@@ -105,15 +98,12 @@ const Layer = ({
     isVisible,
     filters,
     getPrefixedLayer,
-    selectedDistrict,
     ignoreFilters,
     styles,
     previousIgnoreFilters,
-    previousSelectedDistrict,
     previousFilters,
     ignoreClick,
     addClickableLayer,
-    districtFiltering,
   ]);
 
   return null;

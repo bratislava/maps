@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import cx from "classnames";
 import "../styles.css";
@@ -6,12 +6,16 @@ import { useResizeDetector } from "react-resize-detector";
 
 // maps
 import {
-  useMap,
   Layer,
   addDistrictPropertyToLayer,
   forwardGeocode,
   DISTRICTS_GEOJSON,
   usePrevious,
+  GeocodeFeature,
+  Slot,
+  Layout,
+  MapHandle,
+  Map,
 } from "@bratislava/mapbox-maps-core";
 import {
   Accordion,
@@ -47,6 +51,7 @@ import {
   toggleKeyStateValue,
 } from "../utils/utils";
 import AnimateHeight from "react-animate-height";
+import mapboxgl from "mapbox-gl";
 import { Feature } from "geojson";
 
 const URL =
@@ -132,9 +137,8 @@ export const App = () => {
   const [filters, setFilters] = useState<any[]>([]);
 
   // USE STATE
-
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchFeatures, setSearchFeatures] = useState<Feature[]>([]);
+  const [searchFeatures, setSearchFeatures] = useState<GeocodeFeature[]>([]);
 
   const [yearOptions, setYearOptions] = useState<ISelectOption[]>([]);
   const [districtOptions, setDistrictOptions] = useState<ISelectOption[]>([]);
@@ -160,27 +164,14 @@ export const App = () => {
     }
   }, [esriGeojson]);
 
-  const { Map, ...mapProps } = useMap({
-    mapboxAccessToken: import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN,
-    i18next: i18next,
-    mapStyles: {
-      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-      satellite: import.meta.env.PUBLIC_MAPBOX_SATELLITE_STYLE,
-    },
-  });
+  const mapRef = useRef<MapHandle>(null);
+  mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
-  const {
-    geolocationState: [isGeolocation, setGeolocation],
-    mapboxgl,
-    ref: mapRef,
-    fitToDistrict,
-    selectedFeaturesState: [selectedFeatures, setSelectedFeatures],
-    mobileState: [isMobile],
-  } = mapProps;
+  const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>([]);
+  const [isMobile, setMobile] = useState(false);
+  const [isGeolocation, setGeolocation] = useState(false);
 
   // USE PREVIOUS
-
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
 
@@ -189,12 +180,12 @@ export const App = () => {
     (feature: any) => {
       setSearchQuery(feature.place_name_sk.split(",")[0]);
       setSearchFeatures([]);
-      if (mapRef && feature.geometry.type === "Point") {
-        console.log(mapRef.current);
-
-        mapRef.current?.setViewport({
-          lng: feature.geometry.coordinates[0],
-          lat: feature.geometry.coordinates[1],
+      if (feature.geometry.type === "Point") {
+        mapRef.current?.changeViewport({
+          center: {
+            lng: feature.geometry.coordinates[0],
+            lat: feature.geometry.coordinates[1],
+          },
           zoom: 18,
         });
       }
@@ -312,8 +303,6 @@ export const App = () => {
     if (selectedDistrictOptions.length) {
       filters.push(["any", ...selectedDistrictOptions.map((o) => ["==", "district", o.key])]);
     }
-    console.log(filters);
-
     setFilters(filters);
   }, [
     typeFiltersState,
@@ -371,19 +360,25 @@ export const App = () => {
     if (previousMobile == false && isMobile == true) {
       setSidebarVisible(false);
     }
-  }, [isMobile, previousMobile]);
+  }, [mapRef, previousMobile]);
 
   const closeDetail = useCallback(() => {
-    setSelectedFeatures([]);
-  }, [setSelectedFeatures]);
+    mapRef.current?.deselectAllFeatures();
+  }, [mapRef]);
 
   // fit to district
   useEffect(() => {
-    selectedDistrictOptions.length == 1 && fitToDistrict(selectedDistrictOptions[0].key);
-  }, [selectedDistrictOptions]);
+    selectedDistrictOptions.length == 1 &&
+      mapRef.current?.fitToDistrict(selectedDistrictOptions[0].key);
+  }, [selectedDistrictOptions, mapRef]);
 
   const { height: mobileActiveFiltersContentHeight, ref: mobileActiveFiltersContentRef } =
     useResizeDetector();
+
+  const { height: desktopDetailHeight, ref: desktopDetailRef } =
+    useResizeDetector<HTMLDivElement>();
+
+  const { height: containerHeight, ref: containerRef } = useResizeDetector<HTMLDivElement>();
 
   return isLoading ? (
     <div
@@ -398,231 +393,254 @@ export const App = () => {
       <LoadingSpinner size={96} color="var(--primary-color)" />
     </div>
   ) : (
-    <Map
-      {...mapProps}
-      isOutsideLoading={isLoading}
-      districtFiltering={true}
-      showDistrictSelect={false}
-      title={t("title")}
-      moveSearchBarOutsideOfSideBarOnLargeScreen
-      sources={{
-        ESRI_DATA: esriGeojson,
-        DISTRICTS_GEOJSON,
-      }}
-      slots={[
-        // MOBILE SLOTS
-        {
-          name: "mobile-header",
-          isMobileOnly: true,
-          className: "top-4 right-4 z-10",
-          component: (
-            <button
-              onClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
-              className="flex text-font w-12 h-12 items-center justify-center pointer-events-auto shadow-lg bg-background rounded-lg"
-            >
-              <Funnel className="w-12 h-12" />
-            </button>
-          ),
-        },
-        {
-          name: "mobile-filter",
-          animation: "slide-right",
-          isMobileOnly: true,
-          isVisible: isSidebarVisible,
-          className: "top-0 left-0 bottom-0 w-full z-30",
-          component: (
-            <div className="w-full h-full pr-0 relative bg-background shadow-lg flex flex-col justify-between">
-              <div className="space-y-6 w-full h-full overflow-auto relative">
-                <div className="flex items-center pl-5 pr-8 pt-6 pb-3 gap-2">
-                  <button onClick={() => setSidebarVisible(false)} className="flex p-2">
-                    <ChevronLeftSmall className="text-primary" width={16} height={16} />
-                  </button>
-                  <h1 className="text-lg relative font-medium">{t("title")}</h1>
-                </div>
+    <div className="h-full" ref={containerRef}>
+      <Map
+        ref={mapRef}
+        mapboxgl={mapboxgl}
+        i18next={i18next}
+        mapStyles={{
+          light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+          dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+          satellite: import.meta.env.PUBLIC_MAPBOX_SATELLITE_STYLE,
+        }}
+        defaultCenter={{
+          lat: 48.148598,
+          lng: 17.107748,
+        }}
+        isDevelopment={import.meta.env.DEV}
+        isOutsideLoading={isLoading}
+        moveSearchBarOutsideOfSideBarOnLargeScreen
+        sources={{
+          ESRI_DATA: esriGeojson,
+          DISTRICTS_GEOJSON,
+        }}
+        onSelectedFeaturesChange={setSelectedFeatures}
+        onMobileChange={setMobile}
+      >
+        <Layer filters={filters} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
+        <Layer ignoreClick source="DISTRICTS_GEOJSON" styles={DISTRICTS_STYLE} />
 
-                <AnimateHeight
-                  className={cx("bg-gray bg-opacity-10 transition-opacity", {
-                    "opacity-0": areFiltersDefault(),
-                  })}
-                  aria-hidden={false}
-                  height={areFiltersDefault() ? 1 : mobileActiveFiltersContentHeight ?? 1}
-                >
-                  <div ref={mobileActiveFiltersContentRef}>
-                    <div className="p-8 flex flex-col gap-4">
-                      <h2 className="font-bold text-md">{t("filters.active")}</h2>
-                      <div className="flex gap-x-8 flex-wrap">
-                        {activeFilters.map(({ title, items }, index) => (
-                          <div key={index}>
-                            <div className="italic">{title}</div>
-                            <div className="font-bold">{items.join(", ")}</div>
-                          </div>
-                        ))}
+        <Layout isOnlyMobile>
+          <Slot name="mobile-header">
+            <div className="fixed top-4 right-4 z-10 sm:hidden">
+              <button
+                onClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
+                className="flex text-font w-12 h-12 items-center justify-center pointer-events-auto shadow-lg bg-background rounded-lg"
+              >
+                <Funnel className="w-12 h-12" />
+              </button>
+            </div>
+          </Slot>
+          <Slot
+            name="mobile-filter"
+            isVisible={isSidebarVisible}
+            setVisible={setSidebarVisible}
+            openPadding={{
+              right: 320,
+            }}
+          >
+            {({ isVisible, setVisible }) => (
+              <div
+                className={cx(
+                  "fixed max-h-full top-0 left-0 bottom-0 w-full z-30 sm:hidden h-full pr-0 bg-background flex flex-col justify-between transition-all duration-500",
+                  { "translate-x-full shadow-lg": !isVisible },
+                )}
+              >
+                <div className="space-y-6 w-full h-full overflow-auto relative">
+                  <div className="flex items-center pl-5 pr-8 pt-6 pb-3 gap-2">
+                    <button onClick={() => setVisible(false)} className="flex p-2">
+                      <ChevronLeftSmall className="text-primary" width={16} height={16} />
+                    </button>
+                    <h1 className="text-lg relative font-medium">{t("title")}</h1>
+                  </div>
+
+                  <AnimateHeight
+                    className={cx("bg-gray bg-opacity-10 transition-opacity", {
+                      "opacity-0": areFiltersDefault(),
+                    })}
+                    aria-hidden={false}
+                    height={areFiltersDefault() ? 1 : mobileActiveFiltersContentHeight ?? 1}
+                  >
+                    <div ref={mobileActiveFiltersContentRef}>
+                      <div className="p-8 flex flex-col gap-4">
+                        <h2 className="font-bold text-md">{t("filters.active")}</h2>
+                        <div className="flex gap-x-8 flex-wrap">
+                          {activeFilters.map(({ title, items }, index) => (
+                            <div key={index}>
+                              <div className="italic">{title}</div>
+                              <div className="font-bold">{items.join(", ")}</div>
+                            </div>
+                          ))}
+                        </div>
+                        <button
+                          onClick={onFilteringReset}
+                          className="flex items-center hover:underline"
+                        >
+                          <span className="font-bold">{t("filters.resetFilter")}</span>
+                          <Close className="text-primary" width={32} height={32} />
+                        </button>
                       </div>
-                      <button
-                        onClick={onFilteringReset}
-                        className="flex items-center hover:underline"
-                      >
-                        <span className="font-bold">{t("filters.resetFilter")}</span>
-                        <Close className="text-primary" width={32} height={32} />
-                      </button>
+                    </div>
+                  </AnimateHeight>
+
+                  <div className="flex px-8 items-center gap-2">
+                    <div className="-m-2">
+                      <Funnel width={48} height={48} />
+                    </div>
+                    <h2 className="font-bold text-md py-1">{t("filters.title")}</h2>
+                  </div>
+                  <div className="w-full">
+                    <Select
+                      className="w-full"
+                      buttonClassName="px-5"
+                      isMultiple
+                      placeholder={t("filters.year.placeholder")}
+                      value={selectedYearOptions}
+                      onChange={setSelectedYearOptions}
+                      noBorder
+                      onReset={() => setSelectedYearOptions([])}
+                    >
+                      {yearOptions.map((option) => (
+                        <SelectOption key={option.key} value={option}>
+                          {option.label}
+                        </SelectOption>
+                      ))}
+                    </Select>
+
+                    <Select
+                      className="w-full"
+                      buttonClassName="px-5"
+                      isMultiple
+                      value={selectedDistrictOptions}
+                      onChange={setSelectedDistrictOptions}
+                      placeholder={t("filters.district.placeholder")}
+                      noBorder
+                      onReset={() => setSelectedDistrictOptions([])}
+                    >
+                      {districtOptions.map((option) => (
+                        <SelectOption key={option.key} value={option}>
+                          {option.label}
+                        </SelectOption>
+                      ))}
+                    </Select>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="px-8">{t("filters.season.title")}</label>
+                    <div className="flex flex-wrap gap-2 px-8">
+                      {["spring", "summer", "autumn", "winter"].map((season) => (
+                        <Tag
+                          key={season}
+                          className={cx("cursor-pointer", {
+                            "bg-primary-soft": getKeyStateValue(seasonFiltersState, season),
+                          })}
+                          onClick={() => toggleSeasonFilter(season)}
+                        >
+                          {t(`filters.season.seasons.${season}`)}
+                        </Tag>
+                      ))}
                     </div>
                   </div>
-                </AnimateHeight>
-
-                <div className="flex px-8 items-center gap-2">
-                  <div className="-m-2">
-                    <Funnel width={48} height={48} />
-                  </div>
-                  <h2 className="font-bold text-md py-1">{t("filters.title")}</h2>
-                </div>
-                <div className="w-full">
-                  <Select
-                    className="w-full"
-                    buttonClassName="px-5"
-                    isMultiple
-                    placeholder={t("filters.year.placeholder")}
-                    value={selectedYearOptions}
-                    onChange={setSelectedYearOptions}
-                    noBorder
-                    onReset={() => setSelectedYearOptions([])}
-                  >
-                    {yearOptions.map((option) => (
-                      <SelectOption key={option.key} value={option}>
-                        {option.label}
-                      </SelectOption>
-                    ))}
-                  </Select>
-
-                  <Select
-                    className="w-full"
-                    buttonClassName="px-5"
-                    isMultiple
-                    value={selectedDistrictOptions}
-                    onChange={setSelectedDistrictOptions}
-                    placeholder={t("filters.district.placeholder")}
-                    noBorder
-                    onReset={() => setSelectedDistrictOptions([])}
-                  >
-                    {districtOptions.map((option) => (
-                      <SelectOption key={option.key} value={option}>
-                        {option.label}
-                      </SelectOption>
-                    ))}
-                  </Select>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="px-8">{t("filters.season.title")}</label>
-                  <div className="flex flex-wrap gap-2 px-8">
-                    {["spring", "summer", "autumn", "winter"].map((season) => (
-                      <Tag
-                        key={season}
-                        className={cx("cursor-pointer", {
-                          "bg-primary-soft": getKeyStateValue(seasonFiltersState, season),
-                        })}
-                        onClick={() => toggleSeasonFilter(season)}
-                      >
-                        {t(`filters.season.seasons.${season}`)}
-                      </Tag>
-                    ))}
-                  </div>
-                </div>
-                <Divider className="mx-8" />
-                <h2 className="font-bold px-8 text-md">{t("layersLabel")}</h2>
-                <div className="flex flex-col w-full">
-                  <Accordion>
-                    {CATEGORIES.map(({ label, types }, index) => {
-                      return (
-                        <AccordionItem
-                          isOpenable={types.length > 1}
-                          className={cx("border-l-4", {
-                            "bg-gray bg-opacity-10 border-primary": isAnyTypeEnabled(types),
-                            "border-transparent": !isAnyTypeEnabled(types),
-                          })}
-                          key={index}
-                          title={label}
-                          rightSlot={
-                            <button
-                              className="cursor-pointer p-1"
-                              onClick={() => onCategoryVisibilityClick(types)}
-                            >
-                              {isAnyTypeEnabled(types) ? (
-                                <EyeCrossed width={18} height={18} />
-                              ) : (
-                                <Eye width={18} height={18} />
-                              )}
-                            </button>
-                          }
-                        >
-                          {types.map((type) => {
-                            return (
-                              <Checkbox
-                                key={type}
-                                id={type}
-                                label={type}
-                                checked={getKeyStateValue(typeFiltersState, type)}
-                                onChange={() => toggleTypeFilter(type)}
-                              />
-                            );
-                          })}
-                        </AccordionItem>
-                      );
-                    })}
-                    <AccordionItem
-                      className={cx("border-l-4", {
-                        "bg-gray bg-opacity-10 border-primary": isAnyTypeEnabled(otherTypes),
-                        "border-transparent": !isAnyTypeEnabled(otherTypes),
-                      })}
-                      title="Ostatná starostlivosť"
-                      rightSlot={
-                        <button
-                          className="cursor-pointer p-1"
-                          onClick={() => onCategoryVisibilityClick(otherTypes)}
-                        >
-                          {isAnyTypeEnabled(otherTypes) ? (
-                            <EyeCrossed width={18} height={18} />
-                          ) : (
-                            <Eye width={18} height={18} />
-                          )}
-                        </button>
-                      }
-                    >
-                      {otherTypes.map((type) => {
+                  <Divider className="mx-8" />
+                  <h2 className="font-bold px-8 text-md">{t("layersLabel")}</h2>
+                  <div className="flex flex-col w-full">
+                    <Accordion>
+                      {CATEGORIES.map(({ label, types }, index) => {
                         return (
-                          <Checkbox
-                            key={type}
-                            id={type}
-                            label={type}
-                            checked={getKeyStateValue(typeFiltersState, type)}
-                            onChange={() => toggleTypeFilter(type)}
-                          />
+                          <AccordionItem
+                            isOpenable={types.length > 1}
+                            className={cx("border-l-4", {
+                              "bg-gray bg-opacity-10 border-primary": isAnyTypeEnabled(types),
+                              "border-transparent": !isAnyTypeEnabled(types),
+                            })}
+                            key={index}
+                            title={label}
+                            rightSlot={
+                              <button
+                                className="cursor-pointer p-1"
+                                onClick={() => onCategoryVisibilityClick(types)}
+                              >
+                                {isAnyTypeEnabled(types) ? (
+                                  <EyeCrossed width={18} height={18} />
+                                ) : (
+                                  <Eye width={18} height={18} />
+                                )}
+                              </button>
+                            }
+                          >
+                            {types.map((type) => {
+                              return (
+                                <Checkbox
+                                  key={type}
+                                  id={type}
+                                  label={type}
+                                  checked={getKeyStateValue(typeFiltersState, type)}
+                                  onChange={() => toggleTypeFilter(type)}
+                                />
+                              );
+                            })}
+                          </AccordionItem>
                         );
                       })}
-                    </AccordionItem>
-                  </Accordion>
-                </div>
-                <div className="sticky top-full bg-gray bg-opacity-10">
-                  <button
-                    onClick={() => setSidebarVisible(false)}
-                    className="p-3 flex items-center hover:underline justify-center mx-auto"
-                  >
-                    <span className="font-bold">{t("close")}</span>
-                    <Close className="text-primary" width={32} height={32} />
-                  </button>
+                      <AccordionItem
+                        className={cx("border-l-4", {
+                          "bg-gray bg-opacity-10 border-primary": isAnyTypeEnabled(otherTypes),
+                          "border-transparent": !isAnyTypeEnabled(otherTypes),
+                        })}
+                        title="Ostatná starostlivosť"
+                        rightSlot={
+                          <button
+                            className="cursor-pointer p-1"
+                            onClick={() => onCategoryVisibilityClick(otherTypes)}
+                          >
+                            {isAnyTypeEnabled(otherTypes) ? (
+                              <EyeCrossed width={18} height={18} />
+                            ) : (
+                              <Eye width={18} height={18} />
+                            )}
+                          </button>
+                        }
+                      >
+                        {otherTypes.map((type) => {
+                          return (
+                            <Checkbox
+                              key={type}
+                              id={type}
+                              label={type}
+                              checked={getKeyStateValue(typeFiltersState, type)}
+                              onChange={() => toggleTypeFilter(type)}
+                            />
+                          );
+                        })}
+                      </AccordionItem>
+                    </Accordion>
+                  </div>
+                  <div className="sticky top-full bg-gray bg-opacity-10">
+                    <button
+                      onClick={() => setVisible(false)}
+                      className="p-3 flex items-center hover:underline justify-center mx-auto"
+                    >
+                      <span className="font-bold">{t("close")}</span>
+                      <Close className="text-primary" width={32} height={32} />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ),
-        },
-        {
-          name: "mobile-detail",
-          bottomSheetOptions: {},
-          isMobileOnly: true,
-          className: "z-20",
-          isVisible: !!selectedFeatures.length,
-          component: (
+            )}
+          </Slot>
+          <Slot
+            name="mobile-detail"
+            isVisible={!!selectedFeatures.length}
+            bottomSheetOptions={{}}
+            openPadding={{
+              bottom: 400, // w-96 or 24rem
+            }}
+          >
             <div className="relative h-full">
-              <Detail arcgeoServerUrl={URL} features={selectedFeatures} />
-
+              <Detail
+                arcgeoServerUrl={URL}
+                features={selectedFeatures ?? []}
+                onClose={closeDetail}
+              />
               <div className="sticky top-full bg-gray bg-opacity-10">
                 <button
                   onClick={closeDetail}
@@ -633,15 +651,9 @@ export const App = () => {
                 </button>
               </div>
             </div>
-          ),
-        },
-        {
-          name: "mobile-search",
-          isMobileOnly: true,
-          isVisible: true,
-          className: "bottom-10 left-4 right-4 z-10",
-          component: (
-            <div className="shadow-lg rounded-lg">
+          </Slot>
+          <Slot name="mobile-search">
+            <div className="fixed bottom-10 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
               <SearchBar
                 value={searchQuery}
                 placeholder={t("search")}
@@ -658,11 +670,11 @@ export const App = () => {
                   );
                 }}
                 isGeolocation={isGeolocation}
-                onGeolocationClick={() => setGeolocation(!isGeolocation)}
+                onGeolocationClick={mapRef.current?.toggleGeolocation}
               />
               {!!searchFeatures.length && (
                 <div className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-white rounded-lg py-4">
-                  {searchFeatures.map((feature, i) => {
+                  {searchFeatures.map((feature: any, i) => {
                     return (
                       <button
                         className="text-left w-full hover:bg-background px-4 py-2"
@@ -676,236 +688,263 @@ export const App = () => {
                 </div>
               )}
             </div>
-          ),
-        },
+          </Slot>
+        </Layout>
 
-        // DESKTOP SLOTS
-        {
-          name: "desktop-filter",
-          animation: "slide-left",
-          isDesktopOnly: true,
-          isVisible: isSidebarVisible,
-          className: "top-0 left-0 bottom-0 w-96",
-          component: (
-            <div className="w-full h-full pr-0 relative">
+        <Layout isOnlyDesktop>
+          <Slot
+            name="desktop-filter"
+            isVisible={isSidebarVisible}
+            setVisible={setSidebarVisible}
+            openPadding={{
+              left: 384, // w-96 or 24rem
+            }}
+          >
+            {({ isVisible, setVisible }) => (
               <div
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === "Enter" && setSidebarVisible(!isSidebarVisible)}
-                className="absolute right-0 bg-background rounded-br-lg z-20 py-8 transform translate-x-full hover:text-primary"
-                onClick={() => {
-                  setSidebarVisible(!isSidebarVisible);
-                }}
+                className={cx(
+                  "fixed top-0 left-0 bottom-0 w-96 h-full pr-0 transition-all duration-500",
+                  {
+                    "-translate-x-full": !isVisible,
+                  },
+                )}
               >
                 <div
-                  className="shadow-lg rounded-br-lg hidden sm:block absolute top-0 left-0 right-0 bottom-0 sm:shadow-lg"
-                  style={{ zIndex: -20 }}
-                ></div>
-                <ChevronLeftSmall
-                  width={24}
-                  height={24}
-                  className={cx("transform transition-transform", {
-                    "rotate-180": !isSidebarVisible,
-                  })}
-                  stroke="var(--font-color)"
-                />
-                <div className="hidden sm:block bg-background absolute w-4 min-h-full box-content right-full top-0 pb-4"></div>
-              </div>
-
-              <div className="space-y-6 w-full h-full overflow-auto bg-background shadow-lg">
-                <h1 className="text-lg relative z-30 font-medium px-8 pt-6 pb-3">{t("title")}</h1>
-
-                <div className="mx-8 relative">
-                  <SearchBar
-                    value={searchQuery}
-                    placeholder={t("search")}
-                    onFocus={(e) => {
-                      forwardGeocode(mapboxgl, e.target.value).then((results) =>
-                        setSearchFeatures(results),
-                      );
-                    }}
-                    onBlur={() => setSearchFeatures([])}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      forwardGeocode(mapboxgl, e.target.value).then((results) =>
-                        setSearchFeatures(results),
-                      );
-                    }}
-                    isGeolocation={isGeolocation}
-                    onGeolocationClick={() => setGeolocation(!isGeolocation)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === "Enter" && setVisible(!isVisible)}
+                  className="absolute right-0 bg-background rounded-br-lg z-20 py-8 transform translate-x-full hover:text-primary"
+                  onClick={() => {
+                    setVisible(!isVisible);
+                  }}
+                >
+                  <div
+                    className="shadow-lg rounded-br-lg hidden sm:block absolute top-0 left-0 right-0 bottom-0 sm:shadow-lg"
+                    style={{ zIndex: -20 }}
+                  ></div>
+                  <ChevronLeftSmall
+                    width={24}
+                    height={24}
+                    className={cx("transform transition-transform", {
+                      "rotate-180": !isVisible,
+                    })}
+                    stroke="var(--font-color)"
                   />
-                  {!!searchFeatures.length && (
-                    <div className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-white rounded-lg py-4">
-                      {searchFeatures.map((feature, i) => {
+                  <div className="hidden sm:block bg-background absolute w-4 min-h-full box-content right-full top-0 pb-4"></div>
+                </div>
+
+                <div className="space-y-6 w-full h-full overflow-auto bg-background shadow-lg">
+                  <h1 className="text-lg relative z-30 font-medium px-8 pt-6 pb-3">{t("title")}</h1>
+
+                  <div className="mx-8 relative">
+                    <SearchBar
+                      value={searchQuery}
+                      placeholder={t("search")}
+                      onFocus={(e) => {
+                        forwardGeocode(mapboxgl, e.target.value).then((results) =>
+                          setSearchFeatures(results),
+                        );
+                      }}
+                      onBlur={() => setSearchFeatures([])}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        forwardGeocode(mapboxgl, e.target.value).then((results) =>
+                          setSearchFeatures(results),
+                        );
+                      }}
+                      isGeolocation={isGeolocation}
+                      onGeolocationClick={mapRef.current?.toggleGeolocation}
+                    />
+                    {!!searchFeatures.length && (
+                      <div className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-white rounded-lg py-4">
+                        {searchFeatures.map((feature: any, i) => {
+                          return (
+                            <button
+                              className="text-left w-full hover:bg-background px-4 py-2"
+                              onMouseDown={() => onSearchFeatureClick(feature)}
+                              key={i}
+                            >
+                              {feature.place_name_sk.split(",")[0]}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex justify-between px-8 items-center">
+                    <h2 className="font-bold text-md py-1">{t("filters.title")}</h2>
+                    {!areFiltersDefault() && (
+                      <button
+                        onClick={onFilteringReset}
+                        className="flex items-center hover:underline"
+                      >
+                        <span className="font-bold">{t("filters.reset")}</span>
+                        <Close className="text-primary" width={32} height={32} />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="w-full grid grid-cols-3 gap-4 px-8">
+                    <Select
+                      className="w-full"
+                      value={selectedYearOptions}
+                      isMultiple
+                      onReset={() => setSelectedYearOptions([])}
+                      onChange={setSelectedYearOptions}
+                      placeholder={t("filters.year.placeholder")}
+                    >
+                      {yearOptions.map((option) => (
+                        <SelectOption key={option.key} value={option}>
+                          {option.label}
+                        </SelectOption>
+                      ))}
+                    </Select>
+
+                    <Select
+                      className="w-full col-span-2"
+                      value={selectedDistrictOptions}
+                      isMultiple
+                      placeholder={t("filters.district.placeholder")}
+                      onChange={setSelectedDistrictOptions}
+                      onReset={() => setSelectedDistrictOptions([])}
+                    >
+                      {districtOptions.map((option) => (
+                        <SelectOption key={option.key} value={option}>
+                          {option.label}
+                        </SelectOption>
+                      ))}
+                    </Select>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="px-8">{t("filters.season.title")}</label>
+                    <div className="flex flex-wrap gap-2 px-8">
+                      {["spring", "summer", "autumn", "winter"].map((season) => (
+                        <Tag
+                          key={season}
+                          className={cx("cursor-pointer", {
+                            "bg-primary-soft": getKeyStateValue(seasonFiltersState, season),
+                          })}
+                          onClick={() => toggleSeasonFilter(season)}
+                        >
+                          {t(`filters.season.seasons.${season}`)}
+                        </Tag>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Divider className="mx-8" />
+
+                  <h2 className="font-bold px-8 text-md">{t("layersLabel")}</h2>
+
+                  <div className="flex flex-col w-full">
+                    <Accordion>
+                      {CATEGORIES.map(({ label, types }, index) => {
                         return (
-                          <button
-                            className="text-left w-full hover:bg-background px-4 py-2"
-                            onMouseDown={() => onSearchFeatureClick(feature)}
-                            key={i}
+                          <AccordionItem
+                            isOpenable={types.length > 1}
+                            className={cx("border-l-4", {
+                              "bg-gray bg-opacity-10 border-primary": isAnyTypeEnabled(types),
+                              "border-transparent": !isAnyTypeEnabled(types),
+                            })}
+                            key={index}
+                            title={label}
+                            rightSlot={
+                              <button
+                                className="cursor-pointer p-1"
+                                onClick={() => onCategoryVisibilityClick(types)}
+                              >
+                                {isAnyTypeEnabled(types) ? (
+                                  <EyeCrossed width={18} height={18} />
+                                ) : (
+                                  <Eye width={18} height={18} />
+                                )}
+                              </button>
+                            }
                           >
-                            {feature.place_name_sk.split(",")[0]}
-                          </button>
+                            {types.map((type) => {
+                              return (
+                                <Checkbox
+                                  key={type}
+                                  id={type}
+                                  label={type}
+                                  checked={getKeyStateValue(typeFiltersState, type)}
+                                  onChange={() => toggleTypeFilter(type)}
+                                />
+                              );
+                            })}
+                          </AccordionItem>
                         );
                       })}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex justify-between px-8 items-center">
-                  <h2 className="font-bold text-md py-1">{t("filters.title")}</h2>
-                  {!areFiltersDefault() && (
-                    <button
-                      onClick={onFilteringReset}
-                      className="flex items-center hover:underline"
-                    >
-                      <span className="font-bold">{t("filters.reset")}</span>
-                      <Close className="text-primary" width={32} height={32} />
-                    </button>
-                  )}
-                </div>
-
-                <div className="w-full grid grid-cols-3 gap-4 px-8">
-                  <Select
-                    className="w-full"
-                    value={selectedYearOptions}
-                    isMultiple
-                    onReset={() => setSelectedYearOptions([])}
-                    onChange={setSelectedYearOptions}
-                    placeholder={t("filters.year.placeholder")}
-                  >
-                    {yearOptions.map((option) => (
-                      <SelectOption key={option.key} value={option}>
-                        {option.label}
-                      </SelectOption>
-                    ))}
-                  </Select>
-
-                  <Select
-                    className="w-full col-span-2"
-                    value={selectedDistrictOptions}
-                    isMultiple
-                    placeholder={t("filters.district.placeholder")}
-                    onChange={setSelectedDistrictOptions}
-                    onReset={() => setSelectedDistrictOptions([])}
-                  >
-                    {districtOptions.map((option) => (
-                      <SelectOption key={option.key} value={option}>
-                        {option.label}
-                      </SelectOption>
-                    ))}
-                  </Select>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <label className="px-8">{t("filters.season.title")}</label>
-                  <div className="flex flex-wrap gap-2 px-8">
-                    {["spring", "summer", "autumn", "winter"].map((season) => (
-                      <Tag
-                        key={season}
-                        className={cx("cursor-pointer", {
-                          "bg-primary-soft": getKeyStateValue(seasonFiltersState, season),
+                      <AccordionItem
+                        className={cx("border-l-4", {
+                          "bg-gray bg-opacity-10 border-primary": isAnyTypeEnabled(otherTypes),
+                          "border-transparent": !isAnyTypeEnabled(otherTypes),
                         })}
-                        onClick={() => toggleSeasonFilter(season)}
+                        title="Ostatná starostlivosť"
+                        rightSlot={
+                          <button
+                            className="cursor-pointer p-1"
+                            onClick={() => onCategoryVisibilityClick(otherTypes)}
+                          >
+                            {isAnyTypeEnabled(otherTypes) ? (
+                              <EyeCrossed width={18} height={18} />
+                            ) : (
+                              <Eye width={18} height={18} />
+                            )}
+                          </button>
+                        }
                       >
-                        {t(`filters.season.seasons.${season}`)}
-                      </Tag>
-                    ))}
+                        {otherTypes.map((type) => {
+                          return (
+                            <Checkbox
+                              key={type}
+                              id={type}
+                              label={type}
+                              checked={getKeyStateValue(typeFiltersState, type)}
+                              onChange={() => toggleTypeFilter(type)}
+                            />
+                          );
+                        })}
+                      </AccordionItem>
+                    </Accordion>
                   </div>
                 </div>
-
-                <Divider className="mx-8" />
-
-                <h2 className="font-bold px-8 text-md">{t("layersLabel")}</h2>
-
-                <div className="flex flex-col w-full">
-                  <Accordion>
-                    {CATEGORIES.map(({ label, types }, index) => {
-                      return (
-                        <AccordionItem
-                          isOpenable={types.length > 1}
-                          className={cx("border-l-4", {
-                            "bg-gray bg-opacity-10 border-primary": isAnyTypeEnabled(types),
-                            "border-transparent": !isAnyTypeEnabled(types),
-                          })}
-                          key={index}
-                          title={label}
-                          rightSlot={
-                            <button
-                              className="cursor-pointer p-1"
-                              onClick={() => onCategoryVisibilityClick(types)}
-                            >
-                              {isAnyTypeEnabled(types) ? (
-                                <EyeCrossed width={18} height={18} />
-                              ) : (
-                                <Eye width={18} height={18} />
-                              )}
-                            </button>
-                          }
-                        >
-                          {types.map((type) => {
-                            return (
-                              <Checkbox
-                                key={type}
-                                id={type}
-                                label={type}
-                                checked={getKeyStateValue(typeFiltersState, type)}
-                                onChange={() => toggleTypeFilter(type)}
-                              />
-                            );
-                          })}
-                        </AccordionItem>
-                      );
-                    })}
-                    <AccordionItem
-                      className={cx("border-l-4", {
-                        "bg-gray bg-opacity-10 border-primary": isAnyTypeEnabled(otherTypes),
-                        "border-transparent": !isAnyTypeEnabled(otherTypes),
-                      })}
-                      title="Ostatná starostlivosť"
-                      rightSlot={
-                        <button
-                          className="cursor-pointer p-1"
-                          onClick={() => onCategoryVisibilityClick(otherTypes)}
-                        >
-                          {isAnyTypeEnabled(otherTypes) ? (
-                            <EyeCrossed width={18} height={18} />
-                          ) : (
-                            <Eye width={18} height={18} />
-                          )}
-                        </button>
-                      }
-                    >
-                      {otherTypes.map((type) => {
-                        return (
-                          <Checkbox
-                            key={type}
-                            id={type}
-                            label={type}
-                            checked={getKeyStateValue(typeFiltersState, type)}
-                            onChange={() => toggleTypeFilter(type)}
-                          />
-                        );
-                      })}
-                    </AccordionItem>
-                  </Accordion>
-                </div>
               </div>
-            </div>
-          ),
-        },
-        {
-          name: "desktop-detail",
-          animation: "slide-right",
-          isDesktopOnly: true,
-          isVisible: !!selectedFeatures.length,
-          className: "top-0 right-0 w-96 bg-background shadow-lg",
-          component: <Detail arcgeoServerUrl={URL} features={selectedFeatures} />,
-        },
-      ]}
-    >
-      <Layer filters={filters} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
-      <Layer ignoreClick source="DISTRICTS_GEOJSON" styles={DISTRICTS_STYLE} />
-    </Map>
+            )}
+          </Slot>
+
+          <Slot
+            name="desktop-detail"
+            isVisible={!!selectedFeatures.length}
+            openPadding={{
+              right: 384,
+            }}
+            avoidControls={window.innerHeight <= (desktopDetailHeight ?? 0) + 200 ? true : false}
+          >
+            {({ isVisible }) => (
+              <div
+                ref={desktopDetailRef}
+                className={cx(
+                  "fixed top-0 right-0 w-96 bg-background transition-all duration-500",
+                  {
+                    "translate-x-full": !isVisible,
+                    "shadow-lg": isVisible,
+                  },
+                )}
+              >
+                <Detail
+                  arcgeoServerUrl={URL}
+                  features={selectedFeatures ?? []}
+                  onClose={closeDetail}
+                />
+              </div>
+            )}
+          </Slot>
+        </Layout>
+      </Map>
+    </div>
   );
 };
 

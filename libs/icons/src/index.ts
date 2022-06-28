@@ -82,3 +82,6 @@ export {
 } from "./svg/search.svg";
 
 export { ReactComponent as Tick, default as TickUrl } from "./svg/tick.svg";
+
+export { X } from "./components/X";
+export { Chevron } from "./components/Chevron";

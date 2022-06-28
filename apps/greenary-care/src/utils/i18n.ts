@@ -1,8 +1,8 @@
 import { use as i18nextUse } from "i18next";
 import { initReactI18next } from "react-i18next";
 
-import enTranslation from "../translations/en.js";
-import skTranslation from "../translations/sk.js";
+import enTranslation from "../translations/en";
+import skTranslation from "../translations/sk";
 
 const i18next = i18nextUse(initReactI18next);
 

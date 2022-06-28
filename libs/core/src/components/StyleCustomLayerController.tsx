@@ -1,5 +1,5 @@
-import { useContext, useEffect } from 'react';
-import { mapContext } from './Mapbox';
+import { useContext, useEffect } from "react";
+import { mapboxContext } from "./Mapbox";
 
 /*
   This component is used to control custom layers from mapbox studio styles.
@@ -19,10 +19,10 @@ const StyleCustomLayerController = ({
   id,
   isVisible,
 }: IStyleCustomLayerControllerProps) => {
-  const { map, isLoading } = useContext(mapContext);
+  const { map, isLoading } = useContext(mapboxContext);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (map && !isLoading) {
       const customLayers = map
         .getStyle()
         .layers.filter((layer: mapboxgl.Layer) =>
@@ -31,9 +31,9 @@ const StyleCustomLayerController = ({
 
       customLayers.forEach((customLayer) => {
         if (isVisible) {
-          map.setLayoutProperty(customLayer.id, 'visibility', 'visible');
+          map.setLayoutProperty(customLayer.id, "visibility", "visible");
         } else {
-          map.setLayoutProperty(customLayer.id, 'visibility', 'none');
+          map.setLayoutProperty(customLayer.id, "visibility", "none");
         }
       });
     }

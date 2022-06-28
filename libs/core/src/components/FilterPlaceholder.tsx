@@ -1,9 +1,7 @@
-import React, { forwardRef, ReactNode, useEffect, useState } from "react";
+import React, { forwardRef, ReactNode, useState } from "react";
 import { ChevronLeftSmall, Close } from "@bratislava/mapbox-maps-icons";
 import cx from "classnames";
 import { useTranslation } from "react-i18next";
-import { getDistrictOptions } from "../utils/districts";
-import { Select } from "@bratislava/mapbox-maps-ui";
 import { TemporalQuery } from "@js-joda/core";
 
 interface FilterProps {
@@ -33,26 +31,8 @@ export const Filter = forwardRef<HTMLDivElement, FilterProps>(
   ) => {
     const { t } = useTranslation();
 
-    const [districtOptions, setDistrictOptions] = useState(
-      getDistrictOptions()
-    );
-
     const [selectedDistrictObject, setSelectedDistrictObject] =
       useState<{ key: string; label: string } | null>(null);
-
-    useEffect(() => {
-      setSelectedDistrictObject(
-        districtOptions.find(
-          (districtOption) => districtOption.key === selectedDistrict
-        ) ?? null
-      );
-    }, [districtOptions, selectedDistrict]);
-
-    useEffect(() => {
-      onDistrictChange(
-        selectedDistrictObject ? selectedDistrictObject.key : null
-      );
-    }, [onDistrictChange, selectedDistrictObject]);
 
     return (
       <div
@@ -76,19 +56,6 @@ export const Filter = forwardRef<HTMLDivElement, FilterProps>(
           <ChevronLeftSmall width={20} height={20} className="text-secondary" />
           <span className="text-md font-medium">{title}</span>
         </button>
-        {showDistrictSelect && (
-          <div className="px-8 pb-4 flex flex-col gap-4">
-            <div className="flex justify-between">
-              <span className="font-bold text-[20px]">Filter</span>
-            </div>
-            <Select
-              className="w-full"
-              value={selectedDistrictObject}
-              options={districtOptions}
-              onChange={setSelectedDistrictObject}
-            />
-          </div>
-        )}
         <div className="flex-1 flex">{children}</div>
         <div className="py-4 sm:hidden left-0 md:left-auto bottom-8 md:bottom-auto md:top-6 md:right-4 flex justify-center w-full md:w-auto">
           <button onClick={onClose} className="flex items-center group">

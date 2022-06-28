@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { FeatureCollection } from "geojson";
+import { Feature, FeatureCollection } from "geojson";
 
 export const fetchFromArcgeo = async (
   url: string,
@@ -9,7 +9,7 @@ export const fetchFromArcgeo = async (
 ) => {
   return fetch(
     [
-      `${url}/query?where=OBJECTID+%3E%3D+0`,
+      `${url}/query?where=1=1`,
       "outFields=*",
       "returnGeometry=true",
       "featureEncoding=esriDefault",
@@ -23,7 +23,7 @@ export const fetchFromArcgeo = async (
 export const fetchCount = async (url: string) => {
   const res = await fetch(
     [
-      `${url}/query?where=OBJECTID+%3E%3D+0`,
+      `${url}/query?where=1=1`,
       "featureEncoding=esriDefault",
       "returnCountOnly=true",
       "f=pjson",
@@ -93,13 +93,30 @@ export const fetchAttachmentsFromArcgeo = async (
   });
 };
 
-export const useArcgeo = (url: string, countPerRequest: number = 1000) => {
+export const useArcgeo = (
+  url: string | string[],
+  countPerRequest: number = 1000
+) => {
   const [data, setData] = useState<FeatureCollection | null>(null);
 
   useEffect(() => {
-    fetchAllFromArcgeo(url, countPerRequest).then((fetchedData) => {
-      setData(fetchedData);
-    });
+    if (Array.isArray(url)) {
+      Promise.all(url.map((u) => fetchAllFromArcgeo(u, countPerRequest))).then(
+        (results) => {
+          setData({
+            type: "FeatureCollection",
+            features: results.reduce(
+              (features, result) => [...features, ...result.features],
+              [] as Feature[]
+            ),
+          });
+        }
+      );
+    } else {
+      fetchAllFromArcgeo(url, countPerRequest).then((fetchedData) => {
+        setData(fetchedData);
+      });
+    }
   }, [url]);
 
   return {

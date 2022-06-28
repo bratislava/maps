@@ -57,64 +57,24 @@ export interface Sources {
   [key: string]: Source;
 }
 
-// export interface Source {
-//   title: string;
-//   type: 'geojson';
-//   data: any;
-// }
-
 export type Source = any;
 
-export enum LayerType {
-  point = "point",
-}
-
-export interface ILayer {
-  source: string;
-  styles: any[];
-  isVisible: boolean;
-  icon?: string;
-}
-
-export interface Filters {
-  [key: string]: Filter;
-}
-
-export interface Filter {
-  [key: string]: any;
-  key: string;
-  title: string;
-}
-
-// export type MapHandle = React.ElementRef<typeof Map>;
-// export type MapboxHandle = React.ElementRef<typeof Mapbox>;
-
-export interface IViewportProps {
-  lat: number;
+export interface ILngLat {
   lng: number;
+  lat: number;
+}
+
+export interface IPadding {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
+export interface IViewport {
+  center: ILngLat;
   zoom: number;
-  pitch: number;
   bearing: number;
-  paddingLeft: number;
-  paddingRight: number;
-  paddingBottom: number;
+  pitch: number;
+  padding: IPadding;
 }
-
-export interface ComponentProps {
-  isVisible: boolean;
-  setVisible: Dispatch<SetStateAction<boolean>>;
-}
-
-export interface IComponentSlot {
-  name: string;
-  component: FC<ComponentProps> | ReactNode;
-  isMobileOnly?: boolean;
-  isDesktopOnly?: boolean;
-  animation?: SlotAnimation;
-  className?: string;
-  bottomSheetOptions?: any;
-  isVisible?: boolean;
-  onClose?: () => void;
-}
-
-export type SlotAnimation = "slide-left" | "slide-right" | "none";
