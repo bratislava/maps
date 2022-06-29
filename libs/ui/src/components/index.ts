@@ -1,3 +1,4 @@
+// atoms
 export * from "./atoms/LoadingSpinner/LoadingSpinner";
 export * from "./atoms/SearchBar/SearchBar";
 export * from "./atoms/Select/Select";
@@ -8,3 +9,10 @@ export * from "./atoms/Accordion/AccordionItem";
 export * from "./atoms/Checkbox/Checkbox";
 export * from "./atoms/Divider/Divider";
 export * from "./atoms/Tag/Tag";
+export * from "./atoms/LeftSidebar/LeftSidebar";
+export * from "./atoms/IconButton/IconButton";
+export * from "./atoms/IconButtonGroup/IconButtonGroup";
+
+// molecules
+export * from "./molecules/TagFilter/TagFilter";
+export * from "./molecules/ActiveFilters/ActiveFilters";

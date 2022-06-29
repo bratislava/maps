@@ -2,19 +2,14 @@ import React, { ReactNode } from "react";
 import cx from "classnames";
 import { Listbox } from "@headlessui/react";
 
-export interface ISelectOption {
-  key: string;
-  label: string;
-}
-
 export interface ISelectOptionProps {
-  value: ISelectOption;
+  value: string;
   children?: ReactNode;
 }
 
 export const SelectOption = ({ value, children }: ISelectOptionProps) => {
   return (
-    <Listbox.Option key={value.key} value={value}>
+    <Listbox.Option key={value} value={value}>
       {({ active, selected }) => (
         <div
           className={cx(
@@ -25,7 +20,7 @@ export const SelectOption = ({ value, children }: ISelectOptionProps) => {
             }
           )}
         >
-          {children ?? value.label}
+          {children ?? value}
         </div>
       )}
     </Listbox.Option>

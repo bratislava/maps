@@ -9,15 +9,15 @@ import React, {
   createContext,
   useMemo,
 } from "react";
-import { LoadingSpinner } from "@bratislava/mapbox-maps-ui";
-import { Mapbox, MapboxHandle } from "../Mapbox";
+import { addTranslations, LoadingSpinner } from "@bratislava/mapbox-maps-ui";
+import { Mapbox, MapboxHandle } from "../Mapbox/Mapbox";
 import { useResizeDetector } from "react-resize-detector";
 import cx from "classnames";
 import DATA_DISTRICTS from "../../assets/layers/districts.json";
 
 import { Sources, IViewport, MapIcon, ILngLat, IPadding } from "../../types";
-import { ThemeController } from "../ThemeController";
-import { ViewportController } from "../ViewportController";
+import { ThemeController } from "../ThemeController/ThemeController";
+import { ViewportController } from "../ViewportController/ViewportController";
 import mapboxgl from "mapbox-gl";
 import { i18n } from "i18next";
 
@@ -75,6 +75,7 @@ export interface IMapProps {
   defaultCenter?: ILngLat;
   onSelectedFeaturesChange?: (features: Feature[]) => void;
   onMobileChange?: (isMobile: boolean) => void;
+  onGeolocationChange?: (isGeolocation: boolean) => void;
 }
 
 export type MapHandle = {
@@ -111,11 +112,15 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       },
       onSelectedFeaturesChange = () => void 0,
       onMobileChange = () => void 0,
+      onGeolocationChange = () => void 0,
     },
     forwardedRef
   ) => {
-    i18next.addResources("en", "maps", enTranslation);
-    i18next.addResources("sk", "maps", skTranslation);
+    i18next.addResourceBundle("en", "maps", enTranslation);
+    i18next.addResourceBundle("sk", "maps", skTranslation);
+
+    // add translations from UI library
+    addTranslations(i18next);
 
     const mapboxRef = useRef<MapboxHandle>(null);
 
@@ -261,6 +266,10 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       onMobileChange(isMobile);
     }, [onMobileChange, isMobile]);
 
+    useEffect(() => {
+      onGeolocationChange(isGeolocation);
+    }, [onGeolocationChange, isGeolocation]);
+
     const onViewportChange = useCallback((viewport: IViewport) => {
       setBearing(viewport.bearing);
     }, []);
@@ -361,7 +370,10 @@ export const Map = forwardRef<MapHandle, IMapProps>(
           <ThemeController
             isDarkmode={isDarkmode}
             isSatellite={isSatellite}
-            onDarkmodeChange={(value) => setDarkmode(value)}
+            onDarkmodeChange={(value) => {
+              isSatellite && setSatellite(false);
+              setDarkmode(value);
+            }}
             onSatelliteChange={(value) => setSatellite(value)}
             style={{
               transform: `translateX(${controlsMargin.left}px)`,

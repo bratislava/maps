@@ -48,8 +48,8 @@ export const AccordionItem = ({
       className={cx("text-left w-full justify-between items-center", className)}
     >
       <Header className="flex flex-col">
-        <div className="py-4 pl-[28px] pr-8 flex items-center justify-between">
-          <div className="font-bold">{title}</div>
+        <div className="py-3 pl-[20px] pr-6 flex items-center justify-between">
+          <div>{title}</div>
           <div className="flex gap-4">
             {rightSlot}
             {isOpenable && (

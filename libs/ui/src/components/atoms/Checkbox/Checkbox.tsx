@@ -17,13 +17,13 @@ export const Checkbox = ({
   onChange,
 }: CheckboxProps) => {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center">
       <Root
         checked={checked}
         onCheckedChange={(e) => onChange && onChange(!!e)}
         id={id}
         className={cx(
-          "flex  border-2  flex-col w-4 h-4  rounded items-center justify-center",
+          "flex border-2 flex-col w-4 h-4 rounded items-center justify-center focus:border-primary transition-all outline-none",
           {
             "bg-primary border-primary": checked,
             "border-gray border-opacity-50": !checked,
@@ -35,7 +35,7 @@ export const Checkbox = ({
         </Indicator>
       </Root>
       {label && (
-        <label className="cursor-pointer" htmlFor={id}>
+        <label className="cursor-pointer pl-2" htmlFor={id}>
           {label}
         </label>
       )}

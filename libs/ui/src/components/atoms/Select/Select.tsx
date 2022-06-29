@@ -1,40 +1,45 @@
-import React, { MouseEventHandler, ReactElement, useCallback } from "react";
+import React, { FC, MouseEventHandler, ReactElement, useCallback } from "react";
 import cx from "classnames";
-import {
-  Chevron,
-  ChevronDownSmall,
-  Close,
-  X,
-} from "@bratislava/mapbox-maps-icons";
+import { Chevron, X } from "@bratislava/mapbox-maps-icons";
 import { Listbox, Transition } from "@headlessui/react";
-import { ISelectOption, ISelectOptionProps } from "./SelectOption";
+import { ISelectOptionProps } from "./SelectOption";
 import { SelectArrow } from "./SelectArrow";
-
-interface ISelectProps<T extends ISelectOption | ISelectOption[] | null> {
+interface ISelectProps {
   className?: string;
   buttonClassName?: string;
   isMultiple?: boolean;
   noBorder?: boolean;
-  onChange?: (value: T) => void;
+  onChange?: (key: string | string[] | null) => void;
   onReset?: () => void;
-  value: T;
+  value: string | string[] | null;
   placeholder?: string;
+  renderValue?: FC<{ values: string[] }>;
   children:
     | ReactElement<ISelectOptionProps>
     | ReactElement<ISelectOptionProps>[];
 }
 
-export const Select = <T extends (ISelectOption | ISelectOption[]) | null>({
+export const Select = ({
   className,
   buttonClassName,
   onChange = () => void 0,
   onReset = () => void 0,
   value,
   isMultiple = false,
+  renderValue = ({ values }) =>
+    values.length == 0 ? (
+      <div className="ml-3 flex">{placeholder}</div>
+    ) : Array.isArray(values) ? (
+      <div className="ml-3 flex gap-2 whitespace-nowrap">
+        {values.join(", ")}
+      </div>
+    ) : (
+      <span className="ml-4">{values}</span>
+    ),
   noBorder = false,
   children,
   placeholder,
-}: ISelectProps<T>) => {
+}: ISelectProps) => {
   const onResetClick: MouseEventHandler = useCallback(
     (e) => {
       e.stopPropagation();
@@ -45,16 +50,25 @@ export const Select = <T extends (ISelectOption | ISelectOption[]) | null>({
 
   return (
     <div className={cx("relative items-center w-full", className)}>
-      <Listbox value={value} onChange={onChange} multiple={isMultiple}>
+      <Listbox
+        value={value}
+        onChange={(values) => {
+          console.log(values);
+          onChange(values);
+        }}
+        multiple={isMultiple}
+      >
         <Listbox.Button className="flex w-full outline-none group">
           {({ open }) => (
             <div
               className={cx(
-                "bg-white flex items-center justify-between cursor-pointer w-full h-12 outline-none transition-all",
+                "flex items-center justify-between cursor-pointer w-full h-12 outline-none transition-all",
                 {
-                  "group-focus:bg-gray group-focus:bg-opacity-10": noBorder,
-                  "bg-gray bg-opacity-10": noBorder && open,
-                  "border-2 rounded-lg": !noBorder,
+                  "bg-gray group-focus:bg-opacity-10 group-hover:bg-opacity-10":
+                    noBorder,
+                  "bg-opacity-0": noBorder && !open,
+                  "bg-opacity-10": noBorder && open,
+                  "bg-white border-2 rounded-lg": !noBorder,
                   "border-primary": open,
                   "border-gray border-opacity-10 group-focus:border-primary group-focus:border-opacity-100":
                     !open,
@@ -62,16 +76,12 @@ export const Select = <T extends (ISelectOption | ISelectOption[]) | null>({
                 buttonClassName
               )}
             >
-              <div className="overflow-auto w-full">
-                {!value || (Array.isArray(value) && value.length == 0) ? (
-                  <div className="ml-3 flex">{placeholder}</div>
-                ) : Array.isArray(value) ? (
-                  <div className="ml-3 flex gap-2 whitespace-nowrap">
-                    {value.map((v) => v.label).join(", ")}
-                  </div>
-                ) : (
-                  <span className="ml-4">{value.label}</span>
-                )}
+              <div className="overflow-auto font-medium w-full">
+                {!value || (Array.isArray(value) && value.length == 0)
+                  ? renderValue({ values: [] as string[] })
+                  : Array.isArray(value)
+                  ? renderValue({ values: value })
+                  : renderValue({ values: [value] })}
               </div>
               <div className="flex items-center rounded-full text-white mr-1">
                 {!(!value || (Array.isArray(value) && value.length == 0)) && (

@@ -1,7 +1,3 @@
-import { Map } from ".";
-import { Mapbox } from "./components/Mapbox";
-import { FC, Dispatch, SetStateAction, ReactNode } from "react";
-
 export enum DistrictEnum {
   STARE_MESTO = "STARE_MESTO",
   RUZINOV = "RUZINOV",
@@ -57,6 +53,7 @@ export interface Sources {
   [key: string]: Source;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Source = any;
 
 export interface ILngLat {

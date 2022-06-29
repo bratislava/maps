@@ -1,7 +1,7 @@
 export default {
   title: "Starostlivosť o dreviny",
   search: "Hľadať",
-  close: "Zrušiť",
+  close: "Zavrieť",
   loading: "Načítavanie",
   layersLabel: "Vrstvy",
   filters: {
@@ -10,10 +10,12 @@ export default {
     year: {
       title: "Rok",
       placeholder: "Rok",
+      multipleYears: "Viacero rokov",
     },
     district: {
       title: "Mestská časť",
       placeholder: "Mestská časť",
+      multipleDistricts: "Viacero mestských častí",
     },
     season: {
       title: "Obdobie",
@@ -24,8 +26,6 @@ export default {
         winter: "zima",
       },
     },
-    reset: "Zrušiť",
-    resetFilter: "Zrušiť filter",
   },
   layers: {
     esri: {

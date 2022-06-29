@@ -10,10 +10,12 @@ export default {
     year: {
       title: "Year",
       placeholder: "Year",
+      multipleYears: "Multiple years",
     },
     district: {
       title: "District",
       placeholder: "District",
+      multipleDistricts: "Multiple districts",
     },
     season: {
       title: "Season",
@@ -24,8 +26,6 @@ export default {
         winter: "winter",
       },
     },
-    reset: "Reset",
-    resetFilter: "Reset filters",
   },
   layers: {
     esri: {

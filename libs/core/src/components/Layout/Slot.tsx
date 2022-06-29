@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import cx from "classnames";
 import { BottomSheet } from "react-spring-bottom-sheet";
-import { mapboxContext } from "../Mapbox";
+import { mapboxContext } from "../Mapbox/Mapbox";
 
 export interface ISlotChildProps {
   isVisible: boolean;

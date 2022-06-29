@@ -19,7 +19,8 @@
   "include": [
     "src",
     "src/custom.d.ts",
-    "../../libs/ui/src/components/atoms/Accordion/Accordion.tsx"
+    "../../libs/ui/src/components/atoms/Accordion/Accordion.tsx",
+    "../../libs/ui/src/components/molecules/ActiveFilters/MobileActiveFilters.tsx"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
