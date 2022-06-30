@@ -2,11 +2,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 module.exports = {
-  presets: [require("../../libs/core/tailwind.config")],
+  presets: [require("../../libs/react-maps-core/tailwind.config")],
   content: [
     "./src/**/*.{html,ts,tsx}",
-    "../../libs/core/src/**/*.{html,ts,tsx}",
-    "../../libs/ui/src/**/*.{html,ts,tsx}",
+    "../../libs/react-maps-core/src/**/*.{html,ts,tsx}",
+    "../../libs/react-maps-ui/src/**/*.{html,ts,tsx}",
   ],
   theme: {
     screens: {
