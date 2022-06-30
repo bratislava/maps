@@ -91,10 +91,10 @@ export const ViewportController = forwardRef<
               )}
             </IconButton>
             <IconButtonGroup>
-              <IconButton noStyle onClick={onZoomInClick}>
+              <IconButton noAnimation noStyle onClick={onZoomInClick}>
                 <Plus className="w-12 h-12" />
               </IconButton>
-              <IconButton noStyle onClick={onZoomOutClick}>
+              <IconButton noAnimation noStyle onClick={onZoomOutClick}>
                 <Minus className="w-12 h-12" />
               </IconButton>
             </IconButtonGroup>

@@ -10,6 +10,7 @@ interface IconButtonProps {
   isDektopOnly?: boolean;
   noStyle?: boolean;
   className?: string;
+  noAnimation?: boolean;
 }
 
 export const IconButton = ({
@@ -21,12 +22,14 @@ export const IconButton = ({
   isDektopOnly,
   noStyle = false,
   className,
+  noAnimation = false,
 }: IconButtonProps) => {
   return (
     <button
       className={cx(
         "flex text-font w-12 h-12 items-center justify-center pointer-events-auto",
         {
+          "transform active:scale-75 transition-transform": !noAnimation,
           "shadow-lg bg-background rounded-lg": !noStyle,
         },
         {
