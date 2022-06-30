@@ -1,15 +1,14 @@
 {
-  "name": "@bratislava/mapbox-maps",
+  "name": "@bratislava/maps",
   "private": true,
   "workspaces": [
-    "libs/icons",
-    "libs/ui",
-    "libs/core",
-    "libs/esri",
-    "libs/utils",
-    "libs/geocoding",
-    "apps/paas",
-    "apps/greenary-care",
+    "libs/mapbox-geocoding",
+    "libs/react-esri",
+    "libs/react-maps-core",
+    "libs/react-maps-icons",
+    "libs/react-maps-ui",
+    "libs/react-maps-utils",
+    "apps/greenary-care-map",
     "apps/fast-interventions"
   ]
 }
