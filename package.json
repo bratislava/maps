@@ -8,7 +8,8 @@
     "libs/react-maps-icons",
     "libs/react-maps-ui",
     "libs/react-maps-utils",
+    "apps/closures-and-restrictions-map",
     "apps/greenary-care-map",
-    "apps/fast-interventions"
+    "apps/sport-grounds-map"
   ]
 }

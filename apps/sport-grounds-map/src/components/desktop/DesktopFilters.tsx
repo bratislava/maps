@@ -4,7 +4,7 @@ import {
   IFilterResult,
   MapHandle,
 } from "@bratislava/react-maps-core";
-import { Eye, EyeCrossed, X } from "@bratislava/react-maps-icons";
+import { X } from "@bratislava/react-maps-icons";
 import {
   Divider,
   Select,
@@ -13,12 +13,8 @@ import {
   ActiveFilters,
   SearchBar,
   SelectOption,
-  Accordion,
-  AccordionItem,
-  Checkbox,
   Sidebar,
 } from "@bratislava/react-maps-ui";
-import cx from "classnames";
 import mapboxgl from "mapbox-gl";
 import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -33,14 +29,8 @@ export interface IDesktopFiltersProps<Y, D, S, T> {
   mapRef: RefObject<MapHandle>;
   mapboxgl: typeof mapboxgl;
   isGeolocation: boolean;
-  yearFilter: IFilterResult<Y>;
   districtFilter: IFilterResult<D>;
-  seasonFilter: IFilterResult<S>;
-  typeFilter: IFilterResult<T>;
-  typeCategories: {
-    label: string;
-    types: string[];
-  }[];
+  typeFilter: IFilterResult<S>;
 }
 
 export const DesktopFilters = <
@@ -57,11 +47,8 @@ export const DesktopFilters = <
   mapRef,
   mapboxgl,
   isGeolocation,
-  yearFilter,
   districtFilter,
-  seasonFilter,
   typeFilter,
-  typeCategories,
 }: IDesktopFiltersProps<Y, D, S, T>) => {
   const { t } = useTranslation();
 
@@ -156,43 +143,20 @@ export const DesktopFilters = <
             </SelectOption>
           ))}
         </Select>
-
-        <Select
-          className="w-full"
-          value={yearFilter.activeKeys}
-          isMultiple
-          onChange={(value) => yearFilter.setActiveOnly((value ?? []) as Y[])}
-          onReset={() => yearFilter.setActiveAll(false)}
-          renderValue={({ values }) => (
-            <SelectValueRenderer
-              values={values}
-              placeholder={t("filters.year.placeholder")}
-              multiplePlaceholder={`${t("filters.year.multipleYears")} (${values.length})`}
-            />
-          )}
-        >
-          {yearFilter.keys.map((year) => (
-            <SelectOption key={year} value={year}>
-              {year}
-            </SelectOption>
-          ))}
-        </Select>
       </div>
 
       <TagFilter
-        title={t("filters.season.title")}
-        values={seasonFilter.values.map((season) => ({
-          key: season.key,
-          label: t(`filters.season.seasons.${season.key}`),
-          isActive: season.isActive,
+        title={t("filters.type.title")}
+        values={typeFilter.values.map((type) => ({
+          key: type.key,
+          label: t(`filters.type.types.${type.key}`),
+          isActive: type.isActive,
         }))}
-        onTagClick={(season) => {
-          if (seasonFilter.activeKeys.length == 4) {
-            seasonFilter.setActiveOnly(season);
-          } else if (
-            !(seasonFilter.activeKeys.length == 1 && seasonFilter.activeKeys[0] == season)
-          ) {
-            seasonFilter.toggleActive(season);
+        onTagClick={(type) => {
+          if (typeFilter.activeKeys.length == typeFilter.values.length) {
+            typeFilter.setActiveOnly(type);
+          } else if (!(typeFilter.activeKeys.length == 1 && typeFilter.activeKeys[0] == type)) {
+            typeFilter.toggleActive(type);
           }
         }}
       />
@@ -200,52 +164,6 @@ export const DesktopFilters = <
       <Divider className="mx-6" />
 
       <h2 className="font-semibold px-6 text-md">{t("layersLabel")}</h2>
-
-      <div className="flex flex-col w-full">
-        <Accordion>
-          {typeCategories.map(({ label, types }, index) => {
-            return (
-              <AccordionItem
-                isOpenable={types.length > 1}
-                className={cx("border-l-4 transition-all bg-opacity-10", {
-                  "bg-gray border-primary": typeFilter.isAnyKeyActive(types as T[]),
-                  "border-transparent": !typeFilter.isAnyKeyActive(types as T[]),
-                })}
-                key={index}
-                title={label}
-                rightSlot={
-                  <button
-                    className="cursor-pointer p-1"
-                    onClick={() =>
-                      typeFilter.isAnyKeyActive(types as T[])
-                        ? typeFilter.setActive(types as T[], false)
-                        : typeFilter.setActive(types as T[], true)
-                    }
-                  >
-                    {typeFilter.isAnyKeyActive(types as T[]) ? (
-                      <Eye width={18} height={18} />
-                    ) : (
-                      <EyeCrossed width={18} height={18} />
-                    )}
-                  </button>
-                }
-              >
-                {types.map((type) => {
-                  return (
-                    <Checkbox
-                      key={type}
-                      id={type}
-                      label={type}
-                      checked={typeFilter.areKeysActive(type as T)}
-                      onChange={() => typeFilter.toggleActive(type as T)}
-                    />
-                  );
-                })}
-              </AccordionItem>
-            );
-          })}
-        </Accordion>
-      </div>
     </Sidebar>
   );
 };

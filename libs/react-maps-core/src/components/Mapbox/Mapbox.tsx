@@ -37,11 +37,11 @@ export interface MapboxProps {
   };
   selectedFeatures: any[];
   onFeatureClick: (features: any[]) => void;
-  loadingState: [boolean, Dispatch<SetStateAction<boolean>>];
   children?: ReactNode;
   layerPrefix?: string;
   onViewportChange?: (viewport: IViewport) => void;
   onViewportChangeDebounced?: (viewport: IViewport) => void;
+  onLoad?: () => void;
   defaultCenter?: {
     lat: number;
     lng: number;
@@ -104,7 +104,7 @@ export const mapboxContext = createContext<IContext>({
 });
 
 export type MapboxHandle = {
-  fitToDistrict: (district: string | null) => void;
+  fitToDistrict: (district: string | string[]) => void;
   viewport: IViewport;
   changeViewport: (viewport: Partial<IViewport>, instant?: boolean) => void;
 };
@@ -112,7 +112,6 @@ export type MapboxHandle = {
 export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
   (
     {
-      loadingState,
       sources,
       icons = {},
       isDarkmode = false,
@@ -132,6 +131,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       onViewportChangeDebounced = () => void 0,
       defaultCenter,
       isDevelopment = false,
+      onLoad = () => void 0,
     },
     forwardedRef
   ) => {
@@ -161,7 +161,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     const [paddingBottom, setPaddingBottom] = useState(0);
     const [paddingLeft, setPaddingLeft] = useState(0);
 
-    const [wantedViewport, setWantedViewport] = useState<IViewport>({
+    const [, setWantedViewport] = useState<IViewport>({
       center: {
         lat: defaultCenter?.lat ?? 0,
         lng: defaultCenter?.lng ?? 0,
@@ -248,7 +248,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       [map, onViewportChange]
     );
 
-    const [isLoading, setLoading] = loadingState;
+    const [isLoading, setLoading] = useState(true);
     const [isStyleLoading, setStyleLoading] = useState(false);
     const [geolocationMarker, setGeolocationMarker] =
       useState<mapboxgl.Marker | null>(null);
@@ -272,6 +272,13 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       (id: string) => id.startsWith(layerPrefix),
       [layerPrefix]
     );
+
+    useEffect(() => {
+      if (isLoading === false && previousLoading === true) {
+        onLoad();
+        log("MAP LOADED");
+      }
+    }, [isLoading, onLoad]);
 
     //CONTEXT VALUE PASSED TO ALL CHILDRENS
     const mapContextValue: IContext = useMemo(
@@ -641,8 +648,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           MAP.resize();
           loadSources();
           loadIcons();
-          setLoading(false);
-          log("MAP LOADED");
+          setTimeout(() => setLoading(false), 1000);
         });
       }
     }, [
@@ -738,18 +744,18 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
 
         log("FITTING TO DISTRICT");
 
-        const districtFeature = DATA_DISTRICTS.features.find(
-          (feature) => feature.properties.name === district
+        const districts = Array.isArray(district) ? district : [district];
+
+        const districtFeatures = DATA_DISTRICTS.features.filter(
+          (feature) => districts.indexOf(feature.properties.name) !== -1
         );
 
-        if (!districtFeature) return;
+        if (!districtFeatures.length) return;
 
-        const boundingBox = bbox(districtFeature) as [
-          number,
-          number,
-          number,
-          number
-        ];
+        const boundingBox = bbox({
+          type: "FeatureCollection",
+          features: districtFeatures,
+        }) as [number, number, number, number];
 
         MAP.fitBounds(boundingBox, { padding: 128 });
       },

@@ -1,0 +1,52 @@
+export default {
+  title: "Sport map in Bratislava",
+  search: "Search",
+  close: "Close",
+  loading: "Loading",
+  layersLabel: "Layers",
+  filters: {
+    title: "Filtering",
+    reset: "Reset",
+    district: {
+      title: "District",
+      placeholder: "District",
+      multipleDistricts: "Multiple districts",
+    },
+    type: {
+      title: "Kinds",
+      types: {
+        fitness: "fitness",
+        football: "football",
+        hockey: "hockey",
+        "table-tennis": "table tennis",
+        basketball: "basketball",
+        other: "other",
+        pool: "pool",
+        tennis: "tennis",
+        "running-track": "running track",
+        gym: "gym",
+        water: "water",
+      },
+    },
+  },
+  layers: {
+    sportGrounds: {
+      detail: {
+        title: "Sport ground detail",
+        kind: "Kind",
+        type: "Type",
+        name: "Name",
+        address: "Address",
+        district: "District",
+        contact: "Contact",
+        operator: "Operator",
+        phone: "Phone",
+        email: "Email",
+        web: "Website",
+        openingHours: "Opening hours",
+        entrance: "Entrance",
+        note: "Note",
+      },
+    },
+  },
+};

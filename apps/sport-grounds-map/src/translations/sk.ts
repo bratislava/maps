@@ -1,0 +1,53 @@
+export default {
+  title: "Mapa športu v Bratislave",
+  search: "Hľadať",
+  close: "Zavrieť",
+  loading: "Načítavanie",
+  layersLabel: "Vrstvy",
+  filters: {
+    title: "Filter",
+    active: "Aktívny filter",
+    reset: "Zrušiť",
+    district: {
+      title: "Mestská časť",
+      placeholder: "Mestská časť",
+      multipleDistricts: "Viacero mestských častí",
+    },
+    type: {
+      title: "Druhy",
+      types: {
+        fitness: "fitness",
+        football: "futbal",
+        hockey: "hokej",
+        "table-tennis": "stolný tenis",
+        basketball: "basketbal",
+        other: "ostatné",
+        pool: "bazén",
+        tennis: "tenis",
+        "running-track": "bežecká dráha",
+        gym: "posilňovňa",
+        water: "voda",
+      },
+    },
+  },
+  layers: {
+    sportGrounds: {
+      detail: {
+        title: "Detail športoviska",
+        name: "Názov",
+        type: "Typ",
+        district: "Mestská časť",
+        address: "Adresa",
+        operator: "Prevádzkovateľ",
+        phone: "Tel. číslo",
+        email: "Emailová adresa",
+        web: "Webstránka",
+        openingHours: "Otváracie hodiny",
+        entrance: "Vstup",
+        note: "Poznámka",
+        kind: "Druh",
+        contact: "Kontakt",
+      },
+    },
+  },
+};

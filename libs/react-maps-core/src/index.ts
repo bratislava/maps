@@ -7,5 +7,6 @@ export * from "./components/Map/Map";
 export * from "./components/Layout/Layout";
 export * from "./components/Layer/Layer";
 export * from "./components/Layout/Slot";
+export * from "./components/Marker/Marker";
 export * from "./utils/districts";
 export { default as DISTRICTS_GEOJSON } from "./assets/layers/districts.json";

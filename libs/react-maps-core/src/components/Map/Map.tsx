@@ -56,7 +56,7 @@ export interface IMapProps {
 
 export type MapHandle = {
   changeViewport: (viewport: Partial<IViewport>) => void;
-  fitToDistrict: (district: string | null) => void;
+  fitToDistrict: (district: string | string[]) => void;
   deselectAllFeatures: () => void;
   turnOnGeolocation: () => void;
   turnOffGeolocation: () => void;
@@ -117,6 +117,10 @@ export const Map = forwardRef<MapHandle, IMapProps>(
     const [controlsMarginRight, setControlsMarginRight] = useState(0);
     const [controlsMarginBottom, setControlsMarginBottom] = useState(0);
     const [controlsMarginLeft, setControlsMarginLeft] = useState(0);
+
+    useEffect(() => {
+      console.log("isLoading", isLoading);
+    }, [isLoading]);
 
     const extendedSources = {
       ...sources,
@@ -335,67 +339,77 @@ export const Map = forwardRef<MapHandle, IMapProps>(
     );
 
     return (
-      <mapContext.Provider value={mapContextValue}>
+      <>
+        <mapContext.Provider value={mapContextValue}>
+          <div
+            ref={containerRef}
+            className="w-full h-full relative z-10 text-font"
+          >
+            <Mapbox
+              defaultCenter={defaultCenter}
+              ref={mapboxRef}
+              isDarkmode={isDarkmode}
+              isSatellite={isSatellite}
+              isGeolocation={isGeolocation}
+              layerPrefix={layerPrefix}
+              mapStyles={mapStyles}
+              mapboxgl={mapboxgl}
+              sources={extendedSources}
+              icons={icons}
+              onFeatureClick={setSelectedFeatures}
+              onLoad={() => setLoading(false)}
+              selectedFeatures={selectedFeatures}
+              onViewportChange={onViewportChange}
+              isDevelopment={isDevelopment && isDevInfoVisible}
+            >
+              {children}
+            </Mapbox>
+            <ThemeController
+              isDarkmode={isDarkmode}
+              isSatellite={isSatellite}
+              onDarkmodeChange={(value) => {
+                isSatellite && setSatellite(false);
+                setDarkmode(value);
+              }}
+              onSatelliteChange={(value) => setSatellite(value)}
+              style={{
+                transform: `translate(${controlsMarginLeft}px, -${controlsMarginBottom}px)`,
+              }}
+            />
+            <ViewportController
+              style={{
+                transform: `translate(-${controlsMarginRight}px, -${controlsMarginBottom}px)`,
+              }}
+              isFullscreen={isFullscreen}
+              viewport={mapboxRef.current?.viewport}
+              onZoomInClick={zoomIn}
+              onZoomOutClick={zoomOut}
+              onFullscreenClick={toggleFullscreen}
+              onCompassClick={resetBearing}
+              bearing={bearing}
+              isGeolocation={isGeolocation}
+              onLocationClick={() => setGeolocation(!isGeolocation)}
+              onLegendClick={onLegendClick}
+            />
+          </div>
+        </mapContext.Provider>
         <div
           className={cx(
-            "fixed z-50 top-0 right-0 bottom-0 left-0 bg-white flex items-center justify-center text-primary duration-500",
+            "fixed z-50 top-0 right-0 bottom-0 left-0 bg-background flex items-center justify-center text-primary transition-all delay-1000 duration-1000",
             {
-              "visible opacity-100 transition-none": isLoading,
-              "invisible opacity-0 transition-all": !isLoading,
+              "visible opacity-100": isLoading,
+              "invisible opacity-0": !isLoading,
             }
           )}
         >
-          <LoadingSpinner />
-        </div>
-        <div ref={containerRef} className="w-full h-full text-font">
-          <Mapbox
-            defaultCenter={defaultCenter}
-            ref={mapboxRef}
-            isDarkmode={isDarkmode}
-            isSatellite={isSatellite}
-            isGeolocation={isGeolocation}
-            layerPrefix={layerPrefix}
-            mapStyles={mapStyles}
-            mapboxgl={mapboxgl}
-            sources={extendedSources}
-            icons={icons}
-            onFeatureClick={setSelectedFeatures}
-            loadingState={[isLoading, setLoading]}
-            selectedFeatures={selectedFeatures}
-            onViewportChange={onViewportChange}
-            isDevelopment={isDevelopment && isDevInfoVisible}
-          >
-            {children}
-          </Mapbox>
-          <ThemeController
-            isDarkmode={isDarkmode}
-            isSatellite={isSatellite}
-            onDarkmodeChange={(value) => {
-              isSatellite && setSatellite(false);
-              setDarkmode(value);
-            }}
-            onSatelliteChange={(value) => setSatellite(value)}
-            style={{
-              transform: `translate(${controlsMarginLeft}px, -${controlsMarginBottom}px)`,
-            }}
-          />
-          <ViewportController
-            style={{
-              transform: `translate(-${controlsMarginRight}px, -${controlsMarginBottom}px)`,
-            }}
-            isFullscreen={isFullscreen}
-            viewport={mapboxRef.current?.viewport}
-            onZoomInClick={zoomIn}
-            onZoomOutClick={zoomOut}
-            onFullscreenClick={toggleFullscreen}
-            onCompassClick={resetBearing}
-            bearing={bearing}
-            isGeolocation={isGeolocation}
-            onLocationClick={() => setGeolocation(!isGeolocation)}
-            onLegendClick={onLegendClick}
+          <LoadingSpinner
+            color="#5158D8"
+            size={100}
+            thickness={200}
+            speed={200}
           />
         </div>
-      </mapContext.Provider>
+      </>
     );
   }
 );
