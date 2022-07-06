@@ -39,6 +39,7 @@ import {
 import Mousetrap from "mousetrap";
 import { Feature } from "geojson";
 import { mergeViewports } from "../Mapbox/viewportReducer";
+
 export interface IMapProps {
   i18next: i18n;
   mapboxgl: typeof mapboxgl;

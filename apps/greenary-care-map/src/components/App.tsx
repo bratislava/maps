@@ -17,7 +17,6 @@ import {
   useClickOutside,
 } from "@bratislava/react-maps-core";
 import { DropdownArrow, IActiveFilter, Sidebar } from "@bratislava/react-maps-ui";
-import { Close } from "@bratislava/react-maps-icons";
 import { useArcgeo } from "@bratislava/react-esri";
 
 // components
