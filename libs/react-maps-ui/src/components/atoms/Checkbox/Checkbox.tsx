@@ -1,11 +1,11 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import cx from "classnames";
 import { Root, Indicator } from "@radix-ui/react-checkbox";
 import { Tick } from "@bratislava/react-maps-icons";
 
 export interface CheckboxProps {
   id: string;
-  label?: string;
+  label?: string | ReactNode;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
 }

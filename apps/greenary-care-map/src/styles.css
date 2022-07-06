@@ -54,6 +54,6 @@ body {
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.16) !important;
 }
 
-[data-rsbs-content] {
-  height: calc(100vh - 20px);
+[data-rsbs-footer] {
+  padding: 0 !important;
 }

@@ -1,4 +1,4 @@
-import { addDistrictPropertyToLayer } from "@bratislava/react-maps-core";
+import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps-core";
 import {
   getRandomItemFrom,
   getSeasonFromDate,
@@ -53,9 +53,16 @@ export const processData = (
     return allTypes;
   }, []);
 
-  const uniqueYears: string[] = getUniqueValuesFromFeatures(data.features, "year");
-  const uniqueDistricts: string[] = getUniqueValuesFromFeatures(data.features, "district");
-  const uniqueSeasons: string[] = getUniqueValuesFromFeatures(data.features, "season");
+  const uniqueYears: string[] = getUniqueValuesFromFeatures(data.features, "year").sort(
+    (a, b) => parseInt(b) - parseInt(a),
+  );
+  const uniqueDistricts: string[] = getUniqueValuesFromFeatures(data.features, "district").sort(
+    (a, b) => DISTRICTS.findIndex((d) => d == a) - DISTRICTS.findIndex((d) => d == b) ?? 0,
+  );
+  const seasons = ["spring", "summer", "autumn", "winter"];
+  const uniqueSeasons: string[] = getUniqueValuesFromFeatures(data.features, "season").sort(
+    (a, b) => seasons.findIndex((d) => d == a) - seasons.findIndex((d) => d == b) ?? 0,
+  );
   const uniqueTypes: string[] = getUniqueValuesFromFeatures(data.features, "TYP_VYKONU_1");
 
   const otherTypes = uniqueTypes.filter(

@@ -4,13 +4,11 @@ import {
   IFilterResult,
   MapHandle,
 } from "@bratislava/react-maps-core";
-import { Eye, EyeCrossed, X } from "@bratislava/react-maps-icons";
+import { Eye, EyeCrossed, Information, X } from "@bratislava/react-maps-icons";
 import {
   Divider,
   Select,
   TagFilter,
-  IActiveFilter,
-  ActiveFilters,
   SearchBar,
   SelectOption,
   Accordion,
@@ -28,7 +26,6 @@ export interface IDesktopFiltersProps<Y, D, S, T> {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
-  activeFilters: IActiveFilter[];
   onResetFiltersClick: () => void;
   mapRef: RefObject<MapHandle>;
   mapboxgl: typeof mapboxgl;
@@ -52,7 +49,6 @@ export const DesktopFilters = <
   isVisible,
   setVisible,
   areFiltersDefault,
-  activeFilters,
   onResetFiltersClick,
   mapRef,
   mapboxgl,
@@ -110,17 +106,20 @@ export const DesktopFilters = <
         />
         {!!searchFeatures.length && (
           <div className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-white rounded-lg py-4">
-            {searchFeatures.map((feature: any, i) => {
-              return (
-                <button
-                  className="text-left w-full hover:bg-background px-4 py-2"
-                  onMouseDown={() => onSearchFeatureClick(feature)}
-                  key={i}
-                >
-                  {feature.place_name_sk.split(",")[0]}
-                </button>
-              );
-            })}
+            {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              searchFeatures.map((feature: any, i) => {
+                return (
+                  <button
+                    className="text-left w-full hover:bg-background px-4 py-2"
+                    onMouseDown={() => onSearchFeatureClick(feature)}
+                    key={i}
+                  >
+                    {feature.place_name_sk.split(",")[0]}
+                  </button>
+                );
+              })
+            }
           </div>
         )}
       </div>
@@ -135,28 +134,7 @@ export const DesktopFilters = <
         )}
       </div>
 
-      <div className="w-full flex flex-col gap-4 px-6">
-        <Select
-          className="w-full"
-          value={districtFilter.activeKeys}
-          isMultiple
-          onChange={(value) => districtFilter.setActiveOnly((value ?? []) as D[])}
-          onReset={() => districtFilter.setActiveAll(false)}
-          renderValue={({ values }) => (
-            <SelectValueRenderer
-              values={values}
-              placeholder={t("filters.district.placeholder")}
-              multiplePlaceholder={`${t("filters.district.multipleDistricts")} (${values.length})`}
-            />
-          )}
-        >
-          {districtFilter.keys.map((district) => (
-            <SelectOption key={district} value={district}>
-              {district}
-            </SelectOption>
-          ))}
-        </Select>
-
+      <div className="w-full grid grid-cols-3 gap-4 px-6">
         <Select
           className="w-full"
           value={yearFilter.activeKeys}
@@ -174,6 +152,27 @@ export const DesktopFilters = <
           {yearFilter.keys.map((year) => (
             <SelectOption key={year} value={year}>
               {year}
+            </SelectOption>
+          ))}
+        </Select>
+
+        <Select
+          className="w-full col-span-2"
+          value={districtFilter.activeKeys}
+          isMultiple
+          onChange={(value) => districtFilter.setActiveOnly((value ?? []) as D[])}
+          onReset={() => districtFilter.setActiveAll(false)}
+          renderValue={({ values }) => (
+            <SelectValueRenderer
+              values={values}
+              placeholder={t("filters.district.placeholder")}
+              multiplePlaceholder={`${t("filters.district.multipleDistricts")} (${values.length})`}
+            />
+          )}
+        >
+          {districtFilter.keys.map((district) => (
+            <SelectOption key={district} value={district}>
+              {district}
             </SelectOption>
           ))}
         </Select>
@@ -235,7 +234,18 @@ export const DesktopFilters = <
                     <Checkbox
                       key={type}
                       id={type}
-                      label={type}
+                      label={
+                        <div className="flex items-center gap-2">
+                          <span>{type}</span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            <Information className="text-primary" size="sm" />
+                          </button>
+                        </div>
+                      }
                       checked={typeFilter.areKeysActive(type as T)}
                       onChange={() => typeFilter.toggleActive(type as T)}
                     />

@@ -16,7 +16,7 @@ export default {
     district: {
       title: "Mestská časť",
       placeholder: "Mestská časť",
-      multipleDistricts: "Viacero mestských častí",
+      multipleDistricts: "Zvolených",
     },
     season: {
       title: "Obdobie",

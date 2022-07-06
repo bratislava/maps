@@ -16,7 +16,7 @@ export default {
     district: {
       title: "District",
       placeholder: "District",
-      multipleDistricts: "Multiple districts",
+      multipleDistricts: "Selected",
     },
     season: {
       title: "Season",

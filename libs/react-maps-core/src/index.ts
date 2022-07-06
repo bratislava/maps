@@ -3,6 +3,7 @@ export * from "./geocoding";
 export * from "./hooks/useMap";
 export * from "./hooks/usePrevious";
 export * from "./hooks/useFilter";
+export * from "./hooks/useClickOutside";
 export * from "./components/Map/Map";
 export * from "./components/Layout/Layout";
 export * from "./components/Layer/Layer";

@@ -1,21 +1,19 @@
-import React, { ReactNode } from "react";
+import React, { HTMLProps, ReactNode } from "react";
 import cx from "classnames";
 
-interface IconButtonProps {
+interface IconButtonProps extends HTMLProps<HTMLButtonElement> {
   children: ReactNode;
   isActive?: boolean;
   isDisabled?: boolean;
-  onClick?: () => void;
   isMobileOnly?: boolean;
   isDektopOnly?: boolean;
   noStyle?: boolean;
-  className?: string;
   noAnimation?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
 export const IconButton = ({
   children,
-  onClick,
   isActive,
   isDisabled,
   isMobileOnly,
@@ -23,6 +21,7 @@ export const IconButton = ({
   noStyle = false,
   className,
   noAnimation = false,
+  ...etc
 }: IconButtonProps) => {
   return (
     <button
@@ -40,7 +39,7 @@ export const IconButton = ({
         },
         className
       )}
-      onClick={onClick}
+      {...etc}
     >
       {children}
     </button>

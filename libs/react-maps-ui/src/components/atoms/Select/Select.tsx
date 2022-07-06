@@ -3,7 +3,7 @@ import cx from "classnames";
 import { Chevron, X } from "@bratislava/react-maps-icons";
 import { Listbox, Transition } from "@headlessui/react";
 import { ISelectOptionProps } from "./SelectOption";
-import { SelectArrow } from "./SelectArrow";
+import { DropdownArrow } from "../Dropdown/DropdownArrow";
 interface ISelectProps {
   className?: string;
   buttonClassName?: string;
@@ -100,7 +100,7 @@ export const Select = ({
           )}
         </Listbox.Button>
         <Transition
-          enter="☺ duration-100 ease-out"
+          enter="duration-100 ease-out"
           enterFrom="transform scale-95 opacity-0"
           enterTo="transform scale-100 opacity-100"
           leave="transition duration-75 ease-out"
@@ -112,7 +112,7 @@ export const Select = ({
           })}
         >
           <Listbox.Options className="w-full py-4 bg-white rounded-lg shadow-lg overflow-hidden outline-none">
-            <SelectArrow />
+            <DropdownArrow isCenter={false} />
             {children}
           </Listbox.Options>
         </Transition>

@@ -1,9 +1,9 @@
 import React from "react";
-import { IViewport } from "../../types";
+import { Viewport } from "../../types";
 
 export interface IDevelopmentInfoProps {
   isDevelopment?: boolean;
-  viewport: IViewport;
+  viewport: Viewport;
 }
 
 export const DevelopmentInfo = ({

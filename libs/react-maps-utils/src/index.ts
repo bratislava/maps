@@ -1,4 +1,5 @@
 import { Season } from "./types";
+import { Feature } from "geojson";
 
 const getRandomInt = (max: number) => {
   return Math.floor(Math.random() * max);
@@ -73,7 +74,7 @@ export const getRandomItemFrom = <T>(items: T[] | T) => {
 };
 
 export const getUniqueValuesFromFeatures = (
-  features: any[],
+  features: Feature[],
   property: string
 ) => {
   return features.reduce((all: string[], current: any) => {
@@ -83,5 +84,5 @@ export const getUniqueValuesFromFeatures = (
     } else {
       return [...all, value];
     }
-  }, []);
+  }, [] as string[]);
 };

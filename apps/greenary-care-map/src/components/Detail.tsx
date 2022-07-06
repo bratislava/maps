@@ -65,7 +65,6 @@ export const Detail = ({ features, arcgeoServerUrl, onClose }: DetailProps) => {
             label={t(`layers.esri.detail.description`)}
             text={feature?.properties?.["POPIS_VYKONU_1"]}
           />
-          {i18n.language}
           <Row
             label={t(`layers.esri.detail.date`)}
             text={new Date(feature?.properties?.["TERMIN_REAL_1"]).toLocaleString(i18n.language, {
@@ -90,7 +89,9 @@ export const Detail = ({ features, arcgeoServerUrl, onClose }: DetailProps) => {
                       target="_blank"
                       key={index}
                     >
-                      {`${t("layers.esri.detail.showDocument")} ${index + 1}`}
+                      {`${t("layers.esri.detail.showDocument")} ${
+                        attachments.length > 1 ? index + 1 : ""
+                      }`}
                     </a>
                   );
                 })}

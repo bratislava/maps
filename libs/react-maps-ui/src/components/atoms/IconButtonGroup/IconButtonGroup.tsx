@@ -41,10 +41,19 @@ export const IconButtonGroup = ({ children }: IconButtonGroupProps) => {
               onMouseDown={() => {
                 setPressedChild(key);
               }}
+              onTouchStart={() => {
+                setPressedChild(key);
+              }}
               onMouseUp={() => {
                 setPressedChild(null);
               }}
               onMouseLeave={() => {
+                setPressedChild(null);
+              }}
+              onTouchCancel={() => {
+                setPressedChild(null);
+              }}
+              onTouchEnd={() => {
                 setPressedChild(null);
               }}
             >

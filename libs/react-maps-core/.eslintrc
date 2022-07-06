@@ -1,8 +1,9 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["react", "@typescript-eslint", "prettier"],
+  "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
   "extends": [
     "eslint:recommended",
+    "plugin:react-hooks/recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier"
@@ -13,5 +14,16 @@
     },
     "ecmaVersion": "latest",
     "sourceType": "module"
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "camelcase": "error",
+    "spaced-comment": "error",
+    "no-duplicate-imports": "error"
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
   }
 }

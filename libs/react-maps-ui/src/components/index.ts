@@ -13,6 +13,7 @@ export * from "./atoms/Sidebar/Sidebar";
 export * from "./atoms/IconButton/IconButton";
 export * from "./atoms/IconButtonGroup/IconButtonGroup";
 export * from "./atoms/Dropdown/Dropdown";
+export * from "./atoms/Dropdown/DropdownArrow";
 
 // molecules
 export * from "./molecules/TagFilter/TagFilter";

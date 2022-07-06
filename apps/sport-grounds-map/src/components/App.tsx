@@ -15,7 +15,7 @@ import {
   Layer,
   useFilter,
 } from "@bratislava/react-maps-core";
-import { IActiveFilter, LoadingSpinner } from "@bratislava/react-maps-ui";
+import { IActiveFilter } from "@bratislava/react-maps-ui";
 import { Close } from "@bratislava/react-maps-icons";
 
 // components
@@ -35,7 +35,6 @@ import RAW_DATA_SPORT_GROUNDS_FEATURES from "../assets/layers/sport-grounds/spor
 import RAW_DATA_SPORT_GROUNDS_ALT_FEATURES from "../assets/layers/sport-grounds/sport-grounds-alt-data";
 import SPORT_GROUNDS_STYLE from "../assets/layers/sport-grounds/sport-grounds-style";
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
-import { Marker } from "./Marker";
 
 export const App = () => {
   const { t } = useTranslation();
@@ -91,7 +90,7 @@ export const App = () => {
   const resetFilters = useCallback(() => {
     typeFilter.reset();
     districtFilter.reset();
-  }, [typeFilter.reset, districtFilter.reset]);
+  }, [typeFilter, districtFilter]);
 
   const activeFilters: IActiveFilter[] = useMemo(() => {
     return [
@@ -104,14 +103,7 @@ export const App = () => {
         items: typeFilter.activeKeys.map((type) => t(`filters.type.types.${type}`)),
       },
     ];
-  }, [districtFilter.activeKeys, typeFilter.activeKeys]);
-
-  // close detailbox when sidebar is opened on mobile
-  useEffect(() => {
-    if (isMobile && isSidebarVisible == true && previousSidebarVisible == false) {
-      closeDetail();
-    }
-  }, [isMobile, isSidebarVisible, previousSidebarVisible]);
+  }, [districtFilter.activeKeys, t, typeFilter.activeKeys]);
 
   // close sidebar on mobile and open on desktop
   useEffect(() => {
@@ -133,6 +125,13 @@ export const App = () => {
   const closeDetail = useCallback(() => {
     mapRef.current?.deselectAllFeatures();
   }, [mapRef]);
+
+  // close detailbox when sidebar is opened on mobile
+  useEffect(() => {
+    if (isMobile && isSidebarVisible == true && previousSidebarVisible == false) {
+      closeDetail();
+    }
+  }, [closeDetail, isMobile, isSidebarVisible, previousSidebarVisible]);
 
   // fit to district
   useEffect(() => {
@@ -178,68 +177,70 @@ export const App = () => {
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
         satellite: import.meta.env.PUBLIC_MAPBOX_SATELLITE_STYLE,
       }}
-      defaultCenter={{
-        lat: 48.148598,
-        lng: 17.107748,
+      initialViewport={{
+        center: {
+          lat: 48.148598,
+          lng: 17.107748,
+        },
       }}
       icons={{
         "hockey-icon": {
-          path: "/icons/hockey.svg",
+          path: "icons/hockey.svg",
           width: 160,
           height: 160,
         },
         "fitness-icon": {
-          path: "/icons/fitness.svg",
+          path: "icons/fitness.svg",
           width: 160,
           height: 160,
         },
         "tennis-icon": {
-          path: "/icons/tennis.svg",
+          path: "icons/tennis.svg",
           width: 160,
           height: 160,
         },
         "pool-icon": {
-          path: "/icons/pool.svg",
+          path: "icons/pool.svg",
           width: 160,
           height: 160,
         },
         "basketball-icon": {
-          path: "/icons/basketball.svg",
+          path: "icons/basketball.svg",
           width: 160,
           height: 160,
         },
         "cvicko-icon": {
-          path: "/icons/cvicko.svg",
+          path: "icons/cvicko.svg",
           width: 160,
           height: 160,
         },
         "gym-icon": {
-          path: "/icons/gym.svg",
+          path: "icons/gym.svg",
           width: 160,
           height: 160,
         },
         "table-tennis-icon": {
-          path: "/icons/table-tennis.svg",
+          path: "icons/table-tennis.svg",
           width: 160,
           height: 160,
         },
         "water-icon": {
-          path: "/icons/water.svg",
+          path: "icons/water.svg",
           width: 160,
           height: 160,
         },
         "running-track-icon": {
-          path: "/icons/running-track.svg",
+          path: "icons/running-track.svg",
           width: 160,
           height: 160,
         },
         "football-icon": {
-          path: "/icons/football.svg",
+          path: "icons/football.svg",
           width: 160,
           height: 160,
         },
         "other-icon": {
-          path: "/icons/other.svg",
+          path: "icons/other.svg",
           width: 160,
           height: 160,
         },
@@ -283,28 +284,35 @@ export const App = () => {
           name="mobile-filter"
           isVisible={isSidebarVisible}
           setVisible={setSidebarVisible}
-          openPadding={{
-            right: 320,
-          }}
           avoidControls={false}
         >
-          {({ isVisible, setVisible }) => (
-            <MobileFilters
-              isVisible={isVisible}
-              setVisible={setVisible}
-              areFiltersDefault={areFiltersDefault}
-              activeFilters={activeFilters}
-              onResetFiltersClick={resetFilters}
-              districtFilter={districtFilter}
-              typeFilter={typeFilter}
-            />
-          )}
+          <MobileFilters
+            isVisible={isSidebarVisible}
+            setVisible={setSidebarVisible}
+            areFiltersDefault={areFiltersDefault}
+            activeFilters={activeFilters}
+            onResetFiltersClick={resetFilters}
+            districtFilter={districtFilter}
+            typeFilter={typeFilter}
+          />
         </Slot>
 
         <Slot
           name="mobile-detail"
           isVisible={isDetailOpen}
-          bottomSheetOptions={{}}
+          bottomSheetOptions={{
+            footer: (
+              <div className="bg-gray bg-opacity-10 z-20">
+                <button
+                  onClick={closeDetail}
+                  className="p-3 flex items-center hover:underline justify-center mx-auto"
+                >
+                  <span className="font-bold">{t("close")}</span>
+                  <Close className="text-primary" width={32} height={32} />
+                </button>
+              </div>
+            ),
+          }}
           openPadding={{
             bottom: window.innerHeight / 2, // w-96 or 24rem
           }}
@@ -312,15 +320,6 @@ export const App = () => {
         >
           <div className="relative h-full">
             <Detail features={selectedFeatures ?? []} onClose={closeDetail} />
-            <div className="sticky top-full bg-gray bg-opacity-10">
-              <button
-                onClick={closeDetail}
-                className="p-3 flex items-center hover:underline justify-center mx-auto"
-              >
-                <span className="font-bold">{t("close")}</span>
-                <Close className="text-primary" width={32} height={32} />
-              </button>
-            </div>
           </div>
         </Slot>
 
@@ -338,20 +337,18 @@ export const App = () => {
             left: 384, // w-96 or 24rem
           }}
         >
-          {({ isVisible, setVisible }) => (
-            <DesktopFilters
-              mapboxgl={mapboxgl}
-              isVisible={isVisible}
-              setVisible={setVisible}
-              areFiltersDefault={areFiltersDefault}
-              activeFilters={activeFilters}
-              onResetFiltersClick={resetFilters}
-              mapRef={mapRef}
-              districtFilter={districtFilter}
-              typeFilter={typeFilter}
-              isGeolocation={isGeolocation}
-            />
-          )}
+          <DesktopFilters
+            mapboxgl={mapboxgl}
+            isVisible={isSidebarVisible}
+            setVisible={setSidebarVisible}
+            areFiltersDefault={areFiltersDefault}
+            activeFilters={activeFilters}
+            onResetFiltersClick={resetFilters}
+            mapRef={mapRef}
+            districtFilter={districtFilter}
+            typeFilter={typeFilter}
+            isGeolocation={isGeolocation}
+          />
         </Slot>
 
         <Slot
@@ -362,17 +359,15 @@ export const App = () => {
           }}
           avoidControls={window.innerHeight <= (desktopDetailHeight ?? 0) + 200 ? true : false}
         >
-          {({ isVisible }) => (
-            <div
-              ref={desktopDetailRef}
-              className={cx("fixed top-0 right-0 w-96 bg-background transition-all duration-500", {
-                "translate-x-full": !isVisible,
-                "shadow-lg": isVisible,
-              })}
-            >
-              <Detail features={selectedFeatures ?? []} onClose={closeDetail} />
-            </div>
-          )}
+          <div
+            ref={desktopDetailRef}
+            className={cx("fixed top-0 right-0 w-96 bg-background transition-all duration-500", {
+              "translate-x-full": !isDetailOpen,
+              "shadow-lg": isDetailOpen,
+            })}
+          >
+            <Detail features={selectedFeatures ?? []} onClose={closeDetail} />
+          </div>
         </Slot>
       </Layout>
     </Map>

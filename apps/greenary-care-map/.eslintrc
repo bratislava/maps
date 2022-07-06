@@ -3,6 +3,7 @@
   "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
   "extends": [
     "eslint:recommended",
+    "plugin:react-hooks/recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier"

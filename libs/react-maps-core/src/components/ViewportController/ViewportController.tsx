@@ -9,12 +9,12 @@ import {
   LocationActive,
   List,
 } from "@bratislava/react-maps-icons";
-import React, { CSSProperties, forwardRef } from "react";
-import { IViewport } from "../../types";
+import React, { CSSProperties, forwardRef, MouseEvent } from "react";
+import { Viewport } from "../../types";
 import { IconButton, IconButtonGroup } from "@bratislava/react-maps-ui";
 
 interface ViewportControllerProps {
-  viewport?: IViewport;
+  viewport: Viewport;
   isGeolocation: boolean;
   isFullscreen: boolean;
   onZoomOutClick: () => void;
@@ -22,8 +22,7 @@ interface ViewportControllerProps {
   onFullscreenClick: () => void;
   onCompassClick: () => void;
   onLocationClick: () => void;
-  onLegendClick?: () => void;
-  bearing: number;
+  onLegendClick?: (e: MouseEvent) => void;
   style?: CSSProperties;
 }
 
@@ -39,7 +38,6 @@ export const ViewportController = forwardRef<
       onFullscreenClick,
       onCompassClick,
       onLocationClick,
-      bearing,
       isGeolocation,
       isFullscreen,
       onLegendClick,
@@ -57,12 +55,7 @@ export const ViewportController = forwardRef<
       >
         <div className="flex gap-2 items-end">
           {onLegendClick && (
-            <IconButton
-              onClick={() => {
-                console.log("legee");
-                onLegendClick();
-              }}
-            >
+            <IconButton onClick={onLegendClick}>
               <List size="xl" />
             </IconButton>
           )}
@@ -76,7 +69,7 @@ export const ViewportController = forwardRef<
           <IconButton onClick={onCompassClick}>
             <Compass
               className="w-12 h-12"
-              style={{ transform: `rotate(${-bearing}deg)` }}
+              style={{ transform: `rotate(${-viewport?.bearing}deg)` }}
             />
           </IconButton>
           <div className="flex flex-col gap-2">

@@ -1,8 +1,6 @@
 import React, {
   useEffect,
   useRef,
-  Dispatch,
-  SetStateAction,
   createContext,
   useMemo,
   useCallback,
@@ -11,8 +9,9 @@ import React, {
   forwardRef,
   useImperativeHandle,
   ReactNode,
+  useReducer,
 } from "react";
-import { Sources, MapIcon, IViewport, IPadding } from "../../types";
+import { Sources, MapIcon, Viewport, PartialViewport } from "../../types";
 import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
 import { usePrevious } from "../../hooks/usePrevious";
 import { log } from "../../utils/log";
@@ -20,6 +19,11 @@ import { createGeolocationMarkerElement } from "../../utils/createGeolocationMar
 import bbox from "@turf/bbox";
 import DATA_DISTRICTS from "../../assets/layers/districts.json";
 import { DevelopmentInfo } from "../DevelopmentInfo/DevelopmentInfo";
+import {
+  mergeViewports,
+  ViewportActionKind,
+  viewportReducer,
+} from "./viewportReducer";
 
 export interface MapboxProps {
   mapboxgl: typeof mapboxgl;
@@ -35,17 +39,14 @@ export interface MapboxProps {
     dark?: string;
     satellite?: string;
   };
-  selectedFeatures: any[];
-  onFeatureClick: (features: any[]) => void;
+  selectedFeatures: MapboxGeoJSONFeature[];
+  onFeatureClick: (features: MapboxGeoJSONFeature[]) => void;
   children?: ReactNode;
   layerPrefix?: string;
-  onViewportChange?: (viewport: IViewport) => void;
-  onViewportChangeDebounced?: (viewport: IViewport) => void;
+  onViewportChange?: (viewport: Viewport) => void;
+  onViewportChangeDebounced?: (viewport: Viewport) => void;
   onLoad?: () => void;
-  defaultCenter?: {
-    lat: number;
-    lng: number;
-  };
+  initialViewport?: PartialViewport;
   isDevelopment?: boolean;
 }
 
@@ -63,13 +64,14 @@ export interface IContext {
   getPrefixedLayer: (layerId: string) => string;
   isLayerPrefixed: (layerId: string) => boolean;
   addClickableLayer: (layerId: string) => void;
-  changeViewport: (viewport: Partial<IViewport>, instant?: boolean) => void;
+  changeViewport: (viewport: PartialViewport, instant?: boolean) => void;
 }
 
 const createMap = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mapboxgl: any,
   mapContainer: RefObject<HTMLDivElement>,
-  viewport: IViewport,
+  viewport: PartialViewport,
   isSatellite: boolean,
   satelliteStyle: string,
   isDarkmode: boolean,
@@ -82,8 +84,8 @@ const createMap = (
     container: mapContainer.current ?? "",
     style: isSatellite ? satelliteStyle : isDarkmode ? darkStyle : lightStyle,
     center: [
-      viewport.center.lng ?? 17.107748,
-      viewport.center.lat ?? 48.148598,
+      viewport.center?.lng ?? 17.107748,
+      viewport.center?.lat ?? 48.148598,
     ],
     zoom: viewport.zoom ?? 13,
     pitch: viewport.pitch ?? 0,
@@ -105,8 +107,7 @@ export const mapboxContext = createContext<IContext>({
 
 export type MapboxHandle = {
   fitToDistrict: (district: string | string[]) => void;
-  viewport: IViewport;
-  changeViewport: (viewport: Partial<IViewport>, instant?: boolean) => void;
+  changeViewport: (viewport: PartialViewport, instant?: boolean) => void;
 };
 
 export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
@@ -127,9 +128,9 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       mapboxgl,
       children,
       layerPrefix = "BRATISLAVA",
-      onViewportChange = () => void 0,
-      onViewportChangeDebounced = () => void 0,
-      defaultCenter,
+      onViewportChange,
+      onViewportChangeDebounced,
+      initialViewport: inputInitialViewport,
       isDevelopment = false,
       onLoad = () => void 0,
     },
@@ -151,101 +152,64 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       [setClickableLayerIds]
     );
 
-    const [centerLng, setCenterLng] = useState(defaultCenter?.lng ?? 0);
-    const [centerLat, setCenterLat] = useState(defaultCenter?.lat ?? 0);
-    const [zoom, setZoom] = useState(0);
-    const [bearing, setBearing] = useState(0);
-    const [pitch, setPitch] = useState(0);
-    const [paddingTop, setPaddingTop] = useState(0);
-    const [paddingRight, setPaddingRight] = useState(0);
-    const [paddingBottom, setPaddingBottom] = useState(0);
-    const [paddingLeft, setPaddingLeft] = useState(0);
+    const initialViewport = useMemo(
+      () =>
+        mergeViewports(
+          {
+            center: {
+              lat: 0,
+              lng: 0,
+            },
+            zoom: 0,
+            pitch: 0,
+            bearing: 0,
+            padding: {
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+            },
+          },
+          inputInitialViewport ?? {}
+        ),
+      [inputInitialViewport]
+    );
 
-    const [, setWantedViewport] = useState<IViewport>({
-      center: {
-        lat: defaultCenter?.lat ?? 0,
-        lng: defaultCenter?.lng ?? 0,
-      },
-      zoom: 0,
-      pitch: 0,
-      bearing: 0,
-      padding: {
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-      },
-    });
+    const [viewport, dispatchViewport] = useReducer(
+      viewportReducer,
+      initialViewport
+    );
 
-    const padding = useMemo(() => {
-      return {
-        top: paddingTop,
-        right: paddingRight,
-        bottom: paddingBottom,
-        left: paddingLeft,
-      };
-    }, [paddingTop, paddingRight, paddingBottom, paddingLeft]);
-
-    const center = useMemo(() => {
-      return {
-        lng: centerLng,
-        lat: centerLat,
-      };
-    }, [centerLng, centerLat]);
-
-    const viewport = useMemo(() => {
-      return {
-        center,
-        zoom,
-        bearing,
-        pitch,
-        padding,
-      };
-    }, [center, zoom, bearing, pitch, padding]);
+    const [debouncedViewport, dispatchDebouncedViewport] = useReducer(
+      viewportReducer,
+      initialViewport
+    );
 
     const changeViewport = useCallback(
-      (newViewport: Partial<IViewport>, instant = false) => {
+      (partialViewport: PartialViewport, instant = false) => {
         const MAP = map.current;
         if (!MAP) return;
 
-        setWantedViewport((wantedViewport) => {
-          const wholeNewViewport = {
-            ...wantedViewport,
-            ...newViewport,
-            padding: {
-              top: newViewport.padding?.top ?? wantedViewport.padding.top ?? 0,
-              right:
-                newViewport.padding?.right ?? wantedViewport.padding.right ?? 0,
-              bottom:
-                newViewport.padding?.bottom ??
-                wantedViewport.padding.bottom ??
-                0,
-              left:
-                newViewport.padding?.left ?? wantedViewport.padding.left ?? 0,
-            },
-          };
-
-          if (
-            JSON.stringify(wantedViewport) !== JSON.stringify(wholeNewViewport)
-          ) {
-            log(instant ? "CHANGE VIEWPORT (INSTANT)" : "CHANGE VIEWPORT");
-            onViewportChangeDebounced(wholeNewViewport);
-            if (instant) {
-              MAP.jumpTo({
-                ...wholeNewViewport,
-              });
-            } else {
-              MAP.easeTo({
-                ...wholeNewViewport,
-              });
-            }
-            return wholeNewViewport;
-          }
-
-          return wantedViewport;
+        dispatchDebouncedViewport({
+          type: ViewportActionKind.Change,
+          partialViewport: partialViewport,
         });
+
+        const newViewport = mergeViewports(debouncedViewport, partialViewport);
+
+        if (JSON.stringify(debouncedViewport) !== JSON.stringify(newViewport)) {
+          if (instant) {
+            MAP.jumpTo({
+              ...newViewport,
+            });
+          } else {
+            MAP.easeTo({
+              ...newViewport,
+            });
+          }
+        }
       },
-      [map, onViewportChange]
+      [debouncedViewport]
     );
 
     const [isLoading, setLoading] = useState(true);
@@ -261,13 +225,13 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     const prevSelectedFeatures = usePrevious(selectedFeatures);
     const prevClickableLayerIds = usePrevious(clickableLayerIds);
 
-    //CREATE NEW LAYER ID BY ADDING PREFIX
+    // CREATE NEW LAYER ID BY ADDING PREFIX
     const getPrefixedLayer = useCallback(
       (id: string) => `${layerPrefix}-${id}`,
       [layerPrefix]
     );
 
-    //CHECK IF LAYER ID CONTAINS PREFIX
+    // CHECK IF LAYER ID CONTAINS PREFIX
     const isLayerPrefixed = useCallback(
       (id: string) => id.startsWith(layerPrefix),
       [layerPrefix]
@@ -278,9 +242,9 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         onLoad();
         log("MAP LOADED");
       }
-    }, [isLoading, onLoad]);
+    }, [isLoading, onLoad, previousLoading]);
 
-    //CONTEXT VALUE PASSED TO ALL CHILDRENS
+    // CONTEXT VALUE PASSED TO ALL CHILDRENS
     const mapContextValue: IContext = useMemo(
       () => ({
         map: map?.current,
@@ -302,7 +266,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       ]
     );
 
-    //GEOLOCATION TOGGLING
+    // GEOLOCATION TOGGLING
     useEffect(() => {
       const MAP = map.current;
       if (!MAP || isLoading) return;
@@ -322,8 +286,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
                     ])
                     .addTo(MAP)
                 );
-                setCenterLat(position.coords.latitude);
-                setCenterLng(position.coords.longitude);
+                // setCenterLat(position.coords.latitude);
+                // setCenterLng(position.coords.longitude);
               },
               (error) => {
                 alert(error.message);
@@ -347,12 +311,12 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       previousGeolocation,
       isLoading,
       mapboxgl,
-      setCenterLat,
-      setCenterLng,
+      // setCenterLat,
+      // setCenterLng,
       viewport,
     ]);
 
-    //CREATING MAP
+    // CREATING MAP
     useEffect(() => {
       setLoading(true);
       if (map.current) {
@@ -370,9 +334,10 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         darkStyle,
         lightStyle
       );
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [setLoading]);
 
-    //LOADING SOURCES
+    // LOADING SOURCES
     const loadSources = useCallback(() => {
       if (!map.current) return;
       const MAP = map.current;
@@ -385,9 +350,19 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           });
         }
       });
+
+      if (!MAP.getSource("satellite")) {
+        MAP.addSource("satellite", {
+          type: "raster",
+          tileSize: 256,
+          tiles: [
+            "https://geoportal.bratislava.sk/hsite/rest/services/Hosted/Ortofoto_2021_WGS/MapServer/tile/{z}/{y}/{x}",
+          ],
+        });
+      }
     }, [sources]);
 
-    //LOADING ICONS
+    // LOADING ICONS
     const loadIcons = useCallback(() => {
       if (!map.current) return;
       const MAP = map.current;
@@ -413,7 +388,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       });
     }, [icons]);
 
-    //MAP CLICK HANDLER
+    // MAP CLICK HANDLER
     const onMapClick = useCallback(
       (event: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
         if (!map.current) return;
@@ -426,21 +401,21 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
 
           const features = MAP.queryRenderedFeatures(event.point);
 
-          //filter only features from sources and from custom layers
+          // filter only features from sources and from custom layers
           const filteredFeatures = features.reduce(
             (filteredFeatures, feature) => {
               if (
-                //if source of the feature exists in sources
+                // if source of the feature exists in sources
                 (Object.keys(sources).find(
                   (sourceKey) => sourceKey === feature.source
                 ) ||
-                  //or layer id starts with prefix (custom layers from mapbox)
+                  // or layer id starts with prefix (custom layers from mapbox)
                   feature.layer.id.startsWith(layerPrefix)) &&
-                //if feature from that source is not included already
+                // if feature from that source is not included already
                 !filteredFeatures.find(
                   (filteredFeaturs) => filteredFeaturs.source === feature.source
                 ) &&
-                //is clickable
+                // is clickable
                 clickableLayerIds.find(
                   (clickableLayerId) => clickableLayerId === feature.layer.id
                 )
@@ -452,7 +427,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
             [] as MapboxGeoJSONFeature[]
           );
 
-          //if there is a symbol feature, ignore others
+          // if there is a symbol feature, ignore others
           const foundSymbolFeature = filteredFeatures.find((feature) => {
             return feature.layer.type === "symbol";
           });
@@ -467,7 +442,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       [layerPrefix, onFeatureClick, sources, clickableLayerIds]
     );
 
-    //MAP MOVE HANDLER
+    // MAP MOVE HANDLER
     const onMapMove = useCallback(() => {
       const MAP = map.current;
       if (!MAP) return;
@@ -478,42 +453,51 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       const bearing = MAP.getBearing();
       const padding = MAP.getPadding();
 
-      setCenterLat(center.lat);
-      setCenterLng(center.lng);
-      setZoom(zoom);
-      setPitch(pitch);
-      setBearing(bearing);
-      setPaddingTop(padding.top);
-      setPaddingRight(padding.right);
-      setPaddingBottom(padding.bottom);
-      setPaddingLeft(padding.left);
-
-      onViewportChange({
-        center: {
-          lat: center.lat,
-          lng: center.lng,
-        },
+      const viewport: Viewport = {
+        center,
         zoom,
         bearing,
         pitch,
-        padding: {
-          top: padding.top,
-          right: padding.right,
-          bottom: padding.bottom,
-          left: padding.left,
-        },
-      });
-    }, [onViewportChange]);
+        padding,
+      };
 
-    //MAP MOVEEND HANDLER
+      dispatchViewport({
+        type: ViewportActionKind.Change,
+        partialViewport: viewport,
+      });
+    }, [map]);
+
+    // MAP MOVEEND HANDLER
     const onMapMoveEnd = useCallback(() => {
       const MAP = map.current;
       if (!MAP) return;
 
-      setWantedViewport(viewport);
-    }, [viewport]);
+      const center = MAP.getCenter();
+      const zoom = MAP.getZoom();
+      const pitch = MAP.getPitch();
+      const bearing = MAP.getBearing();
+      const padding = MAP.getPadding();
 
-    //REGISTER MAP LAYER EVENT CALLBACKS
+      const viewport: Viewport = {
+        center,
+        zoom,
+        bearing,
+        pitch,
+        padding,
+      };
+
+      dispatchViewport({
+        type: ViewportActionKind.Change,
+        partialViewport: viewport,
+      });
+
+      dispatchDebouncedViewport({
+        type: ViewportActionKind.Change,
+        partialViewport: viewport,
+      });
+    }, []);
+
+    // REGISTER MAP LAYER EVENT CALLBACKS
     const registerMapLayerEvents = useCallback(
       (customLayer: mapboxgl.Layer) => {
         if (!map.current) return;
@@ -560,7 +544,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           }
         });
 
-        MAP.on("mouseleave", customLayer.id, (e) => {
+        MAP.on("mouseleave", customLayer.id, () => {
           if (hoveredFeatureId !== undefined) {
             MAP.setFeatureState(
               {
@@ -578,7 +562,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       [clickableLayerIds]
     );
 
-    //REGISTER MAP EVENTS
+    // REGISTER MAP EVENTS
     useEffect(() => {
       if (!map.current) return;
       const MAP = map.current;
@@ -591,7 +575,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       ) {
         log("REGISTERING MAP EVENTS");
 
-        //get custom layers (prefixed)
+        // get custom layers (prefixed)
         const customLayers = MAP.getStyle().layers.reduce(
           (layers, layer: mapboxgl.Layer) => {
             if (
@@ -632,7 +616,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       prevClickableLayerIds,
     ]);
 
-    //ON MAP LOAD
+    // ON MAP LOAD
     useEffect(() => {
       const MAP = map.current;
       if (!MAP || !isLoading) return;
@@ -664,12 +648,12 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       isSatellite,
     ]);
 
-    //REACT TO SELECTED FEATURES STATE CHANGES
+    // REACT TO SELECTED FEATURES STATE CHANGES
     useEffect(() => {
       if (!map.current) return;
       const MAP = map.current;
 
-      //deselect previous selected features
+      // deselect previous selected features
       if (prevSelectedFeatures) {
         prevSelectedFeatures.forEach((feature) => {
           MAP.setFeatureState(
@@ -683,7 +667,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         });
       }
 
-      //select the new selected features
+      // select the new selected features
       if (selectedFeatures) {
         selectedFeatures.forEach((feature) => {
           MAP.setFeatureState(
@@ -703,14 +687,9 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       if (!map.current) return;
       const MAP = map.current;
 
-      if (
-        isSatellite !== previousSatellite ||
-        (!isSatellite && isDarkmode !== previousDarkmode)
-      ) {
+      if (isDarkmode !== previousDarkmode) {
         log("SETTING NEW STYLE");
-        MAP.setStyle(
-          isSatellite ? satelliteStyle : isDarkmode ? darkStyle : lightStyle
-        );
+        MAP.setStyle(isDarkmode ? darkStyle : lightStyle);
         setStyleLoading(true);
 
         MAP.on("style.load", () => {
@@ -718,24 +697,79 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           loadIcons();
           setStyleLoading(false);
           log("STYLE LOADED");
+
+          if (isSatellite === true) {
+            if (!MAP.getLayer("satellite-raster")) {
+              const layers = MAP.getStyle().layers;
+              const bottomLayer = layers.find((layer) =>
+                layer.id.startsWith(layerPrefix)
+              );
+              MAP.addLayer(
+                {
+                  id: "satellite-raster",
+                  type: "raster",
+                  source: "satellite",
+                },
+                bottomLayer?.id
+              );
+            }
+          }
         });
       }
     }, [
       isDarkmode,
       previousDarkmode,
       isSatellite,
-      previousSatellite,
+      layerPrefix,
       satelliteStyle,
       darkStyle,
       lightStyle,
       loadSources,
       loadIcons,
+      previousSatellite,
     ]);
 
-    //EXPOSING METHODS FOR PARENT COMPONENT
-    useImperativeHandle(forwardedRef, () => ({
-      viewport,
+    useEffect(() => {
+      if (!map.current) return;
+      const MAP = map.current;
 
+      if (isDarkmode === previousDarkmode) {
+        if (isSatellite === true) {
+          if (!MAP.getLayer("satellite-raster")) {
+            const layers = MAP.getStyle().layers;
+            const bottomLayer = layers.find((layer) =>
+              layer.id.startsWith(layerPrefix)
+            );
+            MAP.addLayer(
+              {
+                id: "satellite-raster",
+                type: "raster",
+                source: "satellite",
+              },
+              bottomLayer?.id
+            );
+          }
+        } else {
+          if (MAP.getLayer("satellite-raster")) {
+            MAP.removeLayer("satellite-raster");
+          }
+        }
+      }
+    }, [isDarkmode, isSatellite, layerPrefix, previousDarkmode]);
+
+    // EVENTS
+    useEffect(() => {
+      log("VIEWPORT CHANGE");
+      onViewportChange && onViewportChange(viewport);
+    }, [viewport, onViewportChange]);
+
+    useEffect(() => {
+      log("DEBOUNCED VIEWPORT CHANGE");
+      onViewportChangeDebounced && onViewportChangeDebounced(debouncedViewport);
+    }, [debouncedViewport, onViewportChangeDebounced]);
+
+    // EXPOSING METHODS FOR PARENT COMPONENT
+    useImperativeHandle(forwardedRef, () => ({
       changeViewport,
 
       fitToDistrict(district) {

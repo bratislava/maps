@@ -1,15 +1,15 @@
 const styles = [
   {
-    id: 'sports-grounds-points',
-    type: 'symbol',
+    id: "sports-grounds-points",
+    type: "symbol",
     layout: {
-      'icon-image': ['get', 'icon'],
+      "icon-image": ["get", "icon"],
 
       // 'icon-anchor': 'bottom',
-      'icon-size': [
-        'interpolate',
-        ['linear'],
-        ['zoom'],
+      "icon-size": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
         // zoom is 11 (or less) -> scale will be 0.5
         11,
         0.25,

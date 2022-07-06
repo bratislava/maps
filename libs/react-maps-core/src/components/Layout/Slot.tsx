@@ -12,7 +12,7 @@ import React, {
 import cx from "classnames";
 import { BottomSheet } from "react-spring-bottom-sheet";
 import { mapboxContext } from "../Mapbox/Mapbox";
-import { IPadding } from "../../types";
+import { Padding, PartialPadding } from "../../types";
 import { mapContext } from "../Map/Map";
 import { usePrevious } from "../../hooks/usePrevious";
 
@@ -23,7 +23,7 @@ export interface ISlotChildProps {
 
 export interface ISlotProps {
   name: string;
-  children?: ReactNode | FC<ISlotChildProps>;
+  children?: ReactNode;
   isVisible?: boolean;
   setVisible?: Dispatch<SetStateAction<boolean | undefined>>;
   bottomSheetOptions?: {
@@ -54,8 +54,8 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
   ) => {
     const [isVisible, setVisible] = useState<boolean | undefined>(undefined);
 
-    const [padding, setPadding] = useState({} as Partial<IPadding>);
-    const [margin, setMargin] = useState({} as Partial<IPadding>);
+    const [padding, setPadding] = useState({} as PartialPadding);
+    const [margin, setMargin] = useState({} as PartialPadding);
 
     const previousPadding = usePrevious(padding);
     const previousMargin = usePrevious(margin);
@@ -124,7 +124,7 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
     const { changeMargin } = useContext(mapContext);
 
     useEffect(() => {
-      const padding = {} as Partial<IPadding>;
+      const padding = {} as PartialPadding;
       if (paddingTop !== undefined) padding.top = paddingTop;
       if (paddingRight !== undefined) padding.right = paddingRight;
       if (paddingBottom !== undefined) padding.bottom = paddingBottom;
@@ -133,7 +133,7 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
     }, [paddingTop, paddingRight, paddingBottom, paddingLeft]);
 
     useEffect(() => {
-      const margin = {} as Partial<IPadding>;
+      const margin = {} as PartialPadding;
       if (marginTop !== undefined) margin.top = marginTop;
       if (marginRight !== undefined) margin.right = marginRight;
       if (marginBottom !== undefined) margin.bottom = marginBottom;
@@ -169,15 +169,8 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
         header={bottomSheetOptions.header}
         footer={bottomSheetOptions.footer}
       >
-        {typeof children === "function"
-          ? children({ isVisible, setVisible })
-          : children}
+        {children}
       </BottomSheet>
-    ) : typeof children === "function" ? (
-      children({
-        isVisible: isVisible,
-        setVisible: inputSetVisible ?? setVisible,
-      })
     ) : (
       <>{children}</>
     );

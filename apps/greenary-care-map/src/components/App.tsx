@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import cx from "classnames";
 import "../styles.css";
 import { useResizeDetector } from "react-resize-detector";
-import { useClickOutside } from "@mantine/hooks";
 
 // maps
 import {
@@ -15,8 +14,9 @@ import {
   Map,
   Layer,
   useFilter,
+  useClickOutside,
 } from "@bratislava/react-maps-core";
-import { IActiveFilter, LoadingSpinner, Sidebar } from "@bratislava/react-maps-ui";
+import { DropdownArrow, IActiveFilter, Sidebar } from "@bratislava/react-maps-ui";
 import { Close } from "@bratislava/react-maps-icons";
 import { useArcgeo } from "@bratislava/react-esri";
 
@@ -144,7 +144,7 @@ export const App = () => {
     yearFilter.reset();
     seasonFilter.reset();
     districtFilter.reset();
-  }, [yearFilter.reset, seasonFilter.reset, districtFilter.reset]);
+  }, [yearFilter, seasonFilter, districtFilter]);
 
   const activeFilters: IActiveFilter[] = useMemo(() => {
     return [
@@ -161,14 +161,18 @@ export const App = () => {
         items: seasonFilter.activeKeys.map((season) => t(`filters.season.seasons.${season}`)),
       },
     ];
-  }, [yearFilter.activeKeys, districtFilter.activeKeys, seasonFilter.activeKeys]);
+  }, [t, yearFilter.activeKeys, districtFilter.activeKeys, seasonFilter.activeKeys]);
+
+  const closeDetail = useCallback(() => {
+    mapRef.current?.deselectAllFeatures();
+  }, [mapRef]);
 
   // close detailbox when sidebar is opened on mobile
   useEffect(() => {
     if (isMobile && isSidebarVisible == true && previousSidebarVisible == false) {
       closeDetail();
     }
-  }, [isMobile, isSidebarVisible, previousSidebarVisible]);
+  }, [closeDetail, isMobile, isSidebarVisible, previousSidebarVisible]);
 
   // close sidebar on mobile and open on desktop
   useEffect(() => {
@@ -187,9 +191,10 @@ export const App = () => {
     [selectedFeatures],
   );
 
-  const closeDetail = useCallback(() => {
-    mapRef.current?.deselectAllFeatures();
-  }, [mapRef]);
+  const onLegendClick = useCallback((e: MouseEvent) => {
+    setLegendVisible((isLegendVisible) => !isLegendVisible);
+    e.stopPropagation();
+  }, []);
 
   // fit to district
   useEffect(() => {
@@ -225,19 +230,11 @@ export const App = () => {
   const { height: desktopDetailHeight, ref: desktopDetailRef } =
     useResizeDetector<HTMLDivElement>();
 
-  return isLoading ? (
-    <div
-      className={cx(
-        "fixed z-50 top-0 right-0 bottom-0 left-0 bg-white flex items-center justify-center text-primary duration-500",
-        {
-          "visible opacity-100 transition-none": isLoading,
-          "invisible opacity-0 transition-all": !isLoading,
-        },
-      )}
-    >
-      <LoadingSpinner size={96} color="var(--primary-color)" />
-    </div>
-  ) : (
+  const legendRef = useClickOutside<HTMLDivElement | null>(() => {
+    setLegendVisible(false);
+  });
+
+  return isLoading ? null : (
     <Map
       ref={mapRef}
       mapboxgl={mapboxgl}
@@ -247,9 +244,11 @@ export const App = () => {
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
         satellite: import.meta.env.PUBLIC_MAPBOX_SATELLITE_STYLE,
       }}
-      defaultCenter={{
-        lat: 48.148598,
-        lng: 17.107748,
+      initialViewport={{
+        center: {
+          lat: 48.148598,
+          lng: 17.107748,
+        },
       }}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
@@ -261,7 +260,7 @@ export const App = () => {
       onSelectedFeaturesChange={setSelectedFeatures}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
-      onLegendClick={() => setLegendVisible(!isLegendVisible)}
+      onLegendClick={onLegendClick}
     >
       <Layer
         filters={[
@@ -293,47 +292,47 @@ export const App = () => {
           name="mobile-filter"
           isVisible={isSidebarVisible}
           setVisible={setSidebarVisible}
-          openPadding={{
-            right: 320,
-          }}
           avoidControls={false}
         >
-          {({ isVisible, setVisible }) => (
-            <MobileFilters
-              isVisible={isVisible}
-              setVisible={setVisible}
-              areFiltersDefault={areFiltersDefault}
-              activeFilters={activeFilters}
-              onResetFiltersClick={resetFilters}
-              yearFilter={yearFilter}
-              districtFilter={districtFilter}
-              seasonFilter={seasonFilter}
-              typeFilter={typeFilter}
-              typeCategories={typeCategories}
-            />
-          )}
+          <MobileFilters
+            isVisible={isSidebarVisible}
+            setVisible={setSidebarVisible}
+            areFiltersDefault={areFiltersDefault}
+            activeFilters={activeFilters}
+            onResetFiltersClick={resetFilters}
+            yearFilter={yearFilter}
+            districtFilter={districtFilter}
+            seasonFilter={seasonFilter}
+            typeFilter={typeFilter}
+            typeCategories={typeCategories}
+          />
         </Slot>
 
         <Slot
           name="mobile-detail"
           isVisible={isDetailOpen}
-          bottomSheetOptions={{}}
+          bottomSheetOptions={
+            {
+              // footer: (
+              //   <div className="bg-gray bg-opacity-10 z-20">
+              //     <button
+              //       onClick={closeDetail}
+              //       className="p-3 flex items-center hover:underline justify-center mx-auto"
+              //     >
+              //       <span className="font-bold">{t("close")}</span>
+              //       <Close className="text-primary" width={32} height={32} />
+              //     </button>
+              //   </div>
+              // ),
+            }
+          }
           openPadding={{
             bottom: window.innerHeight / 2, // w-96 or 24rem
           }}
           avoidControls={false}
         >
-          <div className="relative h-full">
+          <div className="h-full">
             <Detail arcgeoServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
-            <div className="sticky top-full bg-gray bg-opacity-10">
-              <button
-                onClick={closeDetail}
-                className="p-3 flex items-center hover:underline justify-center mx-auto"
-              >
-                <span className="font-bold">{t("close")}</span>
-                <Close className="text-primary" width={32} height={32} />
-              </button>
-            </div>
           </div>
         </Slot>
 
@@ -345,26 +344,16 @@ export const App = () => {
           name="mobile-legend"
           isVisible={isLegendVisible}
           setVisible={setLegendVisible}
-          openPadding={{ right: 320 }}
           avoidControls={false}
         >
-          {({ isVisible, setVisible }) => {
-            useEffect(() => {
-              setVisible(false);
-            }, []);
-            return (
-              <Sidebar
-                title={t("title")}
-                isVisible={isVisible}
-                setVisible={setVisible}
-                position="right"
-              >
-                <Legend
-                  mapCircleColors={{ ...mapCircleColors, "hranica mestskej časti": "#E29F45" }}
-                />
-              </Sidebar>
-            );
-          }}
+          <Sidebar
+            title={t("title")}
+            isVisible={isLegendVisible}
+            setVisible={setLegendVisible}
+            position="right"
+          >
+            <Legend mapCircleColors={{ ...mapCircleColors, "hranica mestskej časti": "#E29F45" }} />
+          </Sidebar>
         </Slot>
       </Layout>
 
@@ -377,23 +366,20 @@ export const App = () => {
             left: 384, // w-96 or 24rem
           }}
         >
-          {({ isVisible, setVisible }) => (
-            <DesktopFilters
-              mapboxgl={mapboxgl}
-              isVisible={isVisible}
-              setVisible={setVisible}
-              areFiltersDefault={areFiltersDefault}
-              activeFilters={activeFilters}
-              onResetFiltersClick={resetFilters}
-              mapRef={mapRef}
-              yearFilter={yearFilter}
-              districtFilter={districtFilter}
-              seasonFilter={seasonFilter}
-              typeFilter={typeFilter}
-              isGeolocation={isGeolocation}
-              typeCategories={typeCategories}
-            />
-          )}
+          <DesktopFilters
+            mapboxgl={mapboxgl}
+            isVisible={isSidebarVisible}
+            setVisible={setSidebarVisible}
+            areFiltersDefault={areFiltersDefault}
+            onResetFiltersClick={resetFilters}
+            mapRef={mapRef}
+            yearFilter={yearFilter}
+            districtFilter={districtFilter}
+            seasonFilter={seasonFilter}
+            typeFilter={typeFilter}
+            isGeolocation={isGeolocation}
+            typeCategories={typeCategories}
+          />
         </Slot>
 
         <Slot
@@ -404,50 +390,30 @@ export const App = () => {
           }}
           avoidControls={window.innerHeight <= (desktopDetailHeight ?? 0) + 200 ? true : false}
         >
-          {({ isVisible }) => (
-            <div
-              ref={desktopDetailRef}
-              className={cx("fixed top-0 right-0 w-96 bg-background transition-all duration-500", {
-                "translate-x-full": !isVisible,
-                "shadow-lg": isVisible,
-              })}
-            >
-              <Detail
-                arcgeoServerUrl={URL}
-                features={selectedFeatures ?? []}
-                onClose={closeDetail}
-              />
-            </div>
-          )}
+          <div
+            ref={desktopDetailRef}
+            className={cx("fixed top-0 right-0 w-96 bg-background transition-all duration-500", {
+              "translate-x-full": !isDetailOpen,
+              "shadow-lg": isDetailOpen,
+            })}
+          >
+            <Detail arcgeoServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
+          </div>
         </Slot>
-        <Slot
-          name="desktop-legend"
-          isVisible={isLegendVisible}
-          setVisible={setLegendVisible}
-          avoidControls={false}
-        >
-          {({ isVisible, setVisible }) => {
-            useEffect(() => {
-              setVisible(false);
-            }, []);
-            const ref = useClickOutside(() => setVisible(false));
-            return (
-              <div
-                ref={ref}
-                className={cx(
-                  "absolute z-50 bottom-[84px] right-[72px] bg-background transform shadow-lg rounded-lg",
-                  {
-                    "scale-0": !isVisible,
-                  },
-                )}
-              >
-                <h3 className="px-6 pt-6 text-md font-semibold">Legenda</h3>
-                <Legend
-                  mapCircleColors={{ ...mapCircleColors, "hranica mestskej časti": "#E29F45" }}
-                />
-              </div>
-            );
-          }}
+        <Slot name="desktop-legend" isVisible={isLegendVisible} avoidControls={false}>
+          <div
+            ref={legendRef}
+            className={cx(
+              "absolute z-50 bottom-[92px] right-[90px] bg-background transform shadow-lg rounded-lg",
+              {
+                "scale-0": !isLegendVisible,
+              },
+            )}
+          >
+            <h3 className="px-6 pt-6 text-md font-semibold">Legenda</h3>
+            <Legend mapCircleColors={{ ...mapCircleColors, "hranica mestskej časti": "#E29F45" }} />
+            <DropdownArrow isBottom />
+          </div>
         </Slot>
       </Layout>
     </Map>
