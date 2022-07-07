@@ -26,10 +26,12 @@ export const IconButton = ({
   return (
     <button
       className={cx(
-        "flex text-font w-12 h-12 items-center justify-center pointer-events-auto",
+        "flex text-font items-center justify-center pointer-events-auto",
         {
-          "transform active:scale-75 transition-transform": !noAnimation,
-          "shadow-lg bg-background rounded-lg": !noStyle,
+          "transform active:scale-75 transition-all": !noAnimation,
+          "shadow-lg bg-background-lightmode dark:bg-background-darkmode rounded-lg border-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20 w-12 h-12":
+            !noStyle,
+          "w-11 h-11": noStyle,
         },
         {
           "text-primary": isActive,

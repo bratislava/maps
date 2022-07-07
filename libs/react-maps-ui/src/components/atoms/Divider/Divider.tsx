@@ -6,5 +6,12 @@ export interface IDividerProps {
 }
 
 export const Divider = ({ className }: IDividerProps) => {
-  return <div className={cx("h-[2px] bg-gray opacity-20", className)}></div>;
+  return (
+    <div
+      className={cx(
+        "h-[2px] bg-gray-lightmode dark:bg-gray-darkmode opacity-20",
+        className
+      )}
+    ></div>
+  );
 };

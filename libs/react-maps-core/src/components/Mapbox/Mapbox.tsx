@@ -15,7 +15,6 @@ import { Sources, MapIcon, Viewport, PartialViewport } from "../../types";
 import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
 import { usePrevious } from "../../hooks/usePrevious";
 import { log } from "../../utils/log";
-import { createGeolocationMarkerElement } from "../../utils/createGeolocationMarkerElement";
 import bbox from "@turf/bbox";
 import DATA_DISTRICTS from "../../assets/layers/districts.json";
 import { DevelopmentInfo } from "../DevelopmentInfo/DevelopmentInfo";
@@ -30,14 +29,12 @@ export interface MapboxProps {
   sources: Sources;
   isDarkmode?: boolean;
   isSatellite?: boolean;
-  isGeolocation?: boolean;
   icons?: {
     [index: string]: string | MapIcon;
   };
   mapStyles: {
     light?: string;
     dark?: string;
-    satellite?: string;
   };
   selectedFeatures: MapboxGeoJSONFeature[];
   onFeatureClick: (features: MapboxGeoJSONFeature[]) => void;
@@ -73,7 +70,6 @@ const createMap = (
   mapContainer: RefObject<HTMLDivElement>,
   viewport: PartialViewport,
   isSatellite: boolean,
-  satelliteStyle: string,
   isDarkmode: boolean,
   darkStyle: string,
   lightStyle: string
@@ -82,7 +78,7 @@ const createMap = (
     pitchWithRotate: false,
     touchPitch: false,
     container: mapContainer.current ?? "",
-    style: isSatellite ? satelliteStyle : isDarkmode ? darkStyle : lightStyle,
+    style: isDarkmode ? darkStyle : lightStyle,
     center: [
       viewport.center?.lng ?? 17.107748,
       viewport.center?.lat ?? 48.148598,
@@ -117,12 +113,10 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       icons = {},
       isDarkmode = false,
       isSatellite = false,
-      isGeolocation = false,
       selectedFeatures,
       mapStyles: {
         light: lightStyle = "mapbox://styles/mapbox/streets-v11",
         dark: darkStyle = "mapbox://styles/mapbox/streets-v11",
-        satellite: satelliteStyle = "mapbox://styles/mapbox/streets-v11",
       },
       onFeatureClick,
       mapboxgl,
@@ -214,14 +208,11 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
 
     const [isLoading, setLoading] = useState(true);
     const [isStyleLoading, setStyleLoading] = useState(false);
-    const [geolocationMarker, setGeolocationMarker] =
-      useState<mapboxgl.Marker | null>(null);
 
     const previousMap = usePrevious(map);
     const previousLoading = usePrevious(isLoading);
     const previousDarkmode = usePrevious(isDarkmode);
     const previousSatellite = usePrevious(isSatellite);
-    const previousGeolocation = usePrevious(isGeolocation);
     const prevSelectedFeatures = usePrevious(selectedFeatures);
     const prevClickableLayerIds = usePrevious(clickableLayerIds);
 
@@ -266,56 +257,6 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       ]
     );
 
-    // GEOLOCATION TOGGLING
-    useEffect(() => {
-      const MAP = map.current;
-      if (!MAP || isLoading) return;
-
-      if (isGeolocation !== previousGeolocation) {
-        if (isGeolocation) {
-          log("GEOLOCATION TURNED ON");
-          if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                log("ADDING GEOLOCATION MARKER");
-                setGeolocationMarker(
-                  new mapboxgl.Marker(createGeolocationMarkerElement())
-                    .setLngLat([
-                      position.coords.longitude,
-                      position.coords.latitude,
-                    ])
-                    .addTo(MAP)
-                );
-                // setCenterLat(position.coords.latitude);
-                // setCenterLng(position.coords.longitude);
-              },
-              (error) => {
-                alert(error.message);
-              }
-            );
-          } else {
-            alert("Your device does not support Geolocation");
-          }
-        } else {
-          log("GEOLOCATION TURNED OFF");
-          if (geolocationMarker) {
-            log("REMOVING GEOLOCATION MARKER");
-            geolocationMarker.remove();
-            setGeolocationMarker(null);
-          }
-        }
-      }
-    }, [
-      geolocationMarker,
-      isGeolocation,
-      previousGeolocation,
-      isLoading,
-      mapboxgl,
-      // setCenterLat,
-      // setCenterLng,
-      viewport,
-    ]);
-
     // CREATING MAP
     useEffect(() => {
       setLoading(true);
@@ -329,7 +270,6 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         mapContainer,
         viewport,
         isSatellite,
-        satelliteStyle,
         isDarkmode,
         darkStyle,
         lightStyle
@@ -721,7 +661,6 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       previousDarkmode,
       isSatellite,
       layerPrefix,
-      satelliteStyle,
       darkStyle,
       lightStyle,
       loadSources,

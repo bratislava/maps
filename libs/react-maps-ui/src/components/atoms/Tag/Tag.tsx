@@ -17,9 +17,10 @@ export const Tag = ({
   return (
     <div
       className={cx(
-        "rounded select-none text-[14px]",
+        "rounded select-none text-[14px] transition-all",
         {
-          "bg-gray bg-opacity-10": !className.includes("bg-"),
+          "bg-gray-lightmode dark:bg-gray-darkmode bg-opacity-10 dark:bg-opacity-20":
+            !className.includes("bg-"),
           "px-3 py-1": !isSmall,
           "px-2": isSmall,
         },

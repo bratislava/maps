@@ -44,7 +44,7 @@ export const Detail = ({ features, arcgeoServerUrl, onClose }: DetailProps) => {
 
   return !features[0] ? null : (
     <>
-      <div className="flex flex-col space-y-4 p-8 pt-4 overflow-auto">
+      <div className="flex flex-col space-y-4 p-8 pt-0 sm:pt-4 overflow-auto">
         <button className="hidden sm:block absolute right-4 top-8 p-2" onClick={onClose}>
           <X />
         </button>

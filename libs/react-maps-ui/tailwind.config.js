@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-undef
 module.exports = {
   content: ["./src/**/*.{ts,tsx}"],
-
+  darkMode: "class",
   theme: {
     screens: {
       xs: "360px",
@@ -19,28 +19,28 @@ module.exports = {
       xl: ["32px", "40px"],
       xxl: ["42px", "54px"],
     },
-    extend: {
-      colors: {
-        primary: {
-          DEFAULT: "#237c36",
-          soft: "#c4efce",
-        },
-        background: {
-          DEFAULT: "#ffffff",
-        },
-        foreground: {
-          DEFAULT: "#ffffff",
-        },
-        gray: {
-          DEFAULT: "#333333",
-        },
-        black: {
-          DEFAULT: "black",
-        },
+    colors: {
+      primary: {
+        DEFAULT: "#237c36",
+        soft: "#c4efce",
       },
-      boxShadow: {
-        lg: "0 0 20px 0 rgba(0, 0, 0, 0.15)",
+      white: "#ffffff",
+      black: "#000000",
+      foreground: {
+        lightmode: "#333333",
+        darkmode: "#dddddd",
       },
+      background: {
+        lightmode: "#ffffff",
+        darkmode: "#333333",
+      },
+      gray: {
+        lightmode: "#333333",
+        darkmode: "#aaaaaa",
+      },
+    },
+    boxShadow: {
+      lg: "0 0 20px 0 rgba(0, 0, 0, 0.15)",
     },
   },
   plugins: [],

@@ -11,7 +11,7 @@ export default {
     year: {
       title: "Year",
       placeholder: "Year",
-      multipleYears: "Multiple years",
+      multipleYears: "Selected",
     },
     district: {
       title: "District",

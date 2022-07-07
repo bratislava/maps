@@ -87,3 +87,4 @@ export { X } from "./components/X";
 export { Chevron } from "./components/Chevron";
 export { List } from "./components/List";
 export { Information } from "./components/Information";
+export { ArrowCounterclockwise } from "./components/ArrowCounterclockwise";

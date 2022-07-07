@@ -21,7 +21,7 @@ export const IconButtonGroup = ({ children }: IconButtonGroupProps) => {
     >
       <div
         className={cx(
-          "shadow-lg bg-background rounded-lg flex text-font flex-col transform transition-transform"
+          "shadow-lg bg-background-lightmode dark:bg-background-darkmode rounded-lg flex text-font flex-col transform border-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20 transition-all"
         )}
         style={{
           transform:
@@ -35,7 +35,7 @@ export const IconButtonGroup = ({ children }: IconButtonGroupProps) => {
         {children.map((child, key) => (
           <Fragment key={key}>
             {key !== 0 && (
-              <div className="mx-2 h-[2px] bg-gray opacity-20"></div>
+              <div className="mx-auto h-[2px] w-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20"></div>
             )}
             <div
               onMouseDown={() => {

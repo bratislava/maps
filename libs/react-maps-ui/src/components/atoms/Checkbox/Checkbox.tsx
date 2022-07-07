@@ -23,10 +23,11 @@ export const Checkbox = ({
         onCheckedChange={(e) => onChange && onChange(!!e)}
         id={id}
         className={cx(
-          "flex border-2 flex-col w-4 h-4 rounded items-center justify-center focus:border-primary transition-all outline-none",
+          "flex border-2 flex-col w-4 h-4 rounded items-center justify-center focus:border-primary dark:focus:border-primary transition-all outline-none",
           {
             "bg-primary border-primary": checked,
-            "border-gray border-opacity-50": !checked,
+            "border-gray-lightmode dark:border-gray-darkmode border-opacity-50 dark:border-opacity-100":
+              !checked,
           }
         )}
       >
@@ -35,7 +36,7 @@ export const Checkbox = ({
         </Indicator>
       </Root>
       {label && (
-        <label className="cursor-pointer pl-2" htmlFor={id}>
+        <label className="cursor-pointer select-none pl-2" htmlFor={id}>
           {label}
         </label>
       )}

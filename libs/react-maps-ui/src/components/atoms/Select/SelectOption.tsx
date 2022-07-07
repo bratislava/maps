@@ -15,8 +15,9 @@ export const SelectOption = ({ value, children }: ISelectOptionProps) => {
           className={cx(
             "px-4 py-1 relative outline-none select-none cursor-pointer",
             {
-              "bg-gray bg-opacity-10": active && !selected,
-              "bg-primary-soft": selected,
+              "bg-gray-lightmode dark:bg-gray-darkmode bg-opacity-10 dark:bg-opacity-20":
+                active && !selected,
+              "bg-primary-soft dark:text-background-darkmode": selected,
             }
           )}
         >

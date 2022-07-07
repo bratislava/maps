@@ -11,7 +11,11 @@ import React, {
   useReducer,
   MouseEvent,
 } from "react";
-import { addTranslations, LoadingSpinner } from "@bratislava/react-maps-ui";
+import {
+  addTranslations,
+  LoadingSpinner,
+  Modal,
+} from "@bratislava/react-maps-ui";
 import { Mapbox, MapboxHandle } from "../Mapbox/Mapbox";
 import { useResizeDetector } from "react-resize-detector";
 import cx from "classnames";
@@ -39,6 +43,11 @@ import {
 import Mousetrap from "mousetrap";
 import { Feature } from "geojson";
 import { mergeViewports } from "../Mapbox/viewportReducer";
+import { log } from "../../utils/log";
+import { Marker } from "../Marker/Marker";
+import { getFeatureDistrict } from "../../utils/districts";
+import { useTranslation } from "react-i18next";
+import { ArrowCounterclockwise } from "@bratislava/react-maps-icons";
 
 export interface IMapProps {
   i18next: i18n;
@@ -51,7 +60,6 @@ export interface IMapProps {
   mapStyles: {
     light?: string;
     dark?: string;
-    satellite?: string;
   };
   isOutsideLoading?: boolean;
   children?: ReactNode;
@@ -62,6 +70,7 @@ export interface IMapProps {
   onMobileChange?: (isMobile: boolean) => void;
   onGeolocationChange?: (isGeolocation: boolean) => void;
   onLegendClick?: (e: MouseEvent) => void;
+  loadingSpinnerColor?: string;
 }
 
 export type MapHandle = {
@@ -99,6 +108,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       onMobileChange,
       onGeolocationChange,
       onLegendClick,
+      loadingSpinnerColor,
     },
     forwardedRef
   ) => {
@@ -107,6 +117,8 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
     // add translations from UI library
     addTranslations(i18next);
+
+    const { t } = useTranslation("maps");
 
     const mapboxRef = useRef<MapboxHandle>(null);
 
@@ -140,10 +152,11 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       isSatellite: false,
       isFullscreen: false,
       viewport: initialViewport,
+      isGeolocation: false,
+      geolocationMarkerLngLat: null,
     });
 
     const [isMobile, setMobile] = useState<boolean | null>(null);
-    const [isGeolocation, setGeolocation] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [selectedFeatures, setSelectedFeatures] = useState<
       MapboxGeoJSONFeature[]
@@ -151,6 +164,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
     const onDarkmodeChange = useCallback((isDarkmode: boolean) => {
       dispatchMapState({ type: MapActionKind.SetDarkmode, value: isDarkmode });
+      document.body.classList[isDarkmode ? "add" : "remove"]("dark");
     }, []);
 
     const onSatelliteChange = useCallback((isSatellite: boolean) => {
@@ -160,13 +174,74 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       });
     }, []);
 
+    const geolocationChangeHandler = useCallback(
+      (isGeolocation: boolean) => {
+        if (isGeolocation) {
+          // if browser supports geolocation
+          if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const geolocationMarkerLngLat = {
+                  lng: position.coords.longitude,
+                  lat: position.coords.latitude,
+                };
+
+                const isInBratislava = !!getFeatureDistrict({
+                  type: "Feature",
+                  geometry: {
+                    type: "Point",
+                    coordinates: [
+                      geolocationMarkerLngLat.lng,
+                      geolocationMarkerLngLat.lat,
+                    ],
+                  },
+                  properties: {},
+                });
+
+                if (!isInBratislava) {
+                  alert(t("errors.notLocatedInBratislava"));
+                  return;
+                }
+
+                log("ADDING GEOLOCATION MARKER");
+                mapboxRef.current?.changeViewport({
+                  center: geolocationMarkerLngLat,
+                  zoom: 18,
+                });
+
+                dispatchMapState({
+                  type: MapActionKind.EnableGeolocation,
+                  geolocationMarkerLngLat,
+                });
+              },
+              (error) => {
+                alert(`${t("error")}: ${error.message}`);
+              }
+            );
+          } else {
+            alert(t("errors.noGeolocationSupport"));
+          }
+        } else {
+          dispatchMapState({
+            type: MapActionKind.DisableGeolocation,
+          });
+        }
+      },
+      [t]
+    );
+
     const [, setControlsMarginTop] = useState(0);
     const [controlsMarginRight, setControlsMarginRight] = useState(0);
     const [controlsMarginBottom, setControlsMarginBottom] = useState(0);
     const [controlsMarginLeft, setControlsMarginLeft] = useState(0);
 
-    const { width: containerWidth, ref: containerRef } =
-      useResizeDetector<HTMLDivElement>();
+    const [isDisplayLandscapeModal, setDisplayLandscapeModal] = useState(false);
+
+    const {
+      width: containerWidth,
+      height: containerHeight,
+      ref: containerRef,
+    } = useResizeDetector<HTMLDivElement>();
 
     // ZOOM IN HANDLER
     const zoomIn = useCallback(() => {
@@ -239,18 +314,18 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         },
 
         turnOnGeolocation() {
-          setGeolocation(true);
+          geolocationChangeHandler(true);
         },
 
         turnOffGeolocation() {
-          setGeolocation(false);
+          geolocationChangeHandler(false);
         },
 
         toggleGeolocation() {
-          setGeolocation((g) => !g);
+          geolocationChangeHandler(!mapState.isGeolocation);
         },
       }),
-      [setGeolocation, setSelectedFeatures]
+      [geolocationChangeHandler, mapState.isGeolocation]
     );
 
     const onViewportChange = useCallback((viewport: Viewport) => {
@@ -278,15 +353,15 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         },
         true
       );
-      // setControlsMarginTop(0);
-      // setControlsMarginRight(0);
-      // setControlsMarginBottom(0);
-      // setControlsMarginLeft(0);
+      setControlsMarginTop(0);
+      setControlsMarginRight(0);
+      setControlsMarginBottom(0);
+      setControlsMarginLeft(0);
     }, [onMobileChange, isMobile]);
 
     useEffect(() => {
-      onGeolocationChange && onGeolocationChange(isGeolocation);
-    }, [onGeolocationChange, isGeolocation]);
+      onGeolocationChange && onGeolocationChange(mapState.isGeolocation);
+    }, [onGeolocationChange, mapState.isGeolocation]);
 
     const onLoad = useCallback(() => {
       setLoading(false);
@@ -361,19 +436,30 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       [isMobile, changeMargin]
     );
 
+    // DISPLAY/HIDE WARNING MODAL TO ROTATE DEVICE TO PORTRAIT MODE
+    useEffect(() => {
+      if (
+        (containerWidth ?? 0) < 900 &&
+        (containerWidth ?? 0) > (containerHeight ?? 0)
+      ) {
+        setDisplayLandscapeModal(true);
+      } else {
+        setDisplayLandscapeModal(false);
+      }
+    }, [isMobile, containerWidth, containerHeight]);
+
     return (
-      <>
+      <div className={cx("h-full w-full relative text-foreground-lightmode")}>
         <mapContext.Provider value={mapContextValue}>
           <div
             ref={containerRef}
-            className="w-full h-full relative z-10 text-font"
+            className="w-full h-full relative z-10 text-font dark:text-foreground-darkmode"
           >
             <Mapbox
               initialViewport={initialViewport}
               ref={mapboxRef}
               isDarkmode={mapState.isDarkmode}
               isSatellite={mapState.isSatellite}
-              isGeolocation={isGeolocation}
               layerPrefix={layerPrefix}
               mapStyles={mapStyles}
               mapboxgl={mapboxgl}
@@ -385,7 +471,20 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               onViewportChange={onViewportChange}
               isDevelopment={isDevelopment && isDevInfoVisible}
             >
-              {children}
+              <>{children}</>
+              {mapState.isGeolocation && mapState.geolocationMarkerLngLat && (
+                <Marker
+                  lng={mapState.geolocationMarkerLngLat.lng}
+                  lat={mapState.geolocationMarkerLngLat.lat}
+                >
+                  <div className="relative flex items-center justify-center">
+                    <div className="opacity-20 flex items-center justify-center">
+                      <div className="absolute bg-gray-lightmode dark:bg-gray-darkmode w-20 h-20 rounded-full animate-ping"></div>
+                    </div>
+                    <div className="absolute w-4 h-4 bg-white dark:bg-black border-4 border-black dark:border-white rounded-full"></div>
+                  </div>
+                </Marker>
+              )}
             </Mapbox>
             <ThemeController
               isDarkmode={mapState.isDarkmode}
@@ -406,15 +505,17 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               onZoomOutClick={zoomOut}
               onFullscreenClick={toggleFullscreen}
               onCompassClick={resetBearing}
-              isGeolocation={isGeolocation}
-              onLocationClick={() => setGeolocation(!isGeolocation)}
+              isGeolocation={mapState.isGeolocation}
+              onLocationClick={() =>
+                geolocationChangeHandler(!mapState.isGeolocation)
+              }
               onLegendClick={onLegendClick}
             />
           </div>
         </mapContext.Provider>
         <div
           className={cx(
-            "fixed z-50 top-0 right-0 bottom-0 left-0 bg-background flex items-center justify-center text-primary transition-all delay-1000 duration-1000",
+            "fixed dark:text-foreground-darkmode z-50 top-0 right-0 bottom-0 left-0 bg-background-lightmode dark:bg-background-darkmode flex items-center justify-center text-primary transition-all delay-1000 duration-1000",
             {
               "visible opacity-100": isLoading,
               "invisible opacity-0": !isLoading,
@@ -422,13 +523,29 @@ export const Map = forwardRef<MapHandle, IMapProps>(
           )}
         >
           <LoadingSpinner
-            color="#5158D8"
+            color={loadingSpinnerColor ?? "#5158D8"}
             size={100}
             thickness={200}
             speed={200}
           />
         </div>
-      </>
+
+        <Modal
+          className="max-w-xs"
+          isOpen={isDisplayLandscapeModal}
+          closeButtonIcon={<ArrowCounterclockwise size="lg" />}
+        >
+          <div className="flex flex-col gap-2 text-center pb-4">
+            <div>Na mobilnom zariadení je mapu najlepšie používať na výšku</div>
+            <div className="text-[14px]">
+              Zanechajte nám spätnú väzbu na adrese{" "}
+              <a href="mailto:inovacie@bratislava.sk" className="underline">
+                inovacie@bratislava.sk
+              </a>
+            </div>
+          </div>
+        </Modal>
+      </div>
     );
   }
 );

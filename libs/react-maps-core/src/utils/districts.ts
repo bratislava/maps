@@ -1,6 +1,6 @@
 import DATA_DISTRICTS from "../assets/layers/districts.json";
 import booleanIntersects from "@turf/boolean-intersects";
-import { Feature } from "geojson";
+import { Feature, FeatureCollection } from "geojson";
 
 export const DISTRICTS = [
   "Staré Mesto",
@@ -20,28 +20,36 @@ export const DISTRICTS = [
   "Jarovce",
   "Rusovce",
   "Čunovo",
-];
+] as const;
 
-export const addDistrictPropertyToLayer = (geojson: any) => {
-  const districtFeatures = DATA_DISTRICTS.features;
+type District = typeof DISTRICTS[number];
 
+export const addDistrictPropertyToLayer = (
+  featureCollection: FeatureCollection
+) => {
   return {
-    ...geojson,
-    features: geojson.features.map((feature: Feature) => {
-      for (let i = 0; i < districtFeatures.length; i++) {
-        const districtFeature = districtFeatures[i];
-
-        if (booleanIntersects(districtFeature.geometry, feature)) {
-          return {
-            ...feature,
-            properties: {
-              ...feature.properties,
-              district: districtFeature.properties["name"],
-            },
-          };
-        }
-      }
-      return feature;
+    ...featureCollection,
+    features: featureCollection.features.map((feature: Feature) => {
+      return {
+        ...feature,
+        properties: {
+          ...feature.properties,
+          district: getFeatureDistrict(feature),
+        },
+      };
     }),
   };
+};
+
+export const getFeatureDistrict = (feature: Feature): District | null => {
+  const districtFeatures = DATA_DISTRICTS.features;
+
+  for (let i = 0; i < districtFeatures.length; i++) {
+    const districtFeature = districtFeatures[i];
+
+    if (booleanIntersects(districtFeature.geometry, feature)) {
+      return districtFeature.properties.name as District;
+    }
+  }
+  return null;
 };

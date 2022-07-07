@@ -11,7 +11,7 @@ export default {
     year: {
       title: "Rok",
       placeholder: "Rok",
-      multipleYears: "Viacero rokov",
+      multipleYears: "Zvolených",
     },
     district: {
       title: "Mestská časť",

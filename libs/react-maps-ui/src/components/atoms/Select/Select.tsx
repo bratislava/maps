@@ -57,13 +57,14 @@ export const Select = ({
               className={cx(
                 "flex items-center justify-between cursor-pointer w-full h-12 outline-none transition-all",
                 {
-                  "bg-gray group-focus:bg-opacity-10 group-hover:bg-opacity-10":
+                  "bg-gray-lightmode dark:bg-gray-darkmode group-focus:bg-opacity-10 group-hover:bg-opacity-10":
                     noBorder,
-                  "bg-opacity-0": noBorder && !open,
-                  "bg-opacity-10": noBorder && open,
-                  "bg-white border-2 rounded-lg": !noBorder,
+                  "bg-opacity-0 dark:bg-opacity-0": noBorder && !open,
+                  "bg-opacity-10 dark:bg-opacity-10": noBorder && open,
+                  "bg-background-light dark:bg-background-dark border-2 rounded-lg":
+                    !noBorder,
                   "border-primary": open,
-                  "border-gray border-opacity-10 group-focus:border-primary group-focus:border-opacity-100":
+                  "border-gray-lightmode dark:border-gray-darkmode border-opacity-10 dark:border-opacity-20 group-focus:border-primary group-focus:border-opacity-100":
                     !open,
                 },
                 buttonClassName
@@ -90,9 +91,12 @@ export const Select = ({
                   <Chevron
                     direction="bottom"
                     size="sm"
-                    className={cx(" transition-transform text-gray", {
-                      "rotate-180": open,
-                    })}
+                    className={cx(
+                      "transition-transform text-gray-lightmode dark:text-gray-darkmode",
+                      {
+                        "rotate-180": open,
+                      }
+                    )}
                   />
                 </div>
               </div>
@@ -111,8 +115,8 @@ export const Select = ({
             "w-full": !noBorder,
           })}
         >
-          <Listbox.Options className="w-full py-4 bg-white rounded-lg shadow-lg overflow-hidden outline-none">
-            <DropdownArrow isCenter={false} />
+          <Listbox.Options className="w-full py-4 bg-background-lightmode dark:bg-background-darkmode rounded-lg shadow-lg overflow-hidden outline-none dark:border-2 dark:border-gray-darkmode dark:border-opacity-20">
+            <DropdownArrow />
             {children}
           </Listbox.Options>
         </Transition>

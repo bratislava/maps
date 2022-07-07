@@ -14,6 +14,8 @@ export * from "./atoms/IconButton/IconButton";
 export * from "./atoms/IconButtonGroup/IconButtonGroup";
 export * from "./atoms/Dropdown/Dropdown";
 export * from "./atoms/Dropdown/DropdownArrow";
+export * from "./atoms/Modal/Modal";
+export * from "./atoms/Popover/Popover";
 
 // molecules
 export * from "./molecules/TagFilter/TagFilter";

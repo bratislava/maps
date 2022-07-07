@@ -27,7 +27,7 @@ export const TagFilter = <T extends string>({
           <Tag
             key={key}
             className={cx("cursor-pointer", {
-              "bg-primary-soft": isActive,
+              "bg-primary-soft dark:text-background-darkmode": isActive,
             })}
             onClick={() => onTagClick(key)}
           >

@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode } from "react";
 import cx from "classnames";
 import { Chevron, X } from "@bratislava/react-maps-icons";
 import { useTranslation } from "react-i18next";
@@ -24,7 +24,7 @@ export const Sidebar = ({
   return (
     <div
       className={cx(
-        "fixed top-0 bg-background bottom-0 h-full pr-0 transition-all duration-500 z-50",
+        "fixed top-0 bottom-0 h-full transition-transform duration-500 z-50",
         {
           "left-0": position === "left",
           "right-0": position === "right",
@@ -35,86 +35,97 @@ export const Sidebar = ({
         }
       )}
     >
-      {isMobile ? (
-        <button
-          onClick={() => setVisible(false)}
-          className="flex w-full items-center px-3 py-3 gap-2 bg-gray
-        transition-all bg-opacity-0 hover:bg-opacity-10 focus:bg-opacity-10 active:bg-opacity-20"
-        >
-          <div className="flex p-2">
-            <Chevron direction="left" className="text-primary" />
-          </div>
-          <h1 className="relative font-medium">{title}</h1>
-        </button>
-      ) : (
-        <div
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === "Enter" && setVisible(!isVisible)}
-          className={cx(
-            "absolute bg-background z-20 py-8 transform hover:text-primary",
-            {
-              "left-0 -translate-x-full rounded-bl-lg": position === "right",
-              "right-0 translate-x-full rounded-br-lg": position === "left",
-            }
-          )}
-          onClick={() => {
-            setVisible(!isVisible);
-          }}
-        >
-          <div
-            className={cx(
-              "shadow-lg hidden sm:block absolute top-0 left-0 right-0 bottom-0 sm:shadow-lg",
-              {
-                "rounded-bl-lg": position === "right",
-                "rounded-br-lg": position === "left",
-              }
-            )}
-            style={{ zIndex: -20 }}
-          ></div>
-          <Chevron
-            direction={position == "right" ? "left" : "right"}
-            className={cx("transform transition-transform", {
-              "rotate-180": isVisible,
-            })}
-          />
-          <div
-            className={cx(
-              "hidden sm:block bg-background absolute w-4 min-h-full box-content top-0 pb-4",
-              {
-                "left-full": position === "right",
-                "right-full": position === "left",
-              }
-            )}
-          ></div>
-        </div>
-      )}
-
       <div
         className={cx(
-          "space-y-6 w-full font-medium overflow-auto bg-background",
+          "w-full h-full bg-background-lightmode dark:bg-background-darkmode pr-0 transition-all",
           {
-            "shadow-lg h-full": !isMobile,
+            "overflow-auto": isMobile,
           }
         )}
       >
-        {!isMobile && title && (
-          <h1 className="text-lg font-semibold relative z-30 px-6 pt-6 pb-3">
-            {title}
-          </h1>
+        {isMobile ? (
+          <div className="sticky top-0 bg-background-lightmode dark:bg-background-darkmode z-50">
+            <button
+              onClick={() => setVisible(false)}
+              className="flex w-full items-center px-3 py-3 gap-2 bg-gray-lightmode dark:bg-gray-darkmode
+        transition-all bg-opacity-0 dark:bg-opacity-0 hover:bg-opacity-10 hover:dark:bg-opacity-10 focus:bg-opacity-10 focues:dark:bg-opacity-10 active:bg-opacity-20 active:dark:bg-opacity-20"
+            >
+              <div className="flex p-2">
+                <Chevron direction="left" className="text-primary" />
+              </div>
+              <h1 className="relative font-medium">{title}</h1>
+            </button>
+          </div>
+        ) : (
+          <div
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && setVisible(!isVisible)}
+            className={cx(
+              "absolute bg-background-lightmode dark:bg-background-darkmode z-20 py-8 transform hover:text-primary transition-all",
+              {
+                "left-0 -translate-x-full rounded-bl-lg": position === "right",
+                "right-0 translate-x-full rounded-br-lg": position === "left",
+              }
+            )}
+            onClick={() => {
+              setVisible(!isVisible);
+            }}
+          >
+            <div
+              className={cx(
+                "shadow-lg hidden sm:block absolute top-0 left-0 right-0 bottom-0 sm:shadow-lg",
+                {
+                  "rounded-bl-lg": position === "right",
+                  "rounded-br-lg": position === "left",
+                }
+              )}
+              style={{ zIndex: -20 }}
+            ></div>
+            <Chevron
+              direction={position == "right" ? "left" : "right"}
+              className={cx("transform transition-transform", {
+                "rotate-180": isVisible,
+              })}
+            />
+            <div
+              className={cx(
+                "hidden transition-all sm:block bg-background-lightmode dark:bg-background-darkmode absolute w-4 min-h-full box-content top-0 pb-4",
+                {
+                  "left-full": position === "right",
+                  "right-full": position === "left",
+                }
+              )}
+            ></div>
+          </div>
         )}
-        {children}
-      </div>
 
-      {isMobile && (
-        <button
-          onClick={() => setVisible(false)}
-          className="flex w-full sticky font-medium py-3 top-full gap-2 justify-center items-center bg-gray transition-all bg-opacity-10 hover:bg-opacity-20 focus:bg-opacity-20 active:bg-opacity-30 hover:underline"
+        <div
+          className={cx(
+            "space-y-6 w-full font-medium overflow-auto bg-background",
+            {
+              "shadow-lg h-full": !isMobile,
+            }
+          )}
         >
-          <span>{t("close")}</span>
-          <X className="text-primary" />
-        </button>
-      )}
+          {!isMobile && title && (
+            <h1 className="text-lg font-semibold relative z-30 px-6 pt-6 pb-3">
+              {title}
+            </h1>
+          )}
+          {children}
+        </div>
+
+        {isMobile && (
+          <button
+            onClick={() => setVisible(false)}
+            className="flex mt-4 w-full sticky font-medium py-3 top-full gap-2 justify-center items-center bg-gray-lightmode dark:bg-gray-darkmode transition-all bg-opacity-10 dark:bg-opacity-10 hover:bg-opacity-20 hover:dark:bg-opacity-20 focus:bg-opacity-20 focus:dark:bg-opacity-20 active:bg-opacity-30 active:dark:bg-opacity-30 hover:underline"
+          >
+            <span>{t("close")}</span>
+            <X className="text-primary" />
+          </button>
+        )}
+      </div>
     </div>
   );
 };

@@ -3,6 +3,7 @@
 
 module.exports = {
   presets: [require("../../libs/react-maps-ui/tailwind.config")],
+  darkMode: "class",
   content: [
     "./src/**/*.{html,ts,tsx}",
     "../../libs/react-maps-ui/src/**/*.{html,ts,tsx}",

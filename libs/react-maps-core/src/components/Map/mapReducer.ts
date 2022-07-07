@@ -1,4 +1,4 @@
-import { Viewport } from "../../types";
+import { LngLat, Viewport } from "../../types";
 
 export enum MapActionKind {
   EnableDarkmode = "EnableDarkmode",
@@ -8,6 +8,8 @@ export enum MapActionKind {
   SetSatellite = "SetSatellite",
   SetFullscreen = "SetFullscreen",
   ChangeViewport = "ChangeViewport",
+  EnableGeolocation = "EnableGeolocation",
+  DisableGeolocation = "DisableGeolocation",
 }
 
 interface IMapEnableDarkmodeAction {
@@ -42,6 +44,15 @@ interface IMapChangeViewportAction {
   viewport: Viewport;
 }
 
+interface IMapEnableGeolocationAction {
+  type: MapActionKind.EnableGeolocation;
+  geolocationMarkerLngLat: LngLat;
+}
+
+interface IMapDisableGeolocationAction {
+  type: MapActionKind.DisableGeolocation;
+}
+
 type MapAction =
   | IMapEnableDarkmodeAction
   | IMapDisableDarkmodeAction
@@ -49,13 +60,17 @@ type MapAction =
   | IMapSetDarkmodeAction
   | IMapSetSatelliteAction
   | IMapSetFullscreenAction
-  | IMapChangeViewportAction;
+  | IMapChangeViewportAction
+  | IMapEnableGeolocationAction
+  | IMapDisableGeolocationAction;
 
 interface IMapState {
   isSatellite: boolean;
   isDarkmode: boolean;
   isFullscreen: boolean;
   viewport: Viewport;
+  isGeolocation: boolean;
+  geolocationMarkerLngLat: LngLat | null;
 }
 
 export const mapReducer = (state: IMapState, action: MapAction): IMapState => {
@@ -104,6 +119,20 @@ export const mapReducer = (state: IMapState, action: MapAction): IMapState => {
       return {
         ...state,
         viewport: action.viewport,
+      };
+
+    case MapActionKind.EnableGeolocation:
+      return {
+        ...state,
+        isGeolocation: true,
+        geolocationMarkerLngLat: action.geolocationMarkerLngLat,
+      };
+
+    case MapActionKind.DisableGeolocation:
+      return {
+        ...state,
+        isGeolocation: false,
+        geolocationMarkerLngLat: null,
       };
   }
 };

@@ -25,7 +25,7 @@ export const SearchBar = ({
 }: ISearchBarProps) => (
   <div className={cx(className, "relative")}>
     <Input
-      className="text-font w-full"
+      className="w-full"
       placeholder={placeholder}
       value={value}
       {...etcProps}
@@ -34,7 +34,7 @@ export const SearchBar = ({
       <Search className="w-12 h-12 p-1" />
       {onGeolocationClick && (
         <>
-          <div className="md:hidden h-8 bg-gray opacity-20 w-[2px]"></div>
+          <div className="md:hidden h-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20 w-[2px]"></div>
           <button onClick={onGeolocationClick}>
             {isGeolocation ? (
               <LocationActive className="md:hidden w-12 h-12 p-1" />

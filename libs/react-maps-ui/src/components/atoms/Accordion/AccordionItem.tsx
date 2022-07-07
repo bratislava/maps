@@ -28,7 +28,8 @@ const AccordionContent = styled(Content, {
 });
 
 export interface IAccordionItemProps {
-  title: string;
+  value: string;
+  title: string | ReactNode;
   children: ReactNode;
   rightSlot?: ReactNode;
   className?: string;
@@ -37,6 +38,7 @@ export interface IAccordionItemProps {
 
 export const AccordionItem = ({
   children,
+  value,
   title,
   rightSlot,
   className,
@@ -44,7 +46,7 @@ export const AccordionItem = ({
 }: IAccordionItemProps) => {
   return (
     <Item
-      value={title}
+      value={value}
       className={cx("text-left w-full justify-between items-center", className)}
     >
       <Header className="flex flex-col">

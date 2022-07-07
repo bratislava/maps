@@ -22,7 +22,7 @@ export const Legend = ({ mapCircleColors }: ILegendProps) => {
                 backgroundColor: color,
               }}
             ></div>
-            <div className="text-sm">{type}</div>
+            <div className="text-[14px]">{type}</div>
           </div>
         );
       })}

@@ -48,12 +48,3 @@ body {
 .font-inter {
   font-family: "Inter", sans-serif;
 }
-
-[data-rsbs-root] [aria-modal] {
-  border-radius: 0 !important;
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.16) !important;
-}
-
-[data-rsbs-footer] {
-  padding: 0 !important;
-}

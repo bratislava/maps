@@ -1,5 +1,5 @@
-import React, { useState, useEffect, ReactNode, useContext } from "react";
-import ReactDOM from "react-dom";
+import React, { useEffect, ReactNode, useContext, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { Marker as MapboxMarker } from "mapbox-gl";
 import { mapboxContext } from "../Mapbox/Mapbox";
 
@@ -10,35 +10,27 @@ export interface IMarkerProps {
 }
 
 export const Marker = ({ children, lat, lng }: IMarkerProps) => {
-  const [marker, setMarker] = useState<MapboxMarker | null>(null);
-
   const { map } = useContext(mapboxContext);
 
-  useEffect(() => {
-    if (map) {
-      if (!map) {
-        console.warn("Marker component is suppousted to ");
-        return;
-      }
-
-      const element = document.createElement("div");
-
-      ReactDOM.render(<>{children}</>, element);
-
-      console.log("Initializing marker");
-      setMarker(
-        new MapboxMarker({ element })
-          .setLngLat([17.107748, 48.148598])
-          .addTo(map)
-      );
-    }
-  }, [map, children]);
+  const marker: MapboxMarker = useMemo(() => {
+    return new MapboxMarker({
+      element: document.createElement("div"),
+    }).setLngLat([0, 0]);
+  }, []);
 
   useEffect(() => {
-    if (marker) {
-      marker.setLngLat([lng, lat]);
-    }
+    marker.setLngLat([lng, lat]);
   }, [marker, lat, lng]);
 
-  return null;
+  useEffect(() => {
+    if (!map) return;
+
+    marker.addTo(map);
+
+    return () => {
+      marker.remove();
+    };
+  }, [map, marker]);
+
+  return createPortal(children, marker.getElement());
 };

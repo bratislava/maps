@@ -269,10 +269,6 @@ export const App = () => {
         styles={DISTRICTS_STYLE}
       />
 
-      {/* {data?.features.slice(0, 5).map((feature, index) => (
-        <Marker key={index} feature={feature} />
-      ))} */}
-
       <Layout isOnlyMobile>
         <Slot name="mobile-header">
           <MobileHeader

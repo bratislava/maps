@@ -15,6 +15,7 @@ import {
   Layer,
   useFilter,
   useClickOutside,
+  Marker,
 } from "@bratislava/react-maps-core";
 import { DropdownArrow, IActiveFilter, Sidebar } from "@bratislava/react-maps-ui";
 import { useArcgeo } from "@bratislava/react-esri";
@@ -36,6 +37,7 @@ import { MobileFilters } from "./mobile/MobileFilters";
 import { DesktopFilters } from "./desktop/DesktopFilters";
 import { MobileSearch } from "./mobile/MobileSearch";
 import { Legend } from "./Legend";
+import { X } from "@bratislava/react-maps-icons";
 
 const URL =
   "https://services8.arcgis.com/pRlN1m0su5BYaFAS/ArcGIS/rest/services/orezy_a_vyruby_2022_OTMZ_zobrazenie/FeatureServer/0";
@@ -62,6 +64,33 @@ export const App = () => {
 
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
   const [isLegendVisible, setLegendVisible] = useState<boolean | undefined>(undefined);
+
+  const tooltips = {
+    orez: "odborný orez dreviny špecifikovaný na základe aktuálneho stavu dreviny alebo dendrologického posudku a zadaný správcom zelene",
+
+    "výrub z rozhodnutia":
+      "výrub dreviny na základe rozhodnutia o súhlase s výrubom príslušného orgánu ochrany prírody v zmysle § 47 ods. 3) zákona č. 543/2002",
+
+    "výrub havarijný":
+      "výrub z dôvodu bezprostredného ohrozenia zdravia alebo života človeka alebo pri bezprostrednej hrozbe vzniku značnej škode na majetku v zmysle § 47 ods. 4) písm d) zákona č. 543/2002",
+
+    "výrub inváznej dreviny":
+      "odstránenie inváznych druhov rastlín výrubom v zmysle § 3 ods. 2) zákona č. 150/2019",
+
+    "injektáž inváznej dreviny":
+      "odstránenie inváznych druhov rastlín chemicky - injektážou kmeňov herbicídnym prípravkom v zmysle § 3 ods. 2) zákona č. 150/2019 a vyhlášky č. 450/2019",
+
+    "frézovanie pňov":
+      "odstránenie pňa dreviny frézovaním, prípadne iným spôsobom ak frézovanie nie je možné",
+
+    "dendrologický posudok":
+      "drevina zhodnotená externým certifikovaným arboristom alebo odborne spôsobilou osobou, pričom sa posudzujú kvantitatívne a kvalitatívne parametre dreviny a na základe vyhodnotenia súčasného stavu sa navrhnú opatrenia na ošetrenie alebo výrub.",
+
+    "odstránenie padnutého stromu":
+      "odstránenie stromu a jeho zvyškov, ktorý sa vplyvom počasia alebo na základe skrytých poškodení a hubových ochorení , prípadne vplyvom iných externých činiteľov úplne vyvrátil",
+
+    "manažment imela": "identifikácia imela na drevine a zaradenie do plánu odstraňovania imela",
+  };
 
   useEffect(() => {
     if (rawData) {
@@ -235,13 +264,13 @@ export const App = () => {
 
   return isLoading ? null : (
     <Map
+      loadingSpinnerColor="#237c36"
       ref={mapRef}
       mapboxgl={mapboxgl}
       i18next={i18next}
       mapStyles={{
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-        satellite: import.meta.env.PUBLIC_MAPBOX_SATELLITE_STYLE,
       }}
       initialViewport={{
         center: {
@@ -280,6 +309,18 @@ export const App = () => {
         styles={DISTRICTS_STYLE}
       />
 
+      {!!selectedFeatures?.length && selectedFeatures[0].geometry.type === "Point" && (
+        <Marker
+          lng={selectedFeatures[0].geometry.coordinates[0]}
+          lat={selectedFeatures[0].geometry.coordinates[1]}
+        >
+          <div
+            className="w-6 h-6 bg-background-lightmode dark:bg-background-darkmode border-4 rounded-full"
+            style={{ borderColor: selectedFeatures[0].properties?.["color"] }}
+          ></div>
+        </Marker>
+      )}
+
       <Layout isOnlyMobile>
         <Slot name="mobile-header">
           <MobileHeader
@@ -304,33 +345,20 @@ export const App = () => {
             seasonFilter={seasonFilter}
             typeFilter={typeFilter}
             typeCategories={typeCategories}
+            typeTooltips={tooltips}
           />
         </Slot>
 
         <Slot
           name="mobile-detail"
           isVisible={isDetailOpen}
-          bottomSheetOptions={
-            {
-              // footer: (
-              //   <div className="bg-gray bg-opacity-10 z-20">
-              //     <button
-              //       onClick={closeDetail}
-              //       className="p-3 flex items-center hover:underline justify-center mx-auto"
-              //     >
-              //       <span className="font-bold">{t("close")}</span>
-              //       <Close className="text-primary" width={32} height={32} />
-              //     </button>
-              //   </div>
-              // ),
-            }
-          }
+          bottomSheetOptions={{}}
           openPadding={{
             bottom: window.innerHeight / 2, // w-96 or 24rem
           }}
           avoidControls={false}
         >
-          <div className="h-full">
+          <div className="h-full bg-background-lightmode dark:bg-background-darkmode text-foreground-lightmode dark:text-foreground-darkmode">
             <Detail arcgeoServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
           </div>
         </Slot>
@@ -378,6 +406,7 @@ export const App = () => {
             typeFilter={typeFilter}
             isGeolocation={isGeolocation}
             typeCategories={typeCategories}
+            typeTooltips={tooltips}
           />
         </Slot>
 
@@ -391,10 +420,13 @@ export const App = () => {
         >
           <div
             ref={desktopDetailRef}
-            className={cx("fixed top-0 right-0 w-96 bg-background transition-all duration-500", {
-              "translate-x-full": !isDetailOpen,
-              "shadow-lg": isDetailOpen,
-            })}
+            className={cx(
+              "fixed top-0 right-0 w-96 bg-background-lightmode dark:bg-background-darkmode transition-all duration-500",
+              {
+                "translate-x-full": !isDetailOpen,
+                "shadow-lg": isDetailOpen,
+              },
+            )}
           >
             <Detail arcgeoServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
           </div>
@@ -403,7 +435,7 @@ export const App = () => {
           <div
             ref={legendRef}
             className={cx(
-              "absolute z-50 bottom-[92px] right-[90px] bg-background transform shadow-lg rounded-lg",
+              "absolute z-50 bottom-[92px] right-[73px] bg-background-lightmode dark:bg-background-darkmode border-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20  transform shadow-lg rounded-lg",
               {
                 "scale-0": !isLegendVisible,
               },

@@ -1,5 +1,5 @@
 import { IFilterResult } from "@bratislava/react-maps-core";
-import { Chevron, Eye, EyeCrossed, Funnel, X } from "@bratislava/react-maps-icons";
+import { Funnel } from "@bratislava/react-maps-icons";
 import {
   Divider,
   Select,
@@ -7,17 +7,15 @@ import {
   IActiveFilter,
   ActiveFilters,
   SelectOption,
-  Accordion,
-  AccordionItem,
-  Checkbox,
+  Sidebar,
 } from "@bratislava/react-maps-ui";
-import cx from "classnames";
 import { useTranslation } from "react-i18next";
+import { Layers } from "../Layers";
 import { SelectValueRenderer } from "../SelectValueRenderer";
 
 export interface IMobileFiltersProps<Y, D, S, T> {
   isVisible?: boolean;
-  setVisible: (isVisible: boolean) => void;
+  setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
   activeFilters: IActiveFilter[];
   onResetFiltersClick: () => void;
@@ -29,6 +27,9 @@ export interface IMobileFiltersProps<Y, D, S, T> {
     label: string;
     types: string[];
   }[];
+  typeTooltips: {
+    [index: string]: string;
+  };
 }
 
 export const MobileFilters = <
@@ -47,27 +48,18 @@ export const MobileFilters = <
   seasonFilter,
   typeFilter,
   typeCategories,
+  typeTooltips,
 }: IMobileFiltersProps<Y, D, S, T>) => {
   const { t } = useTranslation();
 
   return (
-    <div
-      className={cx(
-        "fixed font-medium max-h-full top-0 left-0 bottom-0 w-full z-30 sm:hidden h-full pr-0 bg-background flex gap-6 flex-col transition-all duration-500 overflow-auto",
-        { "translate-x-full shadow-lg": !isVisible },
-      )}
+    <Sidebar
+      position="right"
+      isMobile
+      isVisible={isVisible}
+      setVisible={setVisible}
+      title={t("title")}
     >
-      <button
-        onClick={() => setVisible(false)}
-        className="flex items-center px-3 py-3 gap-2 bg-gray
-        transition-all bg-opacity-0 hover:bg-opacity-10 focus:bg-opacity-10 active:bg-opacity-20"
-      >
-        <div className="flex p-2">
-          <Chevron direction="left" className="text-primary" />
-        </div>
-        <h1 className="relative font-medium">{t("title")}</h1>
-      </button>
-
       <div className="-mt-6">
         <ActiveFilters
           areFiltersDefault={areFiltersDefault}
@@ -161,59 +153,12 @@ export const MobileFilters = <
 
       <h2 className="font-bold px-6 text-md">{t("layersLabel")}</h2>
 
-      <div className="flex flex-col w-full">
-        <Accordion>
-          {typeCategories.map(({ label, types }, index) => {
-            return (
-              <AccordionItem
-                isOpenable={types.length > 1}
-                className={cx("border-l-4 transition-all bg-opacity-10", {
-                  "bg-gray border-primary": typeFilter.isAnyKeyActive(types as T[]),
-                  "border-transparent": !typeFilter.isAnyKeyActive(types as T[]),
-                })}
-                key={index}
-                title={label}
-                rightSlot={
-                  <button
-                    className="cursor-pointer p-1"
-                    onClick={() =>
-                      typeFilter.isAnyKeyActive(types as T[])
-                        ? typeFilter.setActive(types as T[], false)
-                        : typeFilter.setActive(types as T[], true)
-                    }
-                  >
-                    {typeFilter.isAnyKeyActive(types as T[]) ? (
-                      <Eye width={18} height={18} />
-                    ) : (
-                      <EyeCrossed width={18} height={18} />
-                    )}
-                  </button>
-                }
-              >
-                {types.map((type) => {
-                  return (
-                    <Checkbox
-                      key={type}
-                      id={type}
-                      label={type}
-                      checked={typeFilter.areKeysActive(type as T)}
-                      onChange={() => typeFilter.toggleActive(type as T)}
-                    />
-                  );
-                })}
-              </AccordionItem>
-            );
-          })}
-        </Accordion>
-      </div>
-
-      <button
-        onClick={() => setVisible(false)}
-        className="flex font-medium py-3 sticky top-full gap-2 justify-center items-center bg-gray transition-all bg-opacity-10 hover:bg-opacity-20 focus:bg-opacity-20 active:bg-opacity-30 hover:underline"
-      >
-        <span>{t("close")}</span>
-        <X className="text-primary" />
-      </button>
-    </div>
+      <Layers
+        isMobile
+        typeFilter={typeFilter}
+        typeTooltips={typeTooltips}
+        typeCategories={typeCategories}
+      />
+    </Sidebar>
   );
 };
