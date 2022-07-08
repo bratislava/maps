@@ -68,10 +68,17 @@ export const Layers = <T extends string>({
                             openTooltipModal(types[0]);
                           }}
                         >
-                          <Information className="text-primary pt-[2px]" size="sm" />
+                          <Information className="text-primary mt-[4px]" size="sm" />
                         </div>
                       }
-                      panel={<>{typeTooltips[types[0]]}</>}
+                      panel={
+                        <div className="flex flex-col gap-2">
+                          <div className="text-md font-semibold">
+                            {capitalizeFirstLetter(types[0])}
+                          </div>
+                          <div className="">{capitalizeFirstLetter(typeTooltips[types[0]])}</div>
+                        </div>
+                      }
                     />
                   )}
                 </div>
@@ -111,10 +118,19 @@ export const Layers = <T extends string>({
                                     openTooltipModal(type);
                                   }}
                                 >
-                                  <Information className="text-primary" size="sm" />
+                                  <Information className="text-primary mt-[6px]" size="sm" />
                                 </div>
                               }
-                              panel={<>{typeTooltips[type]}</>}
+                              panel={
+                                <div className="flex flex-col gap-2">
+                                  <div className="text-md font-semibold">
+                                    {capitalizeFirstLetter(type)}
+                                  </div>
+                                  <div className="">
+                                    {capitalizeFirstLetter(typeTooltips[type])}
+                                  </div>
+                                </div>
+                              }
                             />
                           ) : (
                             <div
@@ -123,7 +139,7 @@ export const Layers = <T extends string>({
                                 openTooltipModal(type);
                               }}
                             >
-                              <Information className="text-primary" size="sm" />
+                              <Information className="text-primary mt-[2px]" size="sm" />
                             </div>
                           )}
                         </div>

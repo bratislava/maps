@@ -72,7 +72,7 @@ export const Modal = ({
 
               <div className="w-full flex absolute left-0 -bottom-6 justify-center">
                 <button
-                  className="w-12 h-12 bg-primary rounded-full flex items-center justify-center"
+                  className="w-12 outline-none h-12 bg-primary rounded-full flex items-center justify-center"
                   onClick={() => onClose && onClose()}
                 >
                   {closeButtonIcon ?? <X className="text-white" />}

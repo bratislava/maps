@@ -35,7 +35,7 @@ export const Popover = ({ button, panel }: IPopoverProps) => {
 
   return (
     <HeadlessPopover className="relative">
-      <HeadlessPopover.Button ref={setButtonElement}>
+      <HeadlessPopover.Button className="outline-none" ref={setButtonElement}>
         {button}
       </HeadlessPopover.Button>
 

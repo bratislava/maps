@@ -25,7 +25,7 @@ export const MobileSearch = ({ mapRef, mapboxgl, isGeolocation }: IMobileSearchP
             lng: feature.geometry.coordinates[0],
             lat: feature.geometry.coordinates[1],
           },
-          zoom: 18,
+          zoom: 17,
         });
       }
     },

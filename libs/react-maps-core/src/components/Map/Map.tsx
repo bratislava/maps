@@ -533,7 +533,9 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         <Modal
           className="max-w-xs"
           isOpen={isDisplayLandscapeModal}
-          closeButtonIcon={<ArrowCounterclockwise size="lg" />}
+          closeButtonIcon={
+            <ArrowCounterclockwise size="lg" className="text-white" />
+          }
         >
           <div className="flex flex-col gap-2 text-center pb-4">
             <div>Na mobilnom zariadení je mapu najlepšie používať na výšku</div>

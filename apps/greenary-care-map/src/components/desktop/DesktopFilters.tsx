@@ -76,6 +76,7 @@ export const DesktopFilters = <
             lng: feature.geometry.coordinates[0],
             lat: feature.geometry.coordinates[1],
           },
+          zoom: 17,
         });
       }
     },
