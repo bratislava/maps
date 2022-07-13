@@ -9,8 +9,6 @@ import {
   Divider,
   Select,
   TagFilter,
-  IActiveFilter,
-  ActiveFilters,
   SearchBar,
   SelectOption,
   Sidebar,
@@ -24,7 +22,6 @@ export interface IDesktopFiltersProps<Y, D, S, T> {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
-  activeFilters: IActiveFilter[];
   onResetFiltersClick: () => void;
   mapRef: RefObject<MapHandle>;
   mapboxgl: typeof mapboxgl;
@@ -42,7 +39,6 @@ export const DesktopFilters = <
   isVisible,
   setVisible,
   areFiltersDefault,
-  activeFilters,
   onResetFiltersClick,
   mapRef,
   mapboxgl,
@@ -160,10 +156,6 @@ export const DesktopFilters = <
           }
         }}
       />
-
-      <Divider className="mx-6" />
-
-      <h2 className="font-semibold px-6 text-md">{t("layersLabel")}</h2>
     </Sidebar>
   );
 };

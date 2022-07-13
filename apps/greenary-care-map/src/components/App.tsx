@@ -37,7 +37,6 @@ import { MobileFilters } from "./mobile/MobileFilters";
 import { DesktopFilters } from "./desktop/DesktopFilters";
 import { MobileSearch } from "./mobile/MobileSearch";
 import { Legend } from "./Legend";
-import { X } from "@bratislava/react-maps-icons";
 
 const URL =
   "https://services8.arcgis.com/pRlN1m0su5BYaFAS/ArcGIS/rest/services/orezy_a_vyruby_2022_OTMZ_zobrazenie/FeatureServer/0";
@@ -174,6 +173,20 @@ export const App = () => {
     districtFilter.reset();
   }, [yearFilter, seasonFilter, districtFilter]);
 
+  const allFiltersExpression = useMemo(() => {
+    const filters: any[] = ["all"];
+
+    if (districtFilter.expression && districtFilter.expression.length)
+      filters.push(districtFilter.expression);
+
+    if (seasonFilter.expression && seasonFilter.expression.length)
+      filters.push(seasonFilter.expression);
+
+    if (typeFilter.expression && typeFilter.expression.length) filters.push(typeFilter.expression);
+
+    return filters;
+  }, [districtFilter, seasonFilter, typeFilter]);
+
   const activeFilters: IActiveFilter[] = useMemo(() => {
     return [
       {
@@ -200,7 +213,10 @@ export const App = () => {
     if (isMobile && isSidebarVisible == true && previousSidebarVisible == false) {
       closeDetail();
     }
-  }, [closeDetail, isMobile, isSidebarVisible, previousSidebarVisible]);
+    if (!isMobile && previousMobile) {
+      setLegendVisible((isLegendVisible) => !isLegendVisible);
+    }
+  }, [closeDetail, isMobile, isSidebarVisible, previousMobile, previousSidebarVisible]);
 
   // close sidebar on mobile and open on desktop
   useEffect(() => {
@@ -290,32 +306,28 @@ export const App = () => {
       onGeolocationChange={setGeolocation}
       onLegendClick={onLegendClick}
     >
-      <Layer
-        filters={[
-          "all",
-          yearFilter.filter,
-          seasonFilter.filter,
-          districtFilter.filter,
-          typeFilter.filter,
-        ]}
-        isVisible
-        source="ESRI_DATA"
-        styles={ESRI_STYLE}
-      />
+      <Layer filters={allFiltersExpression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
       <Layer
         ignoreClick
-        filters={["all", districtFilter.filter]}
+        filters={districtFilter.expression}
         source="DISTRICTS_GEOJSON"
         styles={DISTRICTS_STYLE}
       />
 
       {!!selectedFeatures?.length && selectedFeatures[0].geometry.type === "Point" && (
         <Marker
-          lng={selectedFeatures[0].geometry.coordinates[0]}
-          lat={selectedFeatures[0].geometry.coordinates[1]}
+          feature={{
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: selectedFeatures[0].geometry.coordinates,
+            },
+            properties: {},
+          }}
+          isRelativeToZoom
         >
           <div
-            className="w-6 h-6 bg-background-lightmode dark:bg-background-darkmode border-4 rounded-full"
+            className="w-10 h-10 bg-background-lightmode dark:bg-background-darkmode border-[6px] rounded-full"
             style={{ borderColor: selectedFeatures[0].properties?.["color"] }}
           ></div>
         </Marker>

@@ -77,12 +77,14 @@ export const getUniqueValuesFromFeatures = (
   features: Feature[],
   property: string
 ) => {
-  return features.reduce((all: string[], current: any) => {
-    const value = current.properties[property];
-    if (all.includes(value) || typeof value === "undefined") {
-      return all;
-    } else {
-      return [...all, value];
-    }
-  }, [] as string[]);
+  return features
+    .reduce((all: string[], current: any) => {
+      const value = current.properties[property];
+      if (all.includes(value) || typeof value === "undefined") {
+        return all;
+      } else {
+        return [...all, value];
+      }
+    }, [] as string[])
+    .filter((f) => f);
 };

@@ -30,9 +30,12 @@ export const ActiveFilters = ({
 
   return (
     <AnimateHeight
-      className={cx("bg-gray bg-opacity-10 transition-opacity", {
-        "opacity-0": areFiltersDefault,
-      })}
+      className={cx(
+        "bg-gray-lightmode dark:bg-gray-darkmode bg-opacity-10 dark:bg-opacity-10 transition-opacity",
+        {
+          "opacity-0": areFiltersDefault,
+        }
+      )}
       aria-hidden={false}
       height={areFiltersDefault ? 1 : activeFiltersContentHeight ?? 1}
     >

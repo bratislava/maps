@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-export type IFilter = (string | IFilter)[] | null;
+type FilterExpression = (string | boolean | FilterExpression)[];
 
 export type IValues<Key extends string> = {
   [key in Key]: boolean;
@@ -18,7 +18,7 @@ export interface IUseFilterProps<Key extends string> {
 }
 
 export interface IFilterResult<Key> {
-  filter: IFilter;
+  expression: FilterExpression;
   values: IFilterValue<Key>[];
   activeKeys: Key[];
   keys: Key[];
@@ -38,7 +38,7 @@ export const useFilter = <Key extends string>({
   keys,
   defaultValues,
 }: IUseFilterProps<Key>): IFilterResult<Key> => {
-  const [filter, setFilter] = useState<IFilter>(null);
+  const [expression, setExpression] = useState<FilterExpression | null>(null);
   const [valuesObject, setValuesObject] = useState<IValues<Key>>(
     {} as IValues<Key>
   );
@@ -57,7 +57,7 @@ export const useFilter = <Key extends string>({
 
   useEffect(() => {
     const activeKeys = keys.filter((key) => valuesObject[key]);
-    setFilter(
+    setExpression(
       activeKeys.length
         ? ["any", ...activeKeys.map((key) => ["==", property, key])]
         : null
@@ -78,25 +78,22 @@ export const useFilter = <Key extends string>({
     [valuesObject, defaultValuesObject]
   );
 
-  const setActive = useCallback(
-    (inputKeys: Key | Key[], value = true) => {
-      if (Array.isArray(inputKeys)) {
-        setValuesObject((valuesObject) => ({
-          ...valuesObject,
-          ...inputKeys.reduce((prev, key) => {
-            prev[key] = value;
-            return prev;
-          }, {} as IValues<Key>),
-        }));
-      } else {
-        setValuesObject((valuesObject) => ({
-          ...valuesObject,
-          [inputKeys]: value,
-        }));
-      }
-    },
-    [valuesObject]
-  );
+  const setActive = useCallback((inputKeys: Key | Key[], value = true) => {
+    if (Array.isArray(inputKeys)) {
+      setValuesObject((valuesObject) => ({
+        ...valuesObject,
+        ...inputKeys.reduce((prev, key) => {
+          prev[key] = value;
+          return prev;
+        }, {} as IValues<Key>),
+      }));
+    } else {
+      setValuesObject((valuesObject) => ({
+        ...valuesObject,
+        [inputKeys]: value,
+      }));
+    }
+  }, []);
 
   const setActiveAll = useCallback(
     (value = true) => {
@@ -138,7 +135,7 @@ export const useFilter = <Key extends string>({
 
   useEffect(() => {
     reset();
-  }, [defaultValuesObject, keys]);
+  }, [reset]);
 
   const isAnyKeyActive = useCallback(
     (inputKeys?: Key[]) => {
@@ -174,11 +171,11 @@ export const useFilter = <Key extends string>({
       }
       return !!valuesObject[keys];
     },
-    [values]
+    [valuesObject]
   );
 
   return {
-    filter,
+    expression: expression ?? [],
     values,
     activeKeys,
     keys,

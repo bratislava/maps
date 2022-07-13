@@ -93,6 +93,8 @@ export const Layer = ({
             getPrefixedLayer(style.id),
             resultFilters.filter((filter) => filter)
           );
+        } else {
+          map.setFilter(getPrefixedLayer(style.id), null);
         }
       });
     }
@@ -111,6 +113,7 @@ export const Layer = ({
     previousFilters,
     ignoreClick,
     addClickableLayer,
+    previousLoading,
   ]);
 
   return null;

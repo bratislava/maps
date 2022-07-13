@@ -1,72 +1,11 @@
 import React from "react";
-import { Feature } from "geojson";
+import { Feature, Point } from "geojson";
 import { useTranslation } from "react-i18next";
-import { ReactComponent as BasketballIcon } from "../assets/icons/basketball.svg";
-import { ReactComponent as CvickoIcon } from "../assets/icons/cvicko.svg";
-import { ReactComponent as OtherIcon } from "../assets/icons/other.svg";
-import { ReactComponent as FitnessIcon } from "../assets/icons/fitness.svg";
-import { ReactComponent as FootballIcon } from "../assets/icons/football.svg";
-import { ReactComponent as GymIcon } from "../assets/icons/gym.svg";
-import { ReactComponent as HockeyIcon } from "../assets/icons/hockey.svg";
-import { ReactComponent as PoolIcon } from "../assets/icons/pool.svg";
-import { ReactComponent as RunningTrackIcon } from "../assets/icons/running-track.svg";
-import { ReactComponent as TableTennisIcon } from "../assets/icons/table-tennis.svg";
-import { ReactComponent as TennisIcon } from "../assets/icons/tennis.svg";
-import { ReactComponent as WaterIcon } from "../assets/icons/water.svg";
-
-const icons = [
-  {
-    name: "basketball-icon",
-    component: BasketballIcon,
-  },
-  {
-    name: "cvicko-icon",
-    component: CvickoIcon,
-  },
-  {
-    name: "other-icon",
-    component: OtherIcon,
-  },
-  {
-    name: "fitness-icon",
-    component: FitnessIcon,
-  },
-  {
-    name: "football-icon",
-    component: FootballIcon,
-  },
-  {
-    name: "gym-icon",
-    component: GymIcon,
-  },
-  {
-    name: "hockey-icon",
-    component: HockeyIcon,
-  },
-  {
-    name: "pool-icon",
-    component: PoolIcon,
-  },
-  {
-    name: "running-track-icon",
-    component: RunningTrackIcon,
-  },
-  {
-    name: "table-tennis-icon",
-    component: TableTennisIcon,
-  },
-  {
-    name: "tennis-icon",
-    component: TennisIcon,
-  },
-  {
-    name: "water-icon",
-    component: WaterIcon,
-  },
-];
+import { Icon } from "./Icon";
+import { X } from "@bratislava/react-maps-icons";
 
 export interface DetailProps {
-  features: Feature[];
+  feature: Feature<Point> | null;
   onClose: () => void;
 }
 
@@ -83,19 +22,18 @@ export const Row = ({ label, text }: { label: string; text: string }) => {
   }
 };
 
-export const Detail = ({ features }: DetailProps) => {
+export const Detail = ({ feature, onClose }: DetailProps) => {
   const { t } = useTranslation();
 
-  if (!(features && features[0])) return null;
-
-  const feature = features[0];
-
-  const Icon = icons.find((icon) => feature.properties?.icon === icon.name)?.component;
+  if (!feature) return null;
 
   return (
-    <div className="p-8 pb-26 flex flex-col justify-end space-y-4 bg-background sm:bg-primary-soft md:pb-8 md:pt-5 w-full">
+    <div className="p-8 pb-26 flex flex-col justify-end text-foreground-lightmode dark:text-foreground-darkmode sm:dark:text-foreground-lightmode space-y-4 bg-background sm:bg-primary-soft sm:text-foreground-lightmode md:pb-8 md:pt-5 w-full">
+      <button className="hidden sm:block absolute right-4 top-8 p-2" onClick={onClose}>
+        <X />
+      </button>
       <div className="flex flex-col space-y-4">
-        {Icon && <Icon width={48} height={48} />}
+        <Icon size={48} icon={feature.properties?.icon} />
         <div className="font-bold font-md pb-4 text-[20px]">
           {t(`layers.sportGrounds.detail.title`)}
         </div>

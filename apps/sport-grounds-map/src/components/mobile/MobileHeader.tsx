@@ -1,4 +1,5 @@
 import { Funnel } from "@bratislava/react-maps-icons";
+import { IconButton } from "@bratislava/react-maps-ui";
 
 export interface IMobileHeaderProps {
   onFunnelClick: () => void;
@@ -6,15 +7,10 @@ export interface IMobileHeaderProps {
 
 export const MobileHeader = ({ onFunnelClick }: IMobileHeaderProps) => {
   return (
-    <div>
-      <div className="fixed top-4 right-4 z-10 sm:hidden">
-        <button
-          onClick={onFunnelClick}
-          className="flex text-font w-12 h-12 items-center justify-center pointer-events-auto shadow-lg bg-background rounded-lg"
-        >
-          <Funnel className="w-12 h-12" />
-        </button>
-      </div>
+    <div className="fixed top-4 right-4 z-10 sm:hidden">
+      <IconButton onClick={onFunnelClick}>
+        <Funnel className="w-12 h-12" />
+      </IconButton>
     </div>
   );
 };

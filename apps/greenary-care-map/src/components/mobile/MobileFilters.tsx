@@ -60,7 +60,7 @@ export const MobileFilters = <
       setVisible={setVisible}
       title={t("title")}
     >
-      <div className="-mt-6">
+      <div className="">
         <ActiveFilters
           areFiltersDefault={areFiltersDefault}
           activeFilters={activeFilters}

@@ -37,7 +37,7 @@ export const Sidebar = ({
     >
       <div
         className={cx(
-          "w-full h-full bg-background-lightmode dark:bg-background-darkmode pr-0 transition-all",
+          "w-full h-full flex flex-col bg-background-lightmode dark:bg-background-darkmode pr-0 transition-all",
           {
             "overflow-auto": isMobile,
           }
@@ -102,7 +102,7 @@ export const Sidebar = ({
 
         <div
           className={cx(
-            "space-y-6 w-full font-medium overflow-auto bg-background",
+            "space-y-6 w-full grow font-medium overflow-auto bg-background pb-3",
             {
               "shadow-lg h-full": !isMobile,
             }
@@ -119,7 +119,7 @@ export const Sidebar = ({
         {isMobile && (
           <button
             onClick={() => setVisible(false)}
-            className="flex mt-4 w-full sticky font-medium py-3 top-full gap-2 justify-center items-center bg-gray-lightmode dark:bg-gray-darkmode transition-all bg-opacity-10 dark:bg-opacity-10 hover:bg-opacity-20 hover:dark:bg-opacity-20 focus:bg-opacity-20 focus:dark:bg-opacity-20 active:bg-opacity-30 active:dark:bg-opacity-30 hover:underline"
+            className="flex w-full sticky font-medium py-3 top-full gap-2 justify-center items-center bg-gray-lightmode dark:bg-gray-darkmode transition-all bg-opacity-10 dark:bg-opacity-10 hover:bg-opacity-20 hover:dark:bg-opacity-20 focus:bg-opacity-20 focus:dark:bg-opacity-20 active:bg-opacity-30 active:dark:bg-opacity-30 hover:underline"
           >
             <span>{t("close")}</span>
             <X className="text-primary" />

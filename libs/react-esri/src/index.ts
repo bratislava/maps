@@ -4,19 +4,26 @@ import { Feature, FeatureCollection } from "geojson";
 
 export const fetchFromArcgeo = async (
   url: string,
-  offset: number,
-  count: number
+  {
+    offset,
+    count,
+    format,
+  }: {
+    offset?: number;
+    count?: number;
+    format?: string;
+  }
 ) => {
   return fetch(
     [
       `${url}/query?where=1=1`,
-      "outFields=*",
-      "returnGeometry=true",
-      "featureEncoding=esriDefault",
-      `resultOffset=${offset}`,
-      `resultRecordCount=${count}`,
-      "f=pgeojson",
-    ].join("&")
+      "&outFields=*",
+      "&returnGeometry=true",
+      "&featureEncoding=esriDefault",
+      offset ? `&resultOffset=${offset}` : "",
+      count ? `&resultRecordCount=${count}` : "",
+      format ? `&f=${format}` : "&f=pgeojson",
+    ].join("")
   ).then((res) => res.json());
 };
 
@@ -33,38 +40,60 @@ export const fetchCount = async (url: string) => {
   return json.count;
 };
 
+const DEFAULT_OPTIONS: IUseArcgeoOptions = {
+  countPerRequest: 1000,
+  pagination: true,
+  format: "pgeojson",
+};
+
 export const fetchAllFromArcgeo = async (
   url: string,
-  countPerRequest: number
+  options?: IUseArcgeoOptions
 ) => {
   return new Promise<FeatureCollection>(async (resolve, reject) => {
-    const totalCount = await fetchCount(url);
-    const requestCount = Math.ceil(totalCount / countPerRequest);
-
-    const chunks = await Promise.all(
-      Array(requestCount)
-        .fill(null)
-        .map(async (chunk, index) => {
-          const offset = countPerRequest * index;
-          const count = countPerRequest;
-          const data = await fetchFromArcgeo(url, offset, count);
-          return data.features;
-        })
-    );
-
     let GLOBAL_FEATURE_ID = 0;
+    let features: Feature[] = [];
 
-    // filter out features which don't have geometry for some reason
-    const features = chunks
-      .flat()
-      .filter((feature) => feature.geometry)
-      .map((feature) => {
-        GLOBAL_FEATURE_ID++;
-        return {
-          ...feature,
-          id: GLOBAL_FEATURE_ID,
-        };
-      });
+    const ops = options
+      ? {
+          ...DEFAULT_OPTIONS,
+          ...options,
+        }
+      : DEFAULT_OPTIONS;
+
+    if (ops.pagination) {
+      const totalCount = await fetchCount(url);
+      const requestCount = Math.ceil(
+        totalCount / (ops.countPerRequest ?? 1000)
+      );
+
+      const chunks = await Promise.all(
+        Array(requestCount)
+          .fill(null)
+          .map(async (chunk, index) => {
+            const offset = (ops.countPerRequest ?? 1000) * index;
+            const count = ops.countPerRequest;
+            const format = ops.format;
+            const data = await fetchFromArcgeo(url, { offset, count, format });
+            return data.features;
+          })
+      );
+
+      // filter out features which don't have geometry for some reason
+      const features = chunks
+        .flat()
+        .filter((feature) => feature.geometry)
+        .map((feature) => {
+          GLOBAL_FEATURE_ID++;
+          return {
+            ...feature,
+            id: GLOBAL_FEATURE_ID,
+          };
+        });
+    } else {
+      const data = await fetchFromArcgeo(url, { format: ops.format });
+      features = data.features;
+    }
 
     resolve({
       type: "FeatureCollection",
@@ -93,15 +122,21 @@ export const fetchAttachmentsFromArcgeo = async (
   });
 };
 
+interface IUseArcgeoOptions {
+  countPerRequest?: number;
+  pagination?: boolean;
+  format?: string;
+}
+
 export const useArcgeo = (
   url: string | string[],
-  countPerRequest: number = 1000
+  options?: IUseArcgeoOptions
 ) => {
   const [data, setData] = useState<FeatureCollection | null>(null);
 
   useEffect(() => {
     if (Array.isArray(url)) {
-      Promise.all(url.map((u) => fetchAllFromArcgeo(u, countPerRequest))).then(
+      Promise.all(url.map((u) => fetchAllFromArcgeo(u, options))).then(
         (results) => {
           setData({
             type: "FeatureCollection",
@@ -113,7 +148,7 @@ export const useArcgeo = (
         }
       );
     } else {
-      fetchAllFromArcgeo(url, countPerRequest).then((fetchedData) => {
+      fetchAllFromArcgeo(url, options).then((fetchedData) => {
         setData(fetchedData);
       });
     }

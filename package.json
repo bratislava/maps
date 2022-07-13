@@ -2,6 +2,7 @@
   "name": "@bratislava/maps",
   "private": true,
   "workspaces": [
+    "libs/mapbox-expressions",
     "libs/mapbox-geocoding",
     "libs/react-esri",
     "libs/react-maps-core",
@@ -10,6 +11,7 @@
     "libs/react-maps-utils",
     "apps/closures-and-restrictions-map",
     "apps/greenary-care-map",
+    "apps/planting-map",
     "apps/sport-grounds-map"
   ]
 }

@@ -1,29 +1,34 @@
+import React, { MouseEvent, useCallback } from "react";
 import { Marker as MapMarker } from "@bratislava/react-maps-core";
-import { Feature } from "geojson";
-import { useEffect, useMemo, useState } from "react";
+import { Feature, Point } from "geojson";
+import { Icon } from "./Icon";
+import cx from "classnames";
 
 export interface IMarkerProps {
-  feature: Feature;
+  feature: Feature<Point>;
+  onClick: (feature: Feature<Point>) => void;
+  isSelected: boolean;
 }
 
-export const Marker = ({ feature }: IMarkerProps) => {
-  const [lat, setLat] = useState(0);
-  const [lng, setLng] = useState(0);
+export const Marker = ({ feature, onClick, isSelected }: IMarkerProps) => {
+  const onClickHandler = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      event.stopPropagation();
+      onClick && onClick(feature);
+    },
+    [feature, onClick],
+  );
 
-  useEffect(() => {
-    if (feature.geometry.type === "Point") {
-      setLat(feature.geometry.coordinates[0]);
-      setLng(feature.geometry.coordinates[1]);
-    }
-  }, [feature.geometry]);
-
-  useEffect(() => {
-    console.log(lat, lng);
-  }, [lat, lng]);
-
-  return feature.geometry.type == "Point" ? (
-    <MapMarker lat={lat} lng={lng}>
-      <div className="w-4 h-4 rounded-full bg-primary">dadawdawdawdawd dawdaw </div>
+  return (
+    <MapMarker ignoreFilters onClick={onClickHandler} feature={feature}>
+      <div
+        className={cx(
+          "relative transform active:scale-75 transition-transform cursor-pointer w-16 h-16 rounded-full text-white flex items-center justify-center shadow-lg",
+          { "bg-white text-primary z-50": isSelected, "bg-primary text-white": !isSelected },
+        )}
+      >
+        <Icon size={64} icon={feature.properties?.icon ?? ""} />
+      </div>
     </MapMarker>
-  ) : null;
+  );
 };

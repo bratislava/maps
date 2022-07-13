@@ -14,9 +14,10 @@ import {
   Map,
   Layer,
   useFilter,
+  Cluster,
+  Filter,
 } from "@bratislava/react-maps-core";
 import { IActiveFilter } from "@bratislava/react-maps-ui";
-import { Close } from "@bratislava/react-maps-icons";
 
 // components
 import { Detail } from "./Detail";
@@ -25,7 +26,7 @@ import { Detail } from "./Detail";
 import i18next from "../utils/i18n";
 import { processData } from "../utils/utils";
 import mapboxgl from "mapbox-gl";
-import { Feature, FeatureCollection } from "geojson";
+import { Feature, Point, FeatureCollection } from "geojson";
 import { MobileHeader } from "./mobile/MobileHeader";
 import { MobileFilters } from "./mobile/MobileFilters";
 import { DesktopFilters } from "./desktop/DesktopFilters";
@@ -33,8 +34,9 @@ import { MobileSearch } from "./mobile/MobileSearch";
 
 import RAW_DATA_SPORT_GROUNDS_FEATURES from "../assets/layers/sport-grounds/sport-grounds-data";
 import RAW_DATA_SPORT_GROUNDS_ALT_FEATURES from "../assets/layers/sport-grounds/sport-grounds-alt-data";
-import SPORT_GROUNDS_STYLE from "../assets/layers/sport-grounds/sport-grounds-style";
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
+import { Marker } from "./Marker";
+import { MultipleMarker } from "./MultipleMarker";
 
 export const App = () => {
   const { t } = useTranslation();
@@ -62,7 +64,7 @@ export const App = () => {
   const mapRef = useRef<MapHandle>(null);
   mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
-  const [selectedFeatures, setSelectedFeatures] = useState<Feature[] | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
   const [isGeolocation, setGeolocation] = useState(false);
 
@@ -117,14 +119,22 @@ export const App = () => {
     }
   }, [previousMobile, isMobile]);
 
-  const isDetailOpen = useMemo(
-    () => (selectedFeatures ? !!selectedFeatures.length : undefined),
-    [selectedFeatures],
-  );
+  const isDetailOpen = useMemo(() => !!selectedFeature, [selectedFeature]);
 
   const closeDetail = useCallback(() => {
-    mapRef.current?.deselectAllFeatures();
-  }, [mapRef]);
+    setSelectedFeature(null);
+  }, []);
+
+  const allFiltersExpression = useMemo(() => {
+    const filters: any[] = ["all"];
+
+    if (districtFilter.expression && districtFilter.expression.length)
+      filters.push(districtFilter.expression);
+
+    if (typeFilter.expression && typeFilter.expression.length) filters.push(typeFilter.expression);
+
+    return filters;
+  }, [districtFilter, typeFilter]);
 
   // close detailbox when sidebar is opened on mobile
   useEffect(() => {
@@ -146,23 +156,15 @@ export const App = () => {
       : mapRef.current?.fitToDistrict(districtFilter.activeKeys);
   }, [districtFilter.activeKeys, mapRef]);
 
-  // move point to center when selected
-  useEffect(() => {
-    const MAP = mapRef.current;
-    if (MAP && selectedFeatures && selectedFeatures.length) {
-      const feature = selectedFeatures[0];
-      setTimeout(() => {
-        if (feature.geometry.type === "Point") {
-          mapRef.current?.changeViewport({
-            center: {
-              lng: feature.geometry.coordinates[0],
-              lat: feature.geometry.coordinates[1],
-            },
-          });
-        }
-      }, 0);
-    }
-  }, [selectedFeatures, mapRef]);
+  const markerClickHandler = useCallback((feature: Feature<Point>) => {
+    setSelectedFeature(feature);
+    mapRef.current?.changeViewport({
+      center: {
+        lng: feature.geometry.coordinates[0],
+        lat: feature.geometry.coordinates[1],
+      },
+    });
+  }, []);
 
   const { height: desktopDetailHeight, ref: desktopDetailRef } =
     useResizeDetector<HTMLDivElement>();
@@ -175,74 +177,11 @@ export const App = () => {
       mapStyles={{
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-        satellite: import.meta.env.PUBLIC_MAPBOX_SATELLITE_STYLE,
       }}
       initialViewport={{
         center: {
           lat: 48.148598,
           lng: 17.107748,
-        },
-      }}
-      icons={{
-        "hockey-icon": {
-          path: "icons/hockey.svg",
-          width: 160,
-          height: 160,
-        },
-        "fitness-icon": {
-          path: "icons/fitness.svg",
-          width: 160,
-          height: 160,
-        },
-        "tennis-icon": {
-          path: "icons/tennis.svg",
-          width: 160,
-          height: 160,
-        },
-        "pool-icon": {
-          path: "icons/pool.svg",
-          width: 160,
-          height: 160,
-        },
-        "basketball-icon": {
-          path: "icons/basketball.svg",
-          width: 160,
-          height: 160,
-        },
-        "cvicko-icon": {
-          path: "icons/cvicko.svg",
-          width: 160,
-          height: 160,
-        },
-        "gym-icon": {
-          path: "icons/gym.svg",
-          width: 160,
-          height: 160,
-        },
-        "table-tennis-icon": {
-          path: "icons/table-tennis.svg",
-          width: 160,
-          height: 160,
-        },
-        "water-icon": {
-          path: "icons/water.svg",
-          width: 160,
-          height: 160,
-        },
-        "running-track-icon": {
-          path: "icons/running-track.svg",
-          width: 160,
-          height: 160,
-        },
-        "football-icon": {
-          path: "icons/football.svg",
-          width: 160,
-          height: 160,
-        },
-        "other-icon": {
-          path: "icons/other.svg",
-          width: 160,
-          height: 160,
         },
       }}
       isDevelopment={import.meta.env.DEV}
@@ -252,22 +191,47 @@ export const App = () => {
         SPORT_GROUNDS_DATA: data,
         DISTRICTS_GEOJSON,
       }}
-      onSelectedFeaturesChange={setSelectedFeatures}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
+      onMapClick={closeDetail}
     >
       <Layer
-        filters={["all", typeFilter.filter, districtFilter.filter]}
-        isVisible
-        source="SPORT_GROUNDS_DATA"
-        styles={SPORT_GROUNDS_STYLE}
-      />
-      <Layer
         ignoreClick
-        filters={["all", districtFilter.filter]}
+        filters={districtFilter.expression.length ? districtFilter.expression : undefined}
         source="DISTRICTS_GEOJSON"
         styles={DISTRICTS_STYLE}
       />
+
+      {/* <Filter expression={["all", typeFilter.expression]}>
+        {data?.features.slice(0, 40).map((f, i) => {
+          const fp = f as Feature<Point>;
+          return <Marker key={i} feature={fp} onClick={markerClickHandler} />;
+        })}
+      </Filter> */}
+
+      <Filter expression={allFiltersExpression}>
+        <Cluster features={data?.features ?? []} radius={100}>
+          {({ features, lng, lat, key }) =>
+            features.length === 1 ? (
+              <Marker
+                isSelected={features[0].id === selectedFeature?.id}
+                key={key}
+                feature={features[0]}
+                onClick={markerClickHandler}
+              />
+            ) : (
+              <MultipleMarker
+                isSelected={features[0].id === selectedFeature?.id}
+                key={key}
+                features={features}
+                lat={lat}
+                lng={lng}
+                onClick={markerClickHandler}
+              />
+            )
+          }
+        </Cluster>
+      </Filter>
 
       <Layout isOnlyMobile>
         <Slot name="mobile-header">
@@ -296,26 +260,14 @@ export const App = () => {
         <Slot
           name="mobile-detail"
           isVisible={isDetailOpen}
-          bottomSheetOptions={{
-            footer: (
-              <div className="bg-gray bg-opacity-10 z-20">
-                <button
-                  onClick={closeDetail}
-                  className="p-3 flex items-center hover:underline justify-center mx-auto"
-                >
-                  <span className="font-bold">{t("close")}</span>
-                  <Close className="text-primary" width={32} height={32} />
-                </button>
-              </div>
-            ),
-          }}
+          bottomSheetOptions={{}}
           openPadding={{
             bottom: window.innerHeight / 2, // w-96 or 24rem
           }}
           avoidControls={false}
         >
           <div className="relative h-full">
-            <Detail features={selectedFeatures ?? []} onClose={closeDetail} />
+            <Detail feature={selectedFeature} onClose={closeDetail} />
           </div>
         </Slot>
 
@@ -323,7 +275,6 @@ export const App = () => {
           <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
         </Slot>
       </Layout>
-
       <Layout isOnlyDesktop>
         <Slot
           name="desktop-filters"
@@ -338,7 +289,6 @@ export const App = () => {
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
             areFiltersDefault={areFiltersDefault}
-            activeFilters={activeFilters}
             onResetFiltersClick={resetFilters}
             mapRef={mapRef}
             districtFilter={districtFilter}
@@ -362,7 +312,7 @@ export const App = () => {
               "shadow-lg": isDetailOpen,
             })}
           >
-            <Detail features={selectedFeatures ?? []} onClose={closeDetail} />
+            <Detail feature={selectedFeature} onClose={closeDetail} />
           </div>
         </Slot>
       </Layout>

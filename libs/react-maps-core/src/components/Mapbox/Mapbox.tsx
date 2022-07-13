@@ -23,6 +23,8 @@ import {
   ViewportActionKind,
   viewportReducer,
 } from "./viewportReducer";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { Feature } from "geojson";
 
 export interface MapboxProps {
   mapboxgl: typeof mapboxgl;
@@ -45,6 +47,7 @@ export interface MapboxProps {
   onLoad?: () => void;
   initialViewport?: PartialViewport;
   isDevelopment?: boolean;
+  onClick?: () => void;
 }
 
 export interface ISlotPadding {
@@ -127,6 +130,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       initialViewport: inputInitialViewport,
       isDevelopment = false,
       onLoad = () => void 0,
+      onClick,
     },
     forwardedRef
   ) => {
@@ -331,6 +335,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     // MAP CLICK HANDLER
     const onMapClick = useCallback(
       (event: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
+        onClick && onClick();
+
         if (!map.current) return;
         const MAP = map.current;
 
@@ -375,11 +381,23 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           if (foundSymbolFeature) {
             onFeatureClick([foundSymbolFeature]);
           } else {
-            onFeatureClick(filteredFeatures);
+            /*
+              Geometry objects in queried features in Mapbox are based on zoom level,
+              so it is not precise enough.
+              This will replace the queried geometry object with the source one.
+            */
+            onFeatureClick(
+              filteredFeatures.map((f) => ({
+                ...f,
+                geometry: sources[f.source].features.find(
+                  (sf: Feature) => sf.id === f.id
+                ).geometry,
+              }))
+            );
           }
         }
       },
-      [layerPrefix, onFeatureClick, sources, clickableLayerIds]
+      [layerPrefix, onFeatureClick, sources, clickableLayerIds, onClick]
     );
 
     // MAP MOVE HANDLER

@@ -70,6 +70,7 @@ export interface IMapProps {
   onMobileChange?: (isMobile: boolean) => void;
   onGeolocationChange?: (isGeolocation: boolean) => void;
   onLegendClick?: (e: MouseEvent) => void;
+  onMapClick?: () => void;
   loadingSpinnerColor?: string;
 }
 
@@ -109,6 +110,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       onGeolocationChange,
       onLegendClick,
       loadingSpinnerColor,
+      onMapClick,
     },
     forwardedRef
   ) => {
@@ -467,6 +469,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               icons={icons}
               onFeatureClick={setSelectedFeatures}
               onLoad={onLoad}
+              onClick={onMapClick}
               selectedFeatures={selectedFeatures}
               onViewportChange={onViewportChange}
               isDevelopment={isDevelopment && isDevInfoVisible}
@@ -474,8 +477,17 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               <>{children}</>
               {mapState.isGeolocation && mapState.geolocationMarkerLngLat && (
                 <Marker
-                  lng={mapState.geolocationMarkerLngLat.lng}
-                  lat={mapState.geolocationMarkerLngLat.lat}
+                  feature={{
+                    type: "Feature",
+                    geometry: {
+                      type: "Point",
+                      coordinates: [
+                        mapState.geolocationMarkerLngLat.lng,
+                        mapState.geolocationMarkerLngLat.lat,
+                      ],
+                    },
+                    properties: {},
+                  }}
                 >
                   <div className="relative flex items-center justify-center">
                     <div className="opacity-20 flex items-center justify-center">
@@ -515,7 +527,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         </mapContext.Provider>
         <div
           className={cx(
-            "fixed dark:text-foreground-darkmode z-50 top-0 right-0 bottom-0 left-0 bg-background-lightmode dark:bg-background-darkmode flex items-center justify-center text-primary transition-all delay-1000 duration-1000",
+            "fixed select-none dark:text-foreground-darkmode z-50 top-0 right-0 bottom-0 left-0 bg-background-lightmode dark:bg-background-darkmode flex items-center justify-center text-primary transition-all delay-1000 duration-1000",
             {
               "visible opacity-100": isLoading,
               "invisible opacity-0": !isLoading,
@@ -541,8 +553,11 @@ export const Map = forwardRef<MapHandle, IMapProps>(
             <div>Na mobilnom zariadení je mapu najlepšie používať na výšku</div>
             <div className="text-[14px]">
               Zanechajte nám spätnú väzbu na adrese{" "}
-              <a href="mailto:inovacie@bratislava.sk" className="underline">
-                inovacie@bratislava.sk
+              <a
+                href="mailto:mapy.inovacie@bratislava.sk"
+                className="underline"
+              >
+                mapy.inovacie@bratislava.sk
               </a>
             </div>
           </div>
