@@ -14,10 +14,9 @@ import {
   Map,
   Layer,
   useFilter,
-  useClickOutside,
+  useCombinedFilter,
   Marker,
 } from "@bratislava/react-maps-core";
-import { DropdownArrow, IActiveFilter, Sidebar } from "@bratislava/react-maps-ui";
 import { useArcgeo } from "@bratislava/react-esri";
 
 // components
@@ -59,7 +58,7 @@ export const App = () => {
   const [uniqueLayers, setUniqueLayers] = useState<string[]>([]);
 
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
-  const [isLegendVisible, setLegendVisible] = useState<boolean | undefined>(undefined);
+  // const [isLegendVisible, setLegendVisible] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     if (rawData) {
@@ -127,73 +126,32 @@ export const App = () => {
     keys: uniqueKinds,
   });
 
-  const areFiltersDefault = useMemo(() => {
-    return (
-      yearFilter.areDefault &&
-      districtFilter.areDefault &&
-      seasonFilter.areDefault &&
-      kindFilter.areDefault
-    );
-  }, [
-    yearFilter.areDefault,
-    districtFilter.areDefault,
-    seasonFilter.areDefault,
-    kindFilter.areDefault,
-  ]);
-
-  const resetFilters = useCallback(() => {
-    kindFilter.reset();
-    layerFilter.reset();
-    yearFilter.reset();
-    seasonFilter.reset();
-    districtFilter.reset();
-  }, [yearFilter, seasonFilter, districtFilter, kindFilter, layerFilter]);
-
-  const allFiltersExpression = useMemo(() => {
-    const filters: any[] = ["all"];
-
-    if (yearFilter.expression && yearFilter.expression.length) filters.push(yearFilter.expression);
-
-    if (kindFilter.expression && kindFilter.expression.length) filters.push(kindFilter.expression);
-
-    if (districtFilter.expression && districtFilter.expression.length)
-      filters.push(districtFilter.expression);
-
-    // if (seasonFilter.expression && seasonFilter.expression.length)
-    //   filters.push(seasonFilter.expression);
-
-    if (layerFilter.expression && layerFilter.expression.length)
-      filters.push(layerFilter.expression);
-
-    return filters;
-  }, [districtFilter, layerFilter, yearFilter, kindFilter]);
-
-  const activeFilters: IActiveFilter[] = useMemo(() => {
-    return [
+  const combinedFilter = useCombinedFilter({
+    combiner: "all",
+    filters: [
       {
-        title: t("filters.year.title"),
-        items: yearFilter.activeKeys,
+        filter: yearFilter,
+        mapToActive: (activeYears) => ({
+          title: t("filters.year.title"),
+          items: activeYears,
+        }),
       },
       {
-        title: t("filters.district.title"),
-        items: districtFilter.activeKeys,
+        filter: districtFilter,
+        mapToActive: (activeDistricts) => ({
+          title: t("filters.district.title"),
+          items: activeDistricts,
+        }),
       },
-      // {
-      //   title: t("filters.season.title"),
-      //   items: seasonFilter.activeKeys.map((season) => t(`filters.season.seasons.${season}`)),
-      // },
       {
-        title: t("filters.kind.title"),
-        items: kindFilter.activeKeys.map((kind) => treeKindNameSkMappingObject[kind]),
+        filter: kindFilter,
+        mapToActive: (activeKinds) => ({
+          title: t("filters.kind.title"),
+          items: activeKinds.map((activeKind) => treeKindNameSkMappingObject[activeKind]),
+        }),
       },
-    ];
-  }, [
-    t,
-    yearFilter.activeKeys,
-    districtFilter.activeKeys,
-    // seasonFilter.activeKeys,
-    kindFilter.activeKeys,
-  ]);
+    ],
+  });
 
   const closeDetail = useCallback(() => {
     mapRef.current?.deselectAllFeatures();
@@ -204,9 +162,9 @@ export const App = () => {
     if (isMobile && isSidebarVisible == true && previousSidebarVisible == false) {
       closeDetail();
     }
-    if (!isMobile && previousMobile) {
-      setLegendVisible((isLegendVisible) => !isLegendVisible);
-    }
+    // if (!isMobile && previousMobile) {
+    //   setLegendVisible((isLegendVisible) => !isLegendVisible);
+    // }
   }, [closeDetail, isMobile, isSidebarVisible, previousMobile, previousSidebarVisible]);
 
   // close sidebar on mobile and open on desktop
@@ -297,7 +255,7 @@ export const App = () => {
       onGeolocationChange={setGeolocation}
       // onLegendClick={onLegendClick}
     >
-      <Layer filters={allFiltersExpression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
+      <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
       <Layer
         ignoreClick
         filters={districtFilter.expression}
@@ -340,9 +298,9 @@ export const App = () => {
           <MobileFilters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
-            areFiltersDefault={areFiltersDefault}
-            activeFilters={activeFilters}
-            onResetFiltersClick={resetFilters}
+            areFiltersDefault={combinedFilter.areDefault}
+            activeFilters={combinedFilter.active}
+            onResetFiltersClick={combinedFilter.reset}
             yearFilter={yearFilter}
             districtFilter={districtFilter}
             seasonFilter={seasonFilter}
@@ -400,8 +358,8 @@ export const App = () => {
             mapboxgl={mapboxgl}
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
-            areFiltersDefault={areFiltersDefault}
-            onResetFiltersClick={resetFilters}
+            areFiltersDefault={combinedFilter.areDefault}
+            onResetFiltersClick={combinedFilter.reset}
             mapRef={mapRef}
             yearFilter={yearFilter}
             districtFilter={districtFilter}

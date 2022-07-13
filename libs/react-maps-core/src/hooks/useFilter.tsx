@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-type FilterExpression = (string | boolean | FilterExpression)[];
+export type FilterExpression = (string | boolean | FilterExpression)[];
 
 export type IValues<Key extends string> = {
   [key in Key]: boolean;
