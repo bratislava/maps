@@ -114,6 +114,7 @@ export const App = () => {
 
   const layerFilter = useFilter({
     property: "layer",
+    keepOnEmpty: true,
     keys: uniqueLayers,
     defaultValues: useMemo(
       () => uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {}),
@@ -122,7 +123,7 @@ export const App = () => {
   });
 
   const kindFilter = useFilter({
-    property: "kind",
+    property: "kindSimple",
     keys: uniqueKinds,
   });
 
@@ -148,6 +149,14 @@ export const App = () => {
         mapToActive: (activeKinds) => ({
           title: t("filters.kind.title"),
           items: activeKinds.map((activeKind) => treeKindNameSkMappingObject[activeKind]),
+        }),
+      },
+      {
+        onlyInExpression: true,
+        filter: layerFilter,
+        mapToActive: (activeLayers) => ({
+          title: t("filters.layer.title"),
+          items: activeLayers,
         }),
       },
     ],
@@ -368,6 +377,7 @@ export const App = () => {
             isGeolocation={isGeolocation}
             layerCategories={layerCategories}
             kindFilter={kindFilter}
+            filters={combinedFilter.expression}
           />
         </Slot>
 

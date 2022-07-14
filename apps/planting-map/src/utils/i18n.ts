@@ -17,8 +17,12 @@ export const getLangFromQuery = () => {
 
 i18next.init({
   resources: {
-    en: { translation: enTranslation },
-    sk: { translation: skTranslation },
+    en: {
+      translation: enTranslation,
+    },
+    sk: {
+      translation: skTranslation,
+    },
   },
   lng: getLangFromQuery(),
   fallbackLng: "en",

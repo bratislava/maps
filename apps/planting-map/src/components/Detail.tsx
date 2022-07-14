@@ -53,16 +53,16 @@ export const Detail = ({ features, onClose }: DetailProps) => {
           <Row label={t(`layers.esri.detail.height`)} text={feature?.properties?.height} />
           <Row label={t(`layers.esri.detail.year`)} text={feature?.properties?.year} />
           <Row label={t(`layers.esri.detail.donor`)} text={feature?.properties?.donor} />
-          <Row label={t(`layers.esri.detail.district`)} text={feature?.properties?.district} />
+          {/* <Row label={t(`layers.esri.detail.district`)} text={feature?.properties?.district} /> */}
           {/* <Row
             label={t(`layers.esri.detail.cadastralArea`)}
             text={feature?.properties?.cadastralArea}
           /> */}
         </div>
       </div>
-      <pre className="p-2 h-72 bg-black text-white overflow-auto">
+      {/* <pre className="p-2 h-72 bg-black text-white overflow-auto">
         <code>{JSON.stringify(feature?.properties, null, 2)}</code>
-      </pre>
+      </pre> */}
     </>
   );
 };

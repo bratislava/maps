@@ -14,6 +14,8 @@ export interface IUseCombineFilterProps {
   filters: {
     filter: IFilterResult<any>;
     mapToActive: (activeKeys: string[]) => IActiveFilter;
+    onlyInExpression?: boolean;
+    keepOnEmpty?: boolean;
   }[];
 }
 
@@ -22,11 +24,13 @@ export const useCombinedFilter = ({
   filters,
 }: IUseCombineFilterProps): ICombinedFilterResult => {
   const areDefault = useMemo(() => {
-    return filters.every((f) => f.filter.areDefault);
+    return filters
+      .filter((f) => !f.onlyInExpression)
+      .every((f) => f.filter.areDefault);
   }, [filters]);
 
   const reset = useCallback(() => {
-    filters.forEach((f) => f.filter.reset());
+    filters.forEach((f) => !f.onlyInExpression && f.filter.reset());
   }, [filters]);
 
   const expression = useMemo(() => {
@@ -41,7 +45,9 @@ export const useCombinedFilter = ({
   }, [combiner, filters]);
 
   const active = useMemo(() => {
-    return filters.map((f) => f.mapToActive(f.filter.activeKeys));
+    return filters
+      .filter((f) => !f.onlyInExpression)
+      .map((f) => f.mapToActive(f.filter.activeKeys));
   }, [filters]);
 
   return {

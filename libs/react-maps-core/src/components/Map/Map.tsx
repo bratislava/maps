@@ -114,11 +114,13 @@ export const Map = forwardRef<MapHandle, IMapProps>(
     },
     forwardedRef
   ) => {
-    i18next.addResourceBundle("en", "maps", enTranslation);
-    i18next.addResourceBundle("sk", "maps", skTranslation);
+    // i18next.addResourceBundle("en", "maps", enTranslation);
+    // i18next.addResourceBundle("sk", "maps", skTranslation);
 
-    // add translations from UI library
-    addTranslations(i18next);
+    // // add translations from UI library
+    // useEffect(() => {
+    //   addTranslations(i18next);
+    // }, [i18next]);
 
     const { t } = useTranslation("maps");
 

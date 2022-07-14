@@ -1,4 +1,5 @@
 import {
+  FilterExpression,
   forwardGeocode,
   GeocodeFeature,
   IFilterResult,
@@ -34,6 +35,7 @@ export interface IDesktopFiltersProps<Y, D, S, T, K> {
   seasonFilter: IFilterResult<S>;
   layerFilter: IFilterResult<T>;
   layerCategories: ILayerCategory[];
+  filters: FilterExpression;
 }
 
 export const DesktopFilters = <
@@ -54,6 +56,7 @@ export const DesktopFilters = <
   districtFilter,
   kindFilter,
   seasonFilter,
+  filters,
   layerFilter,
   layerCategories,
 }: IDesktopFiltersProps<Y, D, S, T, K>) => {
@@ -230,6 +233,10 @@ export const DesktopFilters = <
 
         <Layers isMobile={false} filter={layerFilter} layers={layerCategories} />
       </div>
+
+      {/* <pre className="p-2 h-72 bg-black text-white overflow-auto">
+        <code>{JSON.stringify(filters, null, 2)}</code>
+      </pre> */}
     </Sidebar>
   );
 };

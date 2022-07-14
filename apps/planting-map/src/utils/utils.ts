@@ -51,47 +51,41 @@ const treeKindColorMappingObject: { [key: string]: string } = {
 };
 
 export const treeKindNameSkMappingObject: { [key: string]: string } = {
-  "javor-polny": "javor poľný",
-  "ceresna-pilkata": "čerešňa pílkatá",
-  "ceresna-vtacia": "čerešňa vtáčia",
-  "javor-mliecny": "javor mliečny",
-  "hrab-obycajny": "hrab obyčajný",
-  "jasen-uzkolisty": "jaseň úzkolistý",
-  "pagastan-pletovy": "pagaštan pleťový",
-  "dub-cerveny": "dub červený",
-  "jasen-cerveny": "jaseň červený",
-  "zelkova-ostrolista": "zelkova ostrolistá",
-  "cremcha-obycajna": "čremcha obyčajná",
-  "sofora-japonska": "sofora japonská",
-  "ginkgo-dvojlalocne": "ginkgo dvojlaločné",
-  "hruska-okrasna": "hruška okrasná",
-  "platan-javorolisty": "platan javorolistý",
-  "jasen-mannovy": "jaseň mannový",
-  "ambrovnik-styraxovy": "ambrovník styraxový",
-  "agat-biely": "agát biely",
-  "javor-ohnivy": "javor ohnivý",
-  "jasenovec-metlinaty": "jaseňovec metlinatý",
-  "muchovnik-lamarckov": "muchovník lamarckov",
-  "lipa-zelenkasta": "lipa zelenkastá",
-  "hruska-obycajna": "hruška obyčajná",
-  "parocia-perzska": "parócia perzská",
-  "hruska-calleriova": "hruška calleriova",
-  "hrabovec-hrabolisty": "hrabovec hrabolistý",
-  "gledicia-trojtrnova": "gledíčia trojtŕňová",
-  "lipa-striebrista": "lipa striebristá",
-  "dub-balkansky": "dub balkánsky",
-  "jasen-stihly": "jaseň štíhly",
-  "lieska-turecka": "lieska turecka",
-  "visna-chlpkata": "višňa chĺpkatá",
-  "muchovnik-stromovity": "muchovník stromovitý",
-  "dub-letny": "dub letný",
-  "lipa-malolista": "lipa malolista",
-  "muchovnik-robin-hill": "muchovník robin hill",
-  "breza-himalajska": "breza himalájska",
-  "ceresna-sargentova": "čerešňa sargentova",
+  javor: "javor",
+  ceresna: "čerešňa",
+  hrab: "hrab",
+  jasen: "jaseň",
+  pagastan: "pagaštan",
+  dub: "dub",
+  zelkova: "zelkova",
+  cremcha: "čremcha",
+  sofora: "sofora",
+  ginkgo: "ginkgo",
+  hruska: "hruška",
+  platan: "platan",
+  ambrovnik: "ambrovník",
+  agat: "agát",
+  jasenovec: "jaseňovec",
+  muchovnik: "muchovník",
+  lipa: "lipa",
+  parocia: "parócia",
+  hrabovec: "hrabovec",
+  gledicia: "gledíčia",
+  lieska: "lieska",
+  visna: "višňa",
+  breza: "breza",
 };
 
-const kinds = Object.keys(treeKindColorMappingObject);
+const conifers = [
+  "metasekvoja-cinska",
+  "borovica-lesna",
+  "ceder-atlantsky",
+  "ceder-himalajsky",
+  "cyprustek",
+  "tisovec",
+];
+
+export const kinds = Object.keys(treeKindNameSkMappingObject);
 
 export const processData = (rawData: FeatureCollection) => {
   const data: FeatureCollection = addDistrictPropertyToLayer({
@@ -109,8 +103,11 @@ export const processData = (rawData: FeatureCollection) => {
         .replace(/(_| )/g, "-")
         .replace(/(´|"|\u00ad)/g, "");
 
+      const kindSimple = kind.split("-")[0];
+
       const { season, year } = getSeasonAndYear(feature);
-      const color = treeKindColorMappingObject[kind] ?? "#90A58E";
+      const color =
+        treeKindColorMappingObject[kind] ?? (conifers.includes(kind) ? "#90A58E" : "#CCF9C8");
       const layer =
         feature.properties?.PROJEKT === "10 000"
           ? "planting"
@@ -131,6 +128,7 @@ export const processData = (rawData: FeatureCollection) => {
           nameSk,
           nameLat,
           kind,
+          kindSimple,
           season,
           color,
           year,

@@ -11,10 +11,20 @@ export interface IFilterValue<Key> {
   isActive: boolean;
 }
 
+export type ComparatorFunction = ({
+  value,
+  property,
+}: {
+  value: string;
+  property: string;
+}) => FilterExpression;
+
 export interface IUseFilterProps<Key extends string> {
   property: string;
   keys: Key[];
+  keepOnEmpty?: boolean;
   defaultValues?: IValues<Key>;
+  comparator?: ComparatorFunction;
 }
 
 export interface IFilterResult<Key> {
@@ -33,10 +43,18 @@ export interface IFilterResult<Key> {
   areKeysInactive: (keys: Key | Key[]) => boolean;
 }
 
+const defaultComparator: ComparatorFunction = ({ value, property }) => [
+  "==",
+  property,
+  value,
+];
+
 export const useFilter = <Key extends string>({
   property,
   keys,
+  keepOnEmpty = false,
   defaultValues,
+  comparator = defaultComparator,
 }: IUseFilterProps<Key>): IFilterResult<Key> => {
   const [expression, setExpression] = useState<FilterExpression | null>(null);
   const [valuesObject, setValuesObject] = useState<IValues<Key>>(
@@ -58,11 +76,14 @@ export const useFilter = <Key extends string>({
   useEffect(() => {
     const activeKeys = keys.filter((key) => valuesObject[key]);
     setExpression(
-      activeKeys.length
-        ? ["any", ...activeKeys.map((key) => ["==", property, key])]
+      activeKeys.length || keepOnEmpty
+        ? [
+            "any",
+            ...activeKeys.map((key) => comparator({ value: key, property })),
+          ]
         : null
     );
-  }, [property, keys, valuesObject]);
+  }, [comparator, property, keys, valuesObject, keepOnEmpty]);
 
   const values: IFilterValue<Key>[] = useMemo(() => {
     return keys.map((key) => ({ key, isActive: valuesObject[key] }));
