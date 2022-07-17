@@ -16,8 +16,9 @@ import {
   useFilter,
   useClickOutside,
   Marker,
+  useCombinedFilter,
 } from "@bratislava/react-maps-core";
-import { DropdownArrow, IActiveFilter, Sidebar } from "@bratislava/react-maps-ui";
+import { DropdownArrow, Sidebar } from "@bratislava/react-maps-ui";
 import { useArcgeo } from "@bratislava/react-esri";
 
 // components
@@ -156,6 +157,7 @@ export const App = () => {
 
   const typeFilter = useFilter({
     property: "TYP_VYKONU_1",
+    keepOnEmpty: true,
     keys: uniqueTypes,
     defaultValues: useMemo(
       () => uniqueTypes.reduce((prev, curr) => ({ ...prev, [curr]: true }), {}),
@@ -163,46 +165,40 @@ export const App = () => {
     ),
   });
 
-  const areFiltersDefault = useMemo(() => {
-    return yearFilter.areDefault && districtFilter.areDefault && seasonFilter.areDefault;
-  }, [yearFilter.areDefault, districtFilter.areDefault, seasonFilter.areDefault]);
-
-  const resetFilters = useCallback(() => {
-    yearFilter.reset();
-    seasonFilter.reset();
-    districtFilter.reset();
-  }, [yearFilter, seasonFilter, districtFilter]);
-
-  const allFiltersExpression = useMemo(() => {
-    const filters: any[] = ["all"];
-
-    if (districtFilter.expression && districtFilter.expression.length)
-      filters.push(districtFilter.expression);
-
-    if (seasonFilter.expression && seasonFilter.expression.length)
-      filters.push(seasonFilter.expression);
-
-    if (typeFilter.expression && typeFilter.expression.length) filters.push(typeFilter.expression);
-
-    return filters;
-  }, [districtFilter, seasonFilter, typeFilter]);
-
-  const activeFilters: IActiveFilter[] = useMemo(() => {
-    return [
+  const combinedFilter = useCombinedFilter({
+    combiner: "all",
+    filters: [
       {
-        title: t("filters.year.title"),
-        items: yearFilter.activeKeys,
+        filter: yearFilter,
+        mapToActive: (activeYears) => ({
+          title: t("filters.year.title"),
+          items: activeYears,
+        }),
       },
       {
-        title: t("filters.district.title"),
-        items: districtFilter.activeKeys,
+        filter: districtFilter,
+        mapToActive: (activeDistricts) => ({
+          title: t("filters.district.title"),
+          items: activeDistricts,
+        }),
       },
       {
-        title: t("filters.season.title"),
-        items: seasonFilter.activeKeys.map((season) => t(`filters.season.seasons.${season}`)),
+        filter: seasonFilter,
+        mapToActive: (activeSeasons) => ({
+          title: t("filters.season.title"),
+          items: activeSeasons.map((activeSeason) => t(`filters.season.seasons.${activeSeason}`)),
+        }),
       },
-    ];
-  }, [t, yearFilter.activeKeys, districtFilter.activeKeys, seasonFilter.activeKeys]);
+      {
+        onlyInExpression: true,
+        filter: typeFilter,
+        mapToActive: (activeTypes) => ({
+          title: t("filters.type.title"),
+          items: activeTypes,
+        }),
+      },
+    ],
+  });
 
   const closeDetail = useCallback(() => {
     mapRef.current?.deselectAllFeatures();
@@ -306,7 +302,7 @@ export const App = () => {
       onGeolocationChange={setGeolocation}
       onLegendClick={onLegendClick}
     >
-      <Layer filters={allFiltersExpression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
+      <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
       <Layer
         ignoreClick
         filters={districtFilter.expression}
@@ -349,9 +345,9 @@ export const App = () => {
           <MobileFilters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
-            areFiltersDefault={areFiltersDefault}
-            activeFilters={activeFilters}
-            onResetFiltersClick={resetFilters}
+            areFiltersDefault={combinedFilter.areDefault}
+            activeFilters={combinedFilter.active}
+            onResetFiltersClick={combinedFilter.reset}
             yearFilter={yearFilter}
             districtFilter={districtFilter}
             seasonFilter={seasonFilter}
@@ -409,8 +405,8 @@ export const App = () => {
             mapboxgl={mapboxgl}
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
-            areFiltersDefault={areFiltersDefault}
-            onResetFiltersClick={resetFilters}
+            areFiltersDefault={combinedFilter.areDefault}
+            onResetFiltersClick={combinedFilter.reset}
             mapRef={mapRef}
             yearFilter={yearFilter}
             districtFilter={districtFilter}

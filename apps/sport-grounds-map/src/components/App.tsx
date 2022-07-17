@@ -16,8 +16,8 @@ import {
   useFilter,
   Cluster,
   Filter,
+  useCombinedFilter,
 } from "@bratislava/react-maps-core";
-import { IActiveFilter } from "@bratislava/react-maps-ui";
 
 // components
 import { Detail } from "./Detail";
@@ -32,11 +32,15 @@ import { MobileFilters } from "./mobile/MobileFilters";
 import { DesktopFilters } from "./desktop/DesktopFilters";
 import { MobileSearch } from "./mobile/MobileSearch";
 
-import RAW_DATA_SPORT_GROUNDS_FEATURES from "../assets/layers/sport-grounds/sport-grounds-data";
-import RAW_DATA_SPORT_GROUNDS_ALT_FEATURES from "../assets/layers/sport-grounds/sport-grounds-alt-data";
-import DISTRICTS_STYLE from "../assets/layers/districts/districts";
+import RAW_DATA_SPORT_GROUNDS_FEATURES from "../data/sport-grounds/sport-grounds-data";
+import RAW_DATA_SPORT_GROUNDS_ALT_FEATURES from "../data/sport-grounds/sport-grounds-alt-data";
+
+import DISTRICTS_STYLE from "../data/districts/districts";
 import { Marker } from "./Marker";
 import { MultipleMarker } from "./MultipleMarker";
+import { ILayerGroup } from "@bratislava/react-maps-ui/src/components/molecules/Layers/Layers";
+import { Icon, IIconProps } from "./Icon";
+import { BottomSheet } from "react-spring-bottom-sheet";
 
 export const App = () => {
   const { t } = useTranslation();
@@ -76,36 +80,31 @@ export const App = () => {
     keys: uniqueDistricts,
   });
 
-  const typeFilter = useFilter({
-    property: "kind",
+  const tagFilter = useFilter({
+    property: "tags",
     keys: uniqueTypes,
+    comparator: useCallback(({ value, property }: { value: string; property: string }) => {
+      return ["in", value, ["get", property]];
+    }, []),
     defaultValues: useMemo(
       () => uniqueTypes.reduce((prev, curr) => ({ ...prev, [curr]: true }), {}),
       [uniqueTypes],
     ),
   });
 
-  const areFiltersDefault = useMemo(() => {
-    return districtFilter.areDefault && typeFilter.areDefault;
-  }, [districtFilter.areDefault, typeFilter.areDefault]);
-
-  const resetFilters = useCallback(() => {
-    typeFilter.reset();
-    districtFilter.reset();
-  }, [typeFilter, districtFilter]);
-
-  const activeFilters: IActiveFilter[] = useMemo(() => {
-    return [
-      {
-        title: t("filters.district.title"),
-        items: districtFilter.activeKeys,
-      },
-      {
-        title: t("filters.type.title"),
-        items: typeFilter.activeKeys.map((type) => t(`filters.type.types.${type}`)),
-      },
-    ];
-  }, [districtFilter.activeKeys, t, typeFilter.activeKeys]);
+  const layerFilter = useFilter({
+    property: "layer",
+    keepOnEmpty: true,
+    keys: useMemo(() => ["sportGrounds", "cvicko", "swimmingPools"], []),
+    defaultValues: useMemo(
+      () => ({
+        sportGrounds: true,
+        cvicko: true,
+        swimmingPools: true,
+      }),
+      [],
+    ),
+  });
 
   // close sidebar on mobile and open on desktop
   useEffect(() => {
@@ -125,16 +124,33 @@ export const App = () => {
     setSelectedFeature(null);
   }, []);
 
-  const allFiltersExpression = useMemo(() => {
-    const filters: any[] = ["all"];
-
-    if (districtFilter.expression && districtFilter.expression.length)
-      filters.push(districtFilter.expression);
-
-    if (typeFilter.expression && typeFilter.expression.length) filters.push(typeFilter.expression);
-
-    return filters;
-  }, [districtFilter, typeFilter]);
+  const combinedFilter = useCombinedFilter({
+    combiner: "all",
+    filters: [
+      {
+        filter: districtFilter,
+        mapToActive: (activeDistricts) => ({
+          title: t("filters.district.title"),
+          items: activeDistricts,
+        }),
+      },
+      {
+        filter: tagFilter,
+        mapToActive: (activeTypes) => ({
+          title: t("filters.tag.title"),
+          items: activeTypes,
+        }),
+      },
+      {
+        filter: layerFilter,
+        onlyInExpression: true,
+        mapToActive: (activeLayers) => ({
+          title: t("filters.layer.title"),
+          items: activeLayers,
+        }),
+      },
+    ],
+  });
 
   // close detailbox when sidebar is opened on mobile
   useEffect(() => {
@@ -169,6 +185,29 @@ export const App = () => {
   const { height: desktopDetailHeight, ref: desktopDetailRef } =
     useResizeDetector<HTMLDivElement>();
 
+  const layerToIconMappingObject: { [layer: string]: IIconProps["icon"] } = useMemo(
+    () => ({
+      sportGrounds: "table-tennis",
+      cvicko: "cvicko",
+      swimmingPools: "pool",
+    }),
+    [],
+  );
+
+  const layerGroups: ILayerGroup<typeof layerFilter.keys[0]>[] = useMemo(
+    () =>
+      layerFilter.keys.map((layerKey) => ({
+        label: t(`layers.${layerKey}.title`),
+        icon: (
+          <div className="bg-primary rounded-full text-white">
+            <Icon size={40} icon={layerToIconMappingObject[layerKey]} />
+          </div>
+        ),
+        layers: { value: layerKey, isActive: layerFilter.isAnyKeyActive([layerKey]) },
+      })),
+    [layerFilter, layerToIconMappingObject, t],
+  );
+
   return isLoading ? null : (
     <Map
       ref={mapRef}
@@ -202,16 +241,9 @@ export const App = () => {
         styles={DISTRICTS_STYLE}
       />
 
-      {/* <Filter expression={["all", typeFilter.expression]}>
-        {data?.features.slice(0, 40).map((f, i) => {
-          const fp = f as Feature<Point>;
-          return <Marker key={i} feature={fp} onClick={markerClickHandler} />;
-        })}
-      </Filter> */}
-
-      <Filter expression={allFiltersExpression}>
+      <Filter expression={combinedFilter.expression}>
         <Cluster features={data?.features ?? []} radius={100}>
-          {({ features, lng, lat, key }) =>
+          {({ features, lng, lat, key, clusterExpansionZoom }) =>
             features.length === 1 ? (
               <Marker
                 isSelected={features[0].id === selectedFeature?.id}
@@ -226,7 +258,15 @@ export const App = () => {
                 features={features}
                 lat={lat}
                 lng={lng}
-                onClick={markerClickHandler}
+                onClick={() =>
+                  mapRef.current?.changeViewport({
+                    zoom: clusterExpansionZoom ?? 0,
+                    center: {
+                      lat,
+                      lng,
+                    },
+                  })
+                }
               />
             )
           }
@@ -249,26 +289,18 @@ export const App = () => {
           <MobileFilters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
-            areFiltersDefault={areFiltersDefault}
-            activeFilters={activeFilters}
-            onResetFiltersClick={resetFilters}
+            areFiltersDefault={combinedFilter.areDefault}
+            activeFilters={combinedFilter.active}
+            onResetFiltersClick={combinedFilter.reset}
             districtFilter={districtFilter}
-            typeFilter={typeFilter}
+            tagFilter={tagFilter}
+            layerFilter={layerFilter}
+            layerGroups={layerGroups}
           />
         </Slot>
 
-        <Slot
-          name="mobile-detail"
-          isVisible={isDetailOpen}
-          bottomSheetOptions={{}}
-          openPadding={{
-            bottom: window.innerHeight / 2, // w-96 or 24rem
-          }}
-          avoidControls={false}
-        >
-          <div className="relative h-full">
-            <Detail feature={selectedFeature} onClose={closeDetail} />
-          </div>
+        <Slot name="mobile-detail" isVisible={true}>
+          <Detail isMobile feature={selectedFeature} onClose={closeDetail} />
         </Slot>
 
         <Slot name="mobile-search">
@@ -288,11 +320,13 @@ export const App = () => {
             mapboxgl={mapboxgl}
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
-            areFiltersDefault={areFiltersDefault}
-            onResetFiltersClick={resetFilters}
+            areFiltersDefault={combinedFilter.areDefault}
+            onResetFiltersClick={combinedFilter.reset}
             mapRef={mapRef}
             districtFilter={districtFilter}
-            typeFilter={typeFilter}
+            layerFilter={layerFilter}
+            tagFilter={tagFilter}
+            layerGroups={layerGroups}
             isGeolocation={isGeolocation}
           />
         </Slot>
@@ -312,7 +346,7 @@ export const App = () => {
               "shadow-lg": isDetailOpen,
             })}
           >
-            <Detail feature={selectedFeature} onClose={closeDetail} />
+            <Detail isMobile={false} feature={selectedFeature} onClose={closeDetail} />
           </div>
         </Slot>
       </Layout>

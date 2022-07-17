@@ -12,13 +12,15 @@ import {
   SearchBar,
   SelectOption,
   Sidebar,
+  Layers,
+  ILayerGroup,
 } from "@bratislava/react-maps-ui";
 import mapboxgl from "mapbox-gl";
 import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SelectValueRenderer } from "../SelectValueRenderer";
 
-export interface IDesktopFiltersProps<Y, D, S, T> {
+export interface IDesktopFiltersProps<DF, TF, LF extends string> {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
@@ -26,26 +28,25 @@ export interface IDesktopFiltersProps<Y, D, S, T> {
   mapRef: RefObject<MapHandle>;
   mapboxgl: typeof mapboxgl;
   isGeolocation: boolean;
-  districtFilter: IFilterResult<D>;
-  typeFilter: IFilterResult<S>;
+  districtFilter: IFilterResult<DF>;
+  layerFilter: IFilterResult<LF>;
+  tagFilter: IFilterResult<TF>;
+  layerGroups: ILayerGroup<LF>[];
 }
 
-export const DesktopFilters = <
-  Y extends string,
-  D extends string,
-  S extends string,
-  T extends string,
->({
+export const DesktopFilters = <DF extends string, TF extends string, LF extends string>({
   isVisible,
   setVisible,
   areFiltersDefault,
   onResetFiltersClick,
   mapRef,
   mapboxgl,
+  layerFilter,
   isGeolocation,
   districtFilter,
-  typeFilter,
-}: IDesktopFiltersProps<Y, D, S, T>) => {
+  tagFilter,
+  layerGroups,
+}: IDesktopFiltersProps<DF, TF, LF>) => {
   const { t } = useTranslation();
 
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -123,7 +124,7 @@ export const DesktopFilters = <
           className="w-full"
           value={districtFilter.activeKeys}
           isMultiple
-          onChange={(value) => districtFilter.setActiveOnly((value ?? []) as D[])}
+          onChange={(value) => districtFilter.setActiveOnly((value ?? []) as DF[])}
           onReset={() => districtFilter.setActiveAll(false)}
           renderValue={({ values }) => (
             <SelectValueRenderer
@@ -142,20 +143,26 @@ export const DesktopFilters = <
       </div>
 
       <TagFilter
-        title={t("filters.type.title")}
-        values={typeFilter.values.map((type) => ({
-          key: type.key,
-          label: t(`filters.type.types.${type.key}`),
-          isActive: type.isActive,
+        title={t("filters.tag.title")}
+        values={tagFilter.values.map((tag) => ({
+          key: tag.key,
+          label: t(`filters.tag.tags.${tag.key}`),
+          isActive: tag.isActive,
         }))}
-        onTagClick={(type) => {
-          if (typeFilter.activeKeys.length == typeFilter.values.length) {
-            typeFilter.setActiveOnly(type);
-          } else if (!(typeFilter.activeKeys.length == 1 && typeFilter.activeKeys[0] == type)) {
-            typeFilter.toggleActive(type);
+        onTagClick={(tag) => {
+          if (tagFilter.activeKeys.length == tagFilter.values.length) {
+            tagFilter.setActiveOnly(tag);
+          } else if (!(tagFilter.activeKeys.length == 1 && tagFilter.activeKeys[0] == tag)) {
+            tagFilter.toggleActive(tag);
           }
         }}
       />
+
+      <Divider className="mx-6" />
+
+      <h2 className="font-semibold text-md mx-6">{t("layers.title")}</h2>
+
+      <Layers groups={layerGroups} onLayersVisibilityChange={layerFilter.setActive} />
     </Sidebar>
   );
 };

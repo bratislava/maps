@@ -80,7 +80,7 @@ export const fetchAllFromArcgeo = async (
       );
 
       // filter out features which don't have geometry for some reason
-      const features = chunks
+      features = chunks
         .flat()
         .filter((feature) => feature.geometry)
         .map((feature) => {

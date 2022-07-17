@@ -3,7 +3,7 @@ import { Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
 import { Accordion, AccordionItem, Checkbox, Modal, Popover } from "@bratislava/react-maps-ui";
 import cx from "classnames";
 import { useCallback, useState } from "react";
-import { capitalizeFirstLetter } from "../utils/utils";
+import { capitalizeFirstLetter } from "../../../planting-map/src/utils/utils";
 
 export interface ILayerCategory {
   label: string;

@@ -4,6 +4,7 @@ export default {
   close: "Zavrieť",
   loading: "Načítavanie",
   layersLabel: "Vrstvy",
+  noImage: "Chýbajúci obrázok...",
   filters: {
     title: "Filter",
     active: "Aktívny filter",
@@ -13,9 +14,9 @@ export default {
       placeholder: "Mestská časť",
       multipleDistricts: "Viacero mestských častí",
     },
-    type: {
-      title: "Druhy",
-      types: {
+    tag: {
+      title: "Športy",
+      tags: {
         fitness: "fitness",
         football: "futbal",
         hockey: "hokej",
@@ -31,10 +32,13 @@ export default {
     },
   },
   layers: {
+    title: "Vrstvy",
     sportGrounds: {
+      title: "Športoviská",
       detail: {
         title: "Detail športoviska",
         name: "Názov",
+        tags: "Športy",
         type: "Typ",
         district: "Mestská časť",
         address: "Adresa",
@@ -47,6 +51,32 @@ export default {
         note: "Poznámka",
         kind: "Druh",
         contact: "Kontakt",
+      },
+    },
+    cvicko: {
+      title: "Cvičko",
+      detail: {
+        wantToGym: "Chcem cvičiť",
+        navigate: "Navigovať",
+        name: "Názov",
+        tags: "Športy",
+        location: "Umiestnenie",
+        email: "Email",
+        website: "Web",
+      },
+    },
+    swimmingPools: {
+      title: "Kúpaliská",
+      detail: {
+        purchaseTicket: "Kúpiť lístok",
+        navigate: "Navigovať",
+        name: "Názov",
+        tags: "Športy",
+        openingHours: "Otváracie hodiny",
+        address: "Adresa",
+        email: "Email",
+        phone: "Telefón",
+        website: "Web",
       },
     },
   },

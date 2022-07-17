@@ -10,44 +10,44 @@ const seasonMapping = {
 };
 
 const treeKindColorMappingObject: { [key: string]: string } = {
-  "javor-polny": "#C1E00E",
-  "ceresna-pilkata": "#5D8232",
-  "ceresna-vtacia": "#A3A838",
-  "javor-mliecny": "#01401C",
-  "hrab-obycajny": "#639B6A",
-  "jasen-uzkolisty": "#1A961D",
-  "pagastan-pletovy": "#83B252",
-  "dub-cerveny": "#62F989",
-  "jasen-cerveny": "#BDED8A",
-  "zelkova-ostrolista": "#EDFF43",
-  "cremcha-obycajna": "#00AB92",
-  "sofora-japonska": "#A4B88E",
-  "ginkgo-dvojlalocne": "#525B45",
-  "hruska-okrasna": "#4C6B2D",
-  "platan-javorolisty": "#326E43",
-  "jasen-mannovy": "#FBFFA9",
-  "ambrovnik-styraxovy": "#52E167",
-  "agat-biely": "#16BF5A",
-  "javor-ohnivy": "#6CE07D",
-  "jasenovec-metlinaty": "#95DBC6",
-  "muchovnik-lamarckov": "#BFD989",
-  "lipa-zelenkasta": "#37AA4B",
-  "hruska-obycajna": "#08C41A",
-  "parocia-perzska": "#B0EE78",
-  "hruska-calleriova": "#97E254",
-  "hrabovec-hrabolisty": "#DAE8BA",
-  "gledicia-trojtrnova": "#DAFFB0",
-  "lipa-striebrista": "#ADEFA8",
-  "dub-balkansky": "#94C991",
-  "jasen-stihly": "#C4EFCE",
-  "lieska-turecka": "#C2F14C",
-  "visna-chlpkata": "#BC9F82",
-  "muchovnik-stromovity": "#72AA66",
-  "dub-letny": "#00A000",
-  "lipa-malolista": "#6BEA36",
-  "muchovnik-robin-hill": "#DBC9B9",
-  "breza-himalajska": "#4D540A",
-  "ceresna-sargentova": "#39441B",
+  "javor-polny": "#1A961D",
+  "ceresna-pilkata": "#C1E00E",
+  "ceresna-vtacia": "#37AA4B",
+  "javor-mliecny": "#00A000",
+  "hrab-obycajny": "#BDED8A",
+  "jasen-uzkolisty": "#16BF5A",
+  "pagastan-pletovy": "#00AB92",
+  "dub-cerveny": "#4C6B2D",
+  "jasen-cerveny": "#EDFF43",
+  "zelkova-ostrolista": "#C2F14C",
+  "cremcha-obycajna": "#95DBC6",
+  "sofora-japonska": "#A3A838",
+  "ginkgo-dvojlalocne": "#94C991",
+  "hruska-okrasna": "#08C41A",
+  "platan-javorolisty": "#5D8232",
+  "jasen-mannovy": "#52E167",
+  "ambrovnik-styraxovy": "#BC9F82",
+  "agat-biely": "#BFD989",
+  "javor-ohnivy": "#326E43",
+  "jasenovec-metlinaty": "#72AA66",
+  "muchovnik-lamarckov": "#83B252",
+  "lipa-zelenkasta": "#97E254",
+  "hruska-obycajna": "#6BEA36",
+  "parocia-perzska": "#C4EFCE",
+  "hruska-calleriova": "#DAFFB0",
+  "hrabovec-hrabolisty": "#ADEFA8",
+  "gledicia-trojtrnova": "#39441B",
+  "lipa-striebrista": "#DAE8BA",
+  "dub-balkansky": "#01401C",
+  "jasen-stihly": "#A3A838",
+  "lieska-turecka": "#62F989",
+  "visna-chlpkata": "#DBC9B9",
+  "muchovnik-stromovity": "#FBFFA9",
+  "dub-letny": "#4D540A",
+  "lipa-malolista": "#A4B88E",
+  "muchovnik-robin-hill": "#6CE07D",
+  "breza-himalajska": "#C6D62F",
+  "ceresna-sargentova": "#525B45",
 };
 
 export const treeKindNameSkMappingObject: { [key: string]: string } = {
@@ -76,7 +76,7 @@ export const treeKindNameSkMappingObject: { [key: string]: string } = {
   breza: "breza",
 };
 
-const conifers = [
+const CONIFERS = [
   "metasekvoja-cinska",
   "borovica-lesna",
   "ceder-atlantsky",
@@ -84,6 +84,9 @@ const conifers = [
   "cyprustek",
   "tisovec",
 ];
+
+const CONIFER_COLOR = "#90A58E";
+const DECIDUOUS_COLOR = "#A0E14C";
 
 export const kinds = Object.keys(treeKindNameSkMappingObject);
 
@@ -106,8 +109,13 @@ export const processData = (rawData: FeatureCollection) => {
       const kindSimple = kind.split("-")[0];
 
       const { season, year } = getSeasonAndYear(feature);
+
+      // pick the exact color from mapping or use specific color for conifer / deciduous tree
       const color =
-        treeKindColorMappingObject[kind] ?? (conifers.includes(kind) ? "#90A58E" : "#CCF9C8");
+        treeKindColorMappingObject[kind] ??
+        (CONIFERS.includes(kind) ? CONIFER_COLOR : DECIDUOUS_COLOR);
+
+      // pick the layer based on PROJEKT property
       const layer =
         feature.properties?.PROJEKT === "10 000"
           ? "planting"

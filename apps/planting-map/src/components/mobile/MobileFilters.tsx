@@ -57,7 +57,7 @@ export const MobileFilters = <
       setVisible={setVisible}
       title={t("title")}
     >
-      <div className="">
+      <div>
         <ActiveFilters
           areFiltersDefault={areFiltersDefault}
           activeFilters={activeFilters}
@@ -164,7 +164,7 @@ export const MobileFilters = <
 
       <Divider className="mx-6" />
 
-      <h2 className="font-bold px-6 text-md">{t("layersLabel")}</h2>
+      <h2 className="font-semibold px-6 text-md">{t("layersLabel")}</h2>
 
       <Layers isMobile filter={layerFilter} layers={layerCategories} />
     </Sidebar>

@@ -15,57 +15,57 @@ import { ReactComponent as WaterIcon } from "../assets/icons/water.svg";
 
 const icons = [
   {
-    name: "basketball-icon",
+    name: "basketball",
     component: BasketballIcon,
   },
   {
-    name: "cvicko-icon",
+    name: "cvicko",
     component: CvickoIcon,
   },
   {
-    name: "other-icon",
+    name: "other",
     component: OtherIcon,
   },
   {
-    name: "fitness-icon",
+    name: "fitness",
     component: FitnessIcon,
   },
   {
-    name: "football-icon",
+    name: "football",
     component: FootballIcon,
   },
   {
-    name: "gym-icon",
+    name: "gym",
     component: GymIcon,
   },
   {
-    name: "hockey-icon",
+    name: "hockey",
     component: HockeyIcon,
   },
   {
-    name: "pool-icon",
+    name: "pool",
     component: PoolIcon,
   },
   {
-    name: "running-track-icon",
+    name: "running-track",
     component: RunningTrackIcon,
   },
   {
-    name: "table-tennis-icon",
+    name: "table-tennis",
     component: TableTennisIcon,
   },
   {
-    name: "tennis-icon",
+    name: "tennis",
     component: TennisIcon,
   },
   {
-    name: "water-icon",
+    name: "water",
     component: WaterIcon,
   },
-];
+] as const;
 
 export interface IIconProps {
-  icon?: string;
+  icon?: typeof icons[number]["name"];
   size?: number;
 }
 

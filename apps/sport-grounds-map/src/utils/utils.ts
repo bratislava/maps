@@ -1,6 +1,8 @@
 import { addDistrictPropertyToLayer } from "@bratislava/react-maps-core";
 import { getUniqueValuesFromFeatures } from "@bratislava/react-maps-utils";
 import { FeatureCollection, Feature } from "geojson";
+import { rawDataCvicko } from "../data/cvicko/cvicko";
+import { rawDataPools } from "../data/pools/pools";
 
 const hiddenLayerKinds = [
   "asfaltová plocha",
@@ -39,6 +41,7 @@ const getKind = (kind: string): Kind => {
     case "Tenisové ihrisko":
     case "Tenisové kurty":
       return "tennis";
+    case "vodné aktivity":
     case "vodná plocha":
       return "water";
     case "futbalové ihrisko":
@@ -50,11 +53,14 @@ const getKind = (kind: string): Kind => {
       return "table-tennis";
     case "basketbalové ihrisko":
     case "Basketbalové ihrisko":
+    case "basketbal":
       return "basketball";
     case "posilňovňa":
+    case "workout":
     case "Posilňovňa, workoutové ihrisko, minigolf":
       return "gym";
     case "plaváreň":
+    case "plávanie":
     case "Plaváreň":
       return "pool";
     case "Atletická dráha":
@@ -66,32 +72,77 @@ const getKind = (kind: string): Kind => {
 };
 
 export const processData = (rawDataFeatures: Feature[], rawDataAltFeatures: Feature[]) => {
+  let GLOBAL_ID = 0;
   const data: FeatureCollection = addDistrictPropertyToLayer({
     type: "FeatureCollection",
     features: [
       ...rawDataFeatures.map((feature) => {
-        const kind = getKind(feature.properties?.kind ?? feature.properties?.type);
-        const icon = `${getKind(feature.properties?.kind ?? feature.properties?.type)}-icon`;
+        GLOBAL_ID++;
+        const layer = "sportGrounds";
+        const tags = [getKind(feature.properties?.kind ?? feature.properties?.type)];
+        const icon = getKind(feature.properties?.kind ?? feature.properties?.type);
         return {
           ...feature,
+          id: GLOBAL_ID,
           properties: {
             ...feature.properties,
-            kind,
+            tags,
+            layer,
             icon,
+            id: GLOBAL_ID,
           },
         } as Feature;
       }),
       ...rawDataAltFeatures.map((feature) => {
+        GLOBAL_ID++;
+        const layer = "sportGrounds";
         const oldKind = feature.properties?.kind;
-        const kind = getKind(feature.properties?.kind ?? feature.properties?.type);
-        const icon = `${getKind(feature.properties?.kind ?? feature.properties?.type)}-icon`;
+        const tags = [getKind(feature.properties?.kind ?? feature.properties?.type)];
+        const icon = getKind(feature.properties?.kind ?? feature.properties?.type);
         return {
+          ...feature,
+          id: GLOBAL_ID,
+          properties: {
+            ...feature.properties,
+            tags,
+            layer,
+            icon,
+            oldKind,
+            id: GLOBAL_ID,
+          },
+        } as Feature;
+      }),
+      ...rawDataCvicko.features.map((feature) => {
+        GLOBAL_ID++;
+        const layer = "cvicko";
+        const tags = feature.properties?.tags?.map((tag: string) => getKind(tag));
+        const icon = "cvicko";
+        return {
+          id: GLOBAL_ID,
           ...feature,
           properties: {
             ...feature.properties,
-            kind,
+            layer,
+            tags,
             icon,
-            oldKind,
+            id: GLOBAL_ID,
+          },
+        } as Feature;
+      }),
+      ...rawDataPools.features.map((feature) => {
+        GLOBAL_ID++;
+        const layer = "swimmingPools";
+        const tags = feature.properties?.tags?.map((tag: string) => getKind(tag));
+        const icon = "pool";
+        return {
+          id: GLOBAL_ID,
+          ...feature,
+          properties: {
+            ...feature.properties,
+            layer,
+            tags,
+            icon,
+            id: GLOBAL_ID,
           },
         } as Feature;
       }),
@@ -99,7 +150,7 @@ export const processData = (rawDataFeatures: Feature[], rawDataAltFeatures: Feat
   });
 
   const uniqueDistricts: string[] = getUniqueValuesFromFeatures(data.features, "district");
-  const uniqueTypes: string[] = getUniqueValuesFromFeatures(data.features, "kind");
+  const uniqueTypes: string[] = getUniqueValuesFromFeatures(data.features, "tags");
 
   return {
     data,

@@ -20,3 +20,4 @@ export * from "./atoms/Popover/Popover";
 // molecules
 export * from "./molecules/TagFilter/TagFilter";
 export * from "./molecules/ActiveFilters/ActiveFilters";
+export * from "./molecules/Layers/Layers";

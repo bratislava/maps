@@ -14,6 +14,8 @@ import { filterContext } from "../Filter/Filter";
 export interface IClusterChildProps {
   key: number;
   features: Feature<Point>[];
+  isCluster: boolean;
+  clusterExpansionZoom: number | null;
   lat: number;
   lng: number;
 }
@@ -89,6 +91,10 @@ export const Cluster = ({
             ),
             lng: cluster.geometry.coordinates[0],
             lat: cluster.geometry.coordinates[1],
+            isCluster,
+            clusterExpansionZoom: supercluster.getClusterExpansionZoom(
+              cluster.properties.cluster_id
+            ),
           };
         } else {
           const feature = cluster;
@@ -97,6 +103,8 @@ export const Cluster = ({
             features: [feature],
             lng: feature.geometry.coordinates[0],
             lat: feature.geometry.coordinates[1],
+            isCluster,
+            clusterExpansionZoom: null,
           };
         }
       })

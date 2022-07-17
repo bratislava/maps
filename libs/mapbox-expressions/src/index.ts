@@ -3,8 +3,10 @@ import { Feature } from "geojson";
 import { all, AllExp } from "./decision/all";
 import { any, AnyExp } from "./decision/any";
 import { equals, EqualsExp } from "./decision/equals";
+import { get, GetExp } from "./lookup/get";
+import { InExp, inside } from "./lookup/in";
 
-export type Exp = AllExp | AnyExp | EqualsExp;
+export type Exp = AllExp | AnyExp | EqualsExp | GetExp | InExp;
 
 type ExpKey = Exp[0];
 
@@ -22,6 +24,12 @@ export const evaluate = (exp: ExpOrValue, f: Feature) => {
 
       case "any":
         return any(exp, f, evaluate);
+
+      case "get":
+        return get(exp, f, evaluate);
+
+      case "in":
+        return inside(exp, f, evaluate);
 
       case "==":
         return equals(exp, f, evaluate);

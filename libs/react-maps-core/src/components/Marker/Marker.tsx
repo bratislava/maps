@@ -83,6 +83,7 @@ export const Marker = ({
     if (ignoreFilters) return true;
 
     if (isFeatureVisible) {
+      console.log(isFeatureVisible(feature));
       return isFeatureVisible(feature);
     }
     return true;

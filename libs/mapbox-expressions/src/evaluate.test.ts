@@ -42,4 +42,9 @@ describe("evaluate", () => {
     );
     expect(result).toBe(false);
   });
+
+  test('["==", "name", ["get", "name"]]', async () => {
+    const result = evaluate(["==", "name", ["get", "name"]], feature);
+    expect(result).toBe(true);
+  });
 });

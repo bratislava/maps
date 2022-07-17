@@ -1,5 +1,5 @@
 import { IFilterResult } from "@bratislava/react-maps-core";
-import { Chevron, Funnel, X } from "@bratislava/react-maps-icons";
+import { Funnel } from "@bratislava/react-maps-icons";
 import {
   Divider,
   Select,
@@ -8,44 +8,53 @@ import {
   ActiveFilters,
   SelectOption,
   Sidebar,
+  Layers,
+  ILayerGroup,
 } from "@bratislava/react-maps-ui";
-import cx from "classnames";
 import { useTranslation } from "react-i18next";
 import { SelectValueRenderer } from "../SelectValueRenderer";
 
-export interface IMobileFiltersProps<Y, D, S, T> {
+export interface IMobileFiltersProps<DF, TF, LF extends string> {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
   activeFilters: IActiveFilter[];
   onResetFiltersClick: () => void;
-  districtFilter: IFilterResult<D>;
-  typeFilter: IFilterResult<S>;
+  districtFilter: IFilterResult<DF>;
+  tagFilter: IFilterResult<TF>;
+  layerFilter: IFilterResult<LF>;
+  layerGroups: ILayerGroup<LF>[];
 }
 
-export const MobileFilters = <
-  Y extends string,
-  D extends string,
-  S extends string,
-  T extends string,
->({
+export const MobileFilters = <D extends string, S extends string, L extends string>({
   isVisible,
   setVisible,
   areFiltersDefault,
   activeFilters,
   onResetFiltersClick,
   districtFilter,
-  typeFilter,
-}: IMobileFiltersProps<Y, D, S, T>) => {
+  tagFilter,
+  layerGroups,
+  layerFilter,
+}: IMobileFiltersProps<D, S, L>) => {
   const { t } = useTranslation();
 
   return (
-    <Sidebar title={t("title")} position="right" isVisible={isVisible} setVisible={setVisible}>
-      <ActiveFilters
-        areFiltersDefault={areFiltersDefault}
-        activeFilters={activeFilters}
-        onResetClick={onResetFiltersClick}
-      />
+    <Sidebar
+      isMobile
+      title={t("title")}
+      position="right"
+      isVisible={isVisible}
+      setVisible={setVisible}
+    >
+      <div>
+        <ActiveFilters
+          areFiltersDefault={areFiltersDefault}
+          activeFilters={activeFilters}
+          onResetClick={onResetFiltersClick}
+        />
+      </div>
+
       <div>
         <div className="flex px-6 items-center">
           <div className="-ml-2">
@@ -84,22 +93,28 @@ export const MobileFilters = <
 
         <div className="mt-3">
           <TagFilter
-            title={t("filters.type.title")}
-            values={typeFilter.values.map((type) => ({
-              key: type.key,
-              label: t(`filters.type.types.${type.key}`),
-              isActive: type.isActive,
+            title={t("filters.tag.title")}
+            values={tagFilter.values.map((tag) => ({
+              key: tag.key,
+              label: t(`filters.tag.tags.${tag.key}`),
+              isActive: tag.isActive,
             }))}
-            onTagClick={(type) => {
-              if (typeFilter.activeKeys.length == 4) {
-                typeFilter.setActiveOnly(type);
-              } else if (!(typeFilter.activeKeys.length == 1 && typeFilter.activeKeys[0] == type)) {
-                typeFilter.toggleActive(type);
+            onTagClick={(tag) => {
+              if (tagFilter.activeKeys.length == tagFilter.values.length) {
+                tagFilter.setActiveOnly(tag);
+              } else if (!(tagFilter.activeKeys.length == 1 && tagFilter.activeKeys[0] == tag)) {
+                tagFilter.toggleActive(tag);
               }
             }}
           />
         </div>
       </div>
+
+      <Divider className="mx-6" />
+
+      <h2 className="font-semibold text-md mx-6">{t("layers.title")}</h2>
+
+      <Layers groups={layerGroups} onLayersVisibilityChange={layerFilter.setActive} />
     </Sidebar>
   );
 };
