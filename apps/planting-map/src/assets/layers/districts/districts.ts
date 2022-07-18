@@ -3,8 +3,8 @@ const styles = [
     id: "districts-line",
     type: "line",
     paint: {
-      "line-color": "#237c36",
-      "line-opacity": 0.5,
+      "line-color": "#4fc268",
+      "line-opacity": 0.4,
       "line-width": [
         "interpolate",
         ["linear"],
