@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import cx from "classnames";
 import "../styles.css";
@@ -36,7 +36,8 @@ import { MobileFilters } from "./mobile/MobileFilters";
 import { DesktopFilters } from "./desktop/DesktopFilters";
 import { MobileSearch } from "./mobile/MobileSearch";
 import { ILayerCategory } from "./Layers";
-// import { Legend } from "./Legend";
+import { Modal, Sidebar } from "@bratislava/react-maps-ui";
+import { Legend } from "./Legend";
 
 const URL = "https://geoportal.bratislava.sk/hsite/rest/services/zp/STROMY/MapServer/0";
 
@@ -58,7 +59,7 @@ export const App = () => {
   const [uniqueLayers, setUniqueLayers] = useState<string[]>([]);
 
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
-  // const [isLegendVisible, setLegendVisible] = useState<boolean | undefined>(undefined);
+  const [isLegendVisible, setLegendVisible] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     if (rawData) {
@@ -171,9 +172,6 @@ export const App = () => {
     if (isMobile && isSidebarVisible == true && previousSidebarVisible == false) {
       closeDetail();
     }
-    // if (!isMobile && previousMobile) {
-    //   setLegendVisible((isLegendVisible) => !isLegendVisible);
-    // }
   }, [closeDetail, isMobile, isSidebarVisible, previousMobile, previousSidebarVisible]);
 
   // close sidebar on mobile and open on desktop
@@ -193,10 +191,10 @@ export const App = () => {
     [selectedFeatures],
   );
 
-  // const onLegendClick = useCallback((e: MouseEvent) => {
-  //   setLegendVisible((isLegendVisible) => !isLegendVisible);
-  //   e.stopPropagation();
-  // }, []);
+  const onLegendClick = useCallback((e: MouseEvent) => {
+    setLegendVisible((isLegendVisible) => !isLegendVisible);
+    e.stopPropagation();
+  }, []);
 
   // fit to district
   useEffect(() => {
@@ -232,10 +230,6 @@ export const App = () => {
   const { height: desktopDetailHeight, ref: desktopDetailRef } =
     useResizeDetector<HTMLDivElement>();
 
-  // const legendRef = useClickOutside<HTMLDivElement | null>(() => {
-  //   setLegendVisible(false);
-  // });
-
   return isLoading ? null : (
     <Map
       loadingSpinnerColor="#237c36"
@@ -262,7 +256,7 @@ export const App = () => {
       onSelectedFeaturesChange={setSelectedFeatures}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
-      // onLegendClick={onLegendClick}
+      onLegendClick={onLegendClick}
     >
       <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
       <Layer
@@ -337,7 +331,7 @@ export const App = () => {
           <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
         </Slot>
 
-        {/* <Slot
+        <Slot
           name="mobile-legend"
           isVisible={isLegendVisible}
           setVisible={setLegendVisible}
@@ -349,9 +343,9 @@ export const App = () => {
             setVisible={setLegendVisible}
             position="right"
           >
-            <Legend mapCircleColors={{ ...mapCircleColors, "hranica mestskej časti": "#E29F45" }} />
+            <Legend />
           </Sidebar>
-        </Slot> */}
+        </Slot>
       </Layout>
 
       <Layout isOnlyDesktop>
@@ -402,21 +396,16 @@ export const App = () => {
             <Detail features={selectedFeatures ?? []} onClose={closeDetail} />
           </div>
         </Slot>
-        {/* <Slot name="desktop-legend" isVisible={isLegendVisible} avoidControls={false}>
-          <div
-            ref={legendRef}
-            className={cx(
-              "absolute z-50 bottom-[92px] right-[73px] bg-background-lightmode dark:bg-background-darkmode border-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20  transform shadow-lg rounded-lg",
-              {
-                "scale-0": !isLegendVisible,
-              },
-            )}
+        <Slot name="desktop-legend">
+          <Modal
+            closeButtonInCorner
+            title={t("legend.title")}
+            isOpen={isLegendVisible ?? false}
+            onClose={() => setLegendVisible(false)}
           >
-            <h3 className="px-6 pt-6 text-md font-semibold">Legenda</h3>
-              <Legend mapCircleColors={{ ...mapCircleColors, "hranica mestskej časti": "#E29F45" }} />
-            <DropdownArrow isBottom />
-          </div>
-        </Slot> */}
+            <Legend />
+          </Modal>
+        </Slot>
       </Layout>
     </Map>
   );
