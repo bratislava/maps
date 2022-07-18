@@ -12,7 +12,12 @@ export default {
     district: {
       title: "Mestská časť",
       placeholder: "Mestská časť",
-      multipleDistricts: "Viacero mestských častí",
+      multipleDistricts: "Zvolených",
+    },
+    sportGround: {
+      title: "Športovisko",
+      placeholder: "Športovisko",
+      multipleDistricts: "Zvolených",
     },
     tag: {
       title: "Športy",

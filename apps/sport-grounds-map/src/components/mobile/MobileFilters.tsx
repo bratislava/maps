@@ -14,7 +14,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { SelectValueRenderer } from "../SelectValueRenderer";
 
-export interface IMobileFiltersProps<DF, TF, LF extends string> {
+export interface IMobileFiltersProps<DF, SGF, TF, LF extends string> {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
@@ -23,20 +23,27 @@ export interface IMobileFiltersProps<DF, TF, LF extends string> {
   districtFilter: IFilterResult<DF>;
   tagFilter: IFilterResult<TF>;
   layerFilter: IFilterResult<LF>;
+  sportGroundFilter: IFilterResult<SGF>;
   layerGroups: ILayerGroup<LF>[];
 }
 
-export const MobileFilters = <D extends string, S extends string, L extends string>({
+export const MobileFilters = <
+  DF extends string,
+  SGF extends string,
+  TF extends string,
+  LF extends string,
+>({
   isVisible,
   setVisible,
   areFiltersDefault,
   activeFilters,
   onResetFiltersClick,
   districtFilter,
+  sportGroundFilter,
   tagFilter,
   layerGroups,
   layerFilter,
-}: IMobileFiltersProps<D, S, L>) => {
+}: IMobileFiltersProps<DF, SGF, TF, LF>) => {
   const { t } = useTranslation();
 
   return (
@@ -71,7 +78,7 @@ export const MobileFilters = <D extends string, S extends string, L extends stri
             placeholder={t("filters.district.placeholder")}
             value={districtFilter.activeKeys}
             isMultiple
-            onChange={(value) => districtFilter.setActiveOnly((value ?? []) as D[])}
+            onChange={(value) => districtFilter.setActiveOnly((value ?? []) as DF[])}
             onReset={() => districtFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer
@@ -86,6 +93,32 @@ export const MobileFilters = <D extends string, S extends string, L extends stri
             {districtFilter.keys.map((district) => (
               <SelectOption key={district} value={district}>
                 {district}
+              </SelectOption>
+            ))}
+          </Select>
+
+          <Select
+            noBorder
+            className="w-full"
+            buttonClassName="px-3"
+            placeholder={t("filters.sportGround.placeholder")}
+            value={sportGroundFilter.activeKeys}
+            isMultiple
+            onChange={(value) => sportGroundFilter.setActiveOnly((value ?? []) as SGF[])}
+            onReset={() => sportGroundFilter.setActiveAll(false)}
+            renderValue={({ values }) => (
+              <SelectValueRenderer
+                values={values}
+                placeholder={t("filters.sportGround.placeholder")}
+                multiplePlaceholder={`${t("filters.sportGround.multipleDistricts")} (${
+                  values.length
+                })`}
+              />
+            )}
+          >
+            {sportGroundFilter.keys.map((sportGround) => (
+              <SelectOption key={sportGround} value={sportGround}>
+                {sportGround}
               </SelectOption>
             ))}
           </Select>

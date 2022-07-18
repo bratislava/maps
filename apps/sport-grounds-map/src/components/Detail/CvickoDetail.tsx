@@ -35,7 +35,7 @@ export const CvickoDetail = ({ feature, onClose, isExpanded }: CvickoDetailProps
 
           <div className="absolute top-[232px] left-6">
             <a
-              href={feature.properties?.["navigate"]}
+              href={feature.properties?.["wantToWorkout"]}
               target="_blank"
               rel="noreferrer"
               className="group font-semibold select-none cursor-pointer flex items-center gap-4 bg-primary text-white w-fit px-6 h-12 rounded-lg"

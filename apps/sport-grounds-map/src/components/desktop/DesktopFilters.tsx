@@ -20,7 +20,7 @@ import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SelectValueRenderer } from "../SelectValueRenderer";
 
-export interface IDesktopFiltersProps<DF, TF, LF extends string> {
+export interface IDesktopFiltersProps<DF, SPF, TF, LF extends string> {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
@@ -30,11 +30,17 @@ export interface IDesktopFiltersProps<DF, TF, LF extends string> {
   isGeolocation: boolean;
   districtFilter: IFilterResult<DF>;
   layerFilter: IFilterResult<LF>;
+  sportGroundFilter: IFilterResult<SPF>;
   tagFilter: IFilterResult<TF>;
   layerGroups: ILayerGroup<LF>[];
 }
 
-export const DesktopFilters = <DF extends string, TF extends string, LF extends string>({
+export const DesktopFilters = <
+  DF extends string,
+  SPF extends string,
+  TF extends string,
+  LF extends string,
+>({
   isVisible,
   setVisible,
   areFiltersDefault,
@@ -43,10 +49,11 @@ export const DesktopFilters = <DF extends string, TF extends string, LF extends 
   mapboxgl,
   layerFilter,
   isGeolocation,
+  sportGroundFilter,
   districtFilter,
   tagFilter,
   layerGroups,
-}: IDesktopFiltersProps<DF, TF, LF>) => {
+}: IDesktopFiltersProps<DF, SPF, TF, LF>) => {
   const { t } = useTranslation();
 
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -119,7 +126,7 @@ export const DesktopFilters = <DF extends string, TF extends string, LF extends 
         )}
       </div>
 
-      <div className="w-full flex flex-col gap-4 px-6">
+      <div className="w-full grid grid-cols-2 gap-4 px-6">
         <Select
           className="w-full"
           value={districtFilter.activeKeys}
@@ -137,6 +144,29 @@ export const DesktopFilters = <DF extends string, TF extends string, LF extends 
           {districtFilter.keys.map((district) => (
             <SelectOption key={district} value={district}>
               {district}
+            </SelectOption>
+          ))}
+        </Select>
+
+        <Select
+          className="w-full"
+          value={sportGroundFilter.activeKeys}
+          isMultiple
+          onChange={(value) => sportGroundFilter.setActiveOnly((value ?? []) as SPF[])}
+          onReset={() => sportGroundFilter.setActiveAll(false)}
+          renderValue={({ values }) => (
+            <SelectValueRenderer
+              values={values}
+              placeholder={t("filters.sportGround.placeholder")}
+              multiplePlaceholder={`${t("filters.sportGround.multipleDistricts")} (${
+                values.length
+              })`}
+            />
+          )}
+        >
+          {sportGroundFilter.keys.map((sportGround) => (
+            <SelectOption key={sportGround} value={sportGround}>
+              {sportGround}
             </SelectOption>
           ))}
         </Select>

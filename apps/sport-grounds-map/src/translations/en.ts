@@ -11,7 +11,12 @@ export default {
     district: {
       title: "District",
       placeholder: "District",
-      multipleDistricts: "Multiple districts",
+      multipleDistricts: "Selected",
+    },
+    sportGround: {
+      title: "Type",
+      placeholder: "Type",
+      multipleDistricts: "Selected",
     },
     tag: {
       title: "Sports",

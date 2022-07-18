@@ -92,6 +92,47 @@ export const App = () => {
     ),
   });
 
+  const sportGroundFilter = useFilter({
+    property: "kind",
+    keepOnEmpty: true,
+    keys: useMemo(
+      () => [
+        "zimný štadión",
+        "športová hala",
+        "plaváreň",
+        "fitness",
+        "sauna",
+        "multifunkčný areál",
+        "kúpalisko",
+        "workoutové ihrisko",
+        "bežecká dráha",
+        "spevnená plocha",
+        "atletická dráha",
+        "basketbalové ihrisko",
+        "futbalové ihrisko",
+        "klzisko",
+        "lezecká stena",
+        "telocvičňa",
+        "športový areál",
+        "futbalový štadión",
+        "štadión",
+        "tenis",
+        "stolný tenis",
+        "petangové ihrisko",
+        "strelnica",
+        "volejbalové ihrisko",
+        "vodná plocha",
+        "pumptrack",
+        "skatepark",
+        "tanečné štúdio",
+        "dopravné ihrisko",
+        "wellness",
+        "jóga",
+      ],
+      [],
+    ),
+  });
+
   const layerFilter = useFilter({
     property: "layer",
     keepOnEmpty: true,
@@ -294,6 +335,7 @@ export const App = () => {
             onResetFiltersClick={combinedFilter.reset}
             districtFilter={districtFilter}
             tagFilter={tagFilter}
+            sportGroundFilter={sportGroundFilter}
             layerFilter={layerFilter}
             layerGroups={layerGroups}
           />
@@ -325,6 +367,7 @@ export const App = () => {
             mapRef={mapRef}
             districtFilter={districtFilter}
             layerFilter={layerFilter}
+            sportGroundFilter={sportGroundFilter}
             tagFilter={tagFilter}
             layerGroups={layerGroups}
             isGeolocation={isGeolocation}
