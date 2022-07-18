@@ -1,10 +1,12 @@
+import { DISTRICT_COLOR, DISTRICT_OPACITY } from "../../../utils/utils";
+
 const styles = [
   {
     id: "districts-line",
     type: "line",
     paint: {
-      "line-color": "#4fc268",
-      "line-opacity": 0.4,
+      "line-color": DISTRICT_COLOR,
+      "line-opacity": DISTRICT_OPACITY,
       "line-width": [
         "interpolate",
         ["linear"],

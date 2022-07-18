@@ -9,7 +9,7 @@ const seasonMapping = {
   ZIMA: "winter",
 };
 
-const treeKindColorMappingObject: { [key: string]: string } = {
+export const treeKindColorMappingObject: { [key: string]: string } = {
   "javor-polny": "#1A961D",
   "ceresna-pilkata": "#C1E00E",
   "ceresna-vtacia": "#37AA4B",
@@ -39,7 +39,7 @@ const treeKindColorMappingObject: { [key: string]: string } = {
   "gledicia-trojtrnova": "#39441B",
   "lipa-striebrista": "#DAE8BA",
   "dub-balkansky": "#01401C",
-  "jasen-stihly": "#A3A838",
+  "jasen-stihly": "#D1D841",
   "lieska-turecka": "#62F989",
   "visna-chlpkata": "#DBC9B9",
   "muchovnik-stromovity": "#FBFFA9",
@@ -85,8 +85,10 @@ const CONIFERS = [
   "tisovec",
 ];
 
-const CONIFER_COLOR = "#90A58E";
-const DECIDUOUS_COLOR = "#A0E14C";
+export const CONIFER_COLOR = "#90A58E";
+export const DECIDUOUS_COLOR = "#A0E14C";
+export const DISTRICT_COLOR = "#4FC268";
+export const DISTRICT_OPACITY = 0.4;
 
 export const kinds = Object.keys(treeKindNameSkMappingObject);
 
