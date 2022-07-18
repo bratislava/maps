@@ -19,7 +19,7 @@ export const Image = ({ src, alt }: IImageProps) => {
     }
   }, [src]);
 
-  const fullUrl = useMemo(() => `${import.meta.url.split("/src/")[0]}/${src}`, [src]);
+  const fullUrl = useMemo(() => `/static-pages/sport-grounds-map/${src}`, [src]);
 
   console.log(import.meta);
 
