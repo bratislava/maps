@@ -49,7 +49,7 @@ export const ViewportController = forwardRef<
       <div
         ref={ref}
         className={cx(
-          "fixed right-4 bottom-24 sm:bottom-7 transform  duration-500 ease-in-out transition-transform pointer-events-none"
+          "fixed right-4 bottom-8 transform  duration-500 ease-in-out transition-transform pointer-events-none"
         )}
         style={style}
       >

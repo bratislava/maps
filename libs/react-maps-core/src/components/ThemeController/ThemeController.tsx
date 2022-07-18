@@ -21,7 +21,7 @@ export const ThemeController = ({
   return (
     <div
       className={cx(
-        "fixed left-4 bottom-24 sm:bottom-7 transform duration-500 ease-in-out flex gap-2 transition-transform"
+        "fixed left-4 bottom-8 transform duration-500 ease-in-out flex gap-2 transition-transform"
       )}
       style={style}
     >

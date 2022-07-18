@@ -385,40 +385,29 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         ".mapboxgl-ctrl-bottom-left"
       );
       const informationElement = document.querySelector(
-        ".mapboxgl-ctrl-bottom-right"
+        ".mapboxgl-ctrl-bottom-right .mapboxgl-ctrl"
       );
       if (!mapboxLogoElement || !informationElement) return;
 
-      const mapboxLogoMobileStyle = `
+      const mapboxLogoStyle = `
         transition: transform 500ms;
-        transform: translate(${controlsMarginLeft ?? 0 + 16}px, -${
-        controlsMarginBottom + 2
-      }px);
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-        margin-left: 4px;
-        margin-bottom: 0px;
-      `;
-
-      const mapboxLogoDesktopStyle = `
-        transition: transform 500ms;
-        transform: translate(${controlsMarginLeft ?? 0 + 16}px, -${
-        controlsMarginBottom + 2
+        transform: translate(${controlsMarginLeft ?? 0 + 8}px, -${
+        controlsMarginBottom - 2
       }px);
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         margin-left: 8px;
-        margin-bottom: -6px;
+        margin-bottom: -2px;
       `;
 
       const informationStyle = `
         transition: transform 500ms;
         transform: translate(-${controlsMarginRight + 16}px);
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        margin: 0 !important;
+        margin-bottom: 4px !important;
       `;
 
-      mapboxLogoElement.setAttribute(
-        "style",
-        isMobile ? mapboxLogoMobileStyle : mapboxLogoDesktopStyle
-      );
+      mapboxLogoElement.setAttribute("style", mapboxLogoStyle);
       informationElement.setAttribute("style", informationStyle);
     }, [
       controlsMarginBottom,
