@@ -11,6 +11,7 @@ export interface IModalProps {
   children?: ReactNode;
   className?: string;
   closeButtonIcon?: ReactNode;
+  closeButtonInCorner?: boolean;
 }
 
 export const Modal = ({
@@ -21,6 +22,7 @@ export const Modal = ({
   children,
   className,
   closeButtonIcon,
+  closeButtonInCorner = false,
 }: IModalProps) => {
   return (
     <Transition show={isOpen} as={Fragment}>
@@ -37,7 +39,7 @@ export const Modal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed bg-black bg-opacity-40 top-0 left-0 right-0 bottom-0 z-50" />
+          <div className="fixed bg-gray-lightmode dark:bg-black bg-opacity-40 dark:bg-opacity-60 top-0 left-0 right-0 bottom-0 z-50" />
         </Transition.Child>
 
         <Transition.Child
@@ -49,7 +51,7 @@ export const Modal = ({
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          <div className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center p-8 z-50">
+          <div className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center p-6 z-50">
             <Dialog.Panel
               className={cx(
                 "relative bg-background-lightmode dark:bg-background-darkmode rounded-xl flex flex-col p-8 gap-4",
@@ -70,7 +72,12 @@ export const Modal = ({
 
               <div>{children}</div>
 
-              <div className="w-full flex absolute left-0 -bottom-6 justify-center">
+              <div
+                className={cx("w-full flex absolute", {
+                  "-top-6 -right-6 justify-end": closeButtonInCorner,
+                  "left-0 -bottom-6 justify-center": !closeButtonInCorner,
+                })}
+              >
                 <button
                   className="w-12 outline-none h-12 bg-primary rounded-full flex items-center justify-center"
                   onClick={() => onClose && onClose()}
