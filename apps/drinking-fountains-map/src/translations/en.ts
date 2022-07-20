@@ -1,4 +1,5 @@
 export default {
+  title: "Drinking fountains",
   close: "Close",
   detail: {
     location: "Location",

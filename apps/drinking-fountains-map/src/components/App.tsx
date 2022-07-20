@@ -12,6 +12,7 @@ import {
   Cluster,
   ThemeController,
   ViewportController,
+  SlotType,
 } from "@bratislava/react-maps-core";
 
 // components
@@ -29,6 +30,10 @@ import { useTranslation } from "react-i18next";
 
 export const App = () => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    document.title = t("title");
+  }, [t]);
 
   const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
   const [isLoading, setLoading] = useState(true);
@@ -65,6 +70,14 @@ export const App = () => {
     e.stopPropagation();
   }, []);
 
+  const [isMobile, setMobile] = useState<boolean | null>(null);
+
+  const viewportControllerSlots: SlotType = useMemo(() => {
+    return isMobile
+      ? ["legend", "compass", ["geolocation", "zoom"]]
+      : ["legend", "geolocation", "compass", ["fullscreen", "zoom"]];
+  }, [isMobile]);
+
   return isLoading ? null : (
     <Map
       ref={mapRef}
@@ -75,15 +88,16 @@ export const App = () => {
       }}
       initialViewport={{
         center: {
-          lat: 48.142555534347395,
-          lng: 17.108218965811034,
+          lat: 48.16055874931445,
+          lng: 17.090805635872925,
         },
-        zoom: 14,
+        zoom: 11.717870557689393,
       }}
       loadingSpinnerColor="#2BACE2"
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
       moveSearchBarOutsideOfSideBarOnLargeScreen
+      onMobileChange={setMobile}
       sources={{
         SPORT_GROUNDS_DATA: data,
         DISTRICTS_GEOJSON,
@@ -133,9 +147,8 @@ export const App = () => {
           className={cx("fixed right-4 bottom-8 transform sm:transform-none", {
             "-translate-y-[92px]": isDetailOpen,
           })}
-          showLegendButton
-          showLocationButton
           onLegendClick={onLegendClick}
+          slots={viewportControllerSlots}
         />
       </Slot>
 
