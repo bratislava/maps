@@ -18,6 +18,7 @@ import {
   Marker,
   ThemeController,
   ViewportController,
+  SlotType,
 } from "@bratislava/react-maps-core";
 import { useArcgeo } from "@bratislava/react-esri";
 
@@ -231,6 +232,12 @@ export const App = () => {
   const { height: desktopDetailHeight, ref: desktopDetailRef } =
     useResizeDetector<HTMLDivElement>();
 
+  const viewportControllerSlots: SlotType = useMemo(() => {
+    return isMobile
+      ? ["legend", "compass", "zoom"]
+      : ["legend", "geolocation", "compass", ["fullscreen", "zoom"]];
+  }, [isMobile]);
+
   return isLoading ? null : (
     <Map
       loadingSpinnerColor="#237c36"
@@ -292,8 +299,7 @@ export const App = () => {
         />
         <ViewportController
           className="fixed right-4 bottom-[88px] sm:bottom-8"
-          showLegendButton
-          showLocationButton={!isMobile}
+          slots={viewportControllerSlots}
           onLegendClick={onLegendClick}
         />
         <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />

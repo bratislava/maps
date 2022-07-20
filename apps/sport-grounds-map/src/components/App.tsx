@@ -19,6 +19,7 @@ import {
   useCombinedFilter,
   ThemeController,
   ViewportController,
+  SlotType,
 } from "@bratislava/react-maps-core";
 
 // components
@@ -249,6 +250,10 @@ export const App = () => {
     [layerFilter, layerToIconMappingObject, t],
   );
 
+  const viewportControllerSlots: SlotType = useMemo(() => {
+    return isMobile ? ["compass", "zoom"] : ["geolocation", "compass", ["fullscreen", "zoom"]];
+  }, [isMobile]);
+
   return isLoading ? null : (
     <Map
       ref={mapRef}
@@ -323,7 +328,7 @@ export const App = () => {
           className={cx("fixed right-4 bottom-[88px] sm:bottom-8", {
             "-translate-x-96": window.innerHeight <= (desktopDetailHeight ?? 0) + 200,
           })}
-          showLocationButton={!isMobile}
+          slots={viewportControllerSlots}
         />
         <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
       </Slot>

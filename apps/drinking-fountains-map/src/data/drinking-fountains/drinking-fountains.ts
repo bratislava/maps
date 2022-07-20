@@ -127,6 +127,16 @@ export const rawData: FeatureCollection = {
       type: "Feature",
       geometry: {
         type: "Point",
+        coordinates: [17.06266, 48.151046],
+      },
+      properties: {
+        location: "Multifunkčný park na Karloveskej ulici",
+      },
+    },
+    {
+      type: "Feature",
+      geometry: {
+        type: "Point",
         coordinates: [17.10846668, 48.13351421],
       },
       properties: {
