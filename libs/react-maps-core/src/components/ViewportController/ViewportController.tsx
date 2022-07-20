@@ -1,29 +1,23 @@
 import cx from "classnames";
-import {
-  Plus,
-  Minus,
-  Fullscreen,
-  FullscreenActive,
-  Compass,
-  Location,
-  LocationActive,
-  List,
-} from "@bratislava/react-maps-icons";
-import React, { forwardRef, MouseEvent, useCallback, useContext } from "react";
-import { IconButton, IconButtonGroup } from "@bratislava/react-maps-ui";
-import { mapContext } from "../Map/Map";
-import { MapActionKind } from "../Map/mapReducer";
-import {
-  exitFullscreen,
-  getFullscreenElement,
-  requestFullscreen,
-} from "../../utils/fullscreen";
+import React, { forwardRef, MouseEvent, useCallback } from "react";
+import { ZoomButtons } from "./ZoomButtons";
+import { FullscreenButton } from "./FullscreenButton";
+import { CompassButton } from "./CompassButton";
+import { GeolocationButton } from "./GeolocationButton";
+import { LegendButton } from "./LegendButton";
+
+export type SlotType =
+  | "legend"
+  | "geolocation"
+  | "compass"
+  | "zoom"
+  | "fullscreen"
+  | SlotType[];
 
 interface ViewportControllerProps {
   className?: string;
-  showLegendButton?: boolean;
-  showLocationButton?: boolean;
   onLegendClick?: (e: MouseEvent) => void;
+  slots?: SlotType[];
 }
 
 export const ViewportController = forwardRef<
@@ -33,60 +27,35 @@ export const ViewportController = forwardRef<
   (
     {
       className,
-      showLegendButton = false,
-      onLegendClick,
-      showLocationButton = false,
+      onLegendClick = () => void 0,
+      slots = ["geolocation", "compass", ["fullscreen", "zoom"]],
     },
     ref
   ) => {
-    const {
-      mapState,
-      dispatchMapState,
-      changeViewport,
-      containerRef,
-      geolocationChangeHandler,
-    } = useContext(mapContext);
+    const RenderSlot = useCallback(
+      ({ slot }: { slot: SlotType }) => {
+        switch (slot) {
+          case "legend":
+            return <LegendButton onLegendClick={onLegendClick} />;
 
-    // ZOOM IN HANDLER
-    const handleZoomInClick = useCallback(() => {
-      changeViewport({ zoom: (mapState?.viewport.zoom ?? 0) + 0.5 });
-    }, [changeViewport, mapState?.viewport.zoom]);
+          case "geolocation":
+            return <GeolocationButton />;
 
-    // ZOOM OUT HANDLER
-    const handleZoomOutClick = useCallback(() => {
-      changeViewport({ zoom: (mapState?.viewport.zoom ?? 0) - 0.5 });
-    }, [changeViewport, mapState?.viewport.zoom]);
+          case "compass":
+            return <CompassButton />;
 
-    // FULLSCREEN HANDLER
-    const handleFullscreenClick = useCallback(() => {
-      if (containerRef?.current) {
-        if (getFullscreenElement()) {
-          exitFullscreen();
-          dispatchMapState &&
-            dispatchMapState({
-              type: MapActionKind.SetFullscreen,
-              value: false,
-            });
-        } else {
-          requestFullscreen(containerRef.current);
-          dispatchMapState &&
-            dispatchMapState({
-              type: MapActionKind.SetFullscreen,
-              value: true,
-            });
+          case "fullscreen":
+            return <FullscreenButton />;
+
+          case "zoom":
+            return <ZoomButtons />;
+
+          default:
+            return null;
         }
-      }
-    }, [dispatchMapState, containerRef]);
-
-    // RESET BEARING HANDLER
-    const handleCompassClick = useCallback(() => {
-      changeViewport({ bearing: 0 });
-    }, [changeViewport]);
-
-    // GEOLOCATION HANDLER
-    const handleLocationClick = useCallback(() => {
-      geolocationChangeHandler(!mapState?.isGeolocation);
-    }, [geolocationChangeHandler, mapState?.isGeolocation]);
+      },
+      [onLegendClick]
+    );
 
     return (
       <div
@@ -97,45 +66,17 @@ export const ViewportController = forwardRef<
         )}
       >
         <div className="flex gap-2 items-end">
-          {showLegendButton && (
-            <IconButton onClick={onLegendClick}>
-              <List size="xl" />
-            </IconButton>
+          {slots.map((slot, i) =>
+            Array.isArray(slot) ? (
+              <div key={i} className="flex flex-col gap-2">
+                {slot.map((subSlot, j) => (
+                  <RenderSlot key={j} slot={subSlot} />
+                ))}
+              </div>
+            ) : (
+              <RenderSlot key={i} slot={slot} />
+            )
           )}
-          {showLocationButton && (
-            <IconButton onClick={handleLocationClick}>
-              {mapState?.isGeolocation ? (
-                <LocationActive className="w-12 h-12" />
-              ) : (
-                <Location className="w-12 h-12" />
-              )}
-            </IconButton>
-          )}
-          <IconButton onClick={handleCompassClick}>
-            <Compass
-              className="w-12 h-12"
-              style={{
-                transform: `rotate(${-(mapState?.viewport?.bearing ?? 0)}deg)`,
-              }}
-            />
-          </IconButton>
-          <div className="flex flex-col gap-2">
-            <IconButton onClick={handleFullscreenClick}>
-              {mapState?.isFullscreen ? (
-                <FullscreenActive className="w-12 h-12" />
-              ) : (
-                <Fullscreen className="w-12 h-12" />
-              )}
-            </IconButton>
-            <IconButtonGroup>
-              <IconButton noAnimation noStyle onClick={handleZoomInClick}>
-                <Plus className="w-12 h-12" />
-              </IconButton>
-              <IconButton noAnimation noStyle onClick={handleZoomOutClick}>
-                <Minus className="w-12 h-12" />
-              </IconButton>
-            </IconButtonGroup>
-          </div>
         </div>
       </div>
     );

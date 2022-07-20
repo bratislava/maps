@@ -1,4 +1,5 @@
 export default {
+  title: "Pitné fontány",
   close: "Zavrieť",
   detail: {
     location: "Lokalita",

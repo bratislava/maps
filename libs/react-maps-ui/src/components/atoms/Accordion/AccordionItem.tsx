@@ -1,10 +1,10 @@
 import React, { ReactNode } from "react";
 import cx from "classnames";
 import { Item, Header, Trigger, Content } from "@radix-ui/react-accordion";
-import { ChevronDownSmall } from "@bratislava/react-maps-icons";
+import { Chevron } from "@bratislava/react-maps-icons";
 import { styled, keyframes } from "@stitches/react";
 
-const AccordionChevron = styled(ChevronDownSmall, {
+const AccordionChevron = styled(Chevron, {
   "[data-state=open] &": { transform: "rotate(180deg)" },
 });
 
@@ -56,11 +56,7 @@ export const AccordionItem = ({
             {rightSlot}
             {isOpenable && (
               <Trigger className="p-1">
-                <AccordionChevron
-                  className="transition"
-                  width={16}
-                  height={16}
-                />
+                <AccordionChevron className="transition" size="xs" />
               </Trigger>
             )}
           </div>
