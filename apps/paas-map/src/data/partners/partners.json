@@ -1,0 +1,165 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 12,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.106627574765525, 48.151435079556784]
+      },
+      "properties": {
+        "OBJECTID": 12,
+        "Partner": "Volis Academy",
+        "Názov": "Volis",
+        "Active": "ano",
+        "Adresa": "Štefánikova 19",
+        "Otváracie hodiny": "Po-Št 9:00-18:00, Pi 9:00-17:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 24,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.119394806300942, 48.15171725330908]
+      },
+      "properties": {
+        "OBJECTID": 24,
+        "Partner": "Spusta",
+        "Názov": "Spusta",
+        "Active": "ano",
+        "Adresa": "Odborárske námestie 2",
+        "Otváracie hodiny": "Po-Pi 07:00-19:00\r\nSo 08:00-18:00\r\nNe 08:00-18:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 31,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.118991673925262, 48.15448403991136]
+      },
+      "properties": {
+        "OBJECTID": 31,
+        "Partner": "Spusta",
+        "Názov": "Spusta Vazka",
+        "Active": "ano",
+        "Adresa": "Radlinského 39",
+        "Otváracie hodiny": "Po-Pi 6:00-17:00\r\nSo-Ne Zatvorené"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 34,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.111419510181744, 48.154618112438165]
+      },
+      "properties": {
+        "OBJECTID": 34,
+        "Partner": "Delia potraviny",
+        "Názov": "Delia",
+        "Active": "ano",
+        "Adresa": "Žilinská 1",
+        "Otváracie hodiny": "Po-Ne 6:00-23:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 35,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.110991433448927, 48.150235497436405]
+      },
+      "properties": {
+        "OBJECTID": 35,
+        "Partner": "Delia potraviny",
+        "Názov": "Delia",
+        "Active": "ano",
+        "Adresa": "Námestie 1. Mája 15  ",
+        "Otváracie hodiny": "Po-Pi 7:00-20:00, So-Ne zatvorené"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 36,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.115089015987397, 48.156751711359327]
+      },
+      "properties": {
+        "OBJECTID": 36,
+        "Partner": "Delia potraviny",
+        "Názov": "Delia",
+        "Active": "ano",
+        "Adresa": "Šancová 58",
+        "Otváracie hodiny": "Po-So 6:00-23:00, Ne 8:00-23:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 37,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.12933224699059, 48.170024042989851]
+      },
+      "properties": {
+        "OBJECTID": 37,
+        "Partner": "Spusta",
+        "Názov": "Spusta kaviareň",
+        "Active": "ano",
+        "Adresa": "Hálkova 1",
+        "Otváracie hodiny": "Po-Pi 6:00-18:00, So 8:00-12:00, Ne zatvorené"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 39,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.122188504968946, 48.149838020933522]
+      },
+      "properties": {
+        "OBJECTID": 39,
+        "Partner": "Omama",
+        "Názov": "Omama Shop Café",
+        "Active": "ano",
+        "Adresa": "Sasinkova 19",
+        "Otváracie hodiny": "Po-Pi 10:00-22:00, So 18:00-22:00, Ne zatvorené"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 42,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.130447839648447, 48.155750432921764]
+      },
+      "properties": {
+        "OBJECTID": 42,
+        "Partner": "Stories Wine Bar",
+        "Názov": "Stories Wine Bar",
+        "Active": "ano",
+        "Adresa": "Kupeckého 8",
+        "Otváracie hodiny": "Po-Pi 9:00-22:00, So 10:00-22:00, Ne 10:00-21:00"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 43,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.120292904778417, 48.151534337302365]
+      },
+      "properties": {
+        "OBJECTID": 43,
+        "Partner": "Bakery Allakaj",
+        "Názov": "Bakery Allakaj",
+        "Active": "ano",
+        "Adresa": "Sasinkova 1",
+        "Otváracie hodiny": "Po-Pi 8:00-19:00 So-Ne 8:00-18:00"
+      }
+    }
+  ]
+}

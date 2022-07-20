@@ -1,0 +1,101 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 1,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.138680107468058, 48.146267488264009]
+      },
+      "properties": {
+        "OBJECTID": 1,
+        "Názov": "PAAS Prievozská",
+        "Adresa": "Prievozská 4, 82109 Bratislava",
+        "Otváracie hodiny": "Po-Pi 7:00-18:00",
+        "Miesto": "Apollo Business Center II",
+        "Spresňujúce informácie": "zastávka MHD Novohradská"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 2,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.12616316348501, 48.157373216001027]
+      },
+      "properties": {
+        "OBJECTID": 2,
+        "Názov": "PAAS Trnavské mýto",
+        "Adresa": "Šancová 112, 83104 Bratislava",
+        "Otváracie hodiny": "Po-Pi 7:00-18:00",
+        "Miesto": "Tržnica",
+        "Spresňujúce informácie": "1. poschodie"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 3,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.107419559911492, 48.148523899792785]
+      },
+      "properties": {
+        "OBJECTID": 3,
+        "Názov": "PAAS Hodžovo nám.",
+        "Adresa": "Hodžovo nám. 1, 81106 Bratislava",
+        "Otváracie hodiny": "Po-Pi 7:00-19:00",
+        "Miesto": "Predajňa DPB",
+        "Spresňujúce informácie": "podchod Hodžovo námestie"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.109408586093526, 48.144176329095309]
+      },
+      "properties": {
+        "OBJECTID": 4,
+        "Názov": "PAAS Centrum",
+        "Adresa": "Primaciálne nám. 1, 81101 Bratislava",
+        "Otváracie hodiny": "Po 8:00-12:00, 13:00-17:00; \r\nUt-Št 8:00-12:00, 13:00-16:00;\r\nPi 8:00-12:00, 13:00-15:00;",
+        "Miesto": "Magistrát hl. mesta SR Bratislavy",
+        "Spresňujúce informácie": null
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.153635984328691, 48.211531987111897]
+      },
+      "properties": {
+        "OBJECTID": 5,
+        "Názov": "PAAS Rača",
+        "Adresa": "Kubačova 21, 83106 Bratislava",
+        "Otváracie hodiny": "Po 8:00-12:00;\r\nSt 13:00-17:00;",
+        "Miesto": "Miestny úrad Bratislava-Rača",
+        "Spresňujúce informácie": null
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 6,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.138091385688991, 48.167420787548416]
+      },
+      "properties": {
+        "OBJECTID": 6,
+        "Názov": "PAAS Nové Mesto",
+        "Adresa": "Junácka 1, 83104 Bratislava",
+        "Otváracie hodiny": "Po 8:00-12:00, 13:00-17:00;\r\nSt 8:00-12:00, 13:00-17:00;\r\nPi 08:00-12:00;",
+        "Miesto": "Miestny úrad Bratislava-Nové Mesto",
+        "Spresňujúce informácie": null
+      }
+    }
+  ]
+}

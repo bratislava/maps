@@ -1,160 +1,208 @@
 import { addDistrictPropertyToLayer } from "@bratislava/react-maps-core";
-import { getUniqueValuesFromFeatures } from "@bratislava/react-maps-utils";
 import { FeatureCollection, Feature } from "geojson";
-import { rawDataCvicko } from "../data/cvicko/cvicko";
-import { rawDataPools } from "../data/pools/pools";
 
-const hiddenLayerKinds = [
-  "asfaltová plocha",
-  "detské ihrisko",
-  "dráha",
-  "materská škola",
-  "základná škola",
-  "základná škola- bez ŠI",
-  "stredná škola",
-  "vysoká škola",
-  "turistický chodník",
-];
+import rawDataAssistants from "../data/assistants/assistants.json";
+import rawDataBranches from "../data/branches/branches.json";
+import rawDataParkomats from "../data/parkomats/parkomats.json";
+import rawDataPartners from "../data/partners/partners.json";
+import rawDataGarages from "../data/garages/garages.json";
+import rawDataPPlusR from "../data/p-plus-r/p-plus-r.json";
+import rawDataPPlusRRegion from "../data/p-plus-r-region/p-plus-r-region.json";
 
-type Kind =
-  | "hockey"
-  | "fitness"
-  | "tennis"
-  | "water"
-  | "football"
-  | "table-tennis"
-  | "basketball"
-  | "gym"
-  | "pool"
-  | "running-track"
-  | "other";
+import rawUdrData from "../data/udr/udr.json";
+import rawOdpData from "../data/odp/odp.json";
 
-const getKind = (kind: string): Kind => {
-  switch (kind) {
-    case "štadión":
-    case "Zimný štadión":
-      return "hockey";
-    case "fitness":
-    case "Fitness centrum":
-      return "fitness";
-    case "tenisový kurt":
-    case "Tenisové ihrisko":
-    case "Tenisové kurty":
-      return "tennis";
-    case "vodné aktivity":
-    case "vodná plocha":
-      return "water";
-    case "futbalové ihrisko":
-    case "Futbalové ihrisko - umelá tráva":
-    case "Futbalové ihrisko":
-      return "football";
-    case "stolný tenis":
-    case "Stolnotenisová hala":
-      return "table-tennis";
-    case "basketbalové ihrisko":
-    case "Basketbalové ihrisko":
-    case "basketbal":
-      return "basketball";
-    case "posilňovňa":
-    case "workout":
-    case "Posilňovňa, workoutové ihrisko, minigolf":
-      return "gym";
-    case "plaváreň":
-    case "plávanie":
-    case "Plaváreň":
-      return "pool";
-    case "Atletická dráha":
-    case "Bežecký okruh":
-      return "running-track";
-    default:
-      return "other";
-  }
-};
-
-export const processData = (rawDataFeatures: Feature[], rawDataAltFeatures: Feature[]) => {
+export const getProcessedData = () => {
   let GLOBAL_ID = 0;
-  const data: FeatureCollection = addDistrictPropertyToLayer({
+
+  const markersData: FeatureCollection = addDistrictPropertyToLayer({
     type: "FeatureCollection",
     features: [
-      ...rawDataFeatures.map((feature) => {
+      /*
+        ASSISTNANTS
+      */
+      ...rawDataAssistants.features.map((feature) => {
         GLOBAL_ID++;
-        const layer = "sportGrounds";
-        const tags = [getKind(feature.properties?.kind ?? feature.properties?.type)];
-        const icon = getKind(feature.properties?.kind ?? feature.properties?.type);
+        const kind = "assistants";
+        const icon = "assistant";
         return {
           ...feature,
           id: GLOBAL_ID,
           properties: {
             ...feature.properties,
-            tags,
-            layer,
+            kind,
             icon,
-            id: GLOBAL_ID,
           },
         } as Feature;
       }),
-      ...rawDataAltFeatures.map((feature) => {
+
+      /*
+        BRANCHES
+      */
+      ...rawDataBranches.features.map((feature) => {
         GLOBAL_ID++;
-        const layer = "sportGrounds";
-        const oldKind = feature.properties?.kind;
-        const tags = [getKind(feature.properties?.kind ?? feature.properties?.type)];
-        const icon = getKind(feature.properties?.kind ?? feature.properties?.type);
+        const kind = "branches";
+        const icon = "branch";
         return {
           ...feature,
           id: GLOBAL_ID,
           properties: {
             ...feature.properties,
-            tags,
-            layer,
+            kind,
             icon,
-            oldKind,
-            id: GLOBAL_ID,
           },
         } as Feature;
       }),
-      ...rawDataCvicko.features.map((feature) => {
+
+      /*
+        PARKOMATS
+      */
+      ...rawDataParkomats.features.map((feature) => {
         GLOBAL_ID++;
-        const layer = "cvicko";
-        const tags = feature.properties?.tags?.map((tag: string) => getKind(tag));
-        const icon = "cvicko";
+        const kind = "parkomats";
+        const icon = "parkomat";
         return {
-          id: GLOBAL_ID,
           ...feature,
+          id: GLOBAL_ID,
           properties: {
             ...feature.properties,
-            layer,
-            tags,
+            kind,
             icon,
-            id: GLOBAL_ID,
           },
         } as Feature;
       }),
-      ...rawDataPools.features.map((feature) => {
+
+      /*
+        PARTNERS
+      */
+      ...rawDataPartners.features.map((feature) => {
         GLOBAL_ID++;
-        const layer = "swimmingPools";
-        const tags = feature.properties?.tags?.map((tag: string) => getKind(tag));
-        const icon = "pool";
+        const kind = "partners";
+        const icon = "partner";
         return {
-          id: GLOBAL_ID,
           ...feature,
+          id: GLOBAL_ID,
           properties: {
             ...feature.properties,
-            layer,
-            tags,
+            kind,
             icon,
-            id: GLOBAL_ID,
           },
         } as Feature;
       }),
-    ].filter((feature) => !hiddenLayerKinds.find((kind) => kind === feature.properties?.oldKind)),
+
+      /*
+        GARAGES
+      */
+      ...rawDataGarages.features.map((feature) => {
+        GLOBAL_ID++;
+        const kind = "garages-visitor";
+        const icon = "garage-visitor";
+        return {
+          ...feature,
+          id: GLOBAL_ID,
+          properties: {
+            ...feature.properties,
+            kind,
+            icon,
+          },
+        } as Feature;
+      }),
+
+      /*
+        GARAGES
+      */
+      ...rawDataGarages.features.map((feature) => {
+        GLOBAL_ID++;
+        const kind = "garages-resident";
+        const icon = "garage-resident";
+        return {
+          ...feature,
+          id: GLOBAL_ID,
+          properties: {
+            ...feature.properties,
+            kind,
+            icon,
+          },
+        } as Feature;
+      }),
+
+      /*
+        P + R
+      */
+      ...rawDataPPlusR.features.map((feature) => {
+        GLOBAL_ID++;
+        const kind = "p-plus-r";
+        const icon = "p-plus-r";
+        return {
+          ...feature,
+          id: GLOBAL_ID,
+          properties: {
+            ...feature.properties,
+            kind,
+            icon,
+          },
+        } as Feature;
+      }),
+
+      /*
+        P + R REGIONS
+      */
+      ...rawDataPPlusRRegion.features.map((feature) => {
+        GLOBAL_ID++;
+        const kind = "p-plus-r-region";
+        const icon = "p-plus-r-region";
+        return {
+          ...feature,
+          id: GLOBAL_ID,
+          properties: {
+            ...feature.properties,
+            kind,
+            icon,
+          },
+        } as Feature;
+      }),
+    ],
   });
 
-  const uniqueDistricts: string[] = getUniqueValuesFromFeatures(data.features, "district");
-  const uniqueTypes: string[] = getUniqueValuesFromFeatures(data.features, "tags");
+  const udrData: FeatureCollection = addDistrictPropertyToLayer({
+    type: "FeatureCollection",
+    features: [
+      ...rawUdrData.features.map((feature) => {
+        GLOBAL_ID++;
+        const layer = "visitors";
+        return {
+          ...feature,
+          id: GLOBAL_ID,
+          properties: {
+            ...feature.properties,
+            layer,
+          },
+        } as Feature;
+      }),
+    ],
+  });
+
+  const odpData: FeatureCollection = addDistrictPropertyToLayer({
+    type: "FeatureCollection",
+    features: [
+      ...rawOdpData.features.map((feature) => {
+        GLOBAL_ID++;
+        const layer = "residents";
+        return {
+          ...feature,
+          id: GLOBAL_ID,
+          properties: {
+            ...feature.properties,
+            layer,
+          },
+        } as Feature;
+      }),
+    ],
+  });
 
   return {
-    data,
-    uniqueDistricts,
-    uniqueTypes,
+    markersData,
+    udrData,
+    odpData,
   };
 };

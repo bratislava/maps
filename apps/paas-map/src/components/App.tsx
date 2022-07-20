@@ -3,65 +3,53 @@ import { useTranslation } from "react-i18next";
 import cx from "classnames";
 import "../styles.css";
 import { useResizeDetector } from "react-resize-detector";
+import udrStyles from "../data/udr/udr";
+import odpStyles from "../data/odp/odp";
 
 // maps
 import {
-  DISTRICTS_GEOJSON,
   usePrevious,
   Slot,
   Layout,
   MapHandle,
   Map,
-  Layer,
-  useFilter,
   Cluster,
   Filter,
-  useCombinedFilter,
   ThemeController,
   ViewportController,
+  useFilter,
+  Layer,
 } from "@bratislava/react-maps-core";
 
 // components
 import { Detail } from "./Detail";
 
 // utils
-import { processData } from "../utils/utils";
+import { getProcessedData } from "../utils/utils";
 import mapboxgl from "mapbox-gl";
 import { Feature, Point, FeatureCollection } from "geojson";
 import { MobileHeader } from "./mobile/MobileHeader";
-import { MobileFilters } from "./mobile/MobileFilters";
-import { DesktopFilters } from "./desktop/DesktopFilters";
 import { MobileSearch } from "./mobile/MobileSearch";
 
-import RAW_DATA_SPORT_GROUNDS_FEATURES from "../data/sport-grounds/sport-grounds-data";
-import RAW_DATA_SPORT_GROUNDS_ALT_FEATURES from "../data/sport-grounds/sport-grounds-alt-data";
-
-import DISTRICTS_STYLE from "../data/districts/districts";
 import { Marker } from "./Marker";
-import { MultipleMarker } from "./MultipleMarker";
-import { ILayerGroup } from "@bratislava/react-maps-ui/src/components/molecules/Layers/Layers";
-import { Icon, IIconProps } from "./Icon";
+import { DesktopFilters } from "./desktop/DesktopFilters";
+import { ILayerGroup } from "@bratislava/react-maps-ui";
+import { Icon } from "./Icon";
 
 export const App = () => {
   const { t } = useTranslation();
 
   const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState<FeatureCollection | null>(null);
-
-  const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
-  const [uniqueTypes, setUniqueTypes] = useState<string[]>([]);
-
+  const [markersData, setMarkersData] = useState<FeatureCollection | null>(null);
+  const [udrData, setUdrData] = useState<FeatureCollection | null>(null);
+  const [odpData, setOdpData] = useState<FeatureCollection | null>(null);
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
-    const { data, uniqueDistricts, uniqueTypes } = processData(
-      RAW_DATA_SPORT_GROUNDS_FEATURES,
-      RAW_DATA_SPORT_GROUNDS_ALT_FEATURES,
-    );
-
-    setData(data);
-    setUniqueDistricts(uniqueDistricts);
-    setUniqueTypes(uniqueTypes);
+    const { markersData, udrData, odpData } = getProcessedData();
+    setMarkersData(markersData);
+    setUdrData(udrData);
+    setOdpData(odpData);
     setLoading(false);
   }, []);
 
@@ -75,73 +63,98 @@ export const App = () => {
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
 
-  const districtFilter = useFilter({
-    property: "district",
-    keys: uniqueDistricts,
-  });
-
-  const tagFilter = useFilter({
-    property: "tags",
-    keys: uniqueTypes,
-    comparator: useCallback(({ value, property }: { value: string; property: string }) => {
-      return ["in", value, ["get", property]];
-    }, []),
-    defaultValues: useMemo(
-      () => uniqueTypes.reduce((prev, curr) => ({ ...prev, [curr]: true }), {}),
-      [uniqueTypes],
-    ),
-  });
-
-  const sportGroundFilter = useFilter({
-    property: "kind",
+  const layerFilter = useFilter({
+    property: "layer",
     keepOnEmpty: true,
-    keys: useMemo(
-      () => [
-        "zimný štadión",
-        "športová hala",
-        "plaváreň",
-        "fitness",
-        "sauna",
-        "multifunkčný areál",
-        "kúpalisko",
-        "workoutové ihrisko",
-        "bežecká dráha",
-        "spevnená plocha",
-        "atletická dráha",
-        "basketbalové ihrisko",
-        "futbalové ihrisko",
-        "klzisko",
-        "lezecká stena",
-        "telocvičňa",
-        "športový areál",
-        "futbalový štadión",
-        "štadión",
-        "tenis",
-        "stolný tenis",
-        "petangové ihrisko",
-        "strelnica",
-        "volejbalové ihrisko",
-        "vodná plocha",
-        "pumptrack",
-        "skatepark",
-        "tanečné štúdio",
-        "dopravné ihrisko",
-        "wellness",
-        "jóga",
-      ],
+    keys: useMemo(() => ["visitors", "residents"], []),
+    defaultValues: useMemo(
+      () => ({
+        visitors: true,
+        residents: false,
+      }),
       [],
     ),
   });
 
-  const layerFilter = useFilter({
-    property: "layer",
+  const layerGroups: ILayerGroup<typeof layerFilter.keys[0]>[] = useMemo(
+    () => [
+      {
+        label: t(`layers.visitors.title`),
+        icon: <Icon icon="visitor" size={48} />,
+        layers: {
+          value: "visitors",
+          label: t(`layers.visitors.title`),
+          isActive: layerFilter.isAnyKeyActive(["visitors"]),
+        },
+      },
+      {
+        label: t(`layers.residents.title`),
+        icon: <Icon icon="resident" size={48} />,
+        layers: {
+          value: "residents",
+          label: t(`layers.residents.title`),
+          isActive: layerFilter.isAnyKeyActive(["residents"]),
+        },
+      },
+    ],
+    [layerFilter, t],
+  );
+
+  const previousLayerFilterActiveKeys = usePrevious(layerFilter.activeKeys);
+
+  // make sure only one layer is selected
+  useEffect(() => {
+    if (
+      layerFilter.activeKeys.length === 1 ||
+      previousLayerFilterActiveKeys?.length === layerFilter.activeKeys.length
+    )
+      return;
+
+    // after clicking hide
+    if (layerFilter.activeKeys.length === 0) {
+      if (previousLayerFilterActiveKeys?.includes("visitors")) {
+        layerFilter.setActive("residents", true);
+      } else if (previousLayerFilterActiveKeys?.includes("residents")) {
+        layerFilter.setActive("visitors", true);
+      }
+    }
+
+    // after clicking show
+    if (layerFilter.activeKeys.length === 2) {
+      if (previousLayerFilterActiveKeys?.includes("visitors")) {
+        layerFilter.setActive("visitors", false);
+      } else if (previousLayerFilterActiveKeys?.includes("residents")) {
+        layerFilter.setActive("residents", false);
+      }
+    }
+  }, [layerFilter, layerFilter.activeKeys, previousLayerFilterActiveKeys]);
+
+  const markerFilter = useFilter({
+    property: "kind",
     keepOnEmpty: true,
-    keys: useMemo(() => ["sportGrounds", "cvicko", "swimmingPools"], []),
+    keys: useMemo(
+      () => [
+        "assistants",
+        "branches",
+        "parkomats",
+        "partners",
+        "garages-visitor",
+        "garages-resident",
+        "p-plus-r",
+        "p-plus-r-region",
+      ],
+      [],
+    ),
     defaultValues: useMemo(
       () => ({
-        sportGrounds: true,
-        cvicko: true,
-        swimmingPools: true,
+        assistants: false,
+        branches: false,
+        parkomats: false,
+        partners: false,
+        "garages-visitor": false,
+        "garages-resident": false,
+        "p-plus-r": false,
+        "p-plus-r-region": false,
       }),
       [],
     ),
@@ -165,34 +178,6 @@ export const App = () => {
     setSelectedFeature(null);
   }, []);
 
-  const combinedFilter = useCombinedFilter({
-    combiner: "all",
-    filters: [
-      {
-        filter: districtFilter,
-        mapToActive: (activeDistricts) => ({
-          title: t("filters.district.title"),
-          items: activeDistricts,
-        }),
-      },
-      {
-        filter: tagFilter,
-        mapToActive: (activeTypes) => ({
-          title: t("filters.tag.title"),
-          items: activeTypes,
-        }),
-      },
-      {
-        filter: layerFilter,
-        onlyInExpression: true,
-        mapToActive: (activeLayers) => ({
-          title: t("filters.layer.title"),
-          items: activeLayers,
-        }),
-      },
-    ],
-  });
-
   // close detailbox when sidebar is opened on mobile
   useEffect(() => {
     if (isMobile && isSidebarVisible == true && previousSidebarVisible == false) {
@@ -200,118 +185,127 @@ export const App = () => {
     }
   }, [closeDetail, isMobile, isSidebarVisible, previousSidebarVisible]);
 
-  // fit to district
-  useEffect(() => {
-    districtFilter.activeKeys.length == 0
-      ? mapRef.current?.changeViewport({
-          center: {
-            lat: 48.148598,
-            lng: 17.107748,
-          },
-          zoom: 10.75,
-        })
-      : mapRef.current?.fitToDistrict(districtFilter.activeKeys);
-  }, [districtFilter.activeKeys, mapRef]);
-
-  const markerClickHandler = useCallback((feature: Feature<Point>) => {
-    setSelectedFeature(feature);
-    mapRef.current?.changeViewport({
-      center: {
-        lng: feature.geometry.coordinates[0],
-        lat: feature.geometry.coordinates[1],
-      },
-    });
-  }, []);
-
   const { height: desktopDetailHeight, ref: desktopDetailRef } =
     useResizeDetector<HTMLDivElement>();
 
-  const layerToIconMappingObject: { [layer: string]: IIconProps["icon"] } = useMemo(
-    () => ({
-      sportGrounds: "table-tennis",
-      cvicko: "cvicko",
-      swimmingPools: "pool",
-    }),
-    [],
-  );
-
-  const layerGroups: ILayerGroup<typeof layerFilter.keys[0]>[] = useMemo(
-    () =>
-      layerFilter.keys.map((layerKey) => ({
-        label: t(`layers.${layerKey}.title`),
-        icon: (
-          <div className="bg-primary rounded-full text-white">
-            <Icon size={40} icon={layerToIconMappingObject[layerKey]} />
-          </div>
-        ),
-        layers: { value: layerKey, isActive: layerFilter.isAnyKeyActive([layerKey]) },
-      })),
-    [layerFilter, layerToIconMappingObject, t],
+  const markerGroups: ILayerGroup<typeof markerFilter.keys[0]>[] = useMemo(
+    () => [
+      {
+        label: t(`layerGroups.payment.title`),
+        layers: [
+          {
+            value: "parkomats",
+            label: t(`layers.parkomats.title`),
+            isActive: markerFilter.isAnyKeyActive(["parkomats"]),
+          },
+          {
+            value: "assistants",
+            label: t(`layers.assistants.title`),
+            isActive: markerFilter.isAnyKeyActive(["assistants"]),
+          },
+          {
+            value: "partners",
+            label: t(`layers.partners.title`),
+            isActive: markerFilter.isAnyKeyActive(["partners"]),
+          },
+        ],
+      },
+      {
+        label: t(`layerGroups.parking.title`),
+        layers: [
+          {
+            value: ["garages-visitor", "garages-resident"],
+            label: t(`layers.garages.title`),
+            isActive: markerFilter.isAnyKeyActive(["garages-visitor", "garages-resident"]),
+          },
+          {
+            value: "p-plus-r",
+            label: t(`layers.p-plus-r.title`),
+            isActive: markerFilter.isAnyKeyActive(["p-plus-r"]),
+          },
+          {
+            value: "p-plus-r-region",
+            label: t(`layers.p-plus-r-region.title`),
+            isActive: markerFilter.isAnyKeyActive(["p-plus-r-region"]),
+          },
+        ],
+      },
+      {
+        label: t(`layerGroups.support.title`),
+        layers: [
+          {
+            value: "branches",
+            label: t(`layers.branches.title`),
+            isActive: markerFilter.isAnyKeyActive(["branches"]),
+          },
+        ],
+      },
+    ],
+    [markerFilter, t],
   );
 
   return isLoading ? null : (
     <Map
       ref={mapRef}
       mapboxgl={mapboxgl}
+      loadingSpinnerColor="#71CA55"
       mapStyles={{
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
       }}
       initialViewport={{
+        zoom: 12.229005488986582,
         center: {
-          lat: 48.148598,
-          lng: 17.107748,
+          lat: 48.16290360284438,
+          lng: 17.125377342563297,
         },
+      }}
+      sources={{
+        udr: udrData,
+        odp: odpData,
       }}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
       moveSearchBarOutsideOfSideBarOnLargeScreen
-      sources={{
-        SPORT_GROUNDS_DATA: data,
-        DISTRICTS_GEOJSON,
-      }}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
     >
-      <Layer
-        ignoreClick
-        filters={districtFilter.expression.length ? districtFilter.expression : undefined}
-        source="DISTRICTS_GEOJSON"
-        styles={DISTRICTS_STYLE}
-      />
-
-      <Filter expression={combinedFilter.expression}>
-        <Cluster features={data?.features ?? []} radius={100}>
-          {({ features, lng, lat, key, clusterExpansionZoom }) =>
-            features.length === 1 ? (
-              <Marker
-                isSelected={features[0].id === selectedFeature?.id}
-                key={key}
-                feature={features[0]}
-                onClick={markerClickHandler}
-              />
-            ) : (
-              <MultipleMarker
-                isSelected={features[0].id === selectedFeature?.id}
-                key={key}
-                features={features}
-                lat={lat}
-                lng={lng}
-                onClick={() =>
+      <Filter expression={markerFilter.expression}>
+        <Cluster features={markersData?.features ?? []} radius={48}>
+          {({ features, lng, lat, key, clusterExpansionZoom }) => (
+            <Marker
+              isSelected={features[0].id === selectedFeature?.id}
+              key={key}
+              features={features}
+              lat={lat}
+              lng={lng}
+              onClick={(feature) => {
+                if (clusterExpansionZoom) {
                   mapRef.current?.changeViewport({
-                    zoom: clusterExpansionZoom ?? 0,
+                    zoom: clusterExpansionZoom,
                     center: {
                       lat,
                       lng,
                     },
-                  })
+                  });
+                } else {
+                  setSelectedFeature(feature);
+                  mapRef.current?.changeViewport({
+                    center: {
+                      lat,
+                      lng,
+                    },
+                  });
                 }
-              />
-            )
-          }
+              }}
+            />
+          )}
         </Cluster>
       </Filter>
+
+      <Layer filters={layerFilter.expression} source="udr" styles={udrStyles} />
+      <Layer filters={layerFilter.expression} source="odp" styles={odpStyles} />
 
       <Slot name="controls">
         <ThemeController
@@ -335,13 +329,13 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot
+        {/* <Slot
           name="mobile-filter"
           isVisible={isSidebarVisible}
           setVisible={setSidebarVisible}
           avoidControls={false}
-        >
-          <MobileFilters
+        > */}
+        {/* <MobileFilters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
             areFiltersDefault={combinedFilter.areDefault}
@@ -352,8 +346,8 @@ export const App = () => {
             sportGroundFilter={sportGroundFilter}
             layerFilter={layerFilter}
             layerGroups={layerGroups}
-          />
-        </Slot>
+          /> */}
+        {/* </Slot> */}
 
         <Slot name="mobile-detail" isVisible={true}>
           <Detail isMobile feature={selectedFeature} onClose={closeDetail} />
@@ -372,19 +366,18 @@ export const App = () => {
             mapboxgl={mapboxgl}
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
-            areFiltersDefault={combinedFilter.areDefault}
-            onResetFiltersClick={combinedFilter.reset}
+            areFiltersDefault={true}
+            onResetFiltersClick={() => void 0}
             mapRef={mapRef}
-            districtFilter={districtFilter}
             layerFilter={layerFilter}
-            sportGroundFilter={sportGroundFilter}
-            tagFilter={tagFilter}
             layerGroups={layerGroups}
+            markerFilter={markerFilter}
+            markerGroups={markerGroups}
             isGeolocation={isGeolocation}
           />
         </Slot>
 
-        <Slot
+        {/* <Slot
           name="desktop-detail"
           isVisible={isDetailOpen}
           openPadding={{
@@ -401,7 +394,7 @@ export const App = () => {
           >
             <Detail isMobile={false} feature={selectedFeature} onClose={closeDetail} />
           </div>
-        </Slot>
+        </Slot> */}
       </Layout>
     </Map>
   );

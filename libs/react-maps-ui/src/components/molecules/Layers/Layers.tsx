@@ -50,7 +50,7 @@ export const Layers = <L extends string>({
 
   const isAnyLayerActive = useCallback((layers: ILayer<L> | ILayer<L>[]) => {
     return Array.isArray(layers)
-      ? layers.every((l) => l.isActive)
+      ? layers.some((l) => l.isActive)
       : layers.isActive ?? false;
   }, []);
 

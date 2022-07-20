@@ -1,0 +1,219 @@
+{
+  "type": "FeatureCollection",
+  "name": "Parkomaty",
+  "crs": {
+    "type": "name",
+    "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "",
+        "description": null,
+        "altitudeMode": "clampToGround",
+        "UDR": "3003",
+        "RZ": "NM1",
+        "Shown_UDR": "3003, 3002",
+        "Parkomat_ID": "P0001",
+        "Field_1": "1",
+        "Id": "1",
+        "Location": "Kalinčiakova x Odbojárov"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.13406124361757, 48.160830388646502]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "",
+        "description": null,
+        "altitudeMode": "clampToGround",
+        "UDR": "3004",
+        "RZ": "NM1",
+        "Shown_UDR": "3004, 3005, 3006, 3007",
+        "Parkomat_ID": "P0002",
+        "Field_1": "2",
+        "Id": "2",
+        "Location": "Vajnorská x Príkopova"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.13353567185958, 48.163717067949371]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "",
+        "description": null,
+        "altitudeMode": "clampToGround",
+        "UDR": "3005",
+        "RZ": "NM1",
+        "Shown_UDR": "3005, 3006, 3002",
+        "Parkomat_ID": "P0003",
+        "Field_1": "3",
+        "Id": "3",
+        "Location": "Vajnorská x Robotnícka"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.130511307972679, 48.160973910497361]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "",
+        "description": null,
+        "altitudeMode": "clampToGround",
+        "UDR": "3006",
+        "RZ": "NM1",
+        "Shown_UDR": "3006, 3007, 3008",
+        "Parkomat_ID": "P0004",
+        "Field_1": "4",
+        "Id": "4",
+        "Location": "Tehelná x Priečna"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.128833679013219, 48.163976321336747]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "",
+        "description": null,
+        "altitudeMode": "clampToGround",
+        "UDR": "3008",
+        "RZ": "NM1",
+        "Shown_UDR": "3010, 3011, 3008",
+        "Parkomat_ID": "P0005",
+        "Field_1": "5",
+        "Id": "5",
+        "Location": "Šancová x Kukučínova"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.125480129929549, 48.158192258380453]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "",
+        "description": null,
+        "altitudeMode": "clampToGround",
+        "UDR": "5003",
+        "RZ": "PE1",
+        "Shown_UDR": "5003, 5002, 5001",
+        "Parkomat_ID": "P0006",
+        "Field_1": "6",
+        "Id": "6",
+        "Location": "Černyševského 26"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.11380064648365, 48.130167236525111]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "",
+        "description": null,
+        "altitudeMode": "clampToGround",
+        "UDR": "5001",
+        "RZ": "PE1",
+        "Shown_UDR": "5001",
+        "Parkomat_ID": "P0007",
+        "Field_1": "7",
+        "Id": "7",
+        "Location": "Wolkrova 1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.107783649447409, 48.125934758639417]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "",
+        "description": null,
+        "altitudeMode": "clampToGround",
+        "UDR": "5001",
+        "RZ": "PE1",
+        "Shown_UDR": "5001, 5002",
+        "Parkomat_ID": "P0008",
+        "Field_1": "8",
+        "Id": "8",
+        "Location": "Vavilovova 20"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.11398732854299, 48.126881875920454]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "",
+        "description": null,
+        "altitudeMode": "clampToGround",
+        "UDR": "3501",
+        "RZ": "RA1",
+        "Shown_UDR": "3501",
+        "Parkomat_ID": "P0009",
+        "Field_1": "9",
+        "Id": "9",
+        "Location": "Hubeného x Augustína Murína"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.14074664289652, 48.19537514540994]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "",
+        "description": null,
+        "altitudeMode": "clampToGround",
+        "UDR": "3501",
+        "RZ": "RA1",
+        "Shown_UDR": "3501",
+        "Parkomat_ID": "P0010",
+        "Field_1": "10",
+        "Id": "10",
+        "Location": "Vrbenského x Kadnárova"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.141360248378732, 48.199138754111011]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "",
+        "description": null,
+        "altitudeMode": "clampToGround",
+        "UDR": "3501",
+        "RZ": "RA1",
+        "Shown_UDR": "3501",
+        "Parkomat_ID": "P0011",
+        "Field_1": "11",
+        "Id": "11",
+        "Location": "Černockého x Hubeného"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.146005059202292, 48.200858058808237]
+      }
+    }
+  ]
+}

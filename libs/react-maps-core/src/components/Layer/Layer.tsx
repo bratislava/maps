@@ -31,7 +31,7 @@ export const Layer = ({
   } = useContext(mapboxContext);
 
   const labelId = "road-label";
-  const roadPathLayerId = "road-path";
+  const roadPathLayerId = "road-minor-low";
 
   const previousLoading = usePrevious(isLoading);
   const previousVisible = usePrevious(isVisible);

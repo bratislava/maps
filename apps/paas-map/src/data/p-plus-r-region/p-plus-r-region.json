@@ -1,0 +1,327 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 1,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.023945900000058, 48.435093000000052]
+      },
+      "properties": {
+        "OID": 1,
+        "Názov": "P+R Malacky (Na píle)",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "parkovisko",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "91",
+        "Verejná doprava": "S20",
+        "Spádová oblasť": "Malacky, Gajary, Jakubov, Kostolište, Studienka, Rohožník, Sološnica, Plavecké Podhradie"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 2,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.022916000000066, 48.433768900000075]
+      },
+      "properties": {
+        "OID": 2,
+        "Názov": "P+R Malacky (stanica)",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "parkovisko",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "50",
+        "Verejná doprava": "S20",
+        "Spádová oblasť": "Malacky,\u00A0Gajary, Jakubov, Kostolište, Studienka, Rohožník, Sološnica, Plavecké Podhradie"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 3,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.218164100000024, 48.248207600000057]
+      },
+      "properties": {
+        "OID": 3,
+        "Názov": "P+R Svätý Jur",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "parkovisko",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "58",
+        "Verejná doprava": "S50",
+        "Spádová oblasť": "Sv. Jur, Pezinok-Grinava, Limbach"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.269588600000077, 48.282421300000067]
+      },
+      "properties": {
+        "OID": 4,
+        "Názov": "P+R Pezinok (stanica)",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "parkovisko",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "64",
+        "Verejná doprava": "S50",
+        "Spádová oblasť": "Pezinok"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.271251600000028, 48.281953700000031]
+      },
+      "properties": {
+        "OID": 5,
+        "Názov": "P+R Pezinok (Za dráhou)",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "parkovisko",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "291",
+        "Verejná doprava": "S50",
+        "Spádová oblasť": "Viničné, Vinosady, Modra, Pezinok"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 6,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.346002800000065, 48.302215600000068]
+      },
+      "properties": {
+        "OID": 6,
+        "Názov": "P+R Šenkvice",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "parkovisko",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "87",
+        "Verejná doprava": "S50",
+        "Spádová oblasť": "Šenkvice, Modra, Blatné, Vištuk"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 7,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.258704500000022, 48.195115900000076]
+      },
+      "properties": {
+        "OID": 7,
+        "Názov": "P+R Ivanka pri Dunaji (západ)",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "parkovisko",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "78",
+        "Verejná doprava": "S60",
+        "Spádová oblasť": "Ivanka pri Dunaji, Zálesie, Malinovo"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 8,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.260016900000039, 48.194888300000059]
+      },
+      "properties": {
+        "OID": 8,
+        "Názov": "P+R Ivanka pri Dunaji (východ)",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "parkovisko",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "80",
+        "Verejná doprava": "S60",
+        "Spádová oblasť": "Ivanka pri Dunaji, Zálesie, Malinovo"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 9,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.409899200000041, 48.213380200000074]
+      },
+      "properties": {
+        "OID": 9,
+        "Názov": "P+R Senec (stanica)",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "parkovisko",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "45",
+        "Verejná doprava": "S60",
+        "Spádová oblasť": "Senec, Kráľová pri Senci, Tureň, Hrubý Šúr"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 10,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.301272400000073, 48.085955400000046]
+      },
+      "properties": {
+        "OID": 10,
+        "Názov": "P+R Miloslavov (stanica)",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "parkovisko",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "120",
+        "Verejná doprava": "S70",
+        "Spádová oblasť": "Dunajská Lužná, Miloslavov"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 11,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.301969800000052, 48.085055900000043]
+      },
+      "properties": {
+        "OID": 11,
+        "Názov": "P+R Miloslavov (juh)",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "odstavná plocha",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "60",
+        "Verejná doprava": "S70",
+        "Spádová oblasť": "Dunajská Lužná, Miloslavov"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 12,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.450715200000047, 48.03195130000006]
+      },
+      "properties": {
+        "OID": 12,
+        "Názov": "P+R Lehnice",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "odstavná plocha",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "80",
+        "Verejná doprava": "S70",
+        "Spádová oblasť": "Lehnice, Blatná na Ostroe, Macov, Trnávka"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 13,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.360159500000066, 48.055164200000036]
+      },
+      "properties": {
+        "OID": 13,
+        "Názov": "P+R Kvetoslavov",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "parkovisko",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": "35",
+        "Verejná doprava": "S70",
+        "Spádová oblasť": "Kvetoslavov, Hubice, Mierovo, Šamorín"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 14,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.340791900000056, 48.060220300000026]
+      },
+      "properties": {
+        "OID": 14,
+        "Názov": "P+R Kvetoslavov-zastávka",
+        "Fáza": "existujúce",
+        "SymbolID": 0,
+        "AltMode": 0,
+        "Base": 0,
+        "Snippet": "",
+        "Typ": "odstavná plocha",
+        "HasLabel": 0,
+        "LabelID": 0,
+        "Počet parkovacích miest": null,
+        "Verejná doprava": "S70",
+        "Spádová oblasť": "Kvetoslavov"
+      }
+    }
+  ]
+}

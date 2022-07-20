@@ -1,34 +1,53 @@
-import React, { MouseEvent, useCallback } from "react";
+import React, { MouseEvent, useCallback, useMemo } from "react";
 import { Marker as MapMarker } from "@bratislava/react-maps-core";
 import { Feature, Point } from "geojson";
 import { Icon } from "./Icon";
-import cx from "classnames";
 
 export interface IMarkerProps {
-  feature: Feature<Point>;
+  features: Feature<Point>[];
   onClick: (feature: Feature<Point>) => void;
   isSelected: boolean;
+  lat: number;
+  lng: number;
 }
 
-export const Marker = ({ feature, onClick, isSelected }: IMarkerProps) => {
+export const Marker = ({ features, lat, lng, onClick, isSelected }: IMarkerProps) => {
+  const feature = useMemo(
+    () =>
+      features.length
+        ? ({
+            ...features[0],
+            geometry: {
+              type: "Point",
+              coordinates: [lng, lat],
+            },
+          } as Feature<Point>)
+        : null,
+    [features, lng, lat],
+  );
+
   const onClickHandler = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
       event.stopPropagation();
-      onClick && onClick(feature);
+      onClick && feature && onClick(feature);
     },
     [feature, onClick],
   );
 
-  return (
-    <MapMarker ignoreFilters onClick={onClickHandler} feature={feature}>
-      <div
-        className={cx(
-          "relative transform active:scale-75 transition-transform cursor-pointer w-14 h-14 rounded-full text-white flex items-center justify-center shadow-lg",
-          { "bg-white text-primary z-50": isSelected, "bg-primary text-white": !isSelected },
-        )}
-      >
-        <Icon size={64} icon={feature.properties?.icon ?? ""} />
-      </div>
+  return feature ? (
+    <MapMarker
+      baseZoom={15}
+      isRelativeToZoom
+      ignoreFilters
+      onClick={onClickHandler}
+      feature={feature}
+    >
+      <Icon
+        isWhite={isSelected}
+        count={features.length > 1 ? features.length : undefined}
+        size={64}
+        icon={feature.properties?.icon ?? ""}
+      />
     </MapMarker>
-  );
+  ) : null;
 };
