@@ -3,4 +3,8 @@ export default {
   detail: {
     location: "Lokalita",
   },
+  legend: {
+    backToMap: "späť na mapu",
+    title: "Zoznam pitných fontán",
+  },
 };

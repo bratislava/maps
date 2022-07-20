@@ -9,14 +9,15 @@ import { Tag } from "@bratislava/react-maps-ui";
 export interface SportGroundDetailProps {
   feature: Feature<Point> | null;
   onClose: () => void;
+  isExpanded: boolean;
 }
 
-export const SportGroundDetail = ({ feature, onClose }: SportGroundDetailProps) => {
+export const SportGroundDetail = ({ feature, onClose, isExpanded }: SportGroundDetailProps) => {
   const { t } = useTranslation();
 
   if (!feature) return null;
 
-  return (
+  return isExpanded ? (
     <>
       <div className="p-8 pb-26 flex flex-col justify-end text-foreground-lightmode dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode md:pb-8 md:pt-5 w-full">
         <button className="hidden sm:block absolute right-4 top-8 p-2" onClick={onClose}>
@@ -35,7 +36,10 @@ export const SportGroundDetail = ({ feature, onClose }: SportGroundDetailProps) 
             <div className="mb-1">{t(`layers.sportGrounds.detail.tags`)}</div>
             <div className="flex flex-wrap gap-2">
               {feature.properties?.["tags"]?.map((tag: unknown) => (
-                <Tag className="font-semibold bg-primary-soft" key={`${tag}`}>
+                <Tag
+                  className="font-semibold bg-primary-soft dark:text-background-darkmode"
+                  key={`${tag}`}
+                >
                   {t(`filters.tag.tags.${tag}`)}
                 </Tag>
               ))}
@@ -76,6 +80,10 @@ export const SportGroundDetail = ({ feature, onClose }: SportGroundDetailProps) 
         <code>{JSON.stringify(feature?.properties, null, 2)}</code>
       </pre> */}
     </>
+  ) : (
+    <div className="mx-6 text-foreground-lightmode dark:text-foreground-darkmode font-semibold mt-8">
+      {feature.properties?.["name"]}
+    </div>
   );
 };
 

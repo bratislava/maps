@@ -17,7 +17,7 @@ export const Detail = ({ feature, onClose, isMobile }: DetailProps) => {
   const [currentSnap, setCurrentSnap] = useState(0);
 
   const onSnapChange = useCallback(() => {
-    requestAnimationFrame(() => setCurrentSnap(sheetRef.current?.height === 88 ? 1 : 0));
+    requestAnimationFrame(() => setCurrentSnap(sheetRef.current?.height === 80 ? 1 : 0));
   }, []);
 
   if (!feature) return null;
@@ -25,7 +25,7 @@ export const Detail = ({ feature, onClose, isMobile }: DetailProps) => {
   const detail = (
     <>
       {feature?.properties?.layer === "sportGrounds" ? (
-        <SportGroundDetail feature={feature} onClose={onClose} />
+        <SportGroundDetail isExpanded={currentSnap === 0} feature={feature} onClose={onClose} />
       ) : feature?.properties?.layer === "swimmingPools" ? (
         <SwimmingPoolDetail isExpanded={currentSnap === 0} feature={feature} onClose={onClose} />
       ) : feature?.properties?.layer === "cvicko" ? (
@@ -40,7 +40,7 @@ export const Detail = ({ feature, onClose, isMobile }: DetailProps) => {
   return isMobile ? (
     <BottomSheet
       ref={sheetRef}
-      snapPoints={({ maxHeight }) => [maxHeight, 88]}
+      snapPoints={({ maxHeight }) => [maxHeight, 80]}
       defaultSnap={({ snapPoints }) => snapPoints[0]}
       blocking={false}
       onSpringStart={onSnapChange}

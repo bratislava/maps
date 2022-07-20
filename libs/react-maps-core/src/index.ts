@@ -12,5 +12,8 @@ export * from "./components/Layout/Slot";
 export * from "./components/Marker/Marker";
 export * from "./components/Cluster/Cluster";
 export * from "./components/Filter/Filter";
+export * from "./components/ThemeController/ThemeController";
+export * from "./components/ViewportController/ViewportController";
 export * from "./utils/districts";
+export * from "./utils/i18n";
 export { default as DISTRICTS_GEOJSON } from "./assets/layers/districts.json";

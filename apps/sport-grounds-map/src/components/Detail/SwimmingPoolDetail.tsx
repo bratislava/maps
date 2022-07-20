@@ -85,7 +85,7 @@ export const SwimmingPoolDetail = ({ feature, onClose, isExpanded }: SwimmingPoo
           </div>
         </>
       ) : (
-        <div className="mx-6 font-semibold mt-3">{feature.properties?.["name"]}</div>
+        <div className="mx-6 font-semibold mt-8">{feature.properties?.["name"]}</div>
       )}
     </div>
   );

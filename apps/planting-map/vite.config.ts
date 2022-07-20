@@ -8,4 +8,7 @@ export default defineConfig({
   publicDir: "public",
   envPrefix: "PUBLIC_",
   base: "/static-pages/planting-map/",
+  build: {
+    chunkSizeWarningLimit: 1000,
+  },
 });

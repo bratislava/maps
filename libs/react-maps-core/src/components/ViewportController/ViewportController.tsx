@@ -9,21 +9,21 @@ import {
   LocationActive,
   List,
 } from "@bratislava/react-maps-icons";
-import React, { CSSProperties, forwardRef, MouseEvent } from "react";
-import { Viewport } from "../../types";
+import React, { forwardRef, MouseEvent, useCallback, useContext } from "react";
 import { IconButton, IconButtonGroup } from "@bratislava/react-maps-ui";
+import { mapContext } from "../Map/Map";
+import { MapActionKind } from "../Map/mapReducer";
+import {
+  exitFullscreen,
+  getFullscreenElement,
+  requestFullscreen,
+} from "../../utils/fullscreen";
 
 interface ViewportControllerProps {
-  viewport: Viewport;
-  isGeolocation: boolean;
-  isFullscreen: boolean;
-  onZoomOutClick: () => void;
-  onZoomInClick: () => void;
-  onFullscreenClick: () => void;
-  onCompassClick: () => void;
-  onLocationClick: () => void;
+  className?: string;
+  showLegendButton?: boolean;
+  showLocationButton?: boolean;
   onLegendClick?: (e: MouseEvent) => void;
-  style?: CSSProperties;
 }
 
 export const ViewportController = forwardRef<
@@ -32,62 +32,106 @@ export const ViewportController = forwardRef<
 >(
   (
     {
-      viewport,
-      onZoomOutClick,
-      onZoomInClick,
-      onFullscreenClick,
-      onCompassClick,
-      onLocationClick,
-      isGeolocation,
-      isFullscreen,
+      className,
+      showLegendButton = false,
       onLegendClick,
-      style,
+      showLocationButton = false,
     },
     ref
   ) => {
+    const {
+      mapState,
+      dispatchMapState,
+      changeViewport,
+      containerRef,
+      geolocationChangeHandler,
+    } = useContext(mapContext);
+
+    // ZOOM IN HANDLER
+    const handleZoomInClick = useCallback(() => {
+      changeViewport({ zoom: (mapState?.viewport.zoom ?? 0) + 0.5 });
+    }, [changeViewport, mapState?.viewport.zoom]);
+
+    // ZOOM OUT HANDLER
+    const handleZoomOutClick = useCallback(() => {
+      changeViewport({ zoom: (mapState?.viewport.zoom ?? 0) - 0.5 });
+    }, [changeViewport, mapState?.viewport.zoom]);
+
+    // FULLSCREEN HANDLER
+    const handleFullscreenClick = useCallback(() => {
+      if (containerRef?.current) {
+        if (getFullscreenElement()) {
+          exitFullscreen();
+          dispatchMapState &&
+            dispatchMapState({
+              type: MapActionKind.SetFullscreen,
+              value: false,
+            });
+        } else {
+          requestFullscreen(containerRef.current);
+          dispatchMapState &&
+            dispatchMapState({
+              type: MapActionKind.SetFullscreen,
+              value: true,
+            });
+        }
+      }
+    }, [dispatchMapState, containerRef]);
+
+    // RESET BEARING HANDLER
+    const handleCompassClick = useCallback(() => {
+      changeViewport({ bearing: 0 });
+    }, [changeViewport]);
+
+    // GEOLOCATION HANDLER
+    const handleLocationClick = useCallback(() => {
+      geolocationChangeHandler(!mapState?.isGeolocation);
+    }, [geolocationChangeHandler, mapState?.isGeolocation]);
+
     return (
       <div
         ref={ref}
         className={cx(
-          "fixed right-4 bottom-8 transform  duration-500 ease-in-out transition-transform pointer-events-none"
+          "transform  duration-500 ease-in-out transition-transform pointer-events-none",
+          className
         )}
-        style={style}
       >
         <div className="flex gap-2 items-end">
-          {onLegendClick && (
+          {showLegendButton && (
             <IconButton onClick={onLegendClick}>
               <List size="xl" />
             </IconButton>
           )}
-          <IconButton className={"hidden md:flex"} onClick={onLocationClick}>
-            {isGeolocation ? (
-              <LocationActive className="w-12 h-12" />
-            ) : (
-              <Location className="w-12 h-12" />
-            )}
-          </IconButton>
-          <IconButton onClick={onCompassClick}>
+          {showLocationButton && (
+            <IconButton onClick={handleLocationClick}>
+              {mapState?.isGeolocation ? (
+                <LocationActive className="w-12 h-12" />
+              ) : (
+                <Location className="w-12 h-12" />
+              )}
+            </IconButton>
+          )}
+          <IconButton onClick={handleCompassClick}>
             <Compass
               className="w-12 h-12"
-              style={{ transform: `rotate(${-viewport?.bearing}deg)` }}
+              style={{
+                transform: `rotate(${-(mapState?.viewport?.bearing ?? 0)}deg)`,
+              }}
             />
           </IconButton>
           <div className="flex flex-col gap-2">
-            <IconButton
-              className={"hidden md:flex"}
-              onClick={onFullscreenClick}
-            >
-              {isFullscreen ? (
+            <IconButton onClick={handleFullscreenClick}>
+              {mapState?.isFullscreen ? (
                 <FullscreenActive className="w-12 h-12" />
               ) : (
                 <Fullscreen className="w-12 h-12" />
               )}
             </IconButton>
             <IconButtonGroup>
-              <IconButton noAnimation noStyle onClick={onZoomInClick}>
+              <IconButton noAnimation noStyle onClick={handleZoomInClick}>
                 <Plus className="w-12 h-12" />
               </IconButton>
-              <IconButton noAnimation noStyle onClick={onZoomOutClick}>
+              <IconButton noAnimation noStyle onClick={handleZoomOutClick}>
                 <Minus className="w-12 h-12" />
               </IconButton>
             </IconButtonGroup>

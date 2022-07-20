@@ -17,13 +17,14 @@ import {
   Cluster,
   Filter,
   useCombinedFilter,
+  ThemeController,
+  ViewportController,
 } from "@bratislava/react-maps-core";
 
 // components
 import { Detail } from "./Detail";
 
 // utils
-import i18next from "../utils/i18n";
 import { processData } from "../utils/utils";
 import mapboxgl from "mapbox-gl";
 import { Feature, Point, FeatureCollection } from "geojson";
@@ -40,7 +41,6 @@ import { Marker } from "./Marker";
 import { MultipleMarker } from "./MultipleMarker";
 import { ILayerGroup } from "@bratislava/react-maps-ui/src/components/molecules/Layers/Layers";
 import { Icon, IIconProps } from "./Icon";
-import { BottomSheet } from "react-spring-bottom-sheet";
 
 export const App = () => {
   const { t } = useTranslation();
@@ -253,7 +253,6 @@ export const App = () => {
     <Map
       ref={mapRef}
       mapboxgl={mapboxgl}
-      i18next={i18next}
       mapStyles={{
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
@@ -314,6 +313,21 @@ export const App = () => {
         </Cluster>
       </Filter>
 
+      <Slot name="controls">
+        <ThemeController
+          className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
+            "translate-x-96": isSidebarVisible && !isMobile,
+          })}
+        />
+        <ViewportController
+          className={cx("fixed right-4 bottom-[88px] sm:bottom-8", {
+            "-translate-x-96": window.innerHeight <= (desktopDetailHeight ?? 0) + 200,
+          })}
+          showLocationButton={!isMobile}
+        />
+        <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
+      </Slot>
+
       <Layout isOnlyMobile>
         <Slot name="mobile-header">
           <MobileHeader
@@ -343,10 +357,6 @@ export const App = () => {
 
         <Slot name="mobile-detail" isVisible={true}>
           <Detail isMobile feature={selectedFeature} onClose={closeDetail} />
-        </Slot>
-
-        <Slot name="mobile-search">
-          <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
         </Slot>
       </Layout>
       <Layout isOnlyDesktop>

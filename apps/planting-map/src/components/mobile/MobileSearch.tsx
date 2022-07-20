@@ -35,7 +35,7 @@ export const MobileSearch = ({ mapRef, mapboxgl, isGeolocation }: IMobileSearchP
   const { t } = useTranslation();
 
   return (
-    <div className="fixed bottom-10 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
+    <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
       <SearchBar
         value={searchQuery}
         placeholder={t("search")}

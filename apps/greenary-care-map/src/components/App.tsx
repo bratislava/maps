@@ -17,6 +17,8 @@ import {
   useClickOutside,
   Marker,
   useCombinedFilter,
+  ThemeController,
+  ViewportController,
 } from "@bratislava/react-maps-core";
 import { DropdownArrow, Sidebar } from "@bratislava/react-maps-ui";
 import { useArcgeo } from "@bratislava/react-esri";
@@ -29,7 +31,6 @@ import ESRI_STYLE from "../assets/layers/esri/esri";
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 
 // utils
-import i18next from "../utils/i18n";
 import { processData, mapCircleColors } from "../utils/utils";
 import mapboxgl from "mapbox-gl";
 import { Feature, FeatureCollection } from "geojson";
@@ -279,7 +280,6 @@ export const App = () => {
       loadingSpinnerColor="#237c36"
       ref={mapRef}
       mapboxgl={mapboxgl}
-      i18next={i18next}
       mapStyles={{
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
@@ -300,7 +300,6 @@ export const App = () => {
       onSelectedFeaturesChange={setSelectedFeatures}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
-      onLegendClick={onLegendClick}
     >
       <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
       <Layer
@@ -328,6 +327,21 @@ export const App = () => {
           ></div>
         </Marker>
       )}
+
+      <Slot name="mobile-controls">
+        <ThemeController
+          className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
+            "translate-x-96": isSidebarVisible && !isMobile,
+          })}
+        />
+        <ViewportController
+          className="fixed right-4 bottom-[88px] sm:bottom-8"
+          showLegendButton
+          showLocationButton={!isMobile}
+          onLegendClick={onLegendClick}
+        />
+        <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
+      </Slot>
 
       <Layout isOnlyMobile>
         <Slot name="mobile-header">
@@ -369,10 +383,6 @@ export const App = () => {
           <div className="h-full bg-background-lightmode dark:bg-background-darkmode text-foreground-lightmode dark:text-foreground-darkmode">
             <Detail arcgeoServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
           </div>
-        </Slot>
-
-        <Slot name="mobile-search">
-          <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
         </Slot>
 
         <Slot

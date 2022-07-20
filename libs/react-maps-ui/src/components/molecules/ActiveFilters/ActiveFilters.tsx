@@ -21,7 +21,9 @@ export const ActiveFilters = ({
   activeFilters,
   onResetClick,
 }: IActiveFiltersProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("ui", {
+    keyPrefix: "components.molecules.ActiveFilters",
+  });
   const { height: activeFiltersContentHeight, ref: activeFiltersContentRef } =
     useResizeDetector();
 
@@ -38,10 +40,7 @@ export const ActiveFilters = ({
     >
       <div ref={activeFiltersContentRef}>
         <div className="p-6 flex flex-col gap-4">
-          <h2 className="font-semibold text-md">
-            {/* {t("components.molecules.ActiveFilters.activeFilters")} */}
-            Aktívny filter
-          </h2>
+          <h2 className="font-semibold text-md">{t("activeFilters")}</h2>
 
           <div className="flex gap-x-8 flex-wrap">
             {activeFilters
@@ -57,10 +56,7 @@ export const ActiveFilters = ({
             onClick={onResetClick}
             className="flex gap-2 items-center hover:underline"
           >
-            <span className="font-semibold">
-              {/* {t("components.molecules.ActiveFilters.resetFilters")} */}
-              Zrušiť filter
-            </span>
+            <span className="font-semibold">{t("resetFilters")}</span>
             <X className="text-primary" />
           </button>
         </div>

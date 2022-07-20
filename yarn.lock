@@ -10054,7 +10054,7 @@ mapbox-expression@^0.0.3:
   resolved "https://registry.yarnpkg.com/mapbox-expression/-/mapbox-expression-0.0.3.tgz#a77ebda376879d85391cbe5e7855e1625eb9dc67"
   integrity sha512-P2hiPXPxXzmOTZUP2zLa+kjN42QbvAM125tH/akt+hdOOu4QgxAvXGcffiKMLVxOFE28vceD8Qc11gWUbnkc/A==
 
-mapbox-gl@2.9.2:
+mapbox-gl@^2.8.2:
   version "2.9.2"
   resolved "https://registry.yarnpkg.com/mapbox-gl/-/mapbox-gl-2.9.2.tgz#c35f9fa2b2fd4feae6e8ed0d9f5c8264e2c33908"
   integrity sha512-RQOUB+l8p5sUyR+vRdd4aRY1/nwOhyYxSWThr2bjXW8u8QtN4cjrb/R7W+CkLyoscISjkSvCS22nDAO69s5T4Q==

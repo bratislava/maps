@@ -1,4 +1,4 @@
-import { LngLat, Viewport } from "../../types";
+import { LngLat, PartialViewport, Viewport } from "../../types";
 
 export enum MapActionKind {
   EnableDarkmode = "EnableDarkmode",
@@ -53,7 +53,7 @@ interface IMapDisableGeolocationAction {
   type: MapActionKind.DisableGeolocation;
 }
 
-type MapAction =
+export type MapAction =
   | IMapEnableDarkmodeAction
   | IMapDisableDarkmodeAction
   | IMapToggleDarkmodeAction
@@ -64,7 +64,7 @@ type MapAction =
   | IMapEnableGeolocationAction
   | IMapDisableGeolocationAction;
 
-interface IMapState {
+export interface IMapState {
   isSatellite: boolean;
   isDarkmode: boolean;
   isFullscreen: boolean;

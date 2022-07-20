@@ -16,6 +16,8 @@ import {
   useFilter,
   useCombinedFilter,
   Marker,
+  ThemeController,
+  ViewportController,
 } from "@bratislava/react-maps-core";
 import { useArcgeo } from "@bratislava/react-esri";
 
@@ -27,7 +29,6 @@ import ESRI_STYLE from "../assets/layers/esri/esri";
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 
 // utils
-import i18next from "../utils/i18n";
 import { processData, treeKindNameSkMappingObject } from "../utils/utils";
 import mapboxgl from "mapbox-gl";
 import { Feature, FeatureCollection } from "geojson";
@@ -235,7 +236,6 @@ export const App = () => {
       loadingSpinnerColor="#237c36"
       ref={mapRef}
       mapboxgl={mapboxgl}
-      i18next={i18next}
       mapStyles={{
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
@@ -256,7 +256,6 @@ export const App = () => {
       onSelectedFeaturesChange={setSelectedFeatures}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
-      onLegendClick={onLegendClick}
     >
       <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
       <Layer
@@ -285,6 +284,21 @@ export const App = () => {
         </Marker>
       )}
 
+      <Slot name="controls">
+        <ThemeController
+          className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
+            "translate-x-96": isSidebarVisible && !isMobile,
+          })}
+        />
+        <ViewportController
+          className="fixed right-4 bottom-[88px] sm:bottom-8"
+          showLegendButton
+          showLocationButton={!isMobile}
+          onLegendClick={onLegendClick}
+        />
+        <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
+      </Slot>
+
       <Layout isOnlyMobile>
         <Slot name="mobile-header">
           <MobileHeader
@@ -292,12 +306,7 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot
-          name="mobile-filter"
-          isVisible={isSidebarVisible}
-          setVisible={setSidebarVisible}
-          avoidControls={false}
-        >
+        <Slot name="mobile-filter" isVisible={isSidebarVisible} setVisible={setSidebarVisible}>
           <MobileFilters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
@@ -316,19 +325,12 @@ export const App = () => {
         <Slot
           name="mobile-detail"
           isVisible={isDetailOpen}
-          bottomSheetOptions={{}}
           openPadding={{
             bottom: window.innerHeight / 2, // w-96 or 24rem
           }}
           avoidControls={false}
         >
-          <div className="h-full bg-background-lightmode dark:bg-background-darkmode text-foreground-lightmode dark:text-foreground-darkmode">
-            <Detail features={selectedFeatures ?? []} onClose={closeDetail} />
-          </div>
-        </Slot>
-
-        <Slot name="mobile-search">
-          <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
+          <Detail isMobile features={selectedFeatures ?? []} onClose={closeDetail} />
         </Slot>
 
         <Slot
@@ -393,7 +395,7 @@ export const App = () => {
               },
             )}
           >
-            <Detail features={selectedFeatures ?? []} onClose={closeDetail} />
+            <Detail isMobile={false} features={selectedFeatures ?? []} onClose={closeDetail} />
           </div>
         </Slot>
         <Slot name="desktop-legend">

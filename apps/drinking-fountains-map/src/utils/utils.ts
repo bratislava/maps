@@ -20,7 +20,10 @@ export const processData = () => {
     ],
   };
 
+  const list = data.features.map((f) => f.properties?.location);
+
   return {
     data,
+    list,
   };
 };

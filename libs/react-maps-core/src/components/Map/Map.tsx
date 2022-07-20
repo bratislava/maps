@@ -10,16 +10,14 @@ import React, {
   useMemo,
   useReducer,
   MouseEvent,
+  Dispatch,
+  MutableRefObject,
 } from "react";
-import {
-  addTranslations,
-  LoadingSpinner,
-  Modal,
-} from "@bratislava/react-maps-ui";
+import { LoadingSpinner, Modal } from "@bratislava/react-maps-ui";
 import { Mapbox, MapboxHandle } from "../Mapbox/Mapbox";
 import { useResizeDetector } from "react-resize-detector";
 import cx from "classnames";
-import { MapActionKind, mapReducer } from "./mapReducer";
+import { IMapState, MapAction, MapActionKind, mapReducer } from "./mapReducer";
 
 import {
   Sources,
@@ -28,18 +26,8 @@ import {
   PartialViewport,
   PartialPadding,
 } from "../../types";
-import { ThemeController } from "../ThemeController/ThemeController";
-import { ViewportController } from "../ViewportController/ViewportController";
 import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
-import { i18n } from "i18next";
 
-import enTranslation from "../../translations/en.json";
-import skTranslation from "../../translations/sk.json";
-import {
-  exitFullscreen,
-  getFullscreenElement,
-  requestFullscreen,
-} from "../../utils/fullscreen";
 import Mousetrap from "mousetrap";
 import { Feature } from "geojson";
 import { mergeViewports } from "../Mapbox/viewportReducer";
@@ -50,7 +38,6 @@ import { useTranslation } from "react-i18next";
 import { ArrowCounterclockwise } from "@bratislava/react-maps-icons";
 
 export interface IMapProps {
-  i18next: i18n;
   mapboxgl: typeof mapboxgl;
   sources?: Sources;
   isDevelopment?: boolean;
@@ -69,7 +56,6 @@ export interface IMapProps {
   onSelectedFeaturesChange?: (features: Feature[]) => void;
   onMobileChange?: (isMobile: boolean) => void;
   onGeolocationChange?: (isGeolocation: boolean) => void;
-  onLegendClick?: (e: MouseEvent) => void;
   onMapClick?: () => void;
   loadingSpinnerColor?: string;
 }
@@ -86,18 +72,27 @@ export type MapHandle = {
 export interface IMapContext {
   isMobile: boolean | null;
   changeMargin: (margin: PartialPadding) => void;
+  mapState: IMapState | null;
+  dispatchMapState: Dispatch<MapAction> | null;
+  containerRef: MutableRefObject<HTMLDivElement | null> | null;
+  changeViewport: (viewport: PartialViewport) => void;
+  geolocationChangeHandler: (isGeolocation: boolean) => void;
 }
 
 export const mapContext = createContext<IMapContext>({
   isMobile: false,
   changeMargin: () => void 0,
+  mapState: null,
+  dispatchMapState: null,
+  containerRef: null,
+  changeViewport: () => void 0,
+  geolocationChangeHandler: () => void 0,
 });
 
 export const Map = forwardRef<MapHandle, IMapProps>(
   (
     {
       mapboxgl,
-      i18next,
       sources,
       icons,
       mapStyles,
@@ -108,21 +103,12 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       onSelectedFeaturesChange,
       onMobileChange,
       onGeolocationChange,
-      onLegendClick,
       loadingSpinnerColor,
       onMapClick,
     },
     forwardedRef
   ) => {
-    // i18next.addResourceBundle("en", "maps", enTranslation);
-    // i18next.addResourceBundle("sk", "maps", skTranslation);
-
-    // // add translations from UI library
-    // useEffect(() => {
-    //   addTranslations(i18next);
-    // }, [i18next]);
-
-    const { t } = useTranslation("maps");
+    const { t } = useTranslation("map");
 
     const mapboxRef = useRef<MapboxHandle>(null);
 
@@ -165,18 +151,6 @@ export const Map = forwardRef<MapHandle, IMapProps>(
     const [selectedFeatures, setSelectedFeatures] = useState<
       MapboxGeoJSONFeature[]
     >([]);
-
-    const onDarkmodeChange = useCallback((isDarkmode: boolean) => {
-      dispatchMapState({ type: MapActionKind.SetDarkmode, value: isDarkmode });
-      document.body.classList[isDarkmode ? "add" : "remove"]("dark");
-    }, []);
-
-    const onSatelliteChange = useCallback((isSatellite: boolean) => {
-      dispatchMapState({
-        type: MapActionKind.SetSatellite,
-        value: isSatellite,
-      });
-    }, []);
 
     const geolocationChangeHandler = useCallback(
       (isGeolocation: boolean) => {
@@ -245,21 +219,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       width: containerWidth,
       height: containerHeight,
       ref: containerRef,
-    } = useResizeDetector<HTMLDivElement>();
-
-    // ZOOM IN HANDLER
-    const zoomIn = useCallback(() => {
-      mapboxRef.current?.changeViewport({
-        zoom: mapState.viewport.zoom + 0.5,
-      });
-    }, [mapState.viewport.zoom]);
-
-    // ZOOM OUT HANDLER
-    const zoomOut = useCallback(() => {
-      mapboxRef.current?.changeViewport({
-        zoom: mapState.viewport.zoom - 0.5,
-      });
-    }, [mapState.viewport.zoom]);
+    } = useResizeDetector<HTMLDivElement | null>();
 
     const toggleDevInfo = useCallback(() => {
       setDevInfoVisible((isDevInfoVisible) => !isDevInfoVisible);
@@ -280,26 +240,6 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         };
       }
     }, [isDevelopment, toggleDevInfo]);
-
-    // FULLSCREEN HANDLER
-    const toggleFullscreen = useCallback(() => {
-      if (containerRef?.current) {
-        if (getFullscreenElement()) {
-          exitFullscreen();
-          dispatchMapState({ type: MapActionKind.SetFullscreen, value: false });
-        } else {
-          requestFullscreen(containerRef.current);
-          dispatchMapState({ type: MapActionKind.SetFullscreen, value: true });
-        }
-      }
-    }, [containerRef]);
-
-    // RESET BEARING HANDLER
-    const resetBearing = useCallback(() => {
-      mapboxRef.current?.changeViewport({
-        bearing: 0,
-      });
-    }, []);
 
     // EXPOSING METHODS FOR PARENT COMPONENT
     useImperativeHandle(
@@ -391,8 +331,8 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
       const mapboxLogoStyle = `
         transition: transform 500ms;
-        transform: translate(${controlsMarginLeft ?? 0 + 8}px, -${
-        controlsMarginBottom - 2
+        transform: translate(${controlsMarginLeft ?? 0 + 8}px, ${
+        -controlsMarginBottom - 2
       }px);
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         margin-left: 8px;
@@ -401,7 +341,9 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
       const informationStyle = `
         transition: transform 500ms;
-        transform: translate(-${controlsMarginRight + 16}px);
+        transform: translate(-${controlsMarginRight + 16}px, ${
+        -controlsMarginBottom - 2
+      }px);
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         margin: 0 !important;
         margin-bottom: 4px !important;
@@ -425,8 +367,14 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       () => ({
         isMobile,
         changeMargin,
+        mapState,
+        dispatchMapState,
+        containerRef,
+        changeViewport: (wantedViewport: PartialViewport) =>
+          mapboxRef?.current?.changeViewport(wantedViewport),
+        geolocationChangeHandler,
       }),
-      [isMobile, changeMargin]
+      [isMobile, changeMargin, mapState, containerRef, geolocationChangeHandler]
     );
 
     // DISPLAY/HIDE WARNING MODAL TO ROTATE DEVICE TO PORTRAIT MODE
@@ -489,31 +437,6 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                 </Marker>
               )}
             </Mapbox>
-            <ThemeController
-              isDarkmode={mapState.isDarkmode}
-              isSatellite={mapState.isSatellite}
-              onDarkmodeChange={onDarkmodeChange}
-              onSatelliteChange={onSatelliteChange}
-              style={{
-                transform: `translate(${controlsMarginLeft}px, -${controlsMarginBottom}px)`,
-              }}
-            />
-            <ViewportController
-              style={{
-                transform: `translate(-${controlsMarginRight}px, -${controlsMarginBottom}px)`,
-              }}
-              isFullscreen={mapState.isFullscreen}
-              viewport={mapState.viewport}
-              onZoomInClick={zoomIn}
-              onZoomOutClick={zoomOut}
-              onFullscreenClick={toggleFullscreen}
-              onCompassClick={resetBearing}
-              isGeolocation={mapState.isGeolocation}
-              onLocationClick={() =>
-                geolocationChangeHandler(!mapState.isGeolocation)
-              }
-              onLegendClick={onLegendClick}
-            />
           </div>
         </mapContext.Provider>
         <div

@@ -83,7 +83,7 @@ export const CvickoDetail = ({ feature, onClose, isExpanded }: CvickoDetailProps
           </div>
         </>
       ) : (
-        <div className="mx-6 font-semibold mt-3">{feature.properties?.["name"]}</div>
+        <div className="mx-6 font-semibold mt-8">{feature.properties?.["name"]}</div>
       )}
     </div>
   );

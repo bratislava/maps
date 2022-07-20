@@ -19,17 +19,17 @@ export const Detail = ({ feature, onClose, isMobile }: DetailProps) => {
   if (!feature) return null;
 
   const detail = (
-    <>
-      <div className="px-8 py-3 sm:pt-8 pb-26 flex flex-col justify-end text-foreground-lightmode dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode md:pb-8 w-full">
-        <button className="hidden sm:block absolute right-4 top-8 p-2" onClick={onClose}>
-          <X />
-        </button>
-        <div className="hidden sm:block">
-          <Row label={t("detail.location")} text={feature.properties?.["location"]} />
-        </div>
-        <h2 className="font-semibold sm:hidden">{feature.properties?.["location"]}</h2>
+    <div className="px-8 pb-3 sm:pt-8 pb-26 flex flex-col justify-end text-foreground-lightmode dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode md:pb-8 w-full">
+      <button className="hidden sm:block absolute right-4 top-8 p-2" onClick={onClose}>
+        <X />
+      </button>
+      <div className="hidden sm:block">
+        <Row label={t("detail.location")} text={feature.properties?.["location"]} />
       </div>
-    </>
+      <h2 className="font-semibold sm:hidden h-12 flex items-center">
+        {feature.properties?.["location"]}
+      </h2>
+    </div>
   );
 
   return isMobile ? (

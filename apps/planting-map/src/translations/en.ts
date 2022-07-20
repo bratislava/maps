@@ -48,14 +48,6 @@ export default {
       },
     },
   },
-  components: {
-    molecules: {
-      ActiveFilters: {
-        activeFilters: "Active filters",
-        resetFilters: "Reset filters",
-      },
-    },
-  },
   trees: {
     "javor-polny": "javor poľný",
     "ceresna-pilkata": "čerešňa pílkatá",

@@ -3,4 +3,8 @@ export default {
   detail: {
     location: "Location",
   },
+  legend: {
+    backToMap: "back to map",
+    title: "List of drinking fountains",
+  },
 };
