@@ -45,11 +45,7 @@ const icons = [
     component: PartnerIcon,
   },
   {
-    name: "garage-visitor",
-    component: GarageIcon,
-  },
-  {
-    name: "garage-resident",
+    name: "garage",
     component: GarageIcon,
   },
 ] as const;
@@ -59,16 +55,17 @@ export interface IIconProps {
   size?: number;
   isWhite?: boolean;
   count?: number;
+  shadow?: boolean;
 }
 
-export const Icon = ({ icon, size = 24, isWhite = false, count }: IIconProps) => {
+export const Icon = ({ icon, size = 24, isWhite = false, count, shadow = true }: IIconProps) => {
   const isPrimary = useMemo(() => {
     return [
       "assistant",
       "parkomat",
       "p-plus-r",
       "p-plus-r-region",
-      "garage-visitor",
+      "garage",
       "partner",
       "visitor",
     ].includes(icon);
@@ -79,12 +76,13 @@ export const Icon = ({ icon, size = 24, isWhite = false, count }: IIconProps) =>
   return IconSvgComponent ? (
     <div
       className={cx(
-        "relative transform active:scale-75 transition-transform cursor-pointer w-14 h-14 rounded-full text-white flex items-center justify-center shadow-lg",
+        "relative transform active:scale-75 transition-transform cursor-pointer w-14 h-14 rounded-full text-white flex items-center justify-center",
         {
           "bg-white text-primary z-50": isPrimary && isWhite,
           "bg-primary text-primary-soft": isPrimary && !isWhite,
           "bg-white text-primary-soft z-50": !isPrimary && isWhite,
           "bg-primary-soft text-primary": !isPrimary && !isWhite,
+          "shadow-lg": shadow,
         },
       )}
     >

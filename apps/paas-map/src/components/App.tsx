@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import cx from "classnames";
 import "../styles.css";
@@ -19,6 +19,7 @@ import {
   ViewportController,
   useFilter,
   Layer,
+  SlotType,
 } from "@bratislava/react-maps-core";
 
 // components
@@ -69,7 +70,7 @@ export const App = () => {
     keys: useMemo(() => ["visitors", "residents"], []),
     defaultValues: useMemo(
       () => ({
-        visitors: true,
+        visitors: false,
         residents: false,
       }),
       [],
@@ -102,33 +103,6 @@ export const App = () => {
 
   const previousLayerFilterActiveKeys = usePrevious(layerFilter.activeKeys);
 
-  // make sure only one layer is selected
-  useEffect(() => {
-    if (
-      layerFilter.activeKeys.length === 1 ||
-      previousLayerFilterActiveKeys?.length === layerFilter.activeKeys.length
-    )
-      return;
-
-    // after clicking hide
-    if (layerFilter.activeKeys.length === 0) {
-      if (previousLayerFilterActiveKeys?.includes("visitors")) {
-        layerFilter.setActive("residents", true);
-      } else if (previousLayerFilterActiveKeys?.includes("residents")) {
-        layerFilter.setActive("visitors", true);
-      }
-    }
-
-    // after clicking show
-    if (layerFilter.activeKeys.length === 2) {
-      if (previousLayerFilterActiveKeys?.includes("visitors")) {
-        layerFilter.setActive("visitors", false);
-      } else if (previousLayerFilterActiveKeys?.includes("residents")) {
-        layerFilter.setActive("residents", false);
-      }
-    }
-  }, [layerFilter, layerFilter.activeKeys, previousLayerFilterActiveKeys]);
-
   const markerFilter = useFilter({
     property: "kind",
     keepOnEmpty: true,
@@ -138,8 +112,7 @@ export const App = () => {
         "branches",
         "parkomats",
         "partners",
-        "garages-visitor",
-        "garages-resident",
+        "garages",
         "p-plus-r",
         "p-plus-r-region",
       ],
@@ -151,14 +124,65 @@ export const App = () => {
         branches: false,
         parkomats: false,
         partners: false,
-        "garages-visitor": false,
-        "garages-resident": false,
+        garages: false,
         "p-plus-r": false,
         "p-plus-r-region": false,
       }),
       [],
     ),
   });
+
+  const setActiveOnlyVisitorLayers = useCallback(() => {
+    layerFilter.setActiveOnly(["visitors"], true);
+    markerFilter.setActiveOnly([
+      "assistants",
+      "partners",
+      "parkomats",
+      "garages",
+      "p-plus-r",
+      "p-plus-r-region",
+    ]);
+  }, [layerFilter, markerFilter]);
+
+  const setActiveOnlyResidentLayers = useCallback(() => {
+    layerFilter.setActiveOnly(["residents"], true);
+    markerFilter.setActiveOnly(["branches", "garages", "p-plus-r", "p-plus-r-region"]);
+  }, [layerFilter, markerFilter]);
+
+  // make sure only one layer is selected
+  useEffect(() => {
+    if (
+      layerFilter.activeKeys.length === 1 ||
+      previousLayerFilterActiveKeys?.length === layerFilter.activeKeys.length
+    )
+      return;
+
+    // after clicking hide
+    if (layerFilter.activeKeys.length === 0) {
+      if (previousLayerFilterActiveKeys?.includes("visitors")) {
+        setActiveOnlyResidentLayers();
+      } else if (previousLayerFilterActiveKeys?.includes("residents")) {
+        setActiveOnlyVisitorLayers();
+      } else {
+        // initial state
+        setActiveOnlyVisitorLayers();
+      }
+    }
+
+    // after clicking show
+    if (layerFilter.activeKeys.length === 2) {
+      if (previousLayerFilterActiveKeys?.includes("visitors")) {
+        setActiveOnlyResidentLayers();
+      } else if (previousLayerFilterActiveKeys?.includes("residents")) {
+        setActiveOnlyVisitorLayers();
+      }
+    }
+  }, [
+    layerFilter,
+    previousLayerFilterActiveKeys,
+    setActiveOnlyResidentLayers,
+    setActiveOnlyVisitorLayers,
+  ]);
 
   // close sidebar on mobile and open on desktop
   useEffect(() => {
@@ -197,16 +221,34 @@ export const App = () => {
             value: "parkomats",
             label: t(`layers.parkomats.title`),
             isActive: markerFilter.isAnyKeyActive(["parkomats"]),
+            component: ({ isActive, onToggle }) => (
+              <button onClick={onToggle} className="flex gap-4 items-center">
+                <Icon shadow={false} isWhite={!isActive} icon="parkomat" size={48} />
+                <span className="pb-[2px]">{t(`layers.parkomats.title`)}</span>
+              </button>
+            ),
           },
           {
             value: "assistants",
             label: t(`layers.assistants.title`),
             isActive: markerFilter.isAnyKeyActive(["assistants"]),
+            component: ({ isActive, onToggle }) => (
+              <button onClick={onToggle} className="flex gap-4 items-center">
+                <Icon shadow={false} isWhite={!isActive} icon="assistant" size={48} />
+                <span className="pb-[2px]">{t(`layers.assistants.title`)}</span>
+              </button>
+            ),
           },
           {
             value: "partners",
             label: t(`layers.partners.title`),
             isActive: markerFilter.isAnyKeyActive(["partners"]),
+            component: ({ isActive, onToggle }) => (
+              <button onClick={onToggle} className="flex gap-4 items-center">
+                <Icon shadow={false} isWhite={!isActive} icon="partner" size={48} />
+                <span className="pb-[2px]">{t(`layers.partners.title`)}</span>
+              </button>
+            ),
           },
         ],
       },
@@ -214,19 +256,37 @@ export const App = () => {
         label: t(`layerGroups.parking.title`),
         layers: [
           {
-            value: ["garages-visitor", "garages-resident"],
+            value: ["garages"],
             label: t(`layers.garages.title`),
-            isActive: markerFilter.isAnyKeyActive(["garages-visitor", "garages-resident"]),
+            isActive: markerFilter.isAnyKeyActive(["garages"]),
+            component: ({ isActive, onToggle }) => (
+              <button onClick={onToggle} className="flex gap-4 items-center">
+                <Icon shadow={false} isWhite={!isActive} icon="garage" size={48} />
+                <span className="pb-[2px]">{t(`layers.garages.title`)}</span>
+              </button>
+            ),
           },
           {
             value: "p-plus-r",
             label: t(`layers.p-plus-r.title`),
             isActive: markerFilter.isAnyKeyActive(["p-plus-r"]),
+            component: ({ isActive, onToggle }) => (
+              <button onClick={onToggle} className="flex gap-4 items-center">
+                <Icon shadow={false} isWhite={!isActive} icon="p-plus-r" size={48} />
+                <span className="pb-[2px]">{t(`layers.p-plus-r.title`)}</span>
+              </button>
+            ),
           },
           {
             value: "p-plus-r-region",
             label: t(`layers.p-plus-r-region.title`),
             isActive: markerFilter.isAnyKeyActive(["p-plus-r-region"]),
+            component: ({ isActive, onToggle }) => (
+              <button onClick={onToggle} className="flex gap-4 items-center">
+                <Icon shadow={false} isWhite={!isActive} icon="p-plus-r-region" size={48} />
+                <span className="pb-[2px]">{t(`layers.p-plus-r-region.title`)}</span>
+              </button>
+            ),
           },
         ],
       },
@@ -237,12 +297,24 @@ export const App = () => {
             value: "branches",
             label: t(`layers.branches.title`),
             isActive: markerFilter.isAnyKeyActive(["branches"]),
+            component: ({ isActive, onToggle }) => (
+              <button onClick={onToggle} className="flex gap-4 items-center">
+                <Icon shadow={false} isWhite={!isActive} icon="branch" size={48} />
+                <span className="pb-[2px]">{t(`layers.branches.title`)}</span>
+              </button>
+            ),
           },
         ],
       },
     ],
     [markerFilter, t],
   );
+
+  const viewportControllerSlots: SlotType = useMemo(() => {
+    return isMobile
+      ? ["legend", "compass", "zoom"]
+      : ["legend", "geolocation", "compass", ["fullscreen", "zoom"]];
+  }, [isMobile]);
 
   return isLoading ? null : (
     <Map
@@ -317,7 +389,7 @@ export const App = () => {
           className={cx("fixed right-4 bottom-[88px] sm:bottom-8", {
             "-translate-x-96": window.innerHeight <= (desktopDetailHeight ?? 0) + 200,
           })}
-          showLocationButton={!isMobile}
+          slots={viewportControllerSlots}
         />
         <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
       </Slot>

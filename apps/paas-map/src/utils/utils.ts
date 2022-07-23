@@ -95,26 +95,8 @@ export const getProcessedData = () => {
       */
       ...rawDataGarages.features.map((feature) => {
         GLOBAL_ID++;
-        const kind = "garages-visitor";
-        const icon = "garage-visitor";
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            kind,
-            icon,
-          },
-        } as Feature;
-      }),
-
-      /*
-        GARAGES
-      */
-      ...rawDataGarages.features.map((feature) => {
-        GLOBAL_ID++;
-        const kind = "garages-resident";
-        const icon = "garage-resident";
+        const kind = "garages";
+        const icon = "garage";
         return {
           ...feature,
           id: GLOBAL_ID,

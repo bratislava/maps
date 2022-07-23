@@ -63,7 +63,7 @@ export const AccordionItem = ({
         </div>
       </Header>
       <AccordionContent className="overflow-hidden">
-        <div className="pl-[28px] pr-8 pb-4">{children}</div>
+        <div className="pl-[20px] pr-8 pb-4">{children}</div>
       </AccordionContent>
     </Item>
   );

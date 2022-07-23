@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback } from "react";
+import React, { FC, ReactNode, useCallback } from "react";
 import { Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
 import {
   Accordion,
@@ -14,6 +14,7 @@ export interface ILayer<L extends string> {
   label?: string;
   tooltip?: string;
   isActive?: boolean;
+  component?: FC<{ isActive: boolean; onToggle: () => void }>;
 }
 
 export interface ILayerGroup<L extends string> {
@@ -128,7 +129,14 @@ export const Layers = <L extends string>({
               <div className="flex flex-col gap-2">
                 {Array.isArray(layers) &&
                   layers.map((layer, i) => {
-                    return (
+                    return layer.component ? (
+                      <button onClick={() => layersToggleHandler(layer)}>
+                        <layer.component
+                          isActive={isAnyLayerActive(layer)}
+                          onToggle={() => layersToggleHandler(layer)}
+                        />
+                      </button>
+                    ) : (
                       <Checkbox
                         key={i}
                         id={
