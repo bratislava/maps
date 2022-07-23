@@ -1,4 +1,4 @@
-export const DEFAULT_STROKE_SIZE = 2;
+export const DEFAULT_STROKE_SIZE = 1.5;
 
 export const SIZES = {
   xs: 12,

@@ -43,10 +43,10 @@ export const ThemeController = ({ className }: ThemeControllerProps) => {
       )}
     >
       <IconButton onClick={() => handleSatelliteChange(!mapState?.isSatellite)}>
-        <Satellite className="w-11 h-11" />
+        <Satellite size="xl" />
       </IconButton>
       <IconButton onClick={() => handleDarkmodeChange(!mapState?.isDarkmode)}>
-        <Darkmode className="w-11 h-11" />
+        <Darkmode size="xl" />
       </IconButton>
     </div>
   );
