@@ -1,7 +1,7 @@
 import React from "react";
 import cx from "classnames";
 import { Input } from "../Input/Input";
-import { Search, Location } from "@bratislava/react-maps-icons";
+import { MagnifyingGlass, Location } from "@bratislava/react-maps-icons";
 
 interface ISearchBarProps
   extends React.DetailedHTMLProps<
@@ -31,7 +31,7 @@ export const SearchBar = ({
       {...etcProps}
     />
     <div className="absolute right-0 bottom-0 top-0 flex items-center">
-      <Search className="w-12 h-12 p-1" />
+      <MagnifyingGlass size="lg" />
       {onGeolocationClick && (
         <>
           <div className="md:hidden h-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20 w-[2px]"></div>

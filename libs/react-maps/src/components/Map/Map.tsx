@@ -9,30 +9,30 @@ import React, {
   createContext,
   useMemo,
   useReducer,
-  MouseEvent,
   Dispatch,
   MutableRefObject,
 } from "react";
 import { LoadingSpinner, Modal } from "@bratislava/react-maps-ui";
-import { Mapbox, MapboxHandle } from "../Mapbox/Mapbox";
-import { useResizeDetector } from "react-resize-detector";
-import cx from "classnames";
-import { IMapState, MapAction, MapActionKind, mapReducer } from "./mapReducer";
-
 import {
+  Mapbox,
+  MapboxHandle,
+  Marker,
+  mergeViewports,
   Sources,
   Viewport,
   MapIcon,
   PartialViewport,
   PartialPadding,
-} from "../../types";
+} from "@bratislava/react-mapbox";
+import { useResizeDetector } from "react-resize-detector";
+import cx from "classnames";
+import { IMapState, MapAction, MapActionKind, mapReducer } from "./mapReducer";
+
+import {} from "../../types";
 import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
 
 import Mousetrap from "mousetrap";
 import { Feature } from "geojson";
-import { mergeViewports } from "../Mapbox/viewportReducer";
-import { log } from "../../utils/log";
-import { Marker } from "../Marker/Marker";
 import { getFeatureDistrict } from "../../utils/districts";
 import { useTranslation } from "react-i18next";
 import { ArrowCounterclockwise } from "@bratislava/react-maps-icons";
@@ -181,7 +181,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                   return;
                 }
 
-                log("ADDING GEOLOCATION MARKER");
+                console.log("ADDING GEOLOCATION MARKER");
                 mapboxRef.current?.changeViewport({
                   center: geolocationMarkerLngLat,
                   zoom: 18,

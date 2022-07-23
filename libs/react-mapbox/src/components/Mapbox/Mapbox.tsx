@@ -13,7 +13,7 @@ import React, {
 } from "react";
 import { Sources, MapIcon, Viewport, PartialViewport } from "../../types";
 import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
-import { usePrevious } from "../../hooks/usePrevious";
+import { usePrevious } from "@bratislava/utils";
 import { log } from "../../utils/log";
 import bbox from "@turf/bbox";
 import DATA_DISTRICTS from "../../assets/layers/districts.json";

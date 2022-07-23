@@ -4,16 +4,16 @@ import "../styles.css";
 
 // maps
 import {
-  DISTRICTS_GEOJSON,
   Slot,
   Layout,
   MapHandle,
   Map,
-  Cluster,
   ThemeController,
   ViewportController,
   SlotType,
-} from "@bratislava/react-maps-core";
+} from "@bratislava/react-maps";
+import { Cluster } from "@bratislava/react-mapbox";
+import DISTRICTS_GEOJSON from "@bratislava/react-mapbox/src/assets/layers/districts.json";
 
 // components
 import { Detail } from "./Detail";

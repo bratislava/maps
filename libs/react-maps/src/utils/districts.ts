@@ -1,4 +1,4 @@
-import DATA_DISTRICTS from "../assets/layers/districts.json";
+import DATA_DISTRICTS from "@bratislava/react-mapbox/src/assets/layers/districts.json";
 import booleanIntersects from "@turf/boolean-intersects";
 import { Feature, FeatureCollection } from "geojson";
 

@@ -1,6 +1,5 @@
 import React, {
   ReactNode,
-  FC,
   useState,
   useEffect,
   Dispatch,
@@ -11,10 +10,9 @@ import React, {
 } from "react";
 import cx from "classnames";
 import { BottomSheet } from "react-spring-bottom-sheet";
-import { mapboxContext } from "../Mapbox/Mapbox";
-import { Padding, PartialPadding } from "../../types";
+import { mapboxContext, PartialPadding } from "@bratislava/react-mapbox";
 import { mapContext } from "../Map/Map";
-import { usePrevious } from "../../hooks/usePrevious";
+import { usePrevious } from "@bratislava/utils";
 
 export interface ISlotChildProps {
   isVisible: boolean | undefined;
@@ -42,11 +40,9 @@ export interface ISlotProps {
 export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
   (
     {
-      name,
       bottomSheetOptions,
       children,
       isVisible: inputIsVisible,
-      setVisible: inputSetVisible,
       openPadding = {},
       avoidControls = true,
     },

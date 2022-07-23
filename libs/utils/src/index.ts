@@ -1,6 +1,8 @@
 import { Season } from "./types";
 import { Feature } from "geojson";
 
+export * from "./hooks/usePrevious";
+
 const getRandomInt = (max: number) => {
   return Math.floor(Math.random() * max);
 };

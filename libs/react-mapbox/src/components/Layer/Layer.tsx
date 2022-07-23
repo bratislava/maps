@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { usePrevious } from "../../hooks/usePrevious";
+import { usePrevious } from "@bratislava/utils";
 import { log } from "../../utils/log";
 import { mapboxContext } from "../Mapbox/Mapbox";
 

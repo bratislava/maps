@@ -15,11 +15,6 @@ export {
   default as LightmodeUrl,
 } from "./svg/lightmode.svg";
 
-export {
-  ReactComponent as Search,
-  default as SearchUrl,
-} from "./svg/search.svg";
-
 export { ReactComponent as Tick, default as TickUrl } from "./svg/tick.svg";
 
 export { X } from "./components/X";
@@ -34,3 +29,4 @@ export { Plus } from "./components/Plus";
 export { Minus } from "./components/Minus";
 export { Fullscreen } from "./components/Fullscreen";
 export { Satellite } from "./components/Satellite";
+export { MagnifyingGlass } from "./components/MagnifyingGlass";

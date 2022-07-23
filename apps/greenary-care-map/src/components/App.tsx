@@ -6,23 +6,18 @@ import { useResizeDetector } from "react-resize-detector";
 
 // maps
 import {
-  DISTRICTS_GEOJSON,
-  usePrevious,
   Slot,
   Layout,
   MapHandle,
   Map,
-  Layer,
-  useFilter,
-  useClickOutside,
-  Marker,
-  useCombinedFilter,
   ThemeController,
   ViewportController,
   SlotType,
-} from "@bratislava/react-maps-core";
-import { DropdownArrow, Sidebar } from "@bratislava/react-maps-ui";
-import { useArcgeo } from "@bratislava/react-esri";
+} from "@bratislava/react-maps";
+import { Layer, useFilter, Marker, useCombinedFilter } from "@bratislava/react-mapbox";
+import { DropdownArrow, Sidebar, useClickOutside } from "@bratislava/react-maps-ui";
+import { useArcgeo } from "@bratislava/react-use-arcgeo";
+import DISTRICTS_GEOJSON from "@bratislava/react-mapbox/src/assets/layers/districts.json";
 
 // components
 import { Detail } from "./Detail";
@@ -40,6 +35,7 @@ import { MobileFilters } from "./mobile/MobileFilters";
 import { DesktopFilters } from "./desktop/DesktopFilters";
 import { MobileSearch } from "./mobile/MobileSearch";
 import { Legend } from "./Legend";
+import { usePrevious } from "@bratislava/utils";
 
 const URL =
   "https://services8.arcgis.com/pRlN1m0su5BYaFAS/ArcGIS/rest/services/orezy_a_vyruby_2022_OTMZ_zobrazenie/FeatureServer/0";

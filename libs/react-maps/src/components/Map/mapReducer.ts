@@ -1,4 +1,4 @@
-import { LngLat, PartialViewport, Viewport } from "../../types";
+import { LngLat, PartialViewport, Viewport } from "@bratislava/react-mapbox";
 
 export enum MapActionKind {
   EnableDarkmode = "EnableDarkmode",

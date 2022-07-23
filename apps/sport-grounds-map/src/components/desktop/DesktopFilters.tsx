@@ -1,9 +1,5 @@
-import {
-  forwardGeocode,
-  GeocodeFeature,
-  IFilterResult,
-  MapHandle,
-} from "@bratislava/react-maps-core";
+import { forwardGeocode, GeocodeFeature, MapHandle } from "@bratislava/react-maps";
+import { IFilterResult } from "@bratislava/react-mapbox";
 import { X } from "@bratislava/react-maps-icons";
 import {
   Divider,

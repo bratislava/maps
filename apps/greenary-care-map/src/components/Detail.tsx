@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Feature } from "geojson";
-import { useArcgeoAttachments } from "@bratislava/react-esri";
+import { useArcgeoAttachments } from "@bratislava/react-use-arcgeo";
 import { useState, useEffect } from "react";
 import { X } from "@bratislava/react-maps-icons";
 

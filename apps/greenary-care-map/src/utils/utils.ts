@@ -1,9 +1,9 @@
-import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps-core";
+import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps";
 import {
   getRandomItemFrom,
   getSeasonFromDate,
   getUniqueValuesFromFeatures,
-} from "@bratislava/react-maps-utils";
+} from "@bratislava/utils";
 import { FeatureCollection, Feature } from "geojson";
 
 // predefined colors for points

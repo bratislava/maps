@@ -1,4 +1,4 @@
-# React Esri
+# React Arcgeo Hooks
 
 This library exports two hooks for fetching Arcgeo data
 
