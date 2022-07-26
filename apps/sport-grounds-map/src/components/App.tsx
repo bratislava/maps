@@ -6,21 +6,19 @@ import { useResizeDetector } from "react-resize-detector";
 
 // maps
 import {
-  DISTRICTS_GEOJSON,
-  usePrevious,
   Slot,
   Layout,
   MapHandle,
   Map,
-  Layer,
-  useFilter,
-  Cluster,
-  Filter,
-  useCombinedFilter,
   ThemeController,
   ViewportController,
   SlotType,
-} from "@bratislava/react-maps-core";
+} from "@bratislava/react-maps";
+
+// maps
+import { Layer, useFilter, Cluster, Filter, useCombinedFilter } from "@bratislava/react-mapbox";
+
+import DISTRICTS_GEOJSON from "@bratislava/react-mapbox/src/assets/layers/districts.json";
 
 // components
 import { Detail } from "./Detail";
@@ -42,6 +40,7 @@ import { Marker } from "./Marker";
 import { MultipleMarker } from "./MultipleMarker";
 import { ILayerGroup } from "@bratislava/react-maps-ui/src/components/molecules/Layers/Layers";
 import { Icon, IIconProps } from "./Icon";
+import { usePrevious } from "@bratislava/utils";
 
 export const App = () => {
   const { t } = useTranslation();

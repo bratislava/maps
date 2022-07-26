@@ -1,4 +1,4 @@
-import { IFilterResult } from "@bratislava/react-maps-core";
+import { IFilterResult } from "@bratislava/react-mapbox";
 import { Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
 import { Accordion, AccordionItem, Checkbox, Modal, Popover } from "@bratislava/react-maps-ui";
 import cx from "classnames";

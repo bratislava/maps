@@ -1,5 +1,5 @@
-import { addDistrictPropertyToLayer } from "@bratislava/react-maps-core";
-import { getUniqueValuesFromFeatures } from "@bratislava/react-maps-utils";
+import { addDistrictPropertyToLayer } from "@bratislava/react-maps";
+import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 import { FeatureCollection, Feature } from "geojson";
 import { rawDataCvicko } from "../data/cvicko/cvicko";
 import { rawDataPools } from "../data/pools/pools";

@@ -6,23 +6,18 @@ import { useResizeDetector } from "react-resize-detector";
 
 // maps
 import {
-  DISTRICTS_GEOJSON,
-  usePrevious,
   Slot,
   Layout,
   MapHandle,
   Map,
-  Layer,
-  useFilter,
-  useClickOutside,
-  Marker,
-  useCombinedFilter,
   ThemeController,
   ViewportController,
   SlotType,
-} from "@bratislava/react-maps-core";
-import { DropdownArrow, Sidebar } from "@bratislava/react-maps-ui";
-import { useArcgeo } from "@bratislava/react-esri";
+} from "@bratislava/react-maps";
+import { Layer, useFilter, Marker, useCombinedFilter } from "@bratislava/react-mapbox";
+import { DropdownArrow, Sidebar, useClickOutside } from "@bratislava/react-maps-ui";
+import { useArcgis } from "@bratislava/react-use-arcgis";
+import DISTRICTS_GEOJSON from "@bratislava/react-mapbox/src/assets/layers/districts.json";
 
 // components
 import { Detail } from "./Detail";
@@ -40,6 +35,7 @@ import { MobileFilters } from "./mobile/MobileFilters";
 import { DesktopFilters } from "./desktop/DesktopFilters";
 import { MobileSearch } from "./mobile/MobileSearch";
 import { Legend } from "./Legend";
+import { usePrevious } from "@bratislava/utils";
 
 const URL =
   "https://services8.arcgis.com/pRlN1m0su5BYaFAS/ArcGIS/rest/services/orezy_a_vyruby_2022_OTMZ_zobrazenie/FeatureServer/0";
@@ -57,7 +53,7 @@ export const App = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
 
-  const { data: rawData } = useArcgeo(URL);
+  const { data: rawData } = useArcgis(URL);
   // USE STATE
   const [uniqueYears, setUniqueYears] = useState<string[]>([]);
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
@@ -387,7 +383,7 @@ export const App = () => {
           avoidControls={false}
         >
           <div className="h-full bg-background-lightmode dark:bg-background-darkmode text-foreground-lightmode dark:text-foreground-darkmode">
-            <Detail arcgeoServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
+            <Detail arcgisServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
           </div>
         </Slot>
 
@@ -452,7 +448,7 @@ export const App = () => {
               },
             )}
           >
-            <Detail arcgeoServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
+            <Detail arcgisServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
           </div>
         </Slot>
         <Slot name="desktop-legend" isVisible={isLegendVisible} avoidControls={false}>

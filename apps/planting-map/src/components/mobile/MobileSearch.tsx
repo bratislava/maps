@@ -1,4 +1,4 @@
-import { forwardGeocode, GeocodeFeature, MapHandle } from "@bratislava/react-maps-core";
+import { forwardGeocode, GeocodeFeature, MapHandle } from "@bratislava/react-maps";
 import { SearchBar } from "@bratislava/react-maps-ui";
 import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";

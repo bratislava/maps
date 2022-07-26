@@ -20,7 +20,7 @@ export const rawData: FeatureCollection = {
         coordinates: [17.10567467, 48.14079779],
       },
       properties: {
-        location: "Hviezdoslavovo námestie č.1",
+        location: "Hviezdoslavovo námestie 1/2",
       },
     },
     {
@@ -30,7 +30,7 @@ export const rawData: FeatureCollection = {
         coordinates: [17.10703171, 48.14129256],
       },
       properties: {
-        location: "Hviezdoslavovo námestie č.2",
+        location: "Hviezdoslavovo námestie 2/2",
       },
     },
     {
@@ -60,7 +60,7 @@ export const rawData: FeatureCollection = {
         coordinates: [17.10646213, 48.14208271],
       },
       properties: {
-        location: "Michalská ulica",
+        location: "Ventúrska ulica",
       },
     },
     {
@@ -140,7 +140,7 @@ export const rawData: FeatureCollection = {
         coordinates: [17.10846668, 48.13351421],
       },
       properties: {
-        location: "Sad Janka Kráľa - vchod Aupark",
+        location: "Sad Janka Kráľa 1/4 - vchod Aupark",
       },
     },
     {
@@ -150,7 +150,7 @@ export const rawData: FeatureCollection = {
         coordinates: [17.10885784, 48.13507355],
       },
       properties: {
-        location: "Sad Janka Kráľa č.1",
+        location: "Sad Janka Kráľa 2/4",
       },
     },
     {
@@ -160,7 +160,7 @@ export const rawData: FeatureCollection = {
         coordinates: [17.10771106, 48.13495663],
       },
       properties: {
-        location: "Sad Janka Kráľa č.2",
+        location: "Sad Janka Kráľa 3/4",
       },
     },
     {
@@ -170,7 +170,7 @@ export const rawData: FeatureCollection = {
         coordinates: [17.10711618, 48.1351512],
       },
       properties: {
-        location: "Sad Janka Kráľa č.3",
+        location: "Sad Janka Kráľa 4/4",
       },
     },
     {

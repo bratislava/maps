@@ -1,9 +1,8 @@
-import { IFilterResult } from "@bratislava/react-maps-core";
+import { IFilterResult } from "@bratislava/react-mapbox";
 import { Funnel } from "@bratislava/react-maps-icons";
 import {
   Divider,
   Select,
-  TagFilter,
   IActiveFilter,
   ActiveFilters,
   SelectOption,

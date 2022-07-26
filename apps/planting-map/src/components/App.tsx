@@ -6,21 +6,18 @@ import { useResizeDetector } from "react-resize-detector";
 
 // maps
 import {
-  DISTRICTS_GEOJSON,
-  usePrevious,
   Slot,
   Layout,
   MapHandle,
   Map,
-  Layer,
-  useFilter,
-  useCombinedFilter,
-  Marker,
   ThemeController,
   ViewportController,
   SlotType,
-} from "@bratislava/react-maps-core";
-import { useArcgeo } from "@bratislava/react-esri";
+} from "@bratislava/react-maps";
+
+import { Layer, useFilter, useCombinedFilter, Marker } from "@bratislava/react-mapbox";
+import DISTRICTS_GEOJSON from "@bratislava/react-mapbox/src/assets/layers/districts.json";
+import { useArcgis } from "@bratislava/react-use-arcgis";
 
 // components
 import { Detail } from "./Detail";
@@ -40,6 +37,7 @@ import { MobileSearch } from "./mobile/MobileSearch";
 import { ILayerCategory } from "./Layers";
 import { Modal, Sidebar } from "@bratislava/react-maps-ui";
 import { Legend } from "./Legend";
+import { usePrevious } from "@bratislava/utils";
 
 const URL = "https://geoportal.bratislava.sk/hsite/rest/services/zp/STROMY/MapServer/0";
 
@@ -51,7 +49,7 @@ export const App = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
 
-  const { data: rawData } = useArcgeo(URL, { pagination: false, format: "geojson" });
+  const { data: rawData } = useArcgis(URL, { pagination: false, format: "geojson" });
 
   // USE STATE
   const [uniqueYears, setUniqueYears] = useState<string[]>([]);

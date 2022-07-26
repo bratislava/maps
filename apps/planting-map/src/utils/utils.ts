@@ -1,5 +1,5 @@
-import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps-core";
-import { getUniqueValuesFromFeatures } from "@bratislava/react-maps-utils";
+import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps";
+import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 import { FeatureCollection, Feature } from "geojson";
 
 const seasonMapping = {

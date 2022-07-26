@@ -1,19 +1,7 @@
-import {
-  FilterExpression,
-  forwardGeocode,
-  GeocodeFeature,
-  IFilterResult,
-  MapHandle,
-} from "@bratislava/react-maps-core";
+import { forwardGeocode, GeocodeFeature, MapHandle } from "@bratislava/react-maps";
+import { FilterExpression, IFilterResult } from "@bratislava/react-mapbox";
 import { X } from "@bratislava/react-maps-icons";
-import {
-  Divider,
-  Select,
-  TagFilter,
-  SearchBar,
-  SelectOption,
-  Sidebar,
-} from "@bratislava/react-maps-ui";
+import { Divider, Select, SearchBar, SelectOption, Sidebar } from "@bratislava/react-maps-ui";
 import mapboxgl from "mapbox-gl";
 import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";

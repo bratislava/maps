@@ -1,4 +1,4 @@
-import { i18n as i18next } from "@bratislava/react-maps-core";
+import { i18n as i18next } from "@bratislava/react-maps";
 import enTranslation from "../translations/en";
 import skTranslation from "../translations/sk";
 
