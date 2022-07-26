@@ -16,7 +16,7 @@ import {
 } from "@bratislava/react-maps";
 import { Layer, useFilter, Marker, useCombinedFilter } from "@bratislava/react-mapbox";
 import { DropdownArrow, Sidebar, useClickOutside } from "@bratislava/react-maps-ui";
-import { useArcgeo } from "@bratislava/react-use-arcgeo";
+import { useArcgis } from "@bratislava/react-use-arcgis";
 import DISTRICTS_GEOJSON from "@bratislava/react-mapbox/src/assets/layers/districts.json";
 
 // components
@@ -53,7 +53,7 @@ export const App = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
 
-  const { data: rawData } = useArcgeo(URL);
+  const { data: rawData } = useArcgis(URL);
   // USE STATE
   const [uniqueYears, setUniqueYears] = useState<string[]>([]);
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
@@ -383,7 +383,7 @@ export const App = () => {
           avoidControls={false}
         >
           <div className="h-full bg-background-lightmode dark:bg-background-darkmode text-foreground-lightmode dark:text-foreground-darkmode">
-            <Detail arcgeoServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
+            <Detail arcgisServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
           </div>
         </Slot>
 
@@ -448,7 +448,7 @@ export const App = () => {
               },
             )}
           >
-            <Detail arcgeoServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
+            <Detail arcgisServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
           </div>
         </Slot>
         <Slot name="desktop-legend" isVisible={isLegendVisible} avoidControls={false}>

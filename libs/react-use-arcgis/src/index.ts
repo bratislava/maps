@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import { Feature, FeatureCollection } from "geojson";
 
-export const fetchFromArcgeo = async (
+export const fetchFromArcgis = async (
   url: string,
   {
     offset,
@@ -40,15 +40,15 @@ export const fetchCount = async (url: string) => {
   return json.count;
 };
 
-const DEFAULT_OPTIONS: IUseArcgeoOptions = {
+const DEFAULT_OPTIONS: IUseArcgisOptions = {
   countPerRequest: 1000,
   pagination: true,
   format: "pgeojson",
 };
 
-export const fetchAllFromArcgeo = async (
+export const fetchAllFromArcgis = async (
   url: string,
-  options?: IUseArcgeoOptions
+  options?: IUseArcgisOptions
 ) => {
   return new Promise<FeatureCollection>(async (resolve, reject) => {
     let GLOBAL_FEATURE_ID = 0;
@@ -74,7 +74,7 @@ export const fetchAllFromArcgeo = async (
             const offset = (ops.countPerRequest ?? 1000) * index;
             const count = ops.countPerRequest;
             const format = ops.format;
-            const data = await fetchFromArcgeo(url, { offset, count, format });
+            const data = await fetchFromArcgis(url, { offset, count, format });
             return data.features;
           })
       );
@@ -91,7 +91,7 @@ export const fetchAllFromArcgeo = async (
           };
         });
     } else {
-      const data = await fetchFromArcgeo(url, { format: ops.format });
+      const data = await fetchFromArcgis(url, { format: ops.format });
       features = data.features;
     }
 
@@ -111,7 +111,7 @@ export interface Attachment {
   size: number;
 }
 
-export const fetchAttachmentsFromArcgeo = async (
+export const fetchAttachmentsFromArcgis = async (
   serverUrl: string,
   objectId: string | number
 ) => {
@@ -122,21 +122,21 @@ export const fetchAttachmentsFromArcgeo = async (
   });
 };
 
-interface IUseArcgeoOptions {
+interface IUseArcgisOptions {
   countPerRequest?: number;
   pagination?: boolean;
   format?: string;
 }
 
-export const useArcgeo = (
+export const useArcgis = (
   url: string | string[],
-  options?: IUseArcgeoOptions
+  options?: IUseArcgisOptions
 ) => {
   const [data, setData] = useState<FeatureCollection | null>(null);
 
   useEffect(() => {
     if (Array.isArray(url)) {
-      Promise.all(url.map((u) => fetchAllFromArcgeo(u, options))).then(
+      Promise.all(url.map((u) => fetchAllFromArcgis(u, options))).then(
         (results) => {
           setData({
             type: "FeatureCollection",
@@ -148,7 +148,7 @@ export const useArcgeo = (
         }
       );
     } else {
-      fetchAllFromArcgeo(url, options).then((fetchedData) => {
+      fetchAllFromArcgis(url, options).then((fetchedData) => {
         setData(fetchedData);
       });
     }
@@ -159,7 +159,7 @@ export const useArcgeo = (
   };
 };
 
-export const useArcgeoAttachments = (
+export const useArcgisAttachments = (
   url: string,
   objectId: string | number | null
 ) => {
@@ -168,7 +168,7 @@ export const useArcgeoAttachments = (
   useEffect(() => {
     setData(null);
     if (objectId) {
-      fetchAttachmentsFromArcgeo(url, objectId).then((fetchedData) => {
+      fetchAttachmentsFromArcgis(url, objectId).then((fetchedData) => {
         setData(fetchedData);
       });
     }

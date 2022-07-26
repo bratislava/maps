@@ -17,7 +17,7 @@ import {
 
 import { Layer, useFilter, useCombinedFilter, Marker } from "@bratislava/react-mapbox";
 import DISTRICTS_GEOJSON from "@bratislava/react-mapbox/src/assets/layers/districts.json";
-import { useArcgeo } from "@bratislava/react-use-arcgeo";
+import { useArcgis } from "@bratislava/react-use-arcgis";
 
 // components
 import { Detail } from "./Detail";
@@ -49,7 +49,7 @@ export const App = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
 
-  const { data: rawData } = useArcgeo(URL, { pagination: false, format: "geojson" });
+  const { data: rawData } = useArcgis(URL, { pagination: false, format: "geojson" });
 
   // USE STATE
   const [uniqueYears, setUniqueYears] = useState<string[]>([]);

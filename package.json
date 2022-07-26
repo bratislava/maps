@@ -8,7 +8,7 @@
     "libs/react-maps",
     "libs/react-maps-icons",
     "libs/react-maps-ui",
-    "libs/react-use-arcgeo",
+    "libs/react-use-arcgis",
     "libs/utils",
     "apps/closures-and-restrictions-map",
     "apps/drinking-fountains-map",

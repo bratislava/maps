@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Feature } from "geojson";
-import { useArcgeoAttachments } from "@bratislava/react-use-arcgeo";
+import { useArcgeoAttachments } from "@bratislava/react-use-arcgis";
 import { useState, useEffect } from "react";
 import { X } from "@bratislava/react-maps-icons";
 
@@ -19,11 +19,11 @@ export const Row = ({ label, text }: { label: string; text: string }) => {
 
 export interface DetailProps {
   features: Feature[];
-  arcgeoServerUrl: string;
+  arcgisServerUrl: string;
   onClose: () => void;
 }
 
-export const Detail = ({ features, arcgeoServerUrl, onClose }: DetailProps) => {
+export const Detail = ({ features, arcgisServerUrl, onClose }: DetailProps) => {
   const { t, i18n } = useTranslation();
 
   const [feature, setFeature] = useState<Feature | null>(null);
@@ -40,7 +40,7 @@ export const Detail = ({ features, arcgeoServerUrl, onClose }: DetailProps) => {
     }
   }, [features, setObjectId]);
 
-  const { data: attachments } = useArcgeoAttachments(arcgeoServerUrl, objectId);
+  const { data: attachments } = useArcgeoAttachments(arcgisServerUrl, objectId);
 
   return !features[0] ? null : (
     <>
@@ -80,7 +80,7 @@ export const Detail = ({ features, arcgeoServerUrl, onClose }: DetailProps) => {
               <div>{t(`layers.esri.detail.document`)}</div>
               <div>
                 {attachments.map((attachment, index) => {
-                  const attachmentUrl = `${arcgeoServerUrl}/${objectId}/attachment/${attachment.id}`;
+                  const attachmentUrl = `${arcgisServerUrl}/${objectId}/attachment/${attachment.id}`;
                   return (
                     <a
                       className="font-bold flex underline"

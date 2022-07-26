@@ -1,5 +1,5 @@
 {
-  "name": "@bratislava/react-use-arcgeo",
+  "name": "@bratislava/react-use-arcgis",
   "version": "1.0.0",
   "main": "src/index.ts",
   "license": "MIT",
