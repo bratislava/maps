@@ -31,7 +31,7 @@ export const Layer = ({
     layerPrefix,
   } = useContext(mapboxContext);
 
-  const labelId = "road-label";
+  const layerIdStartsWith = "label";
 
   const previousLoading = usePrevious(isLoading);
   const previousVisible = usePrevious(isVisible);
@@ -42,6 +42,12 @@ export const Layer = ({
     if (map && !isLoading && !isStyleLoading) {
       styles.forEach((style: any) => {
         if (!map.getLayer(getPrefixedLayer(style.id))) {
+          const layerId = map
+            .getStyle()
+            .layers.find((layer) => layer.id.includes(layerIdStartsWith))?.id;
+
+          // console.log(map.getStyle().layers);
+
           const layers = map.getStyle().layers;
           const bottomLayer = layers.find((layer) =>
             layer.id.startsWith(layerPrefix)
@@ -53,7 +59,7 @@ export const Layer = ({
               id: getPrefixedLayer(style.id),
             },
             style.type === "line" || style.type === "circle"
-              ? labelId
+              ? layerId
               : style.type === "fill"
               ? bottomLayer?.id
               : undefined

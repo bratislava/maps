@@ -11,6 +11,7 @@
     "libs/react-use-arcgis",
     "libs/utils",
     "apps/closures-and-restrictions-map",
+    "apps/cvicko-map",
     "apps/drinking-fountains-map",
     "apps/greenary-care-map",
     "apps/paas-map",
