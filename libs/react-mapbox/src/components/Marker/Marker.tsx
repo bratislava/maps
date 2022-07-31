@@ -92,6 +92,7 @@ export const Marker = ({
   return createPortal(
     isVisible ? (
       <div
+        onMouseMove={(e) => e.stopPropagation()}
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "center",
@@ -101,9 +102,7 @@ export const Marker = ({
       >
         {children}
       </div>
-    ) : (
-      <div>nenisim</div>
-    ),
+    ) : null,
     marker.getElement()
   );
 };

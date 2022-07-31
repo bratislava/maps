@@ -1,12 +1,6 @@
-import React, { ReactNode, useCallback } from "react";
+import React, { FC, ReactNode, useCallback } from "react";
 import { Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
-import {
-  Accordion,
-  AccordionItem,
-  Checkbox,
-  Modal,
-  Popover,
-} from "@bratislava/react-maps-ui";
+import { Accordion, AccordionItem, Checkbox } from "@bratislava/react-maps-ui";
 import cx from "classnames";
 
 export interface ILayer<L extends string> {
@@ -14,6 +8,7 @@ export interface ILayer<L extends string> {
   label?: string;
   tooltip?: string;
   isActive?: boolean;
+  component?: FC<{ isActive: boolean; onToggle: () => void }>;
 }
 
 export interface ILayerGroup<L extends string> {
@@ -25,11 +20,13 @@ export interface ILayerGroup<L extends string> {
 export interface ILayerProps<L extends string> {
   groups: ILayerGroup<L>[];
   onLayersVisibilityChange: (layers: L[], value: boolean) => void;
+  paasDesign?: boolean;
 }
 
 export const Layers = <L extends string>({
   groups,
   onLayersVisibilityChange,
+  paasDesign,
 }: ILayerProps<L>) => {
   // const [currentTooltipType, setCurrentTooltipType] = useState<string | null>(null);
   // const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
@@ -50,7 +47,7 @@ export const Layers = <L extends string>({
 
   const isAnyLayerActive = useCallback((layers: ILayer<L> | ILayer<L>[]) => {
     return Array.isArray(layers)
-      ? layers.every((l) => l.isActive)
+      ? layers.some((l) => l.isActive)
       : layers.isActive ?? false;
   }, []);
 
@@ -74,15 +71,13 @@ export const Layers = <L extends string>({
             <AccordionItem
               value={label}
               isOpenable={Array.isArray(layers)}
-              className={cx(
-                "border-l-4 transition-all bg-opacity-10 dark:bg-opacity-10",
-                {
-                  "bg-gray-lightmode dark:bg-gray-darkmode border-primary":
-                    isAnyLayerActive(layers),
-                  "border-background-lightmode dark:border-background-darkmode":
-                    !isAnyLayerActive(layers),
-                }
-              )}
+              className={cx("transition-all bg-opacity-10 dark:bg-opacity-10", {
+                "border-l-4": !paasDesign,
+                "bg-gray-lightmode dark:bg-gray-darkmode border-primary":
+                  isAnyLayerActive(layers) && !paasDesign,
+                "border-background-lightmode dark:border-background-darkmode":
+                  !isAnyLayerActive(layers),
+              })}
               key={index}
               title={
                 <div className="flex gap-4 items-center">
@@ -128,7 +123,17 @@ export const Layers = <L extends string>({
               <div className="flex flex-col gap-2">
                 {Array.isArray(layers) &&
                   layers.map((layer, i) => {
-                    return (
+                    return layer.component ? (
+                      <button
+                        key={i}
+                        onClick={() => layersToggleHandler(layer)}
+                      >
+                        <layer.component
+                          isActive={isAnyLayerActive(layer)}
+                          onToggle={() => layersToggleHandler(layer)}
+                        />
+                      </button>
+                    ) : (
                       <Checkbox
                         key={i}
                         id={

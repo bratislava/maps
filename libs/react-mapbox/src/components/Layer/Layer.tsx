@@ -28,10 +28,10 @@ export const Layer = ({
     isLoading,
     isStyleLoading,
     addClickableLayer,
+    layerPrefix,
   } = useContext(mapboxContext);
 
   const labelId = "road-label";
-  const roadPathLayerId = "road-path";
 
   const previousLoading = usePrevious(isLoading);
   const previousVisible = usePrevious(isVisible);
@@ -42,6 +42,10 @@ export const Layer = ({
     if (map && !isLoading && !isStyleLoading) {
       styles.forEach((style: any) => {
         if (!map.getLayer(getPrefixedLayer(style.id))) {
+          const layers = map.getStyle().layers;
+          const bottomLayer = layers.find((layer) =>
+            layer.id.startsWith(layerPrefix)
+          );
           map.addLayer(
             {
               source: source,
@@ -51,7 +55,7 @@ export const Layer = ({
             style.type === "line" || style.type === "circle"
               ? labelId
               : style.type === "fill"
-              ? roadPathLayerId
+              ? bottomLayer?.id
               : undefined
           );
 

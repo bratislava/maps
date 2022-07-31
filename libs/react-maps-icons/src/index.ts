@@ -5,16 +5,6 @@ export {
   default as EyeCrossedUrl,
 } from "./svg/eye-crossed.svg";
 
-export {
-  ReactComponent as Funnel,
-  default as FunnelUrl,
-} from "./svg/funnel.svg";
-
-export {
-  ReactComponent as Lightmode,
-  default as LightmodeUrl,
-} from "./svg/lightmode.svg";
-
 export { ReactComponent as Tick, default as TickUrl } from "./svg/tick.svg";
 
 export { X } from "./components/X";
@@ -29,4 +19,5 @@ export { Plus } from "./components/Plus";
 export { Minus } from "./components/Minus";
 export { Fullscreen } from "./components/Fullscreen";
 export { Satellite } from "./components/Satellite";
+export { Funnel } from "./components/Funnel";
 export { MagnifyingGlass } from "./components/MagnifyingGlass";

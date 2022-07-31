@@ -1,0 +1,257 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 1,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.139668735397578, 48.158062720310234]
+      },
+      "properties": {
+        "OBJECTID": 1,
+        "web": "ano",
+        "Rezidentská zóna": "RU1",
+        "Interný názov": null
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 2,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.129675346405179, 48.155989134641388]
+      },
+      "properties": {
+        "OBJECTID": 2,
+        "web": "ano",
+        "Rezidentská zóna": "RU1",
+        "Interný názov": null
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 3,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.122087534756755, 48.153648697123664]
+      },
+      "properties": {
+        "OBJECTID": 3,
+        "web": "ano",
+        "Rezidentská zóna": "SM1",
+        "Interný názov": "Krížna"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 6,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.116508039752205, 48.155040156586622]
+      },
+      "properties": {
+        "OBJECTID": 6,
+        "web": "ano",
+        "Rezidentská zóna": "SM1",
+        "Interný názov": "Belopotockého (roh Mýtnej)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 7,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.133376446952358, 48.149360315271686]
+      },
+      "properties": {
+        "OBJECTID": 7,
+        "web": "ano",
+        "Rezidentská zóna": "RU1",
+        "Interný názov": null
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 12,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.127733566762213, 48.147830120432609]
+      },
+      "properties": {
+        "OBJECTID": 12,
+        "web": "ano",
+        "Rezidentská zóna": "RU1",
+        "Interný názov": null
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 16,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.140706155444217, 48.156469950101162]
+      },
+      "properties": {
+        "OBJECTID": 16,
+        "web": "ano",
+        "Rezidentská zóna": "RU1",
+        "Interný názov": null
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 17,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.13146656768728, 48.152010052959717]
+      },
+      "properties": {
+        "OBJECTID": 17,
+        "web": "ano",
+        "Rezidentská zóna": "RU1",
+        "Interný názov": null
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 18,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.135482969410976, 48.153675826910785]
+      },
+      "properties": {
+        "OBJECTID": 18,
+        "web": "ano",
+        "Rezidentská zóna": "RU1",
+        "Interný názov": null
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 20,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.115319401561781, 48.150607462586805]
+      },
+      "properties": {
+        "OBJECTID": 20,
+        "web": "ano",
+        "Rezidentská zóna": "SM1",
+        "Interný názov": "STU"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 21,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.1213243255275, 48.155515825297968]
+      },
+      "properties": {
+        "OBJECTID": 21,
+        "web": "ano",
+        "Rezidentská zóna": "SM1",
+        "Interný názov": "Bernolákova"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 24,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.111451307590524, 48.157357144367843]
+      },
+      "properties": {
+        "OBJECTID": 24,
+        "web": "ano",
+        "Rezidentská zóna": "SM1",
+        "Interný názov": "Palárikova x Jelenia"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 25,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.106173457728403, 48.157869759550884]
+      },
+      "properties": {
+        "OBJECTID": 25,
+        "web": "ano",
+        "Rezidentská zóna": "SM1",
+        "Interný názov": "Parkovisko F. Liszta"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 29,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.113896915339616, 48.153060404977602]
+      },
+      "properties": {
+        "OBJECTID": 29,
+        "web": "ano",
+        "Rezidentská zóna": "SM1",
+        "Interný názov": "Námestie Slobody x Mýtna"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 30,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.12354444772631, 48.150868233950732]
+      },
+      "properties": {
+        "OBJECTID": 30,
+        "web": "ano",
+        "Rezidentská zóna": "SM1",
+        "Interný názov": "Strážnická x Šoltésovej"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 33,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.118376700164681, 48.152066306886724]
+      },
+      "properties": {
+        "OBJECTID": 33,
+        "web": "ano",
+        "Rezidentská zóna": "SM1",
+        "Interný názov": "Avion"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 35,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.132486524117862, 48.154684246219247]
+      },
+      "properties": {
+        "OBJECTID": 35,
+        "web": "ano",
+        "Rezidentská zóna": "RU1",
+        "Interný názov": null
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 36,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.12653322471467, 48.155424855190141]
+      },
+      "properties": {
+        "OBJECTID": 36,
+        "web": "ano",
+        "Rezidentská zóna": "RU1",
+        "Interný názov": null
+      }
+    }
+  ]
+}

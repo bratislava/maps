@@ -36,6 +36,8 @@ import { Feature } from "geojson";
 import { getFeatureDistrict } from "../../utils/districts";
 import { useTranslation } from "react-i18next";
 import { ArrowCounterclockwise } from "@bratislava/react-maps-icons";
+import DATA_DISTRICTS from "../../data/layers/districts.json";
+import bbox from "@turf/bbox";
 
 export interface IMapProps {
   mapboxgl: typeof mapboxgl;
@@ -51,19 +53,25 @@ export interface IMapProps {
   isOutsideLoading?: boolean;
   children?: ReactNode;
   layerPrefix?: string;
-  moveSearchBarOutsideOfSideBarOnLargeScreen?: boolean;
   initialViewport?: PartialViewport;
   onSelectedFeaturesChange?: (features: Feature[]) => void;
   onMobileChange?: (isMobile: boolean) => void;
   onGeolocationChange?: (isGeolocation: boolean) => void;
   onMapClick?: () => void;
   loadingSpinnerColor?: string;
+  selectedFeatures?: MapboxGeoJSONFeature[];
+  onFeaturesClick?: (features: MapboxGeoJSONFeature[]) => void;
 }
 
 export type MapHandle = {
   changeViewport: (viewport: PartialViewport) => void;
-  fitToDistrict: (district: string | string[]) => void;
-  deselectAllFeatures: () => void;
+  fitDistrict: (district: string | string[]) => void;
+  fitFeature: (features: Feature | Feature[]) => void;
+  moveToFeatures: (features: Feature | Feature[]) => void;
+  fitBounds: (
+    bounds: mapboxgl.LngLatBoundsLike,
+    options?: mapboxgl.FitBoundsOptions
+  ) => void;
   turnOnGeolocation: () => void;
   turnOffGeolocation: () => void;
   toggleGeolocation: () => void;
@@ -100,11 +108,12 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       layerPrefix = "BRATISLAVA",
       isDevelopment = false,
       initialViewport: inputInitialViewport,
-      onSelectedFeaturesChange,
+      selectedFeatures = [],
       onMobileChange,
       onGeolocationChange,
       loadingSpinnerColor,
       onMapClick,
+      onFeaturesClick,
     },
     forwardedRef
   ) => {
@@ -148,9 +157,6 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
     const [isMobile, setMobile] = useState<boolean | null>(null);
     const [isLoading, setLoading] = useState(true);
-    const [selectedFeatures, setSelectedFeatures] = useState<
-      MapboxGeoJSONFeature[]
-    >([]);
 
     const geolocationChangeHandler = useCallback(
       (isGeolocation: boolean) => {
@@ -249,12 +255,65 @@ export const Map = forwardRef<MapHandle, IMapProps>(
           mapboxRef?.current?.changeViewport(wantedViewport);
         },
 
-        fitToDistrict(district) {
-          mapboxRef?.current?.fitToDistrict(district);
+        fitDistrict(district) {
+          if (!mapboxRef.current) return;
+          const MAP = mapboxRef.current;
+
+          const districts = Array.isArray(district) ? district : [district];
+
+          const districtFeatures = DATA_DISTRICTS.features.filter(
+            (feature) => districts.indexOf(feature.properties.name) !== -1
+          );
+
+          if (!districtFeatures.length) return;
+
+          const boundingBox = bbox({
+            type: "FeatureCollection",
+            features: districtFeatures,
+          }) as [number, number, number, number];
+
+          MAP.fitBounds(boundingBox, { padding: 128 });
         },
 
-        deselectAllFeatures() {
-          setSelectedFeatures([]);
+        fitBounds(
+          bounds: mapboxgl.LngLatBoundsLike,
+          options?: mapboxgl.FitBoundsOptions
+        ) {
+          if (!mapboxRef.current) return;
+          const MAP = mapboxRef.current;
+          MAP.fitBounds(bounds, options);
+        },
+
+        fitFeature(features: Feature | Feature[]) {
+          if (!mapboxRef.current) return;
+          const MAP = mapboxRef.current;
+
+          const boundingBox = bbox({
+            type: "FeatureCollection",
+            features: Array.isArray(features) ? features : [features],
+          }) as [number, number, number, number];
+
+          MAP.fitBounds(boundingBox, { padding: 128 });
+        },
+
+        moveToFeatures(features: Feature | Feature[]) {
+          if (!mapboxRef.current) return;
+          const MAP = mapboxRef.current;
+
+          const [minX, minY, maxX, maxY] = bbox({
+            type: "FeatureCollection",
+            features: Array.isArray(features) ? features : [features],
+          }) as [number, number, number, number];
+
+          const lng = (minX + maxX) / 2;
+          const lat = (minY + maxY) / 2;
+
+          MAP.changeViewport({
+            center: {
+              lat,
+              lng,
+            },
+          });
         },
 
         turnOnGeolocation() {
@@ -278,10 +337,6 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         viewport,
       });
     }, []);
-
-    useEffect(() => {
-      onSelectedFeaturesChange && onSelectedFeaturesChange(selectedFeatures);
-    }, [selectedFeatures, onSelectedFeaturesChange]);
 
     useEffect(() => {
       if (isMobile !== null && onMobileChange) onMobileChange(isMobile);
@@ -406,10 +461,10 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               mapboxgl={mapboxgl}
               sources={sources ?? {}}
               icons={icons}
-              onFeatureClick={setSelectedFeatures}
+              onFeaturesClick={onFeaturesClick}
+              selectedFeatures={selectedFeatures}
               onLoad={onLoad}
               onClick={onMapClick}
-              selectedFeatures={selectedFeatures}
               onViewportChange={onViewportChange}
               isDevelopment={isDevelopment && isDevInfoVisible}
             >

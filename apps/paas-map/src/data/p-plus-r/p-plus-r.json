@@ -1,0 +1,100 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 1,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.168805666289359, 48.216768269917168]
+      },
+      "properties": {
+        "OBJECTID": 1,
+        "Názov": "P+R Komisárky",
+        "Počet parkovacích miest": "163",
+        "MHD": "3",
+        "Vzdialenosť MHD": "\u003c250 m",
+        "Dojazdová doba do centra": "28 min",
+        "Fáza": "nové",
+        "ORIG_FID": 0,
+        "web": "ano"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 2,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.11447856366873, 48.094493136044427]
+      },
+      "properties": {
+        "OBJECTID": 2,
+        "Názov": "P+R Jasovská",
+        "Počet parkovacích miest": "53",
+        "MHD": "90, 91, 98, 191",
+        "Vzdialenosť MHD": "\u003c250 m",
+        "Dojazdová doba do centra": "10 min",
+        "Fáza": "nové",
+        "ORIG_FID": 0,
+        "web": "ano"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 3,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.105948503988877, 48.126851808507205]
+      },
+      "properties": {
+        "OBJECTID": 3,
+        "Názov": "P+R Macharova",
+        "Počet parkovacích miest": "95",
+        "MHD": "59, 83, 84, 91, 92, 93, 94, 191, 192",
+        "Vzdialenosť MHD": "\u003c250 m",
+        "Dojazdová doba do centra": "3 min",
+        "Fáza": "nové",
+        "ORIG_FID": 0,
+        "web": "ano"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 6,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.191028514978029, 48.14311359277729]
+      },
+      "properties": {
+        "OBJECTID": 6,
+        "Názov": "P+R Cintorín Vrakuňa",
+        "Počet parkovacích miest": "283",
+        "MHD": "42, 65, 71, 72, 75",
+        "Vzdialenosť MHD": "\u003c50 m",
+        "Dojazdová doba do centra": "15 min",
+        "Fáza": "existujúce",
+        "ORIG_FID": 0,
+        "web": "ano"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 7,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.117000888357779, 48.130430070399328]
+      },
+      "properties": {
+        "OBJECTID": 7,
+        "Názov": "Parkovisko Černyševského",
+        "Počet parkovacích miest": "59",
+        "MHD": "3, 84, 95, 99",
+        "Vzdialenosť MHD": "\u003e500 m",
+        "Dojazdová doba do centra": "4 min",
+        "Fáza": "nové",
+        "ORIG_FID": 0,
+        "web": "ano"
+      }
+    }
+  ]
+}

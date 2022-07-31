@@ -15,8 +15,6 @@ import { Sources, MapIcon, Viewport, PartialViewport } from "../../types";
 import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
 import { usePrevious } from "@bratislava/utils";
 import { log } from "../../utils/log";
-import bbox from "@turf/bbox";
-import DATA_DISTRICTS from "../../assets/layers/districts.json";
 import { DevelopmentInfo } from "../DevelopmentInfo/DevelopmentInfo";
 import {
   mergeViewports,
@@ -38,8 +36,8 @@ export interface MapboxProps {
     light?: string;
     dark?: string;
   };
-  selectedFeatures: MapboxGeoJSONFeature[];
-  onFeatureClick: (features: MapboxGeoJSONFeature[]) => void;
+  selectedFeatures?: MapboxGeoJSONFeature[];
+  onFeaturesClick?: (features: MapboxGeoJSONFeature[]) => void;
   children?: ReactNode;
   layerPrefix?: string;
   onViewportChange?: (viewport: Viewport) => void;
@@ -65,6 +63,7 @@ export interface IContext {
   isLayerPrefixed: (layerId: string) => boolean;
   addClickableLayer: (layerId: string) => void;
   changeViewport: (viewport: PartialViewport, instant?: boolean) => void;
+  layerPrefix: string;
 }
 
 const createMap = (
@@ -102,11 +101,15 @@ export const mapboxContext = createContext<IContext>({
   isLayerPrefixed: () => false,
   addClickableLayer: () => void 0,
   changeViewport: () => void 0,
+  layerPrefix: "",
 });
 
 export type MapboxHandle = {
-  fitToDistrict: (district: string | string[]) => void;
   changeViewport: (viewport: PartialViewport, instant?: boolean) => void;
+  fitBounds: (
+    bounds: mapboxgl.LngLatBoundsLike,
+    options?: mapboxgl.FitBoundsOptions
+  ) => void;
 };
 
 export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
@@ -116,12 +119,12 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       icons = {},
       isDarkmode = false,
       isSatellite = false,
-      selectedFeatures,
+      selectedFeatures = [],
       mapStyles: {
         light: lightStyle = "mapbox://styles/mapbox/streets-v11",
         dark: darkStyle = "mapbox://styles/mapbox/streets-v11",
       },
-      onFeatureClick,
+      onFeaturesClick = () => void 0,
       mapboxgl,
       children,
       layerPrefix = "BRATISLAVA",
@@ -181,6 +184,18 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     const [debouncedViewport, dispatchDebouncedViewport] = useReducer(
       viewportReducer,
       initialViewport
+    );
+
+    const fitBounds = useCallback(
+      (
+        bounds: mapboxgl.LngLatBoundsLike,
+        options?: mapboxgl.FitBoundsOptions
+      ) => {
+        const MAP = map.current;
+        if (!MAP) return;
+        MAP.fitBounds(bounds, options);
+      },
+      []
     );
 
     const changeViewport = useCallback(
@@ -249,6 +264,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         isLayerPrefixed,
         addClickableLayer,
         changeViewport,
+        layerPrefix,
       }),
       [
         map,
@@ -258,6 +274,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         isLayerPrefixed,
         changeViewport,
         addClickableLayer,
+        layerPrefix,
       ]
     );
 
@@ -379,25 +396,25 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           });
 
           if (foundSymbolFeature) {
-            onFeatureClick([foundSymbolFeature]);
+            onFeaturesClick([foundSymbolFeature]);
           } else {
             /*
               Geometry objects in queried features in Mapbox are based on zoom level,
               so it is not precise enough.
               This will replace the queried geometry object with the source one.
             */
-            onFeatureClick(
-              filteredFeatures.map((f) => ({
-                ...f,
-                geometry: sources[f.source].features.find(
-                  (sf: Feature) => sf.id === f.id
-                ).geometry,
-              }))
-            );
+            const fixedFeatures = filteredFeatures.map((f) => ({
+              ...f,
+              geometry: sources[f.source].features.find(
+                (sf: Feature) => sf.id === f.id
+              ).geometry,
+            }));
+
+            fixedFeatures.length && onFeaturesClick(fixedFeatures);
           }
         }
       },
-      [layerPrefix, onFeatureClick, sources, clickableLayerIds, onClick]
+      [layerPrefix, onFeaturesClick, sources, clickableLayerIds, onClick]
     );
 
     // MAP MOVE HANDLER
@@ -728,28 +745,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     // EXPOSING METHODS FOR PARENT COMPONENT
     useImperativeHandle(forwardedRef, () => ({
       changeViewport,
-
-      fitToDistrict(district) {
-        if (!map.current) return;
-        const MAP = map.current;
-
-        log("FITTING TO DISTRICT");
-
-        const districts = Array.isArray(district) ? district : [district];
-
-        const districtFeatures = DATA_DISTRICTS.features.filter(
-          (feature) => districts.indexOf(feature.properties.name) !== -1
-        );
-
-        if (!districtFeatures.length) return;
-
-        const boundingBox = bbox({
-          type: "FeatureCollection",
-          features: districtFeatures,
-        }) as [number, number, number, number];
-
-        MAP.fitBounds(boundingBox, { padding: 128 });
-      },
+      fitBounds,
     }));
 
     return (

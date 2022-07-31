@@ -34,6 +34,8 @@ export interface IAccordionItemProps {
   rightSlot?: ReactNode;
   className?: string;
   isOpenable?: boolean;
+  isActive?: boolean;
+  paasDesign?: boolean;
 }
 
 export const AccordionItem = ({
@@ -42,7 +44,9 @@ export const AccordionItem = ({
   title,
   rightSlot,
   className,
+  isActive = false,
   isOpenable = true,
+  paasDesign = false,
 }: IAccordionItemProps) => {
   return (
     <Item
@@ -50,20 +54,29 @@ export const AccordionItem = ({
       className={cx("text-left w-full justify-between items-center", className)}
     >
       <Header className="flex flex-col">
-        <div className="py-3 pl-[20px] pr-6 flex items-center justify-between">
+        <div
+          className={cx("flex w-full gap-4 items-center justify-between", {
+            "": paasDesign,
+          })}
+        >
           <div>{title}</div>
-          <div className="flex gap-4">
+          <div
+            className={cx("flex gap-4 h-12 px-6", {
+              "bg-primary-soft text-foreground-lightmode":
+                paasDesign && isActive,
+            })}
+          >
             {rightSlot}
             {isOpenable && (
               <Trigger className="p-1">
-                <AccordionChevron className="transition" size="xs" />
+                <AccordionChevron className="transition mr-[2px]" size="xs" />
               </Trigger>
             )}
           </div>
         </div>
       </Header>
       <AccordionContent className="overflow-hidden">
-        <div className="pl-[28px] pr-8 pb-4">{children}</div>
+        <div>{children}</div>
       </AccordionContent>
     </Item>
   );

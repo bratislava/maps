@@ -40,3 +40,4 @@ yarn workspace <app-name> build:suppress
 4. Add workspace path to root's `package.json` file.
 5. Update the `base` url in `vite.config.ts` file.
 6. Develeop.
+7. It is recomended to create new mapbox styles for each new map and replace urls in `.env` files.
