@@ -138,7 +138,10 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
     }, [marginTop, marginRight, marginBottom, marginLeft]);
 
     useEffect(() => {
-      if (JSON.stringify(padding) !== JSON.stringify(previousPadding)) {
+      if (
+        padding &&
+        JSON.stringify(padding) !== JSON.stringify(previousPadding)
+      ) {
         changeViewport({
           padding,
         });

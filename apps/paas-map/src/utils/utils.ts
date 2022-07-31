@@ -1,4 +1,4 @@
-import { addDistrictPropertyToLayer } from "@bratislava/react-maps-core";
+import { addDistrictPropertyToLayer } from "@bratislava/react-maps";
 import { FeatureCollection, Feature } from "geojson";
 
 import rawDataAssistants from "../data/assistants/assistants.json";
@@ -9,8 +9,8 @@ import rawDataGarages from "../data/garages/garages.json";
 import rawDataPPlusR from "../data/p-plus-r/p-plus-r.json";
 import rawDataPPlusRRegion from "../data/p-plus-r-region/p-plus-r-region.json";
 
-import rawUdrData from "../data/udr/udr.json";
-import rawOdpData from "../data/odp/odp.json";
+import rawVisitorsData from "../data/visitors/visitors.json";
+import rawResidentsData from "../data/residents/residents.json";
 
 export const getProcessedData = () => {
   let GLOBAL_ID = 0;
@@ -149,7 +149,7 @@ export const getProcessedData = () => {
   const udrData: FeatureCollection = addDistrictPropertyToLayer({
     type: "FeatureCollection",
     features: [
-      ...rawUdrData.features.map((feature) => {
+      ...rawVisitorsData.features.map((feature) => {
         GLOBAL_ID++;
         const layer = "visitors";
         return {
@@ -167,7 +167,7 @@ export const getProcessedData = () => {
   const odpData: FeatureCollection = addDistrictPropertyToLayer({
     type: "FeatureCollection",
     features: [
-      ...rawOdpData.features.map((feature) => {
+      ...rawResidentsData.features.map((feature) => {
         GLOBAL_ID++;
         const layer = "residents";
         return {

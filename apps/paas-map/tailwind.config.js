@@ -6,15 +6,16 @@ module.exports = {
   content: [
     "./src/**/*.{html,ts,tsx}",
     "../../libs/react-maps-ui/src/**/*.{html,ts,tsx}",
-    "../../libs/react-maps-core/src/**/*.{html,ts,tsx}",
+    "../../libs/react-maps/src/**/*.{html,ts,tsx}",
   ],
   theme: {
     extend: {
       colors: {
         primary: {
           DEFAULT: "#71CA55",
-          soft: "#15254B",
+          soft: "#d1f0c7",
         },
+        secondary: "#15254B",
       },
     },
   },

@@ -56,27 +56,22 @@ export const Cluster = ({
   const [clusters, setClusters] = useState<IClusterChildProps[]>([]);
 
   const recalculate = useCallback(() => {
-    const zoom = map?.getZoom();
+    const MAP = map;
+    if (!MAP) return;
 
-    const bounds = map?.getBounds() as
-      | {
-          _sw: {
-            lng: number;
-            lat: number;
-          };
-          _ne: {
-            lng: number;
-            lat: number;
-          };
-        }
-      | undefined;
+    const zoom = MAP.getZoom();
 
-    const bbox = ([
-      (bounds?._sw.lng as number) ?? 0,
-      (bounds?._sw.lat as number) ?? 0,
-      (bounds?._ne.lng as number) ?? 0,
-      (bounds?._ne.lat as number) ?? 0,
-    ] ?? [0, 0, 0, 0]) as [number, number, number, number];
+    // width and height in pixels
+    const { width: canvasWidth, height: canvasHeight } = MAP.getCanvas();
+    const offset = 100;
+
+    const { lng: west, lat: north } = MAP.unproject([-offset, -offset]);
+    const { lng: east, lat: south } = MAP.unproject([
+      canvasWidth + offset,
+      canvasHeight + offset,
+    ]);
+
+    const bbox = [west, south, east, north] as [number, number, number, number];
 
     setClusters(
       supercluster.getClusters(bbox, zoom ?? 0).map((cluster, key) => {

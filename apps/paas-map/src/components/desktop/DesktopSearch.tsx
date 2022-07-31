@@ -1,16 +1,23 @@
+import cx from "classnames";
 import { forwardGeocode, GeocodeFeature, MapHandle } from "@bratislava/react-maps";
 import { SearchBar } from "@bratislava/react-maps-ui";
 import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import mapboxgl from "mapbox-gl";
 
-export interface IMobileSearchProps {
+export interface IDesktopSearchProps {
   mapRef: RefObject<MapHandle>;
   mapboxgl: typeof mapboxgl;
   isGeolocation: boolean;
+  areFiltersOpen: boolean;
 }
 
-export const MobileSearch = ({ mapRef, mapboxgl, isGeolocation }: IMobileSearchProps) => {
+export const DesktopSearch = ({
+  mapRef,
+  mapboxgl,
+  isGeolocation,
+  areFiltersOpen,
+}: IDesktopSearchProps) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchFeatures, setSearchFeatures] = useState<GeocodeFeature[]>([]);
 
@@ -35,7 +42,14 @@ export const MobileSearch = ({ mapRef, mapboxgl, isGeolocation }: IMobileSearchP
   const { t } = useTranslation();
 
   return (
-    <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
+    <div
+      className={cx(
+        "fixed top-[18px] left-10 w-72 z-10 shadow-lg rounded-lg transition-transform duration-500",
+        {
+          "translate-x-96": areFiltersOpen,
+        },
+      )}
+    >
       <SearchBar
         value={searchQuery}
         placeholder={t("search")}
@@ -51,7 +65,7 @@ export const MobileSearch = ({ mapRef, mapboxgl, isGeolocation }: IMobileSearchP
         onGeolocationClick={mapRef.current?.toggleGeolocation}
       />
       {!!searchFeatures.length && (
-        <div className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-white rounded-lg py-4">
+        <div className="w-full absolute z-20 shadow-lg top-full mb-3 bg-white rounded-lg py-4">
           {searchFeatures.map((feature: any, i) => {
             return (
               <button

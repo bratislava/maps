@@ -8,6 +8,10 @@ export default {
   filters: {
     title: "Filter",
     reset: "Zrušiť",
+    zone: {
+      placeholder: "Zóna",
+      multipleZones: "Vybraných",
+    },
   },
   layerGroups: {
     payment: { title: "Platba" },
@@ -17,7 +21,7 @@ export default {
   layers: {
     residents: {
       title: "Rezident",
-      description:
+      tooltip:
         "Ulice, na ktorých môžete na parkovanie využiť rezidentskú alebo abonentskú kartu pre danú zónu.",
       detail: {
         title: "Rezident",
@@ -26,33 +30,30 @@ export default {
     },
     visitors: {
       title: "Návštevník",
-      description:
+      tooltip:
         "Ulice, na ktorých návštevníci zóny platia za parkovanie v stanovenom čase hodinovú sadzbu, respektíve môžu využiť na parkovanie bonusovú alebo návštevnícku kartu.",
       detail: {
         title: "Návštevník",
         location: "Lokalita",
-        district: "Mestská časť",
-        zone: "Zóna",
-        code: "Kód úseku parkovania",
+        parkingSectionCode: "Kód úseku parkovania",
         price: "Cena (€/h)",
-        regulationTime: "Čas regulácie (h)",
         chargingTime: "Čas spoplatnenia (h)",
         NPKInfo: "Informácia NPK",
         RPKInfo: "Informácia RPK",
       },
     },
     parkomats: {
-      title: "Parkovacie automaty",
+      title: "Parkomaty",
       detail: {
-        title: "Parkovací automat",
+        title: "Parkomat",
         location: "Lokalita",
-        id: "ID parkovacieho automatu",
+        parkomatId: "ID parkovacieho automatu",
       },
     },
     assistants: {
-      title: "Parkovací asistenti",
+      title: "Asistenti",
       detail: {
-        title: "Parkovací asistent",
+        title: "Asistent",
         residentZone: "Rezidentská zóna",
       },
     },

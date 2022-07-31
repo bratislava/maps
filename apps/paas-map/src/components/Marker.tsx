@@ -1,5 +1,5 @@
 import React, { MouseEvent, useCallback, useMemo } from "react";
-import { Marker as MapMarker } from "@bratislava/react-maps-core";
+import { Marker as MapMarker } from "@bratislava/react-mapbox";
 import { Feature, Point } from "geojson";
 import { Icon } from "./Icon";
 

@@ -1,4 +1,4 @@
-export const Row = ({ label, text }: { label: string; text: string }) => {
+export const Row = ({ label, text }: { label?: string | null; text?: string | null }) => {
   if (!text || (text === " " && !label)) {
     return null;
   } else {

@@ -76,12 +76,12 @@ export const Icon = ({ icon, size = 24, isWhite = false, count, shadow = true }:
   return IconSvgComponent ? (
     <div
       className={cx(
-        "relative transform active:scale-75 transition-transform cursor-pointer w-14 h-14 rounded-full text-white flex items-center justify-center",
+        "relative transform active:scale-75 transition-transform cursor-pointer w-fit h-fit rounded-full text-white flex items-center justify-center",
         {
           "bg-white text-primary z-50": isPrimary && isWhite,
-          "bg-primary text-primary-soft": isPrimary && !isWhite,
-          "bg-white text-primary-soft z-50": !isPrimary && isWhite,
-          "bg-primary-soft text-primary": !isPrimary && !isWhite,
+          "bg-primary text-secondary": isPrimary && !isWhite,
+          "bg-white text-secondary z-50": !isPrimary && isWhite,
+          "bg-secondary text-primary": !isPrimary && !isWhite,
           "shadow-lg": shadow,
         },
       )}
@@ -91,8 +91,8 @@ export const Icon = ({ icon, size = 24, isWhite = false, count, shadow = true }:
           className={cx(
             "absolute -top-[6px] -right-[8px] rounded-full min-w-[24px] px-2 h-6 text font-bold flex items-center shadow-lg",
             {
-              "text-white bg-primary-soft": isPrimary,
-              "text-primary-soft bg-white": !isPrimary,
+              "text-white bg-secondary": isPrimary,
+              "text-secondary bg-white": !isPrimary,
             },
           )}
         >

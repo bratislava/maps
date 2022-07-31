@@ -3,39 +3,36 @@ import { useTranslation } from "react-i18next";
 import cx from "classnames";
 import "../styles.css";
 import { useResizeDetector } from "react-resize-detector";
-import udrStyles from "../data/udr/udr";
-import odpStyles from "../data/odp/odp";
+import udrStyles from "../data/visitors/visitors";
+import odpStyles from "../data/residents/residents";
 
 // maps
 import {
-  usePrevious,
   Slot,
   Layout,
   MapHandle,
   Map,
-  Cluster,
-  Filter,
   ThemeController,
   ViewportController,
-  useFilter,
-  Layer,
   SlotType,
-} from "@bratislava/react-maps-core";
+} from "@bratislava/react-maps";
+
+import { Cluster, Filter, useFilter, Layer } from "@bratislava/react-mapbox";
 
 // components
 import { Detail } from "./Detail";
 
 // utils
 import { getProcessedData } from "../utils/utils";
-import mapboxgl from "mapbox-gl";
+import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
 import { Feature, Point, FeatureCollection } from "geojson";
 import { MobileHeader } from "./mobile/MobileHeader";
 import { MobileSearch } from "./mobile/MobileSearch";
 
 import { Marker } from "./Marker";
-import { DesktopFilters } from "./desktop/DesktopFilters";
-import { ILayerGroup } from "@bratislava/react-maps-ui";
-import { Icon } from "./Icon";
+import { Filters } from "./Filters";
+import { usePrevious } from "@bratislava/utils";
+import { DesktopSearch } from "./desktop/DesktopSearch";
 
 export const App = () => {
   const { t } = useTranslation();
@@ -57,7 +54,9 @@ export const App = () => {
   const mapRef = useRef<MapHandle>(null);
   mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
-  const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
+  const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
+
   const [isMobile, setMobile] = useState<boolean | null>(null);
   const [isGeolocation, setGeolocation] = useState(false);
 
@@ -76,30 +75,6 @@ export const App = () => {
       [],
     ),
   });
-
-  const layerGroups: ILayerGroup<typeof layerFilter.keys[0]>[] = useMemo(
-    () => [
-      {
-        label: t(`layers.visitors.title`),
-        icon: <Icon icon="visitor" size={48} />,
-        layers: {
-          value: "visitors",
-          label: t(`layers.visitors.title`),
-          isActive: layerFilter.isAnyKeyActive(["visitors"]),
-        },
-      },
-      {
-        label: t(`layers.residents.title`),
-        icon: <Icon icon="resident" size={48} />,
-        layers: {
-          value: "residents",
-          label: t(`layers.residents.title`),
-          isActive: layerFilter.isAnyKeyActive(["residents"]),
-        },
-      },
-    ],
-    [layerFilter, t],
-  );
 
   const previousLayerFilterActiveKeys = usePrevious(layerFilter.activeKeys);
 
@@ -165,7 +140,7 @@ export const App = () => {
         setActiveOnlyVisitorLayers();
       } else {
         // initial state
-        setActiveOnlyVisitorLayers();
+        setActiveOnlyResidentLayers();
       }
     }
 
@@ -196,10 +171,14 @@ export const App = () => {
     }
   }, [previousMobile, isMobile]);
 
-  const isDetailOpen = useMemo(() => !!selectedFeature, [selectedFeature]);
+  const isDetailOpen = useMemo(
+    () => !!(selectedFeature ?? selectedMarker),
+    [selectedFeature, selectedMarker],
+  );
 
   const closeDetail = useCallback(() => {
     setSelectedFeature(null);
+    setSelectedMarker(null);
   }, []);
 
   // close detailbox when sidebar is opened on mobile
@@ -212,109 +191,16 @@ export const App = () => {
   const { height: desktopDetailHeight, ref: desktopDetailRef } =
     useResizeDetector<HTMLDivElement>();
 
-  const markerGroups: ILayerGroup<typeof markerFilter.keys[0]>[] = useMemo(
-    () => [
-      {
-        label: t(`layerGroups.payment.title`),
-        layers: [
-          {
-            value: "parkomats",
-            label: t(`layers.parkomats.title`),
-            isActive: markerFilter.isAnyKeyActive(["parkomats"]),
-            component: ({ isActive, onToggle }) => (
-              <button onClick={onToggle} className="flex gap-4 items-center">
-                <Icon shadow={false} isWhite={!isActive} icon="parkomat" size={48} />
-                <span className="pb-[2px]">{t(`layers.parkomats.title`)}</span>
-              </button>
-            ),
-          },
-          {
-            value: "assistants",
-            label: t(`layers.assistants.title`),
-            isActive: markerFilter.isAnyKeyActive(["assistants"]),
-            component: ({ isActive, onToggle }) => (
-              <button onClick={onToggle} className="flex gap-4 items-center">
-                <Icon shadow={false} isWhite={!isActive} icon="assistant" size={48} />
-                <span className="pb-[2px]">{t(`layers.assistants.title`)}</span>
-              </button>
-            ),
-          },
-          {
-            value: "partners",
-            label: t(`layers.partners.title`),
-            isActive: markerFilter.isAnyKeyActive(["partners"]),
-            component: ({ isActive, onToggle }) => (
-              <button onClick={onToggle} className="flex gap-4 items-center">
-                <Icon shadow={false} isWhite={!isActive} icon="partner" size={48} />
-                <span className="pb-[2px]">{t(`layers.partners.title`)}</span>
-              </button>
-            ),
-          },
-        ],
-      },
-      {
-        label: t(`layerGroups.parking.title`),
-        layers: [
-          {
-            value: ["garages"],
-            label: t(`layers.garages.title`),
-            isActive: markerFilter.isAnyKeyActive(["garages"]),
-            component: ({ isActive, onToggle }) => (
-              <button onClick={onToggle} className="flex gap-4 items-center">
-                <Icon shadow={false} isWhite={!isActive} icon="garage" size={48} />
-                <span className="pb-[2px]">{t(`layers.garages.title`)}</span>
-              </button>
-            ),
-          },
-          {
-            value: "p-plus-r",
-            label: t(`layers.p-plus-r.title`),
-            isActive: markerFilter.isAnyKeyActive(["p-plus-r"]),
-            component: ({ isActive, onToggle }) => (
-              <button onClick={onToggle} className="flex gap-4 items-center">
-                <Icon shadow={false} isWhite={!isActive} icon="p-plus-r" size={48} />
-                <span className="pb-[2px]">{t(`layers.p-plus-r.title`)}</span>
-              </button>
-            ),
-          },
-          {
-            value: "p-plus-r-region",
-            label: t(`layers.p-plus-r-region.title`),
-            isActive: markerFilter.isAnyKeyActive(["p-plus-r-region"]),
-            component: ({ isActive, onToggle }) => (
-              <button onClick={onToggle} className="flex gap-4 items-center">
-                <Icon shadow={false} isWhite={!isActive} icon="p-plus-r-region" size={48} />
-                <span className="pb-[2px]">{t(`layers.p-plus-r-region.title`)}</span>
-              </button>
-            ),
-          },
-        ],
-      },
-      {
-        label: t(`layerGroups.support.title`),
-        layers: [
-          {
-            value: "branches",
-            label: t(`layers.branches.title`),
-            isActive: markerFilter.isAnyKeyActive(["branches"]),
-            component: ({ isActive, onToggle }) => (
-              <button onClick={onToggle} className="flex gap-4 items-center">
-                <Icon shadow={false} isWhite={!isActive} icon="branch" size={48} />
-                <span className="pb-[2px]">{t(`layers.branches.title`)}</span>
-              </button>
-            ),
-          },
-        ],
-      },
-    ],
-    [markerFilter, t],
-  );
-
   const viewportControllerSlots: SlotType = useMemo(() => {
     return isMobile
       ? ["legend", "compass", "zoom"]
       : ["legend", "geolocation", "compass", ["fullscreen", "zoom"]];
   }, [isMobile]);
+
+  const zoneFilter = useFilter({
+    property: "zone",
+    keys: useMemo(() => ["SM1", "RU1"], []),
+  });
 
   return isLoading ? null : (
     <Map
@@ -338,16 +224,21 @@ export const App = () => {
       }}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
-      moveSearchBarOutsideOfSideBarOnLargeScreen
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
+      selectedFeatures={selectedFeature ? [selectedFeature] : []}
+      onFeaturesClick={(features) => {
+        mapRef.current?.moveToFeatures(features);
+        setSelectedFeature(features[0] ?? null);
+        setSelectedMarker(null);
+      }}
     >
       <Filter expression={markerFilter.expression}>
         <Cluster features={markersData?.features ?? []} radius={48}>
           {({ features, lng, lat, key, clusterExpansionZoom }) => (
             <Marker
-              isSelected={features[0].id === selectedFeature?.id}
+              isSelected={features[0].id === selectedMarker?.id}
               key={key}
               features={features}
               lat={lat}
@@ -362,7 +253,8 @@ export const App = () => {
                     },
                   });
                 } else {
-                  setSelectedFeature(feature);
+                  setSelectedMarker(feature);
+                  setSelectedFeature(null);
                   mapRef.current?.changeViewport({
                     center: {
                       lat,
@@ -398,34 +290,48 @@ export const App = () => {
         <Slot name="mobile-header">
           <MobileHeader
             onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
+            onVisitorClick={setActiveOnlyVisitorLayers}
+            onResidentClick={setActiveOnlyResidentLayers}
+            isVisitorOrResidentActive={layerFilter.isAnyKeyActive(["visitors"])}
           />
         </Slot>
 
-        {/* <Slot
-          name="mobile-filter"
-          isVisible={isSidebarVisible}
-          setVisible={setSidebarVisible}
-          avoidControls={false}
-        > */}
-        {/* <MobileFilters
+        <Slot name="mobile-filters" isVisible={isSidebarVisible} setVisible={setSidebarVisible}>
+          <Filters
+            isMobile={true}
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
-            areFiltersDefault={combinedFilter.areDefault}
-            activeFilters={combinedFilter.active}
-            onResetFiltersClick={combinedFilter.reset}
-            districtFilter={districtFilter}
-            tagFilter={tagFilter}
-            sportGroundFilter={sportGroundFilter}
             layerFilter={layerFilter}
-            layerGroups={layerGroups}
-          /> */}
-        {/* </Slot> */}
+            markerFilter={markerFilter}
+            zoneFilter={zoneFilter}
+          />
+        </Slot>
 
-        <Slot name="mobile-detail" isVisible={true}>
-          <Detail isMobile feature={selectedFeature} onClose={closeDetail} />
+        <Slot
+          name="mobile-detail"
+          openPadding={{ bottom: 200 }}
+          avoidControls={false}
+          isVisible={isDetailOpen}
+        >
+          <Detail
+            isOpen={isDetailOpen}
+            isMobile
+            feature={selectedFeature ?? selectedMarker}
+            onClose={closeDetail}
+          />
         </Slot>
       </Layout>
+
       <Layout isOnlyDesktop>
+        <Slot name="desktop-search">
+          <DesktopSearch
+            areFiltersOpen={isSidebarVisible ?? false}
+            mapRef={mapRef}
+            mapboxgl={mapboxgl}
+            isGeolocation={isGeolocation}
+          />
+        </Slot>
+
         <Slot
           name="desktop-filters"
           isVisible={isSidebarVisible}
@@ -434,39 +340,42 @@ export const App = () => {
             left: 384, // w-96 or 24rem
           }}
         >
-          <DesktopFilters
-            mapboxgl={mapboxgl}
+          <Filters
+            isMobile={false}
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
-            areFiltersDefault={true}
-            onResetFiltersClick={() => void 0}
-            mapRef={mapRef}
             layerFilter={layerFilter}
-            layerGroups={layerGroups}
             markerFilter={markerFilter}
-            markerGroups={markerGroups}
-            isGeolocation={isGeolocation}
+            zoneFilter={zoneFilter}
           />
         </Slot>
 
-        {/* <Slot
+        <Slot
           name="desktop-detail"
           isVisible={isDetailOpen}
           openPadding={{
             right: 384,
           }}
-          avoidControls={window.innerHeight <= (desktopDetailHeight ?? 0) + 200 ? true : false}
+          avoidControls={false}
         >
           <div
             ref={desktopDetailRef}
-            className={cx("fixed top-0 right-0 w-96 bg-background transition-all duration-500", {
-              "translate-x-full": !isDetailOpen,
-              "shadow-lg": isDetailOpen,
-            })}
+            className={cx(
+              "fixed top-0 right-0 w-96 bg-background-lightmode transition-all duration-500",
+              {
+                "translate-x-full": !isDetailOpen,
+                "shadow-lg": isDetailOpen,
+              },
+            )}
           >
-            <Detail isMobile={false} feature={selectedFeature} onClose={closeDetail} />
+            <Detail
+              isOpen={isDetailOpen}
+              isMobile={false}
+              feature={selectedFeature ?? selectedMarker}
+              onClose={closeDetail}
+            />
           </div>
-        </Slot> */}
+        </Slot>
       </Layout>
     </Map>
   );

@@ -37,7 +37,7 @@ export const Sidebar = ({
     >
       <div
         className={cx(
-          "w-full h-full flex flex-col bg-background-lightmode dark:bg-background-darkmode pr-0 transition-all",
+          "w-full h-full flex flex-col bg-background-lightmode dark:bg-background-darkmode dark:border-r-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20 pr-0 transition-all",
           {
             "overflow-auto": isMobile,
           }
@@ -62,7 +62,7 @@ export const Sidebar = ({
             tabIndex={0}
             onKeyDown={(e) => e.key === "Enter" && setVisible(!isVisible)}
             className={cx(
-              "absolute bg-background-lightmode dark:bg-background-darkmode z-20 py-8 transform hover:text-primary transition-all",
+              "absolute bg-background-lightmode dark:bg-background-darkmode z-20 dark:border-r-2 dark:border-b-2 dark:border-gray-darkmode dark:border-opacity-20 py-8 transform hover:text-primary transition-all",
               {
                 "left-0 -translate-x-full rounded-bl-lg": position === "right",
                 "right-0 translate-x-full rounded-br-lg": position === "left",
@@ -90,10 +90,19 @@ export const Sidebar = ({
             />
             <div
               className={cx(
-                "hidden transition-all sm:block bg-background-lightmode dark:bg-background-darkmode absolute w-4 min-h-full box-content top-0 pb-4",
+                "pointer-events-none hidden transition-all sm:block bg-background-lightmode dark:bg-background-darkmode absolute w-4 min-h-full box-content top-0",
                 {
                   "left-full": position === "right",
                   "right-full": position === "left",
+                }
+              )}
+            ></div>
+            <div
+              className={cx(
+                "pointer-events-none hidden transition-all sm:block bg-background-lightmode dark:bg-background-darkmode absolute w-4 h-4 box-content top-full dark:border-opacity-20 dark:border-gray-darkmode",
+                {
+                  "left-full dark:border-l-2": position === "right",
+                  "right-full dark:border-r-2": position === "left",
                 }
               )}
             ></div>
