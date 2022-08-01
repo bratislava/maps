@@ -25,7 +25,7 @@ module.exports = {
           darkmode: "#FFEFE9",
         },
         primary: {
-          DEFAULT: "#00D4DF",
+          DEFAULT: "#80F1F6",
           soft: "#80F1F6",
         },
       },
