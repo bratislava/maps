@@ -60,6 +60,15 @@ export const App = () => {
 
   const [isMobile, setMobile] = useState<boolean | null>(null);
 
+  // fit to largest running track after load
+  useEffect(() => {
+    if (!isLoading && apolloData?.features[0]) {
+      setTimeout(() => {
+        mapRef.current?.fitFeature(apolloData?.features[0]);
+      }, 3000);
+    }
+  }, [apolloData?.features, isLoading]);
+
   const previousMobile = usePrevious(isMobile);
 
   // const runningTracksFilter = useFilter({
