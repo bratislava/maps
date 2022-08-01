@@ -2,6 +2,9 @@ const styles = [
   {
     id: "old-bridge-line-bg",
     type: "line",
+    layout: {
+      "line-cap": "round",
+    },
     paint: {
       "line-color": "#883E98",
       "line-opacity": 1,

@@ -2,6 +2,9 @@ const styles = [
   {
     id: "snp-line-bg",
     type: "line",
+    layout: {
+      "line-cap": "round",
+    },
     paint: {
       "line-color": "#F2A121",
       "line-opacity": 1,
