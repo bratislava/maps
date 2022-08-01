@@ -29,6 +29,9 @@ module.exports = {
           soft: "#80F1F6",
         },
       },
+      fontFamily: {
+        laca: ["laca"],
+      },
     },
   },
 };
