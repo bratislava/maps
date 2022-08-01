@@ -13,7 +13,7 @@ import {
   SlotType,
 } from "@bratislava/react-maps";
 
-import { Layer, useFilter } from "@bratislava/react-mapbox";
+import { Layer, Marker, useFilter } from "@bratislava/react-mapbox";
 
 // layer styles
 import apolloStyles from "../assets/layers/apollo/apollo-styles";
@@ -22,9 +22,10 @@ import snpStyles from "../assets/layers/snp/snp-styles";
 
 // utils
 import mapboxgl from "mapbox-gl";
-import { FeatureCollection } from "geojson";
+import { FeatureCollection, Point } from "geojson";
 import { getCvickoIdFromQuery, getProcessedData } from "../utils/utils";
 import { useTranslation } from "react-i18next";
+import { CvickoMarker } from "./CvickoMarker";
 
 const currentCvickoId = getCvickoIdFromQuery();
 
@@ -39,13 +40,15 @@ export const App = () => {
   const [apolloData, setApolloData] = useState<FeatureCollection | null>(null);
   const [oldBridgeData, setOldBridgeData] = useState<FeatureCollection | null>(null);
   const [snpData, setSnpData] = useState<FeatureCollection | null>(null);
+  const [cvickoData, setCvickoData] = useState<FeatureCollection<Point> | null>(null);
 
   useEffect(() => {
-    const { apolloData, oldBridgeData, snpData } = getProcessedData();
+    const { apolloData, oldBridgeData, snpData, cvickoData } = getProcessedData();
 
     setApolloData(apolloData);
     setOldBridgeData(oldBridgeData);
     setSnpData(snpData);
+    setCvickoData(cvickoData);
     setLoading(false);
   }, []);
 
@@ -99,6 +102,15 @@ export const App = () => {
       <Layer source="apollo" styles={apolloStyles} />
       <Layer source="oldBridge" styles={oldBridgeStyles} />
       <Layer source="snp" styles={snpStyles} />
+
+      {cvickoData?.features.map((cvickoFeature) => (
+        <CvickoMarker
+          key={cvickoFeature.properties?.id}
+          feature={cvickoFeature}
+          currentCvickoId={currentCvickoId}
+          cvickoId={cvickoFeature.properties?.id}
+        />
+      ))}
 
       <Slot name="controls">
         <ThemeController className="fixed left-4 bottom-[88px] sm:bottom-8 sm:transform" />
