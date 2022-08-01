@@ -1,6 +1,6 @@
-import { FeatureCollection } from "geojson";
+import { FeatureCollection, Point } from "geojson";
 
-export const cvickoData: FeatureCollection = {
+export const cvickoData: FeatureCollection<Point> = {
   type: "FeatureCollection",
   features: [
     {
