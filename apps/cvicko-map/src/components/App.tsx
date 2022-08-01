@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import cx from "classnames";
 import "../styles.css";
-import { useMotionValue } from "framer-motion";
 import { lineString } from "@turf/turf";
 
 // maps
@@ -15,7 +13,7 @@ import {
   SlotType,
 } from "@bratislava/react-maps";
 
-import { Layer, Marker, LineString, useFilter } from "@bratislava/react-mapbox";
+import { LineString, useFilter } from "@bratislava/react-mapbox";
 
 // layer styles
 import apolloStyles from "../assets/layers/apollo/apollo-styles";
@@ -34,6 +32,17 @@ import { oldBridgeRunningTrackCoordinates } from "../assets/layers/old-bridge/ol
 import { snpRunningTrackCoordinates } from "../assets/layers/snp/snp-running-track-coordinates";
 
 const currentCvickoId = getCvickoIdFromQuery();
+
+const cvickoIdToTracksMappingObject: {
+  [cvickoId: string]: ("apollo-rt" | "old-bridge-rt" | "snp-rt")[];
+} = {
+  apollo: ["apollo-rt", "old-bridge-rt"],
+  lafranconi: ["apollo-rt", "old-bridge-rt", "snp-rt"],
+  "most-snp": ["apollo-rt", "old-bridge-rt", "snp-rt"],
+  nabrezie: ["apollo-rt", "old-bridge-rt", "snp-rt"],
+  promenada: ["apollo-rt", "old-bridge-rt", "snp-rt"],
+  tyrsak: ["apollo-rt", "old-bridge-rt", "snp-rt"],
+};
 
 export const App = () => {
   const { t } = useTranslation();
@@ -75,21 +84,14 @@ export const App = () => {
     keys: useMemo(() => ["apollo-rt", "old-bridge-rt", "snp-rt"], []),
   });
 
-  const cvickoIdToTracksMappingObject = useMemo(
-    () => ({
-      apollo: ["apollo-rt", "old-bridge-rt"] as typeof runningTracksFilter.keys,
-      lafranconi: ["apollo-rt", "old-bridge-rt", "snp-rt"] as typeof runningTracksFilter.keys,
-      "most-snp": ["apollo-rt", "old-bridge-rt", "snp-rt"] as typeof runningTracksFilter.keys,
-      nabrezie: ["apollo-rt", "old-bridge-rt", "snp-rt"] as typeof runningTracksFilter.keys,
-      promenada: ["apollo-rt", "old-bridge-rt", "snp-rt"] as typeof runningTracksFilter.keys,
-      tyrsak: ["apollo-rt", "old-bridge-rt", "snp-rt"] as typeof runningTracksFilter.keys,
-    }),
-    [runningTracksFilter],
-  );
-
   useEffect(() => {
-    runningTracksFilter.setActiveOnly(cvickoIdToTracksMappingObject[currentCvickoId]);
-  }, [cvickoIdToTracksMappingObject, runningTracksFilter]);
+    if (
+      JSON.stringify(runningTracksFilter.activeKeys) !==
+      JSON.stringify(cvickoIdToTracksMappingObject[currentCvickoId])
+    ) {
+      runningTracksFilter.setActiveOnly(cvickoIdToTracksMappingObject[currentCvickoId]);
+    }
+  }, [runningTracksFilter]);
 
   const viewportControllerSlots: SlotType = useMemo(() => {
     return isMobile ? ["zoom"] : [["fullscreen", "zoom"]];
