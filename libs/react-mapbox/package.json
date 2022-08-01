@@ -2,5 +2,10 @@
   "name": "@bratislava/react-mapbox",
   "version": "1.0.0",
   "main": "src/index.ts",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@turf/turf": "^6.5.0",
+    "framer-motion": "^6.5.1",
+    "react": "17"
+  }
 }
