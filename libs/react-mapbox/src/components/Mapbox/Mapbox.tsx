@@ -45,7 +45,7 @@ export interface MapboxProps {
   onLoad?: () => void;
   initialViewport?: PartialViewport;
   isDevelopment?: boolean;
-  onClick?: () => void;
+  onClick?: (event: mapboxgl.MapMouseEvent & mapboxgl.EventData) => void;
 }
 
 export interface ISlotPadding {
@@ -353,7 +353,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     // MAP CLICK HANDLER
     const onMapClick = useCallback(
       (event: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
-        onClick && onClick();
+        onClick && onClick(event);
 
         if (!map.current) return;
         const MAP = map.current;

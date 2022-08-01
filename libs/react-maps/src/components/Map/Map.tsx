@@ -57,7 +57,7 @@ export interface IMapProps {
   onSelectedFeaturesChange?: (features: Feature[]) => void;
   onMobileChange?: (isMobile: boolean) => void;
   onGeolocationChange?: (isGeolocation: boolean) => void;
-  onMapClick?: () => void;
+  onMapClick?: (event: mapboxgl.MapMouseEvent & mapboxgl.EventData) => void;
   loadingSpinnerColor?: string;
   selectedFeatures?: MapboxGeoJSONFeature[];
   onFeaturesClick?: (features: MapboxGeoJSONFeature[]) => void;
