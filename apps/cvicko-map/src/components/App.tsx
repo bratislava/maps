@@ -27,14 +27,16 @@ import snpStyles from "../assets/layers/snp/snp-styles";
 import mapboxgl from "mapbox-gl";
 import { FeatureCollection } from "geojson";
 import { usePrevious } from "@bratislava/utils";
-import { getProcessedData } from "../utils/utils";
+import { getCvickoIdFromQuery, getProcessedData } from "../utils/utils";
 import { useTranslation } from "react-i18next";
+
+const currentCvickoId = getCvickoIdFromQuery();
 
 export const App = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    document.title = t("title");
+    document.title = `${t(`cvicko.${currentCvickoId}`)} | ${t("title")}`;
   }, [t]);
 
   const [isLoading, setLoading] = useState(true);
@@ -60,10 +62,10 @@ export const App = () => {
 
   const previousMobile = usePrevious(isMobile);
 
-  const cvickoFilter = useFilter({
-    property: "cvicko",
-    keys: useMemo(() => ["apollo"], []),
-  });
+  // const runningTracksFilter = useFilter({
+  //   property: "id",
+  //   keys: useMemo(() => ["most-snp", "stary-most", "apollo"], []),
+  // });
 
   // close sidebar on mobile and open on desktop
   useEffect(() => {
