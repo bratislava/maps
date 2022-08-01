@@ -49,7 +49,7 @@ export const CvickoMarker = ({ cvickoId, currentCvickoId, feature }: ICvickoMark
       ) : (
         <motion.div
           initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
+          animate={{ scale: 0.65 }}
           transition={{ duration: 0.5, delay: Math.random() * 2 + 6 }}
         >
           <OtherCvickoIcon />
