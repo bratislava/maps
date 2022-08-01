@@ -2,6 +2,9 @@ const styles = [
   {
     id: "apollo-line-bg",
     type: "line",
+    layout: {
+      "line-cap": "round",
+    },
     paint: {
       "line-color": "#DA5F32",
       "line-opacity": 1,
