@@ -1,4 +1,5 @@
 import { IMarkerProps, Marker } from "@bratislava/react-mapbox";
+import { motion } from "framer-motion";
 
 import { ReactComponent as CvickoIcon } from "../assets/icons/cvicko.svg";
 
@@ -27,7 +28,7 @@ export const CvickoMarker = ({ cvickoId, currentCvickoId, feature }: ICvickoMark
     <Marker feature={feature}>
       {currentCvickoId === cvickoId ? (
         <div className="flex relative items-center justify-center ">
-          <div className="absolute bg-primary rounded-full w-4 h-4"></div>
+          <div className="absolute bg-primary rounded-full w-4 h-4 border-foreground-lightmode border-2"></div>
           <div
             className="absolute flex flex-col items-center"
             style={{
@@ -46,9 +47,13 @@ export const CvickoMarker = ({ cvickoId, currentCvickoId, feature }: ICvickoMark
           </div>
         </div>
       ) : (
-        <div className="">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.5, delay: Math.random() * 2 + 6 }}
+        >
           <OtherCvickoIcon />
-        </div>
+        </motion.div>
       )}
     </Marker>
   );
