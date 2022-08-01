@@ -15,9 +15,6 @@ import {
 
 import { Layer, useFilter } from "@bratislava/react-mapbox";
 
-// components
-import { Detail } from "./Detail";
-
 // layer styles
 import apolloStyles from "../assets/layers/apollo/apollo-styles";
 import oldBridgeStyles from "../assets/layers/old-bridge/old-bridge-styles";
@@ -26,7 +23,6 @@ import snpStyles from "../assets/layers/snp/snp-styles";
 // utils
 import mapboxgl from "mapbox-gl";
 import { FeatureCollection } from "geojson";
-import { usePrevious } from "@bratislava/utils";
 import { getCvickoIdFromQuery, getProcessedData } from "../utils/utils";
 import { useTranslation } from "react-i18next";
 
@@ -43,8 +39,6 @@ export const App = () => {
   const [apolloData, setApolloData] = useState<FeatureCollection | null>(null);
   const [oldBridgeData, setOldBridgeData] = useState<FeatureCollection | null>(null);
   const [snpData, setSnpData] = useState<FeatureCollection | null>(null);
-
-  const [isDetailOpen, setDetailOpen] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     const { apolloData, oldBridgeData, snpData } = getProcessedData();
@@ -69,24 +63,10 @@ export const App = () => {
     }
   }, [apolloData?.features, isLoading]);
 
-  const previousMobile = usePrevious(isMobile);
-
   // const runningTracksFilter = useFilter({
   //   property: "id",
   //   keys: useMemo(() => ["most-snp", "stary-most", "apollo"], []),
   // });
-
-  // close sidebar on mobile and open on desktop
-  useEffect(() => {
-    // from mobile to desktop
-    if (previousMobile !== false && isMobile === false) {
-      setDetailOpen(true);
-    }
-    // from desktop to mobile
-    if (previousMobile !== true && isMobile === true) {
-      setDetailOpen(false);
-    }
-  }, [previousMobile, isMobile]);
 
   const viewportControllerSlots: SlotType = useMemo(() => {
     return isMobile
@@ -125,46 +105,14 @@ export const App = () => {
       <Slot name="controls">
         <ThemeController className="fixed left-4 bottom-[88px] sm:bottom-8 sm:transform" />
         <ViewportController
-          className={cx("fixed right-4 bottom-[88px] sm:bottom-8 sm:transform", {
-            "-translate-x-96": isDetailOpen && !isMobile,
-          })}
+          className="fixed right-4 bottom-[88px] sm:bottom-8 sm:transform"
           slots={viewportControllerSlots}
         />
       </Slot>
 
-      <Layout isOnlyMobile>
-        <Slot
-          name="mobile-detail"
-          isVisible
-          openPadding={{
-            bottom: window.innerHeight / 2, // w-96 or 24rem
-          }}
-          avoidControls={false}
-        >
-          <Detail
-            isMobile
-            isOpen={isDetailOpen ?? false}
-            onToggle={() => setDetailOpen(!isDetailOpen)}
-          />
-        </Slot>
-      </Layout>
+      <Layout isOnlyMobile></Layout>
 
-      <Layout isOnlyDesktop>
-        <Slot
-          name="desktop-detail"
-          isVisible={isDetailOpen}
-          openPadding={{
-            right: 384,
-          }}
-          avoidControls
-        >
-          <Detail
-            isMobile={false}
-            isOpen={isDetailOpen ?? false}
-            onToggle={() => setDetailOpen(!isDetailOpen)}
-          />
-        </Slot>
-      </Layout>
+      <Layout isOnlyDesktop></Layout>
     </Map>
   );
 };
