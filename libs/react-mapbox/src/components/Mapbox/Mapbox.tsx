@@ -308,6 +308,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           MAP.addSource(sourceKey, {
             type: "geojson",
             data: sources[sourceKey],
+            tolerance: 0,
           });
         }
       });
