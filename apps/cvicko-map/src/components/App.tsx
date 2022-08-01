@@ -74,7 +74,7 @@ export const App = () => {
 
   return isLoading ? null : (
     <Map
-      loadingSpinnerColor="#237c36"
+      loadingSpinnerColor="#00D4DF"
       ref={mapRef}
       mapboxgl={mapboxgl}
       mapStyles={{
