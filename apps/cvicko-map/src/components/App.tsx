@@ -53,7 +53,7 @@ export const App = () => {
   useEffect(() => {
     setTimeout(() => {
       setRunningTrackVisiblePart(1);
-    }, 6000);
+    }, 3000);
   }, [runningTrackVisiblePart]);
 
   const mapRef = useRef<MapHandle>(null);
@@ -70,10 +70,26 @@ export const App = () => {
     }
   }, [isLoading]);
 
-  // const runningTracksFilter = useFilter({
-  //   property: "id",
-  //   keys: useMemo(() => ["most-snp", "stary-most", "apollo"], []),
-  // });
+  const runningTracksFilter = useFilter({
+    property: "id",
+    keys: useMemo(() => ["apollo-rt", "old-bridge-rt", "snp-rt"], []),
+  });
+
+  const cvickoIdToTracksMappingObject = useMemo(
+    () => ({
+      apollo: ["apollo-rt", "old-bridge-rt"] as typeof runningTracksFilter.keys,
+      lafranconi: ["apollo-rt", "old-bridge-rt", "snp-rt"] as typeof runningTracksFilter.keys,
+      "most-snp": ["apollo-rt", "old-bridge-rt", "snp-rt"] as typeof runningTracksFilter.keys,
+      nabrezie: ["apollo-rt", "old-bridge-rt", "snp-rt"] as typeof runningTracksFilter.keys,
+      promenada: ["apollo-rt", "old-bridge-rt", "snp-rt"] as typeof runningTracksFilter.keys,
+      tyrsak: ["apollo-rt", "old-bridge-rt", "snp-rt"] as typeof runningTracksFilter.keys,
+    }),
+    [runningTracksFilter],
+  );
+
+  useEffect(() => {
+    runningTracksFilter.setActiveOnly(cvickoIdToTracksMappingObject[currentCvickoId]);
+  }, [cvickoIdToTracksMappingObject, runningTracksFilter]);
 
   const viewportControllerSlots: SlotType = useMemo(() => {
     return isMobile ? ["zoom"] : [["fullscreen", "zoom"]];
@@ -97,6 +113,7 @@ export const App = () => {
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
       onMobileChange={setMobile}
+      onMapClick={(e) => console.log(e)}
     >
       {/* Cvicko icons */}
       {cvickoData?.features.map((cvickoFeature) => (
@@ -110,26 +127,30 @@ export const App = () => {
 
       {/* Apollo running track */}
       <LineString
-        id="apollo-running-track"
+        id="apollo-rt"
         coordinates={apolloRunningTrackCoordinates}
         styles={apolloStyles}
-        visiblePart={runningTrackVisiblePart}
+        visiblePart={
+          runningTracksFilter.isAnyKeyActive(["apollo-rt"]) ? runningTrackVisiblePart : 0
+        }
         duration={5000}
       />
       {/* Old bridge running track */}
       <LineString
-        id="old-bridge-running-track"
+        id="old-bridge-rt"
         coordinates={oldBridgeRunningTrackCoordinates}
         styles={oldBridgeStyles}
-        visiblePart={runningTrackVisiblePart}
+        visiblePart={
+          runningTracksFilter.isAnyKeyActive(["old-bridge-rt"]) ? runningTrackVisiblePart : 0
+        }
         duration={4000}
       />
       {/* SNP running track */}
       <LineString
-        id="snp-running-track"
+        id="snp-rt"
         coordinates={snpRunningTrackCoordinates}
         styles={snpStyles}
-        visiblePart={runningTrackVisiblePart}
+        visiblePart={runningTracksFilter.isAnyKeyActive(["snp-rt"]) ? runningTrackVisiblePart : 0}
         duration={3000}
       />
 
