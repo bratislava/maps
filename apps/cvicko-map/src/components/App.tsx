@@ -69,9 +69,7 @@ export const App = () => {
   // });
 
   const viewportControllerSlots: SlotType = useMemo(() => {
-    return isMobile
-      ? ["legend", "compass", "zoom"]
-      : ["legend", "geolocation", "compass", ["fullscreen", "zoom"]];
+    return isMobile ? ["compass", "zoom"] : ["compass", ["fullscreen", "zoom"]];
   }, [isMobile]);
 
   return isLoading ? null : (
