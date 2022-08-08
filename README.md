@@ -18,6 +18,8 @@ Inside the `apps` folder there are all of our map applications. It is a good sta
 
 We are uploadig our built applications manually to our [CDN](https://cdn.bratislava.sk/buckets/static-pages/browse).
 
+There is a bucket called "static-pages" in which every map is uploaded to its subfolder.
+
 ## Developing
 
 ```
