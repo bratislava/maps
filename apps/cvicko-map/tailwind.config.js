@@ -25,8 +25,16 @@ module.exports = {
           darkmode: "#FFEFE9",
         },
         primary: {
-          DEFAULT: "#80F1F6",
-          soft: "#80F1F6",
+          DEFAULT: "#88E0FF",
+          soft: "#88E0FF",
+        },
+        secodary: {
+          DEFAULT: "#D93D04",
+          soft: "#D93D04",
+        },
+        blue: {
+          DEFAULT: "#066384",
+          soft: "#BDEBFF",
         },
       },
       fontFamily: {

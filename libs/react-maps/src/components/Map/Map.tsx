@@ -23,6 +23,7 @@ import {
   MapIcon,
   PartialViewport,
   PartialPadding,
+  MapboxGesturesOptions,
 } from "@bratislava/react-mapbox";
 import { useResizeDetector } from "react-resize-detector";
 import cx from "classnames";
@@ -39,7 +40,7 @@ import { ArrowCounterclockwise } from "@bratislava/react-maps-icons";
 import DATA_DISTRICTS from "../../data/layers/districts.json";
 import bbox from "@turf/bbox";
 
-export interface IMapProps {
+export type IMapProps = {
   mapboxgl: typeof mapboxgl;
   sources?: Sources;
   isDevelopment?: boolean;
@@ -61,7 +62,8 @@ export interface IMapProps {
   loadingSpinnerColor?: string;
   selectedFeatures?: MapboxGeoJSONFeature[];
   onFeaturesClick?: (features: MapboxGeoJSONFeature[]) => void;
-}
+  maxBounds?: [[number, number], [number, number]];
+} & MapboxGesturesOptions;
 
 export type MapHandle = {
   changeViewport: (viewport: PartialViewport) => void;
@@ -114,6 +116,9 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       loadingSpinnerColor,
       onMapClick,
       onFeaturesClick,
+      disablePitch,
+      disableBearing,
+      maxBounds,
     },
     forwardedRef
   ) => {
@@ -467,6 +472,9 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               onClick={onMapClick}
               onViewportChange={onViewportChange}
               isDevelopment={isDevelopment && isDevInfoVisible}
+              disablePitch={disablePitch}
+              disableBearing={disableBearing}
+              maxBounds={maxBounds}
             >
               <>{children}</>
               {mapState.isGeolocation && mapState.geolocationMarkerLngLat && (

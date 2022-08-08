@@ -24,7 +24,12 @@ import {
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Feature } from "geojson";
 
-export interface MapboxProps {
+export type MapboxGesturesOptions = {
+  disableBearing?: boolean;
+  disablePitch?: boolean;
+};
+
+export type MapboxProps = {
   mapboxgl: typeof mapboxgl;
   sources: Sources;
   isDarkmode?: boolean;
@@ -46,7 +51,8 @@ export interface MapboxProps {
   initialViewport?: PartialViewport;
   isDevelopment?: boolean;
   onClick?: (event: mapboxgl.MapMouseEvent & mapboxgl.EventData) => void;
-}
+  maxBounds?: [[number, number], [number, number]];
+} & MapboxGesturesOptions;
 
 export interface ISlotPadding {
   isVisible: boolean;
@@ -74,11 +80,10 @@ const createMap = (
   isSatellite: boolean,
   isDarkmode: boolean,
   darkStyle: string,
-  lightStyle: string
+  lightStyle: string,
+  maxBounds?: [[number, number], [number, number]]
 ) => {
   return new mapboxgl.Map({
-    pitchWithRotate: false,
-    touchPitch: false,
     container: mapContainer.current ?? "",
     style: isDarkmode ? darkStyle : lightStyle,
     center: [
@@ -90,6 +95,7 @@ const createMap = (
     bearing: viewport.bearing ?? 0,
     maxZoom: 20,
     minZoom: 10.75,
+    maxBounds,
   });
 };
 
@@ -134,6 +140,9 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       isDevelopment = false,
       onLoad = () => void 0,
       onClick,
+      disableBearing = false,
+      disablePitch = false,
+      maxBounds,
     },
     forwardedRef
   ) => {
@@ -293,10 +302,27 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         isSatellite,
         isDarkmode,
         darkStyle,
-        lightStyle
+        lightStyle,
+        maxBounds
       );
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [setLoading]);
+
+    useEffect(() => {
+      if (disableBearing) {
+        map.current?.dragRotate.disable();
+        map.current?.touchZoomRotate.disable();
+      } else {
+        map.current?.dragRotate.enable();
+        map.current?.touchZoomRotate.enable();
+      }
+
+      if (disablePitch) {
+        map.current?.touchPitch.disable();
+      } else {
+        map.current?.touchPitch.enable();
+      }
+    }, [disableBearing, disablePitch]);
 
     // LOADING SOURCES
     const loadSources = useCallback(() => {

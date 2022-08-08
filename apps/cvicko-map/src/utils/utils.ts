@@ -1,16 +1,22 @@
-type cvickoId = "apollo" | "lafranconi" | "most-snp" | "nabrezie" | "promenada" | "tyrsak";
+type CvickoId = "apollo" | "lafranconi" | "most-snp" | "nabezie" | "promenada" | "tyrsak";
 
-export const getCvickoIdFromQuery = (): cvickoId => {
-  const cvickoQuery = new URLSearchParams(window.location.search).get("cvicko");
-  switch (cvickoQuery) {
+export const getCvickoIdFromQuery = (query: string | null): CvickoId | null => {
+  switch (query) {
     case "apollo":
     case "lafranconi":
     case "most-snp":
-    case "nabrezie":
+    case "nabezie":
     case "promenada":
     case "tyrsak":
-      return cvickoQuery;
+      return query;
     default:
-      return "apollo";
+      return null;
   }
+};
+
+export const getIsHomepageFromQuery = (query: string | null): boolean => {
+  if (query === "" || query) {
+    return true;
+  }
+  return false;
 };

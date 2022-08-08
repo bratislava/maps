@@ -13,12 +13,11 @@ import {
   ThemeController,
   ViewportController,
   SlotType,
+  DISTRICTS_GEOJSON,
 } from "@bratislava/react-maps";
 
 // maps
 import { Layer, useFilter, Cluster, Filter, useCombinedFilter } from "@bratislava/react-mapbox";
-
-import DISTRICTS_GEOJSON from "@bratislava/react-mapbox/src/assets/layers/districts.json";
 
 // components
 import { Detail } from "./Detail";
@@ -210,7 +209,7 @@ export const App = () => {
           },
           zoom: 10.75,
         })
-      : mapRef.current?.fitToDistrict(districtFilter.activeKeys);
+      : mapRef.current?.fitDistrict(districtFilter.activeKeys);
   }, [districtFilter.activeKeys, mapRef]);
 
   const markerClickHandler = useCallback((feature: Feature<Point>) => {
@@ -269,7 +268,6 @@ export const App = () => {
       }}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
-      moveSearchBarOutsideOfSideBarOnLargeScreen
       sources={{
         SPORT_GROUNDS_DATA: data,
         DISTRICTS_GEOJSON,

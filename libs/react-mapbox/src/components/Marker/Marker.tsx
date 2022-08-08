@@ -27,7 +27,7 @@ export const Marker = ({
   children,
   feature,
   isRelativeToZoom = false,
-  baseZoom = 20,
+  baseZoom = 12,
   className,
   onClick,
   ignoreFilters = false,
@@ -44,15 +44,18 @@ export const Marker = ({
   }, []);
 
   const recalculateScale = useCallback(() => {
-    const zoom = map?.getZoom();
-    setScale((zoom ?? baseZoom) / baseZoom);
-  }, [map, baseZoom]);
+    if (isRelativeToZoom) {
+      const zoom = map?.getZoom() ?? 0;
+      const scalePercent = 1 + (zoom - baseZoom) * 0.25;
+      setScale(scalePercent);
+    } else {
+      setScale(1);
+    }
+  }, [map, baseZoom, isRelativeToZoom]);
 
   useEffect(() => {
-    if (isRelativeToZoom) {
-      recalculateScale();
-      map?.on("zoom", recalculateScale);
-    }
+    recalculateScale();
+    map?.on("zoom", recalculateScale);
     return () => {
       map?.off("zoom", recalculateScale);
     };
@@ -74,6 +77,7 @@ export const Marker = ({
 
   const clickHandler = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation();
       onClick && onClick(e);
     },
     [onClick]

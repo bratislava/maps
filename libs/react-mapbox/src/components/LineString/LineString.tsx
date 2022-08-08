@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { usePrevious } from "@bratislava/utils";
 import { log } from "../../utils/log";
 import { mapboxContext } from "../Mapbox/Mapbox";
@@ -9,7 +9,13 @@ import {
 } from "geojson";
 import { useSpring } from "framer-motion";
 
-import { featureCollection, lineString, length, lineChunk } from "@turf/turf";
+import {
+  featureCollection,
+  lineString,
+  length,
+  lineChunk,
+  point,
+} from "@turf/turf";
 
 export interface ILineStringProps {
   id: string;
@@ -18,6 +24,7 @@ export interface ILineStringProps {
   coordinates: Feature<GeoJsonLineString>["geometry"]["coordinates"];
   visiblePart?: number;
   duration?: number;
+  onAnimationDone?: () => void;
 }
 
 export const LineString = ({
@@ -27,6 +34,7 @@ export const LineString = ({
   isVisible = true,
   visiblePart = 1,
   duration = 1000,
+  onAnimationDone = () => void 0,
 }: ILineStringProps) => {
   const {
     map,
@@ -131,25 +139,47 @@ export const LineString = ({
     line,
   ]);
 
-  useEffect(
-    () =>
-      springVisiblePart.onChange((value) => {
-        const fullLineLength = (line.properties?.length as number) ?? 0;
+  const drawLineHandler = useCallback(
+    (value: number) => {
+      const fullLineLength = (line.properties?.length as number) ?? 0;
 
-        const visibleLineLength = fullLineLength * value;
+      const visibleLineLength = fullLineLength * value;
 
-        const visibleLine = lineChunk(line, visibleLineLength, {
-          units: "meters",
-        }).features[0];
+      const source = map?.getSource(id);
 
-        const source = map?.getSource(id);
+      if (value === 1) {
+        onAnimationDone();
+      }
 
+      if (visibleLineLength === 0) {
         if (isSourceAdded && source && source.type === "geojson") {
-          source.setData(featureCollection([visibleLine]));
+          source.setData(
+            featureCollection([
+              lineString([
+                [0, 0],
+                [0, 0],
+              ]),
+            ])
+          );
         }
-      }),
-    [id, line, map, springVisiblePart, isSourceAdded]
+        return;
+      }
+
+      const visibleLine = lineChunk(line, visibleLineLength, {
+        units: "meters",
+      }).features[0];
+
+      if (isSourceAdded && source && source.type === "geojson") {
+        source.setData(featureCollection([visibleLine]));
+      }
+    },
+    [id, isSourceAdded, line, map, onAnimationDone]
   );
+
+  useEffect(() => {
+    drawLineHandler(springVisiblePart.get());
+    return springVisiblePart.onChange(drawLineHandler);
+  }, [springVisiblePart, drawLineHandler]);
 
   return null;
 };
