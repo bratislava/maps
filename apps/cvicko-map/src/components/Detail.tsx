@@ -38,7 +38,7 @@ export const Detail = ({ feature: inputFeature, onClose, isMobile }: DetailProps
 
       <Image src={imgSrc} />
 
-      <div className="absolute top-[232px] left-6">
+      <div className="absolute top-[136px] sm:top-[232px] left-6">
         <a
           href={feature?.properties?.["wantToWorkout"]}
           target="_blank"
