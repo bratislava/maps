@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../styles.css";
 import { lineString, Position } from "@turf/turf";
+import cx from "classnames";
 
 // maps
 import {
@@ -53,8 +54,18 @@ import { colors } from "../utils/colors";
 import { IconButton } from "@bratislava/react-maps-ui";
 import { X } from "@bratislava/react-maps-icons";
 import { useQuery } from "../utils/useQuery";
+import { useResizeDetector } from "react-resize-detector";
 
 export const App = () => {
+  const { height: detailHeight, ref: detailRef } = useResizeDetector();
+
+  const { height: containerHeight, ref: containerRef } = useResizeDetector<HTMLDivElement>();
+
+  useEffect(() => {
+    console.log("containerHeight", containerHeight);
+    console.log("detailHeight", detailHeight);
+  }, [containerHeight, detailHeight]);
+
   const mapRef = useRef<MapHandle>(null);
   mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
@@ -161,204 +172,198 @@ export const App = () => {
     }
   }, [animatedLine, closeDetail]);
 
+  const avoidViewportControls = useMemo(() => {
+    return !isMobile && !!selectedFeature && (containerHeight ?? 0) <= (detailHeight ?? 0) + 200;
+  }, [containerHeight, isMobile, selectedFeature, detailHeight]);
+
   useEffect(() => {
     setLoading(false);
   }, []);
 
   return isLoading ? null : (
-    <Map
-      loadingSpinnerColor="#00D4DF"
-      ref={mapRef}
-      mapboxgl={mapboxgl}
-      mapStyles={{
-        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-      }}
-      initialViewport={{
-        center: {
-          lat: 48.148598,
-          lng: 17.107748,
-        },
-        zoom: currentCvickoId ? 15 : undefined,
-      }}
-      isDevelopment={import.meta.env.DEV}
-      isOutsideLoading={isLoading}
-      onMobileChange={setMobile}
-      maxBounds={[
-        [17.04, 48.09],
-        [17.16, 48.19],
-      ]}
-      onMapClick={closeDetail}
-      disableBearing
-      disablePitch
-      cooperativeGestures={isCooperativeGestures}
-    >
-      {/* Apollo running track animation button */}
-      <RunningTrackButtonMarker
-        isVisible={animatedLine === null || animatedLine === "apollo-rt"}
-        lat={48.13781218517968}
-        lng={17.122609073972086}
-        onClick={() => setAnimatedLine("apollo-rt")}
-        color={colors.red}
-        length="10 km"
-      />
-
-      {/* Old bridge running track animation button */}
-      <RunningTrackButtonMarker
-        isVisible={animatedLine === null || animatedLine === "old-bridge-rt"}
-        lat={48.13829323226889}
-        lng={17.110750156057293}
-        onClick={() => setAnimatedLine("old-bridge-rt")}
-        color={colors.violet}
-        length="8 km"
-      />
-
-      {/* SNP running track animation button */}
-      <RunningTrackButtonMarker
-        isVisible={animatedLine === null || animatedLine === "snp-rt"}
-        lat={48.14075397693506}
-        lng={17.079605067162618}
-        onClick={() => setAnimatedLine("snp-rt")}
-        color={colors.orange}
-        length="6 km"
-      />
-
-      {/* small running track animation button */}
-      <RunningTrackButtonMarker
-        isSmall
-        isVisible={animatedLine === null || animatedLine === "small-rt"}
-        lat={48.1317443849081}
-        lng={17.10715026913175}
-        onClick={() => setAnimatedLine("small-rt")}
-        color={colors.blue}
-        length="800 m"
-      />
-
-      {/* large running track animation button */}
-      <RunningTrackButtonMarker
-        isSmall
-        isVisible={animatedLine === null || animatedLine === "large-rt"}
-        lat={48.13153408900732}
-        lng={17.11424132548811}
-        onClick={() => setAnimatedLine("large-rt")}
-        color={colors.brown}
-        length="1700 m"
-      />
-
-      {/* Cvicko icons */}
-      {cvickoData?.features.map((cvickoFeature) => (
-        <CvickoMarker
-          isHomepage={isHomepage}
-          isSelected={cvickoFeature.properties?.id === selectedFeature?.properties?.id}
-          key={cvickoFeature.properties?.id}
-          feature={cvickoFeature}
-          cvickoId={cvickoFeature.properties?.id}
-          onClick={() => setSelectedFeature(cvickoFeature)}
+    <div ref={containerRef} className="h-full w-full">
+      <Map
+        loadingSpinnerColor="#00D4DF"
+        ref={mapRef}
+        mapboxgl={mapboxgl}
+        mapStyles={{
+          light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+          dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+        }}
+        initialViewport={{
+          center: {
+            lat: 48.148598,
+            lng: 17.107748,
+          },
+          zoom: currentCvickoId ? 15 : undefined,
+        }}
+        isDevelopment={import.meta.env.DEV}
+        isOutsideLoading={isLoading}
+        onMobileChange={setMobile}
+        maxBounds={[
+          [17.04, 48.09],
+          [17.16, 48.19],
+        ]}
+        onMapClick={closeDetail}
+        disableBearing
+        disablePitch
+        cooperativeGestures={isCooperativeGestures}
+      >
+        {/* Apollo running track animation button */}
+        <RunningTrackButtonMarker
+          isVisible={animatedLine === null || animatedLine === "apollo-rt"}
+          lat={48.13781218517968}
+          lng={17.122609073972086}
+          onClick={() => setAnimatedLine("apollo-rt")}
+          color={colors.red}
+          length="10 km"
         />
-      ))}
 
-      {/* Animated track */}
-      {animatedLine ? (
-        <LineString
-          id="animated-rt"
-          coordinates={animatedLineCoordinates}
-          styles={animatedLineStyle}
-          visiblePart={animatedLineVisiblePart}
-          duration={animatedLineDuration}
-          onAnimationDone={() => setAnimatedLine(null)}
+        {/* Old bridge running track animation button */}
+        <RunningTrackButtonMarker
+          isVisible={animatedLine === null || animatedLine === "old-bridge-rt"}
+          lat={48.13829323226889}
+          lng={17.110750156057293}
+          onClick={() => setAnimatedLine("old-bridge-rt")}
+          color={colors.violet}
+          length="8 km"
         />
-      ) : (
-        <>
-          {/* Apollo running track */}
-          <LineString
-            id="apollo-rt"
-            coordinates={apolloBasicCoordinates}
-            styles={apolloStyles}
-            duration={2000}
-          />
-          {/* Old bridge running track */}
-          <LineString
-            id="old-bridge-rt"
-            coordinates={oldBasicCoordinates}
-            styles={oldStyles}
-            duration={2000}
-          />
-          {/* SNP running track */}
-          <LineString
-            id="snp-rt"
-            coordinates={snpBasicCoordinates}
-            styles={snpStyles}
-            duration={2000}
-          />
-          {/* large running track */}
-          <LineString
-            id="large-rt"
-            coordinates={largeBasicCoordinates}
-            styles={largeStyles}
-            duration={2000}
-          />
-          {/* small running track */}
-          <LineString
-            id="small-rt"
-            coordinates={smallBasicCoordinates}
-            styles={smallStyles}
-            duration={2000}
-          />
-        </>
-      )}
 
-      <Slot name="controls">
-        {!animatedLine && (
+        {/* SNP running track animation button */}
+        <RunningTrackButtonMarker
+          isVisible={animatedLine === null || animatedLine === "snp-rt"}
+          lat={48.14075397693506}
+          lng={17.079605067162618}
+          onClick={() => setAnimatedLine("snp-rt")}
+          color={colors.orange}
+          length="6 km"
+        />
+
+        {/* small running track animation button */}
+        <RunningTrackButtonMarker
+          isSmall
+          isVisible={animatedLine === null || animatedLine === "small-rt"}
+          lat={48.1317443849081}
+          lng={17.10715026913175}
+          onClick={() => setAnimatedLine("small-rt")}
+          color={colors.blue}
+          length="800 m"
+        />
+
+        {/* large running track animation button */}
+        <RunningTrackButtonMarker
+          isSmall
+          isVisible={animatedLine === null || animatedLine === "large-rt"}
+          lat={48.13153408900732}
+          lng={17.11424132548811}
+          onClick={() => setAnimatedLine("large-rt")}
+          color={colors.brown}
+          length="1700 m"
+        />
+
+        {/* Cvicko icons */}
+        {cvickoData?.features.map((cvickoFeature) => (
+          <CvickoMarker
+            isHomepage={isHomepage}
+            isSelected={cvickoFeature.properties?.id === selectedFeature?.properties?.id}
+            key={cvickoFeature.properties?.id}
+            feature={cvickoFeature}
+            cvickoId={cvickoFeature.properties?.id}
+            onClick={() => setSelectedFeature(cvickoFeature)}
+          />
+        ))}
+
+        {/* Animated track */}
+        {animatedLine ? (
+          <LineString
+            id="animated-rt"
+            coordinates={animatedLineCoordinates}
+            styles={animatedLineStyle}
+            visiblePart={animatedLineVisiblePart}
+            duration={animatedLineDuration}
+            onAnimationDone={() => setAnimatedLine(null)}
+          />
+        ) : (
           <>
-            <ThemeController className="fixed left-4 bottom-8 sm:transform" />
-            <ViewportController
-              className="fixed right-4 bottom-8 sm:transform"
-              slots={viewportControllerSlots}
+            {/* Apollo running track */}
+            <LineString
+              id="apollo-rt"
+              coordinates={apolloBasicCoordinates}
+              styles={apolloStyles}
+              duration={2000}
+            />
+            {/* Old bridge running track */}
+            <LineString
+              id="old-bridge-rt"
+              coordinates={oldBasicCoordinates}
+              styles={oldStyles}
+              duration={2000}
+            />
+            {/* SNP running track */}
+            <LineString
+              id="snp-rt"
+              coordinates={snpBasicCoordinates}
+              styles={snpStyles}
+              duration={2000}
+            />
+            {/* large running track */}
+            <LineString
+              id="large-rt"
+              coordinates={largeBasicCoordinates}
+              styles={largeStyles}
+              duration={2000}
+            />
+            {/* small running track */}
+            <LineString
+              id="small-rt"
+              coordinates={smallBasicCoordinates}
+              styles={smallStyles}
+              duration={2000}
             />
           </>
         )}
-        {animatedLine && (
-          <IconButton
-            onClick={() => setAnimatedLine(null)}
-            className="fixed top-4 right-4 w-16 h-16 rounded-full"
-          >
-            <X size="lg" />
-          </IconButton>
-        )}
-      </Slot>
 
-      <Layout isOnlyMobile>
+        <Slot name="controls">
+          {!animatedLine && (
+            <>
+              <ThemeController className="fixed left-4 bottom-8 sm:transform" />
+              <ViewportController
+                className={cx("fixed right-4 bottom-8 sm:transform", {
+                  "-translate-x-96": avoidViewportControls,
+                })}
+                slots={viewportControllerSlots}
+              />
+            </>
+          )}
+          {animatedLine && (
+            <IconButton
+              onClick={() => setAnimatedLine(null)}
+              className="fixed top-4 right-4 w-16 h-16 rounded-full"
+            >
+              <X size="lg" />
+            </IconButton>
+          )}
+        </Slot>
+
         <Slot
-          openPadding={{ bottom: (window.innerHeight / 5) * 3 }}
+          openPadding={{
+            right: !isMobile ? 384 : 0,
+            bottom: isMobile ? ((containerHeight ?? 0) / 5) * 3 : 0,
+          }}
+          avoidControls={avoidViewportControls ? true : false}
           isVisible={!!selectedFeature}
-          avoidControls={false}
           name="desktop-detail"
         >
           <Detail
+            ref={detailRef}
             currentCvickoId={currentCvickoId}
             onClose={closeDetail}
-            isMobile={true}
+            isMobile={isMobile ?? false}
             feature={selectedFeature}
           />
         </Slot>
-      </Layout>
-
-      <Layout isOnlyDesktop>
-        <Slot
-          openPadding={{ right: 384 }}
-          avoidControls={false}
-          isVisible={!!selectedFeature}
-          name="desktop-detail"
-        >
-          <Detail
-            currentCvickoId={currentCvickoId}
-            onClose={closeDetail}
-            isMobile={false}
-            feature={selectedFeature}
-          />
-        </Slot>
-      </Layout>
-    </Map>
+      </Map>
+    </div>
   );
 };
 
