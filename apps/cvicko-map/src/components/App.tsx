@@ -188,7 +188,7 @@ export const App = () => {
         [17.04, 48.09],
         [17.16, 48.19],
       ]}
-      onMapClick={(e) => console.log(e)}
+      onMapClick={closeDetail}
       disableBearing
       disablePitch
       cooperativeGestures={isCooperativeGestures}
@@ -334,7 +334,12 @@ export const App = () => {
           avoidControls={false}
           name="desktop-detail"
         >
-          <Detail onClose={closeDetail} isMobile={true} feature={selectedFeature} />
+          <Detail
+            currentCvickoId={currentCvickoId}
+            onClose={closeDetail}
+            isMobile={true}
+            feature={selectedFeature}
+          />
         </Slot>
       </Layout>
 
@@ -345,7 +350,12 @@ export const App = () => {
           isVisible={!!selectedFeature}
           name="desktop-detail"
         >
-          <Detail onClose={closeDetail} isMobile={false} feature={selectedFeature} />
+          <Detail
+            currentCvickoId={currentCvickoId}
+            onClose={closeDetail}
+            isMobile={false}
+            feature={selectedFeature}
+          />
         </Slot>
       </Layout>
     </Map>
