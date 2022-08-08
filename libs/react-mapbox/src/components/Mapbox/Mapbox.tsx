@@ -53,6 +53,7 @@ export type MapboxProps = {
   onClick?: (event: mapboxgl.MapMouseEvent & mapboxgl.EventData) => void;
   maxBounds?: [[number, number], [number, number]];
   cooperativeGestures?: boolean;
+  locale?: { [key: string]: string };
 } & MapboxGesturesOptions;
 
 export interface ISlotPadding {
@@ -73,30 +74,29 @@ export interface IContext {
   layerPrefix: string;
 }
 
-const createMap = (
+const createMap = ({
+  mapboxgl,
+  mapContainer,
+  viewport,
+  isDarkmode,
+  darkStyle,
+  lightStyle,
+  maxBounds,
+  cooperativeGestures,
+  locale = {},
+}: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-
-  {
-    mapboxgl,
-    mapContainer,
-    viewport,
-    isDarkmode,
-    darkStyle,
-    lightStyle,
-    maxBounds,
-    cooperativeGestures,
-  }: {
-    mapboxgl: any;
-    mapContainer: RefObject<HTMLDivElement>;
-    viewport: PartialViewport;
-    isSatellite: boolean;
-    isDarkmode: boolean;
-    darkStyle: string;
-    lightStyle: string;
-    maxBounds?: [[number, number], [number, number]];
-    cooperativeGestures?: boolean;
-  }
-) => {
+  mapboxgl: any;
+  mapContainer: RefObject<HTMLDivElement>;
+  viewport: PartialViewport;
+  isSatellite: boolean;
+  isDarkmode: boolean;
+  darkStyle: string;
+  lightStyle: string;
+  maxBounds?: [[number, number], [number, number]];
+  cooperativeGestures?: boolean;
+  locale?: { [key: string]: string };
+}) => {
   return new mapboxgl.Map({
     container: mapContainer.current ?? "",
     style: isDarkmode ? darkStyle : lightStyle,
@@ -111,11 +111,7 @@ const createMap = (
     minZoom: 10.75,
     maxBounds,
     cooperativeGestures,
-    locale: {
-      "ScrollZoomBlocker.CtrlMessage": "Use ctrl + scroll to zoom the map",
-      "ScrollZoomBlocker.CmdMessage": "Use ⌘ + scroll to zoom the map",
-      "TouchPanBlocker.Message": "Use two fingers to move the map",
-    },
+    locale,
   });
 };
 
@@ -164,6 +160,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       disablePitch = false,
       maxBounds,
       cooperativeGestures = false,
+      locale = {},
     },
     forwardedRef
   ) => {
@@ -326,6 +323,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         lightStyle,
         maxBounds,
         cooperativeGestures,
+        locale,
       });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [setLoading]);

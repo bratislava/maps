@@ -478,6 +478,15 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               disableBearing={disableBearing}
               maxBounds={maxBounds}
               cooperativeGestures={cooperativeGestures}
+              locale={{
+                "ScrollZoomBlocker.CtrlMessage": t(
+                  "ScrollZoomBlocker.CtrlMessage"
+                ),
+                "ScrollZoomBlocker.CmdMessage": t(
+                  "ScrollZoomBlocker.CmdMessage"
+                ),
+                "TouchPanBlocker.Message": t("ScrollZoomBlocker.Message"),
+              }}
             >
               <>{children}</>
               {mapState.isGeolocation && mapState.geolocationMarkerLngLat && (
