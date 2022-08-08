@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../styles.css";
-import { lineString, Position } from "@turf/turf";
+import { length, LineString as TurfLineString, lineString } from "@turf/turf";
 import cx from "classnames";
 
 // maps
 import {
   Slot,
-  Layout,
   MapHandle,
   Map,
   ThemeController,
@@ -14,7 +13,7 @@ import {
   SlotType,
 } from "@bratislava/react-maps";
 
-import { LineString } from "@bratislava/react-mapbox";
+import { AnimationChangeEvent, LineString } from "@bratislava/react-mapbox";
 
 // utils
 import mapboxgl from "mapbox-gl";
@@ -61,11 +60,6 @@ export const App = () => {
 
   const { height: containerHeight, ref: containerRef } = useResizeDetector<HTMLDivElement>();
 
-  useEffect(() => {
-    console.log("containerHeight", containerHeight);
-    console.log("detailHeight", detailHeight);
-  }, [containerHeight, detailHeight]);
-
   const mapRef = useRef<MapHandle>(null);
   mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
@@ -81,7 +75,6 @@ export const App = () => {
   const [isLoading, setLoading] = useState(true);
   const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
-  const [animatedLine, setAnimatedLine] = useState<string | null>(null);
 
   // change page title according to current selected cvicko
   useEffect(() => {
@@ -116,65 +109,78 @@ export const App = () => {
     }
   }, [selectedFeature]);
 
-  const animatedLineCoordinates: Position[] = useMemo(() => {
-    return animatedLine === "apollo-rt"
-      ? apolloDetailedCoordinates
-      : animatedLine === "old-bridge-rt"
-      ? oldDetailedCoordinates
-      : animatedLine === "snp-rt"
-      ? snpDetailedCoordinates
-      : animatedLine === "small-rt"
-      ? smallDetailedCoordinates
-      : animatedLine === "large-rt"
-      ? largeDetailedCoordinates
-      : [
-          [0, 0],
-          [0, 0],
-        ];
-  }, [animatedLine]);
-
-  const animatedLineStyle: any[] = useMemo(() => {
-    return animatedLine === "apollo-rt"
-      ? apolloDetailedStyles
-      : animatedLine === "old-bridge-rt"
-      ? oldDetailedStyles
-      : animatedLine === "snp-rt"
-      ? snpDetailedStyles
-      : animatedLine === "small-rt"
-      ? smallDetailedStyles
-      : animatedLine === "large-rt"
-      ? largeDetailedStyles
-      : [];
-  }, [animatedLine]);
-
-  const [animatedLineVisiblePart, setAnimatedLineVisiblePart] = useState(0);
   const [animatedLineDuration, setAnimatedLineDuration] = useState(0);
 
   useEffect(() => {
-    setAnimatedLineDuration(0);
-    setAnimatedLineVisiblePart(0);
-    setTimeout(() => {
-      setAnimatedLineDuration(5000);
-      setAnimatedLineVisiblePart(1);
-    }, 100);
-  }, [animatedLine]);
-
-  useEffect(() => {
     if (!isLoading && !currentCvickoId) {
-      console.log("hello");
       mapRef.current?.fitFeature(lineString(apolloBasicCoordinates));
     }
   }, [isLoading, currentCvickoId]);
 
-  useEffect(() => {
-    if (animatedLine) {
-      closeDetail();
-    }
-  }, [animatedLine, closeDetail]);
-
   const avoidViewportControls = useMemo(() => {
     return !isMobile && !!selectedFeature && (containerHeight ?? 0) <= (detailHeight ?? 0) + 200;
   }, [containerHeight, isMobile, selectedFeature, detailHeight]);
+
+  const [isAnimating, setAnimating] = useState<boolean>(false);
+  const [animatedLineStyles, setAnimatedLineStyles] = useState<any>([]);
+  const [animatedLineCoordinates, setAnimatedLineCoordinates] = useState<
+    TurfLineString["coordinates"]
+  >([]);
+
+  const animateLine = useCallback(
+    (line: string) => {
+      closeDetail();
+
+      const animatedLineStyles =
+        line === "apollo-rt"
+          ? apolloDetailedStyles
+          : line === "old-bridge-rt"
+          ? oldDetailedStyles
+          : line === "snp-rt"
+          ? snpDetailedStyles
+          : line === "small-rt"
+          ? smallDetailedStyles
+          : line === "large-rt"
+          ? largeDetailedStyles
+          : [];
+
+      setAnimatedLineStyles(animatedLineStyles);
+
+      const animatedLineCoordinates =
+        line === "apollo-rt"
+          ? apolloDetailedCoordinates
+          : line === "old-bridge-rt"
+          ? oldDetailedCoordinates
+          : line === "snp-rt"
+          ? snpDetailedCoordinates
+          : line === "small-rt"
+          ? smallDetailedCoordinates
+          : line === "large-rt"
+          ? largeDetailedCoordinates
+          : [
+              [0, 0],
+              [0, 0],
+            ];
+
+      setAnimatedLineCoordinates(animatedLineCoordinates);
+
+      const smallLineLength = length(lineString(smallDetailedCoordinates), { units: "meters" });
+      const animatedLineLength = length(lineString(animatedLineCoordinates), { units: "meters" });
+      const duration = animatedLineLength / smallLineLength;
+      setAnimatedLineDuration(duration * 3);
+      setAnimating(true);
+    },
+    [closeDetail],
+  );
+
+  const stopAnimation = useCallback(() => {
+    setAnimating(false);
+    mapRef.current?.fitFeature(lineString(apolloBasicCoordinates));
+  }, []);
+
+  const handleAnimationChange = useCallback((event: AnimationChangeEvent) => {
+    mapRef.current?.changeViewport({ center: event.center, pitch: 20, bearing: 25, zoom: 15 }, 200);
+  }, []);
 
   useEffect(() => {
     setLoading(false);
@@ -183,6 +189,7 @@ export const App = () => {
   return isLoading ? null : (
     <div ref={containerRef} className="h-full w-full">
       <Map
+        interactive={!isAnimating}
         loadingSpinnerColor="#00D4DF"
         ref={mapRef}
         mapboxgl={mapboxgl}
@@ -211,30 +218,30 @@ export const App = () => {
       >
         {/* Apollo running track animation button */}
         <RunningTrackButtonMarker
-          isVisible={animatedLine === null || animatedLine === "apollo-rt"}
+          isVisible={!isAnimating}
           lat={48.13781218517968}
           lng={17.122609073972086}
-          onClick={() => setAnimatedLine("apollo-rt")}
+          onClick={() => animateLine("apollo-rt")}
           color={colors.red}
           length="10 km"
         />
 
         {/* Old bridge running track animation button */}
         <RunningTrackButtonMarker
-          isVisible={animatedLine === null || animatedLine === "old-bridge-rt"}
+          isVisible={!isAnimating}
           lat={48.13829323226889}
           lng={17.110750156057293}
-          onClick={() => setAnimatedLine("old-bridge-rt")}
+          onClick={() => animateLine("old-bridge-rt")}
           color={colors.violet}
           length="8 km"
         />
 
         {/* SNP running track animation button */}
         <RunningTrackButtonMarker
-          isVisible={animatedLine === null || animatedLine === "snp-rt"}
+          isVisible={!isAnimating}
           lat={48.14075397693506}
           lng={17.079605067162618}
-          onClick={() => setAnimatedLine("snp-rt")}
+          onClick={() => animateLine("snp-rt")}
           color={colors.orange}
           length="6 km"
         />
@@ -242,10 +249,10 @@ export const App = () => {
         {/* small running track animation button */}
         <RunningTrackButtonMarker
           isSmall
-          isVisible={animatedLine === null || animatedLine === "small-rt"}
+          isVisible={!isAnimating}
           lat={48.1317443849081}
           lng={17.10715026913175}
-          onClick={() => setAnimatedLine("small-rt")}
+          onClick={() => animateLine("small-rt")}
           color={colors.blue}
           length="800 m"
         />
@@ -253,10 +260,10 @@ export const App = () => {
         {/* large running track animation button */}
         <RunningTrackButtonMarker
           isSmall
-          isVisible={animatedLine === null || animatedLine === "large-rt"}
+          isVisible={!isAnimating}
           lat={48.13153408900732}
           lng={17.11424132548811}
-          onClick={() => setAnimatedLine("large-rt")}
+          onClick={() => animateLine("large-rt")}
           color={colors.brown}
           length="1700 m"
         />
@@ -273,58 +280,64 @@ export const App = () => {
           />
         ))}
 
-        {/* Animated track */}
-        {animatedLine ? (
+        {isAnimating ? (
           <LineString
             id="animated-rt"
             coordinates={animatedLineCoordinates}
-            styles={animatedLineStyle}
-            visiblePart={animatedLineVisiblePart}
+            onAnimationChange={handleAnimationChange}
+            styles={animatedLineStyles}
             duration={animatedLineDuration}
-            onAnimationDone={() => setAnimatedLine(null)}
+            onAnimationDone={stopAnimation}
           />
         ) : (
           <>
-            {/* Apollo running track */}
             <LineString
               id="apollo-rt"
               coordinates={apolloBasicCoordinates}
               styles={apolloStyles}
-              duration={2000}
+              duration={2}
+              initialVisiblePart={1}
             />
-            {/* Old bridge running track */}
             <LineString
               id="old-bridge-rt"
               coordinates={oldBasicCoordinates}
               styles={oldStyles}
-              duration={2000}
+              duration={2}
+              initialVisiblePart={1}
             />
-            {/* SNP running track */}
             <LineString
               id="snp-rt"
               coordinates={snpBasicCoordinates}
               styles={snpStyles}
-              duration={2000}
+              duration={2}
+              initialVisiblePart={1}
             />
-            {/* large running track */}
             <LineString
               id="large-rt"
               coordinates={largeBasicCoordinates}
               styles={largeStyles}
-              duration={2000}
+              duration={2}
+              initialVisiblePart={1}
             />
-            {/* small running track */}
             <LineString
               id="small-rt"
               coordinates={smallBasicCoordinates}
               styles={smallStyles}
-              duration={2000}
+              duration={2}
+              initialVisiblePart={1}
             />
           </>
         )}
 
         <Slot name="controls">
-          {!animatedLine && (
+          {isAnimating ? (
+            <IconButton
+              onClick={() => stopAnimation()}
+              className="fixed top-4 right-4 w-16 h-16 rounded-full"
+            >
+              <X size="lg" />
+            </IconButton>
+          ) : (
             <>
               <ThemeController className="fixed left-4 bottom-8 sm:transform" />
               <ViewportController
@@ -334,14 +347,6 @@ export const App = () => {
                 slots={viewportControllerSlots}
               />
             </>
-          )}
-          {animatedLine && (
-            <IconButton
-              onClick={() => setAnimatedLine(null)}
-              className="fixed top-4 right-4 w-16 h-16 rounded-full"
-            >
-              <X size="lg" />
-            </IconButton>
           )}
         </Slot>
 

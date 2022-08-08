@@ -54,6 +54,7 @@ export type MapboxProps = {
   maxBounds?: [[number, number], [number, number]];
   cooperativeGestures?: boolean;
   locale?: { [key: string]: string };
+  interactive?: boolean;
 } & MapboxGesturesOptions;
 
 export interface ISlotPadding {
@@ -70,7 +71,7 @@ export interface IContext {
   getPrefixedLayer: (layerId: string) => string;
   isLayerPrefixed: (layerId: string) => boolean;
   addClickableLayer: (layerId: string) => void;
-  changeViewport: (viewport: PartialViewport, instant?: boolean) => void;
+  changeViewport: (viewport: PartialViewport, duration?: number) => void;
   layerPrefix: string;
 }
 
@@ -127,7 +128,7 @@ export const mapboxContext = createContext<IContext>({
 });
 
 export type MapboxHandle = {
-  changeViewport: (viewport: PartialViewport, instant?: boolean) => void;
+  changeViewport: (viewport: PartialViewport, duration?: number) => void;
   fitBounds: (
     bounds: mapboxgl.LngLatBoundsLike,
     options?: mapboxgl.FitBoundsOptions
@@ -161,6 +162,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       maxBounds,
       cooperativeGestures = false,
       locale = {},
+      interactive = false,
     },
     forwardedRef
   ) => {
@@ -226,7 +228,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     );
 
     const changeViewport = useCallback(
-      (partialViewport: PartialViewport, instant = false) => {
+      (partialViewport: PartialViewport, duration = 500) => {
         const MAP = map.current;
         if (!MAP) return;
 
@@ -238,13 +240,14 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         const newViewport = mergeViewports(debouncedViewport, partialViewport);
 
         if (JSON.stringify(debouncedViewport) !== JSON.stringify(newViewport)) {
-          if (instant) {
+          if (duration === 0) {
             MAP.jumpTo({
               ...newViewport,
             });
           } else {
             MAP.easeTo({
               ...newViewport,
+              duration,
             });
           }
         }
@@ -327,22 +330,6 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [setLoading]);
-
-    useEffect(() => {
-      if (disableBearing) {
-        map.current?.dragRotate.disable();
-        map.current?.touchZoomRotate.disable();
-      } else {
-        map.current?.dragRotate.enable();
-        map.current?.touchZoomRotate.enable();
-      }
-
-      if (disablePitch) {
-        map.current?.touchPitch.disable();
-      } else {
-        map.current?.touchPitch.enable();
-      }
-    }, [disableBearing, disablePitch]);
 
     // LOADING SOURCES
     const loadSources = useCallback(() => {
@@ -794,6 +781,32 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       changeViewport,
       fitBounds,
     }));
+
+    useEffect(() => {
+      if (interactive) {
+        if (!disableBearing) {
+          map.current?.dragRotate.enable();
+          map.current?.touchZoomRotate.enable();
+        }
+        if (!disablePitch) {
+          map.current?.touchPitch.enable();
+        }
+        map.current?.scrollZoom.enable();
+        map.current?.boxZoom.enable();
+        map.current?.dragPan.enable();
+        map.current?.keyboard.enable();
+        map.current?.doubleClickZoom.enable();
+      } else {
+        map.current?.scrollZoom.disable();
+        map.current?.boxZoom.disable();
+        map.current?.dragRotate.disable();
+        map.current?.dragPan.disable();
+        map.current?.keyboard.disable();
+        map.current?.doubleClickZoom.disable();
+        map.current?.touchZoomRotate.disable();
+        map.current?.touchPitch.disable();
+      }
+    }, [interactive, disableBearing, disablePitch]);
 
     return (
       <mapboxContext.Provider value={mapContextValue}>

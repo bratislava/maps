@@ -7,15 +7,14 @@ import {
   LineString as GeoJsonLineString,
   GeoJsonProperties,
 } from "geojson";
-import { useSpring } from "framer-motion";
+import { animate, useMotionValue, useSpring } from "framer-motion";
 
-import {
-  featureCollection,
-  lineString,
-  length,
-  lineChunk,
-  point,
-} from "@turf/turf";
+import { featureCollection, lineString, length, lineChunk } from "@turf/turf";
+
+export interface AnimationChangeEvent {
+  value: number;
+  center: { lat: number; lng: number };
+}
 
 export interface ILineStringProps {
   id: string;
@@ -23,8 +22,10 @@ export interface ILineStringProps {
   isVisible?: boolean;
   coordinates: Feature<GeoJsonLineString>["geometry"]["coordinates"];
   visiblePart?: number;
+  initialVisiblePart?: number;
   duration?: number;
   onAnimationDone?: () => void;
+  onAnimationChange?: (event: AnimationChangeEvent) => void;
 }
 
 export const LineString = ({
@@ -33,8 +34,10 @@ export const LineString = ({
   coordinates,
   isVisible = true,
   visiblePart = 1,
+  initialVisiblePart = 0,
   duration = 1000,
-  onAnimationDone = () => void 0,
+  onAnimationDone,
+  onAnimationChange,
 }: ILineStringProps) => {
   const {
     map,
@@ -43,14 +46,6 @@ export const LineString = ({
     isStyleLoading,
     addClickableLayer,
   } = useContext(mapboxContext);
-
-  const springVisiblePart = useSpring(0, {
-    duration,
-  });
-
-  useEffect(() => {
-    springVisiblePart.set(visiblePart);
-  }, [springVisiblePart, visiblePart]);
 
   const previousLoading = usePrevious(isLoading);
   const previousVisible = usePrevious(isVisible);
@@ -139,6 +134,10 @@ export const LineString = ({
     line,
   ]);
 
+  const completeHandler = useCallback(() => {
+    onAnimationDone && onAnimationDone();
+  }, [onAnimationDone]);
+
   const drawLineHandler = useCallback(
     (value: number) => {
       const fullLineLength = (line.properties?.length as number) ?? 0;
@@ -146,10 +145,6 @@ export const LineString = ({
       const visibleLineLength = fullLineLength * value;
 
       const source = map?.getSource(id);
-
-      if (value === 1) {
-        onAnimationDone();
-      }
 
       if (visibleLineLength === 0) {
         if (isSourceAdded && source && source.type === "geojson") {
@@ -169,17 +164,54 @@ export const LineString = ({
         units: "meters",
       }).features[0];
 
+      const coordinates = visibleLine.geometry.coordinates;
+      const coordinatesLength = coordinates.length;
+      const lastCoordinate = coordinates[coordinatesLength - 1];
+
+      onAnimationChange &&
+        onAnimationChange({
+          value,
+          center: { lng: lastCoordinate[0], lat: lastCoordinate[1] },
+        });
+
+      if (visiblePart === value) {
+        completeHandler();
+      }
+
       if (isSourceAdded && source && source.type === "geojson") {
         source.setData(featureCollection([visibleLine]));
       }
     },
-    [id, isSourceAdded, line, map, onAnimationDone]
+    [
+      id,
+      isSourceAdded,
+      line,
+      map,
+      completeHandler,
+      visiblePart,
+      onAnimationChange,
+    ]
   );
 
   useEffect(() => {
-    drawLineHandler(springVisiblePart.get());
-    return springVisiblePart.onChange(drawLineHandler);
-  }, [springVisiblePart, drawLineHandler]);
+    if (initialVisiblePart === visiblePart) {
+      drawLineHandler(visiblePart);
+    } else {
+      const animation = animate(initialVisiblePart, visiblePart, {
+        duration,
+        onUpdate: drawLineHandler,
+      });
+      return () => {
+        if (animation.isAnimating()) animation.stop();
+      };
+    }
+  }, [
+    completeHandler,
+    drawLineHandler,
+    duration,
+    initialVisiblePart,
+    visiblePart,
+  ]);
 
   return null;
 };

@@ -64,10 +64,11 @@ export type IMapProps = {
   onFeaturesClick?: (features: MapboxGeoJSONFeature[]) => void;
   maxBounds?: [[number, number], [number, number]];
   cooperativeGestures?: boolean;
+  interactive?: boolean;
 } & MapboxGesturesOptions;
 
 export type MapHandle = {
-  changeViewport: (viewport: PartialViewport) => void;
+  changeViewport: (viewport: PartialViewport, duration?: number) => void;
   fitDistrict: (district: string | string[]) => void;
   fitFeature: (features: Feature | Feature[]) => void;
   moveToFeatures: (features: Feature | Feature[]) => void;
@@ -86,7 +87,7 @@ export interface IMapContext {
   mapState: IMapState | null;
   dispatchMapState: Dispatch<MapAction> | null;
   containerRef: MutableRefObject<HTMLDivElement | null> | null;
-  changeViewport: (viewport: PartialViewport) => void;
+  changeViewport: (viewport: PartialViewport, duration?: number) => void;
   geolocationChangeHandler: (isGeolocation: boolean) => void;
 }
 
@@ -121,6 +122,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       disableBearing,
       maxBounds,
       cooperativeGestures = false,
+      interactive,
     },
     forwardedRef
   ) => {
@@ -258,8 +260,8 @@ export const Map = forwardRef<MapHandle, IMapProps>(
     useImperativeHandle(
       forwardedRef,
       () => ({
-        changeViewport(wantedViewport) {
-          mapboxRef?.current?.changeViewport(wantedViewport);
+        changeViewport(wantedViewport, duration) {
+          mapboxRef?.current?.changeViewport(wantedViewport, duration);
         },
 
         fitDistrict(district) {
@@ -300,7 +302,12 @@ export const Map = forwardRef<MapHandle, IMapProps>(
             features: Array.isArray(features) ? features : [features],
           }) as [number, number, number, number];
 
-          MAP.fitBounds(boundingBox, { padding: 128 });
+          MAP.fitBounds(boundingBox, {
+            padding: 128,
+            bearing: 0,
+            pitch: 0,
+            duration: 500,
+          });
         },
 
         moveToFeatures(features: Feature | Feature[]) {
@@ -357,7 +364,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
             left: 0,
           },
         },
-        true
+        0
       );
       setControlsMarginTop(0);
       setControlsMarginRight(0);
@@ -432,8 +439,8 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         mapState,
         dispatchMapState,
         containerRef,
-        changeViewport: (wantedViewport: PartialViewport) =>
-          mapboxRef?.current?.changeViewport(wantedViewport),
+        changeViewport: (wantedViewport: PartialViewport, duration?: number) =>
+          mapboxRef?.current?.changeViewport(wantedViewport, duration),
         geolocationChangeHandler,
       }),
       [isMobile, changeMargin, mapState, containerRef, geolocationChangeHandler]
@@ -459,6 +466,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
             className="w-full h-full relative z-10 text-font dark:text-foreground-darkmode"
           >
             <Mapbox
+              interactive={interactive}
               initialViewport={initialViewport}
               ref={mapboxRef}
               isDarkmode={mapState.isDarkmode}
