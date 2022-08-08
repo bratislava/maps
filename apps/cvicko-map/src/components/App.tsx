@@ -181,8 +181,8 @@ export const App = () => {
       isOutsideLoading={isLoading}
       onMobileChange={setMobile}
       maxBounds={[
-        [17.040807208263345, 48.114370583145984],
-        [17.164930391645612, 48.166194738011285],
+        [17.04, 48.09],
+        [17.16, 48.19],
       ]}
       onMapClick={(e) => console.log(e)}
       disableBearing
@@ -232,9 +232,10 @@ export const App = () => {
 
       {/* small running track animation button */}
       <RunningTrackButtonMarker
+        isSmall
         isVisible={animatedLine === null || animatedLine === "small-rt"}
-        lat={48.132895251358775}
-        lng={17.10406975844944}
+        lat={48.1317443849081}
+        lng={17.10715026913175}
         onClick={() => setAnimatedLine("small-rt")}
         color={colors.blue}
         length="800 m"
@@ -242,9 +243,10 @@ export const App = () => {
 
       {/* large running track animation button */}
       <RunningTrackButtonMarker
+        isSmall
         isVisible={animatedLine === null || animatedLine === "large-rt"}
-        lat={48.13345263425825}
-        lng={17.117869680952396}
+        lat={48.13153408900732}
+        lng={17.11424132548811}
         onClick={() => setAnimatedLine("large-rt")}
         color={colors.brown}
         length="1700 m"
@@ -301,14 +303,21 @@ export const App = () => {
       )}
 
       <Slot name="controls">
-        <ThemeController className="fixed left-4 bottom-8 sm:transform" />
-        <ViewportController
-          className="fixed right-4 bottom-8 sm:transform"
-          slots={viewportControllerSlots}
-        />
+        {!animatedLine && (
+          <>
+            <ThemeController className="fixed left-4 bottom-8 sm:transform" />
+            <ViewportController
+              className="fixed right-4 bottom-8 sm:transform"
+              slots={viewportControllerSlots}
+            />
+          </>
+        )}
         {animatedLine && (
-          <IconButton onClick={() => setAnimatedLine(null)} className="fixed top-4 right-4">
-            <X />
+          <IconButton
+            onClick={() => setAnimatedLine(null)}
+            className="fixed top-4 right-4 w-16 h-16 rounded-full"
+          >
+            <X size="lg" />
           </IconButton>
         )}
       </Slot>
