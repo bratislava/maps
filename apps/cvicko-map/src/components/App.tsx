@@ -188,18 +188,6 @@ export const App = () => {
       disableBearing
       disablePitch
     >
-      {/* Cvicko icons */}
-      {cvickoData?.features.map((cvickoFeature) => (
-        <CvickoMarker
-          isHomepage={isHomepage}
-          isSelected={cvickoFeature.properties?.id === selectedFeature?.properties?.id}
-          key={cvickoFeature.properties?.id}
-          feature={cvickoFeature}
-          cvickoId={cvickoFeature.properties?.id}
-          onClick={() => setSelectedFeature(cvickoFeature)}
-        />
-      ))}
-
       {/* Apollo running track animation button */}
       <RunningTrackButtonMarker
         isVisible={animatedLine === null || animatedLine === "apollo-rt"}
@@ -251,6 +239,18 @@ export const App = () => {
         color={colors.brown}
         length="1700 m"
       />
+
+      {/* Cvicko icons */}
+      {cvickoData?.features.map((cvickoFeature) => (
+        <CvickoMarker
+          isHomepage={isHomepage}
+          isSelected={cvickoFeature.properties?.id === selectedFeature?.properties?.id}
+          key={cvickoFeature.properties?.id}
+          feature={cvickoFeature}
+          cvickoId={cvickoFeature.properties?.id}
+          onClick={() => setSelectedFeature(cvickoFeature)}
+        />
+      ))}
 
       {/* Animated track */}
       {animatedLine ? (
