@@ -63,6 +63,7 @@ export type IMapProps = {
   selectedFeatures?: MapboxGeoJSONFeature[];
   onFeaturesClick?: (features: MapboxGeoJSONFeature[]) => void;
   maxBounds?: [[number, number], [number, number]];
+  cooperativeGestures?: boolean;
 } & MapboxGesturesOptions;
 
 export type MapHandle = {
@@ -119,6 +120,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       disablePitch,
       disableBearing,
       maxBounds,
+      cooperativeGestures = false,
     },
     forwardedRef
   ) => {
@@ -475,6 +477,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               disablePitch={disablePitch}
               disableBearing={disableBearing}
               maxBounds={maxBounds}
+              cooperativeGestures={cooperativeGestures}
             >
               <>{children}</>
               {mapState.isGeolocation && mapState.geolocationMarkerLngLat && (

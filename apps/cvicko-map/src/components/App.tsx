@@ -62,6 +62,10 @@ export const App = () => {
 
   const currentCvickoId = useQuery("cvicko", getCvickoIdFromQuery);
   const isHomepage = useQuery("homepage", getIsHomepageFromQuery);
+  const isCooperativeGestures = useQuery(
+    "coop-gestures",
+    (isCooperativeGestures) => isCooperativeGestures === "" || !!isCooperativeGestures,
+  );
 
   const [isLoading, setLoading] = useState(true);
   const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
@@ -187,6 +191,7 @@ export const App = () => {
       onMapClick={(e) => console.log(e)}
       disableBearing
       disablePitch
+      cooperativeGestures={isCooperativeGestures}
     >
       {/* Apollo running track animation button */}
       <RunningTrackButtonMarker

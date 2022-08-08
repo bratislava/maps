@@ -52,6 +52,7 @@ export type MapboxProps = {
   isDevelopment?: boolean;
   onClick?: (event: mapboxgl.MapMouseEvent & mapboxgl.EventData) => void;
   maxBounds?: [[number, number], [number, number]];
+  cooperativeGestures?: boolean;
 } & MapboxGesturesOptions;
 
 export interface ISlotPadding {
@@ -81,7 +82,8 @@ const createMap = (
   isDarkmode: boolean,
   darkStyle: string,
   lightStyle: string,
-  maxBounds?: [[number, number], [number, number]]
+  maxBounds?: [[number, number], [number, number]],
+  cooperativeGestures?: boolean
 ) => {
   return new mapboxgl.Map({
     container: mapContainer.current ?? "",
@@ -96,6 +98,7 @@ const createMap = (
     maxZoom: 20,
     minZoom: 10.75,
     maxBounds,
+    cooperativeGestures,
   });
 };
 
@@ -143,6 +146,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       disableBearing = false,
       disablePitch = false,
       maxBounds,
+      cooperativeGestures = false,
     },
     forwardedRef
   ) => {
@@ -303,7 +307,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         isDarkmode,
         darkStyle,
         lightStyle,
-        maxBounds
+        maxBounds,
+        cooperativeGestures
       );
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [setLoading]);
