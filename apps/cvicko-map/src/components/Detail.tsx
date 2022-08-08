@@ -12,9 +12,15 @@ export interface DetailProps {
   feature: Feature<Point> | null;
   onClose: () => void;
   isMobile: boolean;
+  currentCvickoId: string | null;
 }
 
-export const Detail = ({ feature: inputFeature, onClose, isMobile }: DetailProps) => {
+export const Detail = ({
+  feature: inputFeature,
+  onClose,
+  isMobile,
+  currentCvickoId,
+}: DetailProps) => {
   const { t } = useTranslation();
 
   const [feature, setFeature] = useState<Feature | null>(inputFeature);
@@ -33,31 +39,38 @@ export const Detail = ({ feature: inputFeature, onClose, isMobile }: DetailProps
         className="z-20 block absolute right-4 top-6 p-2 bg-background-lightmode dark:bg-background-darkmode text-foreground-lightmode dark:text-foreground-darkmode rounded-full"
         onClick={onClose}
       >
-        <X size="xs" />
+        <X size="sm" />
       </button>
 
       <Image src={imgSrc} />
 
-      <div className="absolute top-[136px] sm:top-[232px] left-6">
-        <a
-          href={feature?.properties?.["wantToWorkout"]}
-          target="_blank"
-          rel="noreferrer"
-          className="group font-semibold select-none cursor-pointer flex items-center gap-4 bg-blue text-white w-fit px-6 h-12 rounded-lg"
-        >
-          <span>{t("detail.wantToWorkout")}</span>
-          <div className="relative flex items-center">
-            <div className="absolute transition-all right-1 w-0 group-hover:w-5 group-hover:-right-1 h-[2px] rounded-full bg-white"></div>
-            <Chevron
-              className="group-hover:translate-x-2 transition-transform"
-              direction="right"
-              size="sm"
-            />
-          </div>
-        </a>
-      </div>
+      {currentCvickoId !== feature?.properties?.id && (
+        <div className="absolute top-[136px] sm:top-[232px] left-6">
+          <a
+            href={feature?.properties?.["wantToWorkout"]}
+            target="_blank"
+            rel="noreferrer"
+            className="group font-semibold select-none cursor-pointer flex items-center gap-4 bg-blue text-white w-fit px-6 h-12 rounded-lg"
+          >
+            <span>{t("detail.wantToWorkout")}</span>
+            <div className="relative flex items-center">
+              <div className="absolute transition-all right-1 w-0 group-hover:w-5 group-hover:-right-1 h-[2px] rounded-full bg-white"></div>
+              <Chevron
+                className="group-hover:translate-x-2 transition-transform"
+                direction="right"
+                size="sm"
+              />
+            </div>
+          </a>
+        </div>
+      )}
 
-      <div className="flex p-6 pt-12 pb-26 md:pb-8 md:pt-12 flex-col space-y-6">
+      <div
+        className={cx(
+          "flex p-6 pb-26 md:pb-8 flex-col space-y-6",
+          currentCvickoId !== feature?.properties?.id ? "pt-12" : "pt-6",
+        )}
+      >
         <a
           className="text-blue dark:text-white underline font-semibold"
           href={feature?.properties?.["navigationLink"]}
