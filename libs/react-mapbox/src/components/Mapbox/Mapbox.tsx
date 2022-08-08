@@ -75,15 +75,27 @@ export interface IContext {
 
 const createMap = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mapboxgl: any,
-  mapContainer: RefObject<HTMLDivElement>,
-  viewport: PartialViewport,
-  isSatellite: boolean,
-  isDarkmode: boolean,
-  darkStyle: string,
-  lightStyle: string,
-  maxBounds?: [[number, number], [number, number]],
-  cooperativeGestures?: boolean
+
+  {
+    mapboxgl,
+    mapContainer,
+    viewport,
+    isDarkmode,
+    darkStyle,
+    lightStyle,
+    maxBounds,
+    cooperativeGestures,
+  }: {
+    mapboxgl: any;
+    mapContainer: RefObject<HTMLDivElement>;
+    viewport: PartialViewport;
+    isSatellite: boolean;
+    isDarkmode: boolean;
+    darkStyle: string;
+    lightStyle: string;
+    maxBounds?: [[number, number], [number, number]];
+    cooperativeGestures?: boolean;
+  }
 ) => {
   return new mapboxgl.Map({
     container: mapContainer.current ?? "",
@@ -99,6 +111,11 @@ const createMap = (
     minZoom: 10.75,
     maxBounds,
     cooperativeGestures,
+    locale: {
+      "ScrollZoomBlocker.CtrlMessage": "Use ctrl + scroll to zoom the map",
+      "ScrollZoomBlocker.CmdMessage": "Use ⌘ + scroll to zoom the map",
+      "TouchPanBlocker.Message": "Use two fingers to move the map",
+    },
   });
 };
 
@@ -299,7 +316,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         map.current.remove();
       }
       log("CREATING MAP");
-      map.current = createMap(
+      map.current = createMap({
         mapboxgl,
         mapContainer,
         viewport,
@@ -308,8 +325,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         darkStyle,
         lightStyle,
         maxBounds,
-        cooperativeGestures
-      );
+        cooperativeGestures,
+      });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [setLoading]);
 
