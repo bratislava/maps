@@ -13,6 +13,7 @@ export interface IRunningTrackButtonMarkerProps {
   length: string;
   onClick: () => void;
   isVisible: boolean;
+  isSmall?: boolean;
 }
 
 export const RunningTrackButtonMarker = ({
@@ -22,9 +23,15 @@ export const RunningTrackButtonMarker = ({
   length,
   onClick,
   isVisible,
+  isSmall = false,
 }: IRunningTrackButtonMarkerProps) => {
   return (
-    <Marker isRelativeToZoom baseZoom={14} feature={point([lng, lat])} onClick={onClick}>
+    <Marker
+      isRelativeToZoom
+      baseZoom={isSmall ? 15 : 14}
+      feature={point([lng, lat])}
+      onClick={onClick}
+    >
       <motion.button
         animate={{ scale: isVisible ? 1 : 0 }}
         className="flex text-white px-3 gap-2 h-12 items-center rounded-lg cursor-pointer shadow-lg"
