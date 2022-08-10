@@ -92,7 +92,7 @@ export const CvickoMarker = ({
       <Marker baseZoom={15} isRelativeToZoom feature={feature} onClick={onClick}>
         <motion.div
           initial={{ scale: 0 }}
-          animate={{ scale: isSelected ? 0.7 : 1 }}
+          animate={{ scale: 0.7 }}
           transition={{ duration: 0.5 }}
           onMouseMove={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
