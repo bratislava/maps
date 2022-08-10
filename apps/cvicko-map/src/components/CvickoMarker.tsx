@@ -37,6 +37,7 @@ const cvickoIdToOffsetMappingObject: {
 export interface ICvickoMarkerProps extends IMarkerProps {
   cvickoId: string;
   isSelected: boolean;
+  isInQuery: boolean;
   onClick: () => void;
   isHomepage: boolean;
 }
@@ -45,6 +46,7 @@ export const CvickoMarker = ({
   cvickoId,
   feature,
   isHomepage,
+  isInQuery,
   isSelected,
   onClick,
 }: ICvickoMarkerProps) => {
@@ -53,8 +55,8 @@ export const CvickoMarker = ({
   const [isHovered, setHovered] = useState(false);
 
   const isLargeIcon = useMemo(() => {
-    return isSelected || isHomepage;
-  }, [isHomepage, isSelected]);
+    return isSelected || isHomepage || isInQuery;
+  }, [isHomepage, isSelected, isInQuery]);
 
   const offsetObject = useMemo(() => {
     return cvickoIdToOffsetMappingObject[cvickoId] ?? {};

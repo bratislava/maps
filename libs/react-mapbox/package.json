@@ -6,6 +6,7 @@
   "dependencies": {
     "@turf/turf": "^6.5.0",
     "framer-motion": "^6.5.1",
-    "react": "17"
+    "mapbox-gl": "^2.9.2",
+    "react": "17.0.2"
   }
 }

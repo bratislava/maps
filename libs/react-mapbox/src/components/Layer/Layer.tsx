@@ -41,6 +41,8 @@ export const Layer = ({
   useEffect(() => {
     if (map && !isLoading && !isStyleLoading) {
       styles.forEach((style: any) => {
+        if (!map) return;
+
         if (!map.getLayer(getPrefixedLayer(style.id))) {
           const layerId = map
             .getStyle()
@@ -124,6 +126,7 @@ export const Layer = ({
     ignoreClick,
     addClickableLayer,
     previousLoading,
+    layerPrefix,
   ]);
 
   return null;

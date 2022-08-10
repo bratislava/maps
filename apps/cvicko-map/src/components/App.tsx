@@ -101,17 +101,16 @@ export const App = () => {
           lng: selectedFeature.geometry.coordinates[0],
           lat: selectedFeature.geometry.coordinates[1],
         },
+        zoom: 16,
       });
+    } else {
+      setTimeout(() => {
+        mapRef.current?.fitFeature(lineString(apolloBasicCoordinates));
+      }, 500);
     }
   }, [selectedFeature]);
 
   const [animatedLineDuration, setAnimatedLineDuration] = useState(0);
-
-  useEffect(() => {
-    if (!isLoading && !currentCvickoId) {
-      mapRef.current?.fitFeature(lineString(apolloBasicCoordinates));
-    }
-  }, [isLoading, currentCvickoId]);
 
   const avoidViewportControls = useMemo(() => {
     return !isMobile && !!selectedFeature && (containerHeight ?? 0) <= (detailHeight ?? 0) + 200;
@@ -284,6 +283,7 @@ export const App = () => {
         {cvickoData?.features.map((cvickoFeature) => (
           <CvickoMarker
             isHomepage={isHomepage}
+            isInQuery={cvickoFeature.properties?.id === currentCvickoId}
             isSelected={cvickoFeature.properties?.id === selectedFeature?.properties?.id}
             key={cvickoFeature.properties?.id}
             feature={cvickoFeature}

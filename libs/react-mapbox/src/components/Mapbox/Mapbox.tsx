@@ -491,33 +491,40 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       () => {
         setLoading(true);
 
-        const {
-          center: { lng: initialLng, lat: initialLat },
-          zoom,
-          pitch,
-          bearing,
-        } = initialViewport;
+        setMap((map) => {
+          map?.remove();
 
-        const newMap = new mapboxgl.Map({
-          container: mapContainer.current ?? "",
-          style: { version: 8, sources: {}, layers: [] },
-          maxZoom: 20,
-          minZoom: 10.75,
-          zoom,
-          maxBounds,
-          cooperativeGestures,
-          locale,
-          pitch,
-          bearing,
-          center: [initialLng, initialLat],
+          while (mapContainer.current?.firstChild) {
+            mapContainer.current.removeChild(mapContainer.current.firstChild);
+          }
+          const {
+            center: { lng: initialLng, lat: initialLat },
+            zoom,
+            pitch,
+            bearing,
+          } = initialViewport;
+
+          const newMap = new mapboxgl.Map({
+            container: mapContainer.current ?? "",
+            style: "mapbox://styles/bratislava01/cl6nyu0bf000h14pqgl91pari",
+            maxZoom: 20,
+            minZoom: 10.75,
+            zoom,
+            maxBounds,
+            cooperativeGestures,
+            locale,
+            pitch,
+            bearing,
+            center: [initialLng, initialLat],
+          });
+
+          newMap.on("load", () => {
+            newMap.resize();
+            setTimeout(() => setLoading(false), 1000);
+          });
+
+          return newMap;
         });
-
-        newMap.on("load", () => {
-          newMap.resize();
-          setTimeout(() => setLoading(false), 1000);
-        });
-
-        setMap(newMap);
       },
       [cooperativeGestures, locale, initialViewport],
       ["cooperativeGestures", "locale", "initialViewport"],
@@ -641,8 +648,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         );
 
         map.on("style.load", () => {
-          loadSources();
-          loadIcons();
+          // loadSources();
+          // loadIcons();
           setStyleLoading(false);
         });
       },

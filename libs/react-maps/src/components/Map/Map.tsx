@@ -458,13 +458,17 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       }
     }, [isMobile, containerWidth, containerHeight]);
 
+    const CtrlMessage = useMemo(() => t("ScrollZoomBlocker.CtrlMessage"), [t]);
+    const CmdMessage = useMemo(() => t("ScrollZoomBlocker.CmdMessage"), [t]);
+    const TouchPanMessage = useMemo(() => t("TouchPanBlocker.Message"), [t]);
+
     const mapboxLocale = useMemo(
       () => ({
-        "ScrollZoomBlocker.CtrlMessage": t("ScrollZoomBlocker.CtrlMessage"),
-        "ScrollZoomBlocker.CmdMessage": t("ScrollZoomBlocker.CmdMessage"),
-        "TouchPanBlocker.Message": t("TouchPanBlocker.Message"),
+        "ScrollZoomBlocker.CtrlMessage": CtrlMessage,
+        "ScrollZoomBlocker.CmdMessage": CmdMessage,
+        "TouchPanBlocker.Message": TouchPanMessage,
       }),
-      [t]
+      [CmdMessage, CtrlMessage, TouchPanMessage]
     );
 
     return (
