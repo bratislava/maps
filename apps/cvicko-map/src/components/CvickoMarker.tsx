@@ -99,7 +99,7 @@ export const CvickoMarker = ({
               transition={{ duration: 0.2 }}
               className="absolute flex flex-col items-center justify-center pointer-events-none"
             >
-              <span className="bg-[#BDEBFF] p-4 rounded text-[#D85D30] whitespace-nowrap font-semibold text-[20px] shadow-lg">
+              <span className="bg-[#BDEBFF] p-4 rounded text-[#D54127] whitespace-nowrap font-semibold text-[20px] shadow-lg">
                 Cvičko {t(`cvicko.${cvickoId}`)}
               </span>
             </motion.div>
