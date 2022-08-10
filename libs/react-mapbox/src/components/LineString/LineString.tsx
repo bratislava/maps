@@ -7,9 +7,14 @@ import {
   LineString as GeoJsonLineString,
   GeoJsonProperties,
 } from "geojson";
-import { animate, useMotionValue, useSpring } from "framer-motion";
+import { animate } from "framer-motion";
 
-import { featureCollection, lineString, length, lineChunk } from "@turf/turf";
+import {
+  featureCollection,
+  lineString,
+  length,
+  lineSliceAlong,
+} from "@turf/turf";
 
 export interface AnimationChangeEvent {
   value: number;
@@ -148,38 +153,30 @@ export const LineString = ({
 
       if (visibleLineLength === 0) {
         if (isSourceAdded && source && source.type === "geojson") {
-          source.setData(
-            featureCollection([
-              lineString([
-                [0, 0],
-                [0, 0],
-              ]),
-            ])
-          );
+          source.setData(featureCollection([]));
         }
-        return;
-      }
-
-      const visibleLine = lineChunk(line, visibleLineLength, {
-        units: "meters",
-      }).features[0];
-
-      const coordinates = visibleLine.geometry.coordinates;
-      const coordinatesLength = coordinates.length;
-      const lastCoordinate = coordinates[coordinatesLength - 1];
-
-      onAnimationChange &&
-        onAnimationChange({
-          value,
-          center: { lng: lastCoordinate[0], lat: lastCoordinate[1] },
+      } else {
+        const visibleLine = lineSliceAlong(line, 0, visibleLineLength, {
+          units: "meters",
         });
 
-      if (visiblePart === value) {
-        completeHandler();
-      }
+        const coordinates = visibleLine.geometry.coordinates;
+        const coordinatesLength = coordinates.length;
+        const lastCoordinate = coordinates[coordinatesLength - 1];
 
-      if (isSourceAdded && source && source.type === "geojson") {
-        source.setData(featureCollection([visibleLine]));
+        onAnimationChange &&
+          onAnimationChange({
+            value,
+            center: { lng: lastCoordinate[0], lat: lastCoordinate[1] },
+          });
+
+        if (visiblePart === value) {
+          completeHandler();
+        }
+
+        if (isSourceAdded && source && source.type === "geojson") {
+          source.setData(featureCollection([visibleLine]));
+        }
       }
     },
     [
