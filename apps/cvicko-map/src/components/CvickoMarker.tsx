@@ -1,11 +1,27 @@
 import { IMarkerProps, Marker } from "@bratislava/react-mapbox";
 import { motion } from "framer-motion";
 
-import { ReactComponent as CvickoIcon } from "../assets/icons/cvicko.svg";
+import { ReactComponent as CvickoApolloIcon } from "../assets/icons/cvicko-apollo.svg";
+import { ReactComponent as CvickoLanfranconiIcon } from "../assets/icons/cvicko-lanfranconi.svg";
+import { ReactComponent as CvickoPromenadaIcon } from "../assets/icons/cvicko-promenada.svg";
+import { ReactComponent as CvickoMostSnpIcon } from "../assets/icons/cvicko-most-snp.svg";
+import { ReactComponent as CvickoTyrsakIcon } from "../assets/icons/cvicko-tyrsak.svg";
+import { ReactComponent as CvickoNabreziecon } from "../assets/icons/cvicko-nabrezie.svg";
 
 import { ReactComponent as OtherCvickoIcon } from "../assets/icons/cvicko-other.svg";
 import { useTranslation } from "react-i18next";
-import { useMemo, useState } from "react";
+import { FC, SVGProps, useMemo, useState } from "react";
+
+const cvickoIdToIconComponentObject: {
+  [cvickoId: string]: FC<SVGProps<SVGSVGElement>>;
+} = {
+  apollo: CvickoApolloIcon,
+  lanfranconi: CvickoLanfranconiIcon,
+  "most-snp": CvickoMostSnpIcon,
+  nabrezie: CvickoNabreziecon,
+  promenada: CvickoPromenadaIcon,
+  tyrsak: CvickoTyrsakIcon,
+};
 
 const cvickoIdToOffsetMappingObject: {
   [cvickoId: string]: { top?: number; right?: number; bottom?: number; left?: number };
@@ -44,6 +60,10 @@ export const CvickoMarker = ({
     return cvickoIdToOffsetMappingObject[cvickoId] ?? {};
   }, [cvickoId]);
 
+  const IconComponent = useMemo(() => {
+    return cvickoIdToIconComponentObject[cvickoId] ?? {};
+  }, [cvickoId]);
+
   return (
     <>
       {isLargeIcon && (
@@ -59,12 +79,9 @@ export const CvickoMarker = ({
               transition={{ duration: 0.5 }}
               className="absolute flex flex-col items-center justify-center pointer-events-none"
             >
-              <div className="w-48 flex items-center justify-center rounded-full">
-                <CvickoIcon width={400} height={100} />
+              <div className="flex items-center justify-center rounded-full">
+                <IconComponent width={200} />
               </div>
-              <span className="font-laca -mt-2 text-[#ce9b5f] dark:text-foreground-darkmode outline-4 italic font-bold text-[40px] whitespace-nowrap drop-shadow-[2px_2px_0_#ffddd1] dark:drop-shadow-[2px_2px_0_#cf7444]">
-                {t(`cvicko.${cvickoId}`)}
-              </span>
             </motion.div>
           </div>
         </Marker>
@@ -92,7 +109,7 @@ export const CvickoMarker = ({
       <Marker baseZoom={15} isRelativeToZoom feature={feature} onClick={onClick}>
         <motion.div
           initial={{ scale: 0 }}
-          animate={{ scale: 0.7 }}
+          animate={{ scale: isSelected ? 0.5 : 0.7 }}
           transition={{ duration: 0.5 }}
           onMouseMove={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
