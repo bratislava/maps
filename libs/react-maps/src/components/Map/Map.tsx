@@ -493,7 +493,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                 "ScrollZoomBlocker.CmdMessage": t(
                   "ScrollZoomBlocker.CmdMessage"
                 ),
-                "TouchPanBlocker.Message": t("ScrollZoomBlocker.Message"),
+                "TouchPanBlocker.Message": t("TouchPanBlocker.Message"),
               }}
             >
               <>{children}</>
