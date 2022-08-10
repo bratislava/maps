@@ -67,10 +67,6 @@ export const App = () => {
 
   const currentCvickoId = useQuery("cvicko", getCvickoIdFromQuery);
   const isHomepage = useQuery("homepage", getIsHomepageFromQuery);
-  const isCooperativeGestures = useQuery(
-    "coop-gestures",
-    (isCooperativeGestures) => isCooperativeGestures === "" || !!isCooperativeGestures,
-  );
 
   const [isLoading, setLoading] = useState(true);
   const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
@@ -83,7 +79,7 @@ export const App = () => {
       : `Cvičko | ${t("title")}`;
   }, [t, currentCvickoId]);
 
-  // set selected feature based o query
+  // set selected feature based on query
   useEffect(() => {
     setSelectedFeature(
       cvickoData.features.find((f) => f.properties?.id === currentCvickoId) ?? null,
@@ -186,6 +182,34 @@ export const App = () => {
     setLoading(false);
   }, []);
 
+  const ininialViewport = useMemo(
+    () => ({
+      center: {
+        lat: 48.148598,
+        lng: 17.107748,
+      },
+      zoom: currentCvickoId ? 15 : undefined,
+    }),
+    [currentCvickoId],
+  );
+
+  const maxBounds = useMemo(
+    () =>
+      [
+        [17.04, 48.09],
+        [17.16, 48.19],
+      ] as [[number, number], [number, number]],
+    [],
+  );
+
+  const mapStyles = useMemo(
+    () => ({
+      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+    }),
+    [],
+  );
+
   return isLoading ? null : (
     <div ref={containerRef} className="h-full w-full">
       <Map
@@ -193,28 +217,16 @@ export const App = () => {
         loadingSpinnerColor="#00D4DF"
         ref={mapRef}
         mapboxgl={mapboxgl}
-        mapStyles={{
-          light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-          dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-        }}
-        initialViewport={{
-          center: {
-            lat: 48.148598,
-            lng: 17.107748,
-          },
-          zoom: currentCvickoId ? 15 : undefined,
-        }}
+        mapStyles={mapStyles}
+        initialViewport={ininialViewport}
         isDevelopment={import.meta.env.DEV}
         isOutsideLoading={isLoading}
         onMobileChange={setMobile}
-        maxBounds={[
-          [17.04, 48.09],
-          [17.16, 48.19],
-        ]}
+        maxBounds={maxBounds}
         onMapClick={closeDetail}
         disableBearing
         disablePitch
-        cooperativeGestures={isCooperativeGestures}
+        cooperativeGestures={isMobile ?? false}
       >
         {/* Apollo running track animation button */}
         <RunningTrackButtonMarker
