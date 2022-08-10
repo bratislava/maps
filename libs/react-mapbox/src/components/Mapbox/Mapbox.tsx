@@ -75,47 +75,6 @@ export interface IContext {
   layerPrefix: string;
 }
 
-const createMap = ({
-  mapboxgl,
-  mapContainer,
-  viewport,
-  isDarkmode,
-  darkStyle,
-  lightStyle,
-  maxBounds,
-  cooperativeGestures,
-  locale = {},
-}: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mapboxgl: any;
-  mapContainer: RefObject<HTMLDivElement>;
-  viewport: PartialViewport;
-  isSatellite: boolean;
-  isDarkmode: boolean;
-  darkStyle: string;
-  lightStyle: string;
-  maxBounds?: [[number, number], [number, number]];
-  cooperativeGestures?: boolean;
-  locale?: { [key: string]: string };
-}) => {
-  return new mapboxgl.Map({
-    container: mapContainer.current ?? "",
-    style: isDarkmode ? darkStyle : lightStyle,
-    center: [
-      viewport.center?.lng ?? 17.107748,
-      viewport.center?.lat ?? 48.148598,
-    ],
-    zoom: viewport.zoom ?? 13,
-    pitch: viewport.pitch ?? 0,
-    bearing: viewport.bearing ?? 0,
-    maxZoom: 20,
-    minZoom: 10.75,
-    maxBounds,
-    cooperativeGestures,
-    locale,
-  });
-};
-
 export const mapboxContext = createContext<IContext>({
   map: null,
   isLoading: true,
@@ -316,20 +275,24 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         map.current.remove();
       }
       log("CREATING MAP");
-      map.current = createMap({
-        mapboxgl,
-        mapContainer,
-        viewport,
-        isSatellite,
-        isDarkmode,
-        darkStyle,
-        lightStyle,
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current ?? "",
+        style: isDarkmode ? darkStyle : lightStyle,
+        center: [
+          viewport.center?.lng ?? 17.107748,
+          viewport.center?.lat ?? 48.148598,
+        ],
+        zoom: viewport.zoom ?? 13,
+        pitch: viewport.pitch ?? 0,
+        bearing: viewport.bearing ?? 0,
+        maxZoom: 20,
+        minZoom: 10.75,
         maxBounds,
         cooperativeGestures,
         locale,
       });
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [setLoading]);
+    }, []);
 
     // LOADING SOURCES
     const loadSources = useCallback(() => {
@@ -813,6 +776,10 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         map.current?.touchPitch.disable();
       }
     }, [interactive, disableBearing, disablePitch]);
+
+    useEffect(() => {
+      // map.current?.loca
+    }, [locale]);
 
     return (
       <mapboxContext.Provider value={mapContextValue}>
