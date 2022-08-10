@@ -1,6 +1,7 @@
 {
   "name": "@bratislava/maps",
   "private": true,
+  "license": "EUPL-1.2",
   "workspaces": [
     "libs/mapbox-expressions",
     "libs/mapbox-geocoding",
