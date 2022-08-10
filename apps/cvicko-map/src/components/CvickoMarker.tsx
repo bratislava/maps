@@ -27,9 +27,9 @@ const cvickoIdToOffsetMappingObject: {
   [cvickoId: string]: { top?: number; right?: number; bottom?: number; left?: number };
 } = {
   apollo: { bottom: 80 },
-  lafranconi: { top: 90, left: 30 },
+  lanfranconi: { top: 90, left: 30 },
   "most-snp": { bottom: 80 },
-  nabezie: { top: 90, right: 40 },
+  nabrezie: { top: 90, right: 40 },
   promenada: { top: 90 },
   tyrsak: { bottom: 80 },
 };

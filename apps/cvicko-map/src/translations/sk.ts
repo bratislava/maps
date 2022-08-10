@@ -2,9 +2,9 @@ export default {
   title: "Mapa",
   cvicko: {
     apollo: "Apollo",
-    lafranconi: "Lafranconi",
+    lanfranconi: "Lafranconi",
     "most-snp": "Most SNP",
-    nabezie: "Nábežie",
+    nabrezie: "Nábežie",
     promenada: "Promenáda",
     tyrsak: "Tyršák",
   },

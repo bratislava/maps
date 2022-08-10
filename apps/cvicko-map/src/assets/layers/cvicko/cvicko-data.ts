@@ -6,12 +6,12 @@ export const cvickoData: FeatureCollection<Point> = {
     {
       type: "Feature",
       properties: {
-        id: "lafranconi",
-        name: "Lafranconi",
+        id: "lanfranconi",
+        name: "Lanfranconi",
         location: "Pod mostom Lanfranconi",
         navigationLink:
           "https://www.google.sk/maps/dir//48.143773,17.075586/@48.1437766,17.0733973,771m/data=!3m1!1e3!4m2!4m1!3e0?hl=sk&authuser=0",
-        photo: "images/cvicko/lafranconi.jpg",
+        photo: "images/cvicko/lanfranconi.jpg",
         tags: ["workout"],
         category: "workoutové ihrisko",
       },
@@ -20,12 +20,12 @@ export const cvickoData: FeatureCollection<Point> = {
     {
       type: "Feature",
       properties: {
-        id: "nabezie",
-        name: "Nábežie",
+        id: "nabrezie",
+        name: "Nábrežie",
         location: "Dvořákovo nábrežie",
         navigationLink:
           "https://www.google.sk/maps/dir//48.143182,17.07946/@48.1430776,17.0795001,226m/data=!3m1!1e3!4m2!4m1!3e0?hl=sk&authuser=0",
-        photo: "images/cvicko/nabezie.jpg",
+        photo: "images/cvicko/nabrezie.jpg",
         tags: ["workout"],
         category: "workoutové ihrisko",
       },

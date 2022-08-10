@@ -1,11 +1,11 @@
-type CvickoId = "apollo" | "lafranconi" | "most-snp" | "nabezie" | "promenada" | "tyrsak";
+type CvickoId = "apollo" | "lanfranconi" | "most-snp" | "nabrezie" | "promenada" | "tyrsak";
 
 export const getCvickoIdFromQuery = (query: string | null): CvickoId | null => {
   switch (query) {
     case "apollo":
-    case "lafranconi":
+    case "lanfranconi":
     case "most-snp":
-    case "nabezie":
+    case "nabrezie":
     case "promenada":
     case "tyrsak":
       return query;
