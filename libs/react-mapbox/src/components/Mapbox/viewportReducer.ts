@@ -15,8 +15,9 @@ export const mergeViewports = (
   viewport: Viewport,
   partialViewport: PartialViewport
 ): Viewport => ({
-  ...viewport,
-  ...partialViewport,
+  zoom: partialViewport.zoom ?? viewport.zoom,
+  pitch: partialViewport.pitch ?? viewport.pitch,
+  bearing: partialViewport.bearing ?? viewport.bearing,
   center: {
     lat: partialViewport.center?.lat ?? viewport.center.lat,
     lng: partialViewport.center?.lng ?? viewport.center.lng,

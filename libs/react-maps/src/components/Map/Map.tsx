@@ -112,7 +112,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       layerPrefix = "BRATISLAVA",
       isDevelopment = false,
       initialViewport: inputInitialViewport,
-      selectedFeatures = [],
+      selectedFeatures,
       onMobileChange,
       onGeolocationChange,
       loadingSpinnerColor,
@@ -458,6 +458,15 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       }
     }, [isMobile, containerWidth, containerHeight]);
 
+    const mapboxLocale = useMemo(
+      () => ({
+        "ScrollZoomBlocker.CtrlMessage": t("ScrollZoomBlocker.CtrlMessage"),
+        "ScrollZoomBlocker.CmdMessage": t("ScrollZoomBlocker.CmdMessage"),
+        "TouchPanBlocker.Message": t("TouchPanBlocker.Message"),
+      }),
+      [t]
+    );
+
     return (
       <div className={cx("h-full w-full relative text-foreground-lightmode")}>
         <mapContext.Provider value={mapContextValue}>
@@ -474,7 +483,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               layerPrefix={layerPrefix}
               mapStyles={mapStyles}
               mapboxgl={mapboxgl}
-              sources={sources ?? {}}
+              sources={sources}
               icons={icons}
               onFeaturesClick={onFeaturesClick}
               selectedFeatures={selectedFeatures}
@@ -486,15 +495,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               disableBearing={disableBearing}
               maxBounds={maxBounds}
               cooperativeGestures={cooperativeGestures}
-              locale={{
-                "ScrollZoomBlocker.CtrlMessage": t(
-                  "ScrollZoomBlocker.CtrlMessage"
-                ),
-                "ScrollZoomBlocker.CmdMessage": t(
-                  "ScrollZoomBlocker.CmdMessage"
-                ),
-                "TouchPanBlocker.Message": t("TouchPanBlocker.Message"),
-              }}
+              locale={mapboxLocale}
             >
               <>{children}</>
               {mapState.isGeolocation && mapState.geolocationMarkerLngLat && (
