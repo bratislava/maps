@@ -162,7 +162,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       maxBounds,
       cooperativeGestures = false,
       locale = {},
-      interactive = false,
+      interactive = true,
     },
     forwardedRef
   ) => {
@@ -784,26 +784,32 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
 
     useEffect(() => {
       if (interactive) {
-        if (!disableBearing) {
-          map.current?.dragRotate.enable();
-          map.current?.touchZoomRotate.enable();
-        }
-        if (!disablePitch) {
-          map.current?.touchPitch.enable();
-        }
         map.current?.scrollZoom.enable();
         map.current?.boxZoom.enable();
         map.current?.dragPan.enable();
         map.current?.keyboard.enable();
         map.current?.doubleClickZoom.enable();
+        map.current?.touchZoomRotate.enable();
+        if (disableBearing) {
+          map.current?.dragRotate.disable();
+          map.current?.touchZoomRotate.disableRotation();
+        } else {
+          map.current?.dragRotate.enable();
+          map.current?.touchZoomRotate.enableRotation();
+        }
+        if (disablePitch) {
+          map.current?.touchPitch.disable();
+        } else {
+          map.current?.touchPitch.enable();
+        }
       } else {
         map.current?.scrollZoom.disable();
         map.current?.boxZoom.disable();
         map.current?.dragRotate.disable();
         map.current?.dragPan.disable();
         map.current?.keyboard.disable();
-        map.current?.doubleClickZoom.disable();
         map.current?.touchZoomRotate.disable();
+        map.current?.doubleClickZoom.disable();
         map.current?.touchPitch.disable();
       }
     }, [interactive, disableBearing, disablePitch]);
