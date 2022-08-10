@@ -38,7 +38,7 @@ export const RunningTrackButtonMarker = ({
         style={{ background: color }}
       >
         <span className="font-semibold text-md">{length}</span>
-        <PlayIcon />
+        <PlayIcon width={24} />
       </motion.button>
     </Marker>
   );
