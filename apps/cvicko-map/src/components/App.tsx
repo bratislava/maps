@@ -79,13 +79,6 @@ export const App = () => {
       : `Cvičko | ${t("title")}`;
   }, [t, currentCvickoId]);
 
-  // set selected feature based on query
-  useEffect(() => {
-    setSelectedFeature(
-      cvickoData.features.find((f) => f.properties?.id === currentCvickoId) ?? null,
-    );
-  }, [currentCvickoId]);
-
   const closeDetail = useCallback(() => {
     setSelectedFeature(null);
   }, []);
@@ -93,6 +86,15 @@ export const App = () => {
   const viewportControllerSlots: SlotType = useMemo(() => {
     return isMobile ? ["zoom"] : [["fullscreen", "zoom"]];
   }, [isMobile]);
+
+  // set selected feature based on query
+  useEffect(() => {
+    const selectedFeature =
+      cvickoData.features.find((f) => f.properties?.id === currentCvickoId) ?? null;
+    setTimeout(() => {
+      setSelectedFeature(selectedFeature);
+    }, 4000);
+  }, [currentCvickoId]);
 
   useEffect(() => {
     if (selectedFeature) {
@@ -225,7 +227,6 @@ export const App = () => {
         onMapClick={closeDetail}
         disableBearing
         disablePitch
-        cooperativeGestures={isMobile ?? false}
       >
         {/* Apollo running track animation button */}
         <RunningTrackButtonMarker
