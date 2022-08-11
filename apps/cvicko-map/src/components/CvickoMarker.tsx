@@ -70,7 +70,7 @@ export const CvickoMarker = ({
     <>
       {isLargeIcon && (
         <Marker feature={feature} baseZoom={15} isRelativeToZoom onClick={onClick}>
-          <div className="relative flex items-center justify-center ">
+          <div className="relative flex items-center justify-center">
             <motion.div
               initial={{ scale: 0 }}
               animate={{
@@ -90,7 +90,7 @@ export const CvickoMarker = ({
       )}
       {!isHomepage && (
         <Marker feature={feature} onClick={onClick}>
-          <div className="relative flex items-center justify-center ">
+          <div className="relative flex items-center justify-center">
             <motion.div
               initial={{ scale: 0 }}
               animate={{
