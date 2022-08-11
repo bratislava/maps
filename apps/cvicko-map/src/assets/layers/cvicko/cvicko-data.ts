@@ -11,7 +11,7 @@ export const cvickoData: FeatureCollection<Point> = {
         location: "Pod mostom Lanfranconi",
         navigationLink:
           "https://www.google.sk/maps/dir//48.143773,17.075586/@48.1437766,17.0733973,771m/data=!3m1!1e3!4m2!4m1!3e0?hl=sk&authuser=0",
-        photo: "images/cvicko/lanfranconi.jpg",
+        photo: "images/cvicko/lanfranconi.png",
         tags: ["workout"],
         category: "workoutové ihrisko",
       },
@@ -25,7 +25,7 @@ export const cvickoData: FeatureCollection<Point> = {
         location: "Dvořákovo nábrežie",
         navigationLink:
           "https://www.google.sk/maps/dir//48.143182,17.07946/@48.1430776,17.0795001,226m/data=!3m1!1e3!4m2!4m1!3e0?hl=sk&authuser=0",
-        photo: "images/cvicko/nabrezie.jpg",
+        photo: "images/cvicko/nabrezie.png",
         tags: ["workout"],
         category: "workoutové ihrisko",
       },
@@ -39,7 +39,7 @@ export const cvickoData: FeatureCollection<Point> = {
         location: "Pod Starým mostom, medzi piliermi",
         navigationLink:
           "https://www.google.sk/maps/dir//48.139899,17.117367/@48.1389666,17.1172395,207a,35y,2.25h,26.15t/data=!3m1!1e3!4m2!4m1!3e0?hl=sk&authuser=0",
-        photo: "images/cvicko/promenada.jpg",
+        photo: "images/cvicko/promenada.png",
         tags: ["workout"],
         category: "workoutové ihrisko",
       },
@@ -53,7 +53,7 @@ export const cvickoData: FeatureCollection<Point> = {
         location: "Vpravo vedľa mosta, pri rampe cyklotrasy",
         navigationLink:
           "https://www.google.sk/maps/dir//48.135942,17.117959/@48.1361171,17.1161059,314m/data=!3m1!1e3!4m2!4m1!3e0?hl=sk&authuser=0",
-        photo: "images/cvicko/tyrsak.jpg",
+        photo: "images/cvicko/tyrsak.png",
         tags: ["workout"],
         category: "workoutové ihrisko",
       },
@@ -67,7 +67,7 @@ export const cvickoData: FeatureCollection<Point> = {
         location: "Vpravo vedľa mosta, pri rampe cyklotrasy",
         navigationLink:
           "https://www.google.sk/maps/dir//48.134552,17.12839/@48.1345529,17.1278428,193m/data=!3m1!1e3!4m2!4m1!3e0?hl=sk&authuser=0",
-        photo: "images/cvicko/apollo.jpg",
+        photo: "images/cvicko/apollo.png",
         tags: ["workout"],
         category: "workoutové ihrisko",
       },
