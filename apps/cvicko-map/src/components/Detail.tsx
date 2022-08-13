@@ -43,7 +43,7 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
         {currentCvickoId !== feature?.properties?.id && (
           <div className="absolute top-[136px] sm:top-[232px] left-6">
             <a
-              href={feature?.properties?.["wantToWorkout"]}
+              href={feature?.properties?.["web"]}
               target="_blank"
               rel="noreferrer"
               className="group font-semibold select-none cursor-pointer flex items-center gap-4 bg-blue text-white w-fit px-6 h-12 rounded-lg"
