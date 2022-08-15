@@ -1,11 +1,13 @@
+/* eslint-disable camelcase */
 import { useTranslation } from "react-i18next";
-import { Row } from "./Row";
 import { z } from "zod";
-import { Chevron } from "@bratislava/react-maps-icons";
+import { ButtonLink } from "../ButtonLink";
+import { Row } from "./Row";
 
 export const residentPropertiesSchema = z.object({
-  "Kód parkovacej zóny": z.string(),
-  "Informácia RPK": z.string().nullable().optional(),
+  Kód_parko: z.string(),
+  Informacia_RPK_sk: z.string().nullable().optional(),
+  Informacia_RPK_en: z.string().nullable().optional(),
 });
 
 export type ResidentProperties = z.infer<typeof residentPropertiesSchema>;
@@ -15,23 +17,26 @@ export interface ResidentDetailProps {
 }
 
 export const ResidentDetail = ({ properties }: ResidentDetailProps) => {
-  const { t } = useTranslation("translation", { keyPrefix: "layers.residents.detail" });
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation("translation", { keyPrefix: "layers.residents.detail" });
 
   return (
     <div className="flex flex-col justify-end w-full gap-4">
       <div className="font-semibold">{t("title")}</div>
-      <Row label={t("cardValidity")} text={properties["Kód parkovacej zóny"]} />
-      <Row label={t("additionalInformation")} text={properties["Informácia RPK"]} />
-      <div>
-        <a
-          href="https://paas.sk/som-rezident/"
-          target="_blank"
-          className="text-primary flex items-center gap-2 rounded-lg bg-secondary px-6 absolute -bottom-6 h-12 font-semibold"
-          rel="noreferrer"
-        >
-          <span>Karty</span>
-          <Chevron direction="right" size="xs" />
-        </a>
+      <Row label={t("cardValidity")} text={properties["Kód_parko"]} />
+
+      {properties["Informacia_RPK_sk"] && (
+        <div className="font-light text-[14px]">
+          {language === "sk" ? properties["Informacia_RPK_sk"] : properties["Informacia_RPK_en"]}
+        </div>
+      )}
+
+      <div className="relative">
+        <div className="absolute -bottom-12">
+          <ButtonLink isSecondary href="https://paas.sk/som-rezident/" text="Karty" />
+        </div>
       </div>
     </div>
   );

@@ -1,18 +1,18 @@
-import React, {
-  useEffect,
-  useContext,
-  useMemo,
-  useCallback,
-  useState,
-  FC,
-} from "react";
-import { mapboxContext } from "../Mapbox/Mapbox";
-import Supercluster from "supercluster";
 import { Feature, Point } from "geojson";
+import {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import Supercluster from "supercluster";
 import { filterContext } from "../Filter/Filter";
+import { mapboxContext } from "../Mapbox/Mapbox";
 
 export interface IClusterChildProps {
-  key: number;
+  key: number | string;
   features: Feature<Point>[];
   isCluster: boolean;
   clusterExpansionZoom: number | null;
@@ -78,12 +78,13 @@ export const Cluster = ({
         const isCluster = cluster.properties.cluster_id !== undefined;
 
         if (isCluster) {
+          const features = supercluster.getLeaves(
+            cluster.properties.cluster_id,
+            Infinity
+          );
           return {
-            key,
-            features: supercluster.getLeaves(
-              cluster.properties.cluster_id,
-              Infinity
-            ),
+            key: features[0].id ?? key,
+            features,
             lng: cluster.geometry.coordinates[0],
             lat: cluster.geometry.coordinates[1],
             isCluster,
@@ -94,7 +95,7 @@ export const Cluster = ({
         } else {
           const feature = cluster;
           return {
-            key,
+            key: feature.id ?? key,
             features: [feature],
             lng: feature.geometry.coordinates[0],
             lat: feature.geometry.coordinates[1],
@@ -108,9 +109,9 @@ export const Cluster = ({
 
   useEffect(() => {
     recalculate();
-    map?.on("move", recalculate);
+    map?.on("moveend", recalculate);
     return () => {
-      map?.off("move", recalculate);
+      map?.off("moveend", recalculate);
     };
   }, [map, recalculate]);
 

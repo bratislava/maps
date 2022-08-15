@@ -1,15 +1,14 @@
-import React, { useMemo } from "react";
 import cx from "classnames";
+import { useMemo } from "react";
 
 import { ReactComponent as AssistantIcon } from "../assets/icons/assistant.svg";
 import { ReactComponent as BranchIcon } from "../assets/icons/branch.svg";
-import { ReactComponent as ParkomatIcon } from "../assets/icons/parkomat.svg";
 import { ReactComponent as GarageIcon } from "../assets/icons/garage.svg";
+import { ReactComponent as ParkingLotIcon } from "../assets/icons/p-plus-r.svg";
+import { ReactComponent as ParkomatIcon } from "../assets/icons/parkomat.svg";
 import { ReactComponent as PartnerIcon } from "../assets/icons/partner.svg";
 import { ReactComponent as ResidentIcon } from "../assets/icons/resident.svg";
 import { ReactComponent as VisitorIcon } from "../assets/icons/visitor.svg";
-import { ReactComponent as PPlusRIcon } from "../assets/icons/p-plus-r.svg";
-import { ReactComponent as PPlusRRegionIcon } from "../assets/icons/p-plus-r-region.svg";
 
 const icons = [
   {
@@ -25,12 +24,8 @@ const icons = [
     component: ParkomatIcon,
   },
   {
-    name: "p-plus-r",
-    component: PPlusRIcon,
-  },
-  {
-    name: "p-plus-r-region",
-    component: PPlusRRegionIcon,
+    name: "parking-lot",
+    component: ParkingLotIcon,
   },
   {
     name: "resident",
@@ -60,15 +55,7 @@ export interface IIconProps {
 
 export const Icon = ({ icon, size = 24, isWhite = false, count, shadow = true }: IIconProps) => {
   const isPrimary = useMemo(() => {
-    return [
-      "assistant",
-      "parkomat",
-      "p-plus-r",
-      "p-plus-r-region",
-      "garage",
-      "partner",
-      "visitor",
-    ].includes(icon);
+    return ["assistant", "parkomat", "parking-lot", "garage", "partner", "visitor"].includes(icon);
   }, [icon]);
 
   const IconSvgComponent = icons.find((i) => i.name === icon)?.component;

@@ -1,18 +1,24 @@
 import { addDistrictPropertyToLayer } from "@bratislava/react-maps";
-import { FeatureCollection, Feature } from "geojson";
+import { Feature, FeatureCollection } from "geojson";
+import { rawOdpData } from "../data/odp";
 
-import rawDataAssistants from "../data/assistants/assistants.json";
-import rawDataBranches from "../data/branches/branches.json";
-import rawDataParkomats from "../data/parkomats/parkomats.json";
-import rawDataPartners from "../data/partners/partners.json";
-import rawDataGarages from "../data/garages/garages.json";
-import rawDataPPlusR from "../data/p-plus-r/p-plus-r.json";
-import rawDataPPlusRRegion from "../data/p-plus-r-region/p-plus-r-region.json";
+export interface ProcessDataOptions {
+  rawAssistantsData: FeatureCollection;
+  rawParkomatsData: FeatureCollection;
+  rawPartnersData: FeatureCollection;
+  rawParkingLotsData: FeatureCollection;
+  rawBranchesData: FeatureCollection;
+  rawUdrData: FeatureCollection;
+}
 
-import rawVisitorsData from "../data/visitors/visitors.json";
-import rawResidentsData from "../data/residents/residents.json";
-
-export const getProcessedData = () => {
+export const processData = ({
+  rawAssistantsData,
+  rawParkomatsData,
+  rawPartnersData,
+  rawParkingLotsData,
+  rawBranchesData,
+  rawUdrData,
+}: ProcessDataOptions) => {
   let GLOBAL_ID = 0;
 
   const markersData: FeatureCollection = addDistrictPropertyToLayer({
@@ -21,25 +27,27 @@ export const getProcessedData = () => {
       /*
         ASSISTNANTS
       */
-      ...rawDataAssistants.features.map((feature) => {
-        GLOBAL_ID++;
-        const kind = "assistants";
-        const icon = "assistant";
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            kind,
-            icon,
-          },
-        } as Feature;
-      }),
+      ...rawAssistantsData.features
+        .map((feature) => {
+          GLOBAL_ID++;
+          const kind = "assistants";
+          const icon = "assistant";
+          return {
+            ...feature,
+            id: GLOBAL_ID,
+            properties: {
+              ...feature.properties,
+              kind,
+              icon,
+            },
+          } as Feature;
+        })
+        .filter((f) => f.properties?.["web"] === "ano"),
 
       /*
         BRANCHES
       */
-      ...rawDataBranches.features.map((feature) => {
+      ...rawBranchesData.features.map((feature) => {
         GLOBAL_ID++;
         const kind = "branches";
         const icon = "branch";
@@ -57,117 +65,90 @@ export const getProcessedData = () => {
       /*
         PARKOMATS
       */
-      ...rawDataParkomats.features.map((feature) => {
-        GLOBAL_ID++;
-        const kind = "parkomats";
-        const icon = "parkomat";
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            kind,
-            icon,
-          },
-        } as Feature;
-      }),
+      ...rawParkomatsData.features
+        .map((feature) => {
+          GLOBAL_ID++;
+          const kind = "parkomats";
+          const icon = "parkomat";
+          return {
+            ...feature,
+            id: GLOBAL_ID,
+            properties: {
+              ...feature.properties,
+              kind,
+              icon,
+            },
+          } as Feature;
+        })
+        .filter((f) => f.properties?.["Web"] === "ano"),
 
       /*
         PARTNERS
       */
-      ...rawDataPartners.features.map((feature) => {
-        GLOBAL_ID++;
-        const kind = "partners";
-        const icon = "partner";
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            kind,
-            icon,
-          },
-        } as Feature;
-      }),
+      ...rawPartnersData.features
+        .map((feature) => {
+          GLOBAL_ID++;
+          const kind = "partners";
+          const icon = "partner";
+          return {
+            ...feature,
+            id: GLOBAL_ID,
+            properties: {
+              ...feature.properties,
+              kind,
+              icon,
+            },
+          } as Feature;
+        })
+        .filter((f) => f.properties?.["web"] === "ano"),
 
       /*
-        GARAGES
+        PARKING LOTS
       */
-      ...rawDataGarages.features.map((feature) => {
-        GLOBAL_ID++;
-        const kind = "garages";
-        const icon = "garage";
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            kind,
-            icon,
-          },
-        } as Feature;
-      }),
-
-      /*
-        P + R
-      */
-      ...rawDataPPlusR.features.map((feature) => {
-        GLOBAL_ID++;
-        const kind = "p-plus-r";
-        const icon = "p-plus-r";
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            kind,
-            icon,
-          },
-        } as Feature;
-      }),
-
-      /*
-        P + R REGIONS
-      */
-      ...rawDataPPlusRRegion.features.map((feature) => {
-        GLOBAL_ID++;
-        const kind = "p-plus-r-region";
-        const icon = "p-plus-r-region";
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            kind,
-            icon,
-          },
-        } as Feature;
-      }),
+      ...rawParkingLotsData.features
+        .map((feature) => {
+          GLOBAL_ID++;
+          const type = feature.properties?.["Typ_en"];
+          const kind = "parking-lots";
+          const icon = type == "P+R" ? "p-plus-r" : type == "garage" ? "garage" : "parking-lot";
+          return {
+            ...feature,
+            id: GLOBAL_ID,
+            properties: {
+              ...feature.properties,
+              kind,
+              icon,
+            },
+          } as Feature;
+        })
+        .filter((f) => f.properties?.["web"] === "ano"),
     ],
   });
 
   const udrData: FeatureCollection = addDistrictPropertyToLayer({
     type: "FeatureCollection",
     features: [
-      ...rawVisitorsData.features.map((feature) => {
-        GLOBAL_ID++;
-        const layer = "visitors";
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            layer,
-          },
-        } as Feature;
-      }),
+      ...rawUdrData.features
+        .map((feature) => {
+          GLOBAL_ID++;
+          const layer = "visitors";
+          return {
+            ...feature,
+            id: GLOBAL_ID,
+            properties: {
+              ...feature.properties,
+              layer,
+            },
+          } as Feature;
+        })
+        .filter((f) => f.properties?.["web"] === "ano"),
     ],
   });
 
   const odpData: FeatureCollection = addDistrictPropertyToLayer({
     type: "FeatureCollection",
     features: [
-      ...rawResidentsData.features.map((feature) => {
+      ...rawOdpData.features.map((feature) => {
         GLOBAL_ID++;
         const layer = "residents";
         return {

@@ -710,8 +710,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       () => {
         onViewportChange && onViewportChange(viewport);
       },
-      [viewport, onViewportChange],
-      ["viewport", "onViewportChange"],
+      [map, viewport, onViewportChange],
+      ["map", "viewport", "onViewportChange"],
       "VIEWPORT"
     );
 

@@ -1,9 +1,11 @@
+/* eslint-disable camelcase */
 import { useTranslation } from "react-i18next";
-import { Row } from "./Row";
 import { z } from "zod";
+import { Row } from "./Row";
 
 export const assistantPropertiesSchema = z.object({
-  "Rezidentská zóna": z.string(),
+  Rezidentska_zona: z.string(),
+  Interny_nazov: z.string(),
 });
 
 export type AssistantProperties = z.infer<typeof assistantPropertiesSchema>;
@@ -18,7 +20,7 @@ export const AssistantDetail = ({ properties }: AssistantDetailProps) => {
   return (
     <div className="flex flex-col justify-end w-full gap-4">
       <div className="font-semibold">{t("title")}</div>
-      <Row label={t("residentZone")} text={properties["Rezidentská zóna"]} />
+      <Row label={t("residentZone")} text={properties["Rezidentska_zona"]} />
     </div>
   );
 };

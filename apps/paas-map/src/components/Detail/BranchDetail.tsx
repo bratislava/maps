@@ -1,13 +1,17 @@
+/* eslint-disable camelcase */
 import { useTranslation } from "react-i18next";
-import { Row } from "./Row";
 import { z } from "zod";
+import { Row } from "./Row";
 
 export const branchPropertiesSchema = z.object({
-  Názov: z.string(),
-  Adresa: z.string(),
-  "Otváracie hodiny": z.string(),
+  Nazov: z.string(),
   Miesto: z.string(),
-  "Spresňujúce informácie": z.string().nullable(),
+  Adresa: z.string(),
+  Otvaracie_hodiny_sk: z.string().nullable(),
+  Otvaracie_hodiny_en: z.string().nullable(),
+  Spresnujuce_informacie_sk: z.string().nullable(),
+  Spresnujuce_informacie_en: z.string().nullable(),
+  Navigacia: z.string().nullable(),
 });
 
 export type BranchProperties = z.infer<typeof branchPropertiesSchema>;
@@ -17,16 +21,31 @@ export interface BranchDetailProps {
 }
 
 export const BranchDetail = ({ properties }: BranchDetailProps) => {
-  const { t } = useTranslation("translation", { keyPrefix: "layers.branches.detail" });
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation("translation", { keyPrefix: "layers.branches.detail" });
 
   return (
     <div className="flex flex-col justify-end w-full gap-4">
       <div className="font-semibold">{t("title")}</div>
-      <Row label={t("name")} text={properties["Názov"]} />
+      <Row label={t("name")} text={properties["Nazov"]} />
       <Row label={t("address")} text={properties["Adresa"]} />
-      <Row label={t("openingHours")} text={properties["Otváracie hodiny"]} />
+      <Row
+        label={t("openingHours")}
+        text={
+          language === "sk" ? properties["Otvaracie_hodiny_sk"] : properties["Otvaracie_hodiny_en"]
+        }
+      />
       <Row label={t("place")} text={properties["Miesto"]} />
-      <Row label={t("additionalInformation")} text={properties["Spresňujúce informácie"]} />
+      <Row
+        label={t("additionalInformation")}
+        text={
+          language === "sk"
+            ? properties["Spresnujuce_informacie_sk"]
+            : properties["Spresnujuce_informacie_en"]
+        }
+      />
     </div>
   );
 };

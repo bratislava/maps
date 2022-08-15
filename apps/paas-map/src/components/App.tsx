@@ -2,8 +2,8 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useResizeDetector } from "react-resize-detector";
-import odpStyles from "../data/residents/residents";
-import udrStyles from "../data/visitors/visitors";
+import odpStyles from "../layer-styles/residents/residents";
+import udrStyles from "../layer-styles/visitors/visitors";
 import "../styles.css";
 
 // maps
@@ -25,10 +25,11 @@ import { Detail } from "./Detail";
 // utils
 import { Feature, FeatureCollection, Point } from "geojson";
 import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
-import { getProcessedData } from "../utils/utils";
+import { processData } from "../utils/utils";
 import { MobileHeader } from "./mobile/MobileHeader";
 import { MobileSearch } from "./mobile/MobileSearch";
 
+import { useArcgis } from "@bratislava/react-use-arcgis";
 import { usePrevious } from "@bratislava/utils";
 import { DesktopSearch } from "./desktop/DesktopSearch";
 import { Filters } from "./Filters";
@@ -37,6 +38,36 @@ import { Marker } from "./Marker";
 export const App = () => {
   const { t } = useTranslation();
 
+  const { data: rawAssistantsData } = useArcgis(
+    "https://geoportal.bratislava.sk/hsite/rest/services/doprava/Asistenti_PAAS/MapServer/51",
+    { format: "geojson" },
+  );
+
+  const { data: rawParkomatsData } = useArcgis(
+    "https://geoportal.bratislava.sk/hsite/rest/services/doprava/Parkomaty/MapServer/17",
+    { format: "geojson" },
+  );
+
+  const { data: rawPartnersData } = useArcgis(
+    "https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Affiliate_Partners/MapServer/128",
+    { format: "geojson" },
+  );
+
+  const { data: rawParkingLotsData } = useArcgis(
+    "https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Parkovisk%C3%A1/MapServer/118",
+    { format: "geojson" },
+  );
+
+  const { data: rawBranchesData } = useArcgis(
+    "https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Pobo%C4%8Dka/MapServer/87",
+    { format: "geojson" },
+  );
+
+  const { data: rawUdrData } = useArcgis(
+    "https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/UDR_P/MapServer/40",
+    { format: "geojson" },
+  );
+
   const [isLoading, setLoading] = useState(true);
   const [markersData, setMarkersData] = useState<FeatureCollection | null>(null);
   const [udrData, setUdrData] = useState<FeatureCollection | null>(null);
@@ -44,12 +75,35 @@ export const App = () => {
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
-    const { markersData, udrData, odpData } = getProcessedData();
-    setMarkersData(markersData);
-    setUdrData(udrData);
-    setOdpData(odpData);
-    setLoading(false);
-  }, []);
+    if (
+      rawAssistantsData &&
+      rawParkomatsData &&
+      rawPartnersData &&
+      rawParkingLotsData &&
+      rawBranchesData &&
+      rawUdrData
+    ) {
+      const { markersData, udrData, odpData } = processData({
+        rawAssistantsData,
+        rawParkomatsData,
+        rawPartnersData,
+        rawParkingLotsData,
+        rawBranchesData,
+        rawUdrData,
+      });
+      setMarkersData(markersData);
+      setUdrData(udrData);
+      setOdpData(odpData);
+      setLoading(false);
+    }
+  }, [
+    rawAssistantsData,
+    rawParkomatsData,
+    rawPartnersData,
+    rawParkingLotsData,
+    rawBranchesData,
+    rawUdrData,
+  ]);
 
   const mapRef = useRef<MapHandle>(null);
   mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
@@ -81,27 +135,14 @@ export const App = () => {
   const markerFilter = useFilter({
     property: "kind",
     keepOnEmpty: true,
-    keys: useMemo(
-      () => [
-        "assistants",
-        "branches",
-        "parkomats",
-        "partners",
-        "garages",
-        "p-plus-r",
-        "p-plus-r-region",
-      ],
-      [],
-    ),
+    keys: useMemo(() => ["assistants", "branches", "parkomats", "partners", "parking-lots"], []),
     defaultValues: useMemo(
       () => ({
         assistants: false,
         branches: false,
         parkomats: false,
         partners: false,
-        garages: false,
-        "p-plus-r": false,
-        "p-plus-r-region": false,
+        "parking-lots": false,
       }),
       [],
     ),
@@ -109,19 +150,12 @@ export const App = () => {
 
   const setActiveOnlyVisitorLayers = useCallback(() => {
     layerFilter.setActiveOnly(["visitors"], true);
-    markerFilter.setActiveOnly([
-      "assistants",
-      "partners",
-      "parkomats",
-      "garages",
-      "p-plus-r",
-      "p-plus-r-region",
-    ]);
+    markerFilter.setActiveOnly(["assistants", "partners", "parkomats", "parking-lots"]);
   }, [layerFilter, markerFilter]);
 
   const setActiveOnlyResidentLayers = useCallback(() => {
     layerFilter.setActiveOnly(["residents"], true);
-    markerFilter.setActiveOnly(["branches", "garages", "p-plus-r", "p-plus-r-region"]);
+    markerFilter.setActiveOnly(["branches", "parking-lots"]);
   }, [layerFilter, markerFilter]);
 
   // make sure only one layer is selected
@@ -192,9 +226,7 @@ export const App = () => {
     useResizeDetector<HTMLDivElement>();
 
   const viewportControllerSlots: SlotType = useMemo(() => {
-    return isMobile
-      ? ["legend", "compass", "zoom"]
-      : ["legend", "geolocation", "compass", ["fullscreen", "zoom"]];
+    return isMobile ? ["compass", "zoom"] : ["geolocation", "compass", ["fullscreen", "zoom"]];
   }, [isMobile]);
 
   const zoneFilter = useFilter({
@@ -371,14 +403,7 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot
-          name="desktop-detail"
-          isVisible={isDetailOpen}
-          openPadding={{
-            right: 384,
-          }}
-          avoidControls={false}
-        >
+        <Slot name="desktop-detail" isVisible={isDetailOpen} avoidControls={false}>
           <div
             ref={desktopDetailRef}
             className={cx(

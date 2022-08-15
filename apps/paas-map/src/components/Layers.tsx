@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Chevron, Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
-import cx from "classnames";
-import { Icon, IIconProps } from "./Icon";
 import { IFilterResult } from "@bratislava/react-mapbox";
+import { Chevron, Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
 import * as Accordion from "@radix-ui/react-accordion";
-import { styled, keyframes } from "@stitches/react";
+import { keyframes, styled } from "@stitches/react";
+import cx from "classnames";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Icon, IIconProps } from "./Icon";
 
 const slideDown = keyframes({
   from: { height: 0 },
@@ -204,15 +204,11 @@ export const Layers = <LF extends string, MF extends string>({
       <Accordion.Item value="parking">
         <Accordion.Header>
           <SecondaryLayerButton
-            isActive={markerFilter.isAnyKeyActive([
-              "garages",
-              "p-plus-r",
-              "p-plus-r-region",
-            ] as MF[])}
+            isActive={markerFilter.isAnyKeyActive(["parking-lots"] as MF[])}
             toggle={() =>
               markerFilter.setActive(
-                ["garages", "p-plus-r", "p-plus-r-region"] as MF[],
-                !markerFilter.isAnyKeyActive(["garages", "p-plus-r", "p-plus-r-region"] as MF[]),
+                ["parking-lots"] as MF[],
+                !markerFilter.isAnyKeyActive(["parking-lots"] as MF[]),
               )
             }
             title={t("layerGroups.parking.title")}
@@ -220,22 +216,10 @@ export const Layers = <LF extends string, MF extends string>({
         </Accordion.Header>
         <StyledAccordionContent className="overflow-hidden">
           <SubLayerButton
-            icon="garage"
-            isActive={markerFilter.isAnyKeyActive(["garages"] as MF[])}
-            toggle={() => markerFilter.toggleActive("garages" as MF)}
-            title={t("layers.garages.title")}
-          />
-          <SubLayerButton
-            icon="p-plus-r"
-            isActive={markerFilter.isAnyKeyActive(["p-plus-r"] as MF[])}
-            toggle={() => markerFilter.toggleActive("p-plus-r" as MF)}
-            title={t("layers.p-plus-r.title")}
-          />
-          <SubLayerButton
-            icon="p-plus-r-region"
-            isActive={markerFilter.isAnyKeyActive(["p-plus-r-region"] as MF[])}
-            toggle={() => markerFilter.toggleActive("p-plus-r-region" as MF)}
-            title={t("layers.p-plus-r-region.title")}
+            icon="parking-lot"
+            isActive={markerFilter.isAnyKeyActive(["parking-lots"] as MF[])}
+            toggle={() => markerFilter.toggleActive("parking-lots" as MF)}
+            title={t("layers.parking-lots.title")}
           />
         </StyledAccordionContent>
       </Accordion.Item>

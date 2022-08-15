@@ -1,10 +1,10 @@
+/* eslint-disable camelcase */
 import { useTranslation } from "react-i18next";
-import { Row } from "./Row";
 import { z } from "zod";
+import { Row } from "./Row";
 
 export const parkomatPropertiesSchema = z.object({
-  Location: z.string(),
-  // eslint-disable-next-line camelcase
+  Lokalita: z.string(),
   Parkomat_ID: z.string(),
 });
 
@@ -20,7 +20,7 @@ export const ParkomatDetail = ({ properties }: ParkomatDetailProps) => {
   return (
     <div className="flex flex-col justify-end w-full gap-4">
       <div className="font-semibold">{t("title")}</div>
-      <Row label={t("location")} text={properties["Location"]} />
+      <Row label={t("location")} text={properties["Lokalita"]} />
       <Row label={t("parkomatId")} text={properties["Parkomat_ID"]} />
     </div>
   );

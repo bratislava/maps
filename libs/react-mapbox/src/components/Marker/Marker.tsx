@@ -1,17 +1,17 @@
-import React, {
-  useEffect,
-  ReactNode,
-  useContext,
-  useMemo,
-  useCallback,
-  useState,
+import { Feature, Point } from "geojson";
+import { Marker as MapboxMarker } from "mapbox-gl";
+import {
   MouseEvent,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { Marker as MapboxMarker } from "mapbox-gl";
-import { mapboxContext } from "../Mapbox/Mapbox";
 import { filterContext } from "../Filter/Filter";
-import { Feature, Point } from "geojson";
+import { mapboxContext } from "../Mapbox/Mapbox";
 
 export interface IMarkerProps {
   children?: ReactNode;

@@ -38,8 +38,6 @@ export default {
         parkingSectionCode: "Kód úseku parkovania",
         price: "Cena (€/h)",
         chargingTime: "Čas spoplatnenia (h)",
-        NPKInfo: "Informácia NPK",
-        RPKInfo: "Informácia RPK",
       },
     },
     parkomats: {
@@ -75,37 +73,24 @@ export default {
         name: "Názov",
         address: "Adresa",
         openingHours: "Otváracie hodiny",
+        navigate: "Navigovať",
       },
     },
-    garages: {
-      title: "Garáže",
+    "parking-lots": {
+      title: "Parkoviská",
       detail: {
-        title: "Garáž",
+        title: {
+          garage: "Garáž",
+          "parking-lot": "Parkovisko",
+          "p-plus-r": "P+R",
+        },
         name: "Názov",
         address: "Adresa",
-        NPKInfo: "Informácia NPK",
-      },
-    },
-    "p-plus-r": {
-      title: "P+R",
-      detail: {
-        title: "P+R",
-        name: "Názov",
         count: "Počet parkovacích miest",
         mhd: "MHD",
         mhdDistance: "Vzdialenosť MHD",
         toCentre: "Dojazdová doba do centra",
-      },
-    },
-    "p-plus-r-region": {
-      title: "P+R Región",
-      detail: {
-        title: "P+R Región",
-        name: "Názov",
-        type: "Typ",
-        count: "Počet parkovacích miest",
-        area: "Spádová oblasť",
-        mhd: "Verejná doprava",
+        navigate: "Navigovať",
       },
     },
   },

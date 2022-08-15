@@ -1,17 +1,19 @@
-import { useRef } from "react";
+import { X } from "@bratislava/react-maps-icons";
 import cx from "classnames";
 import { Feature, Point } from "geojson";
 import { MapboxGeoJSONFeature } from "mapbox-gl";
-import AssistantDetail, { AssistantProperties, assistantPropertiesSchema } from "./AssistantDetail";
+import { useRef } from "react";
 import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
+import AssistantDetail, { AssistantProperties, assistantPropertiesSchema } from "./AssistantDetail";
 import BranchDetail, { BranchProperties, branchPropertiesSchema } from "./BranchDetail";
-import { X } from "@bratislava/react-maps-icons";
-import GarageDetail, { GarageProperties, garagePropertiesSchema } from "./GarageDetail";
-import ResidentDetail, { ResidentProperties, residentPropertiesSchema } from "./ResidentDetail";
-import VisitorDetail, { VisitorProperties, visitorPropertiesSchema } from "./VisitorDetail";
+import ParkingLotDetail, {
+  ParkingLotProperties,
+  parkingLotPropertiesSchema,
+} from "./ParkingLotDetail";
 import ParkomatDetail, { ParkomatProperties, parkomatPropertiesSchema } from "./ParkomatDetail";
 import PartnerDetail, { PartnerProperties, partnerPropertiesSchema } from "./PartnerDetail";
-import PPlusRDetail, { PPlusRProperties, pPlusRPropertiesSchema } from "./PPlusRDetail";
+import ResidentDetail, { ResidentProperties, residentPropertiesSchema } from "./ResidentDetail";
+import VisitorDetail, { VisitorProperties, visitorPropertiesSchema } from "./VisitorDetail";
 
 export interface DetailProps {
   feature: Feature<Point> | MapboxGeoJSONFeature | null;
@@ -29,8 +31,6 @@ export const Detail = ({ feature, isOpen, onClose, isMobile }: DetailProps) => {
     <AssistantDetail properties={feature.properties as AssistantProperties} />
   ) : branchPropertiesSchema.safeParse(feature.properties).success ? (
     <BranchDetail properties={feature.properties as BranchProperties} />
-  ) : garagePropertiesSchema.safeParse(feature.properties).success ? (
-    <GarageDetail properties={feature.properties as GarageProperties} />
   ) : residentPropertiesSchema.safeParse(feature.properties).success ? (
     <ResidentDetail properties={feature.properties as ResidentProperties} />
   ) : visitorPropertiesSchema.safeParse(feature.properties).success ? (
@@ -39,8 +39,8 @@ export const Detail = ({ feature, isOpen, onClose, isMobile }: DetailProps) => {
     <ParkomatDetail properties={feature.properties as ParkomatProperties} />
   ) : partnerPropertiesSchema.safeParse(feature.properties).success ? (
     <PartnerDetail properties={feature.properties as PartnerProperties} />
-  ) : pPlusRPropertiesSchema.safeParse(feature.properties).success ? (
-    <PPlusRDetail properties={feature.properties as PPlusRProperties} />
+  ) : parkingLotPropertiesSchema.safeParse(feature.properties).success ? (
+    <ParkingLotDetail properties={feature.properties as ParkingLotProperties} />
   ) : null;
 
   return !detail ? null : isMobile ? (

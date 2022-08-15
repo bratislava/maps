@@ -1,10 +1,9 @@
-import React from "react";
+import { Chevron, X } from "@bratislava/react-maps-icons";
+import { Tag } from "@bratislava/react-maps-ui";
 import { Feature, Point } from "geojson";
 import { useTranslation } from "react-i18next";
-import { Chevron, X } from "@bratislava/react-maps-icons";
-import { Row } from "./Row";
-import { Tag } from "@bratislava/react-maps-ui";
 import { Image } from "./Image";
+import { Row } from "./Row";
 
 export interface CvickoDetailProps {
   feature: Feature<Point>;
