@@ -1,38 +1,38 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 import cx from "classnames";
-import "../styles.css";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useResizeDetector } from "react-resize-detector";
-import udrStyles from "../data/visitors/visitors";
 import odpStyles from "../data/residents/residents";
+import udrStyles from "../data/visitors/visitors";
+import "../styles.css";
 
 // maps
 import {
-  Slot,
   Layout,
-  MapHandle,
   Map,
+  MapHandle,
+  Slot,
+  SlotType,
   ThemeController,
   ViewportController,
-  SlotType,
 } from "@bratislava/react-maps";
 
-import { Cluster, Filter, useFilter, Layer } from "@bratislava/react-mapbox";
+import { Cluster, Filter, Layer, useFilter } from "@bratislava/react-mapbox";
 
 // components
 import { Detail } from "./Detail";
 
 // utils
-import { getProcessedData } from "../utils/utils";
+import { Feature, FeatureCollection, Point } from "geojson";
 import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
-import { Feature, Point, FeatureCollection } from "geojson";
+import { getProcessedData } from "../utils/utils";
 import { MobileHeader } from "./mobile/MobileHeader";
 import { MobileSearch } from "./mobile/MobileSearch";
 
-import { Marker } from "./Marker";
-import { Filters } from "./Filters";
 import { usePrevious } from "@bratislava/utils";
 import { DesktopSearch } from "./desktop/DesktopSearch";
+import { Filters } from "./Filters";
+import { Marker } from "./Marker";
 
 export const App = () => {
   const { t } = useTranslation();
@@ -202,37 +202,58 @@ export const App = () => {
     keys: useMemo(() => ["SM1", "RU1"], []),
   });
 
+  const initialViewport = useMemo(
+    () => ({
+      zoom: 12.229005488986582,
+      center: {
+        lat: 48.16290360284438,
+        lng: 17.125377342563297,
+      },
+    }),
+    [],
+  );
+
+  const mapStyles = useMemo(
+    () => ({
+      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+    }),
+    [],
+  );
+
+  const sources = useMemo(
+    () => ({
+      udr: udrData,
+      odp: odpData,
+    }),
+    [udrData, odpData],
+  );
+
+  const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
+    mapRef.current?.moveToFeatures(features);
+    setSelectedFeature(features[0] ?? null);
+    setSelectedMarker(null);
+  }, []);
+
+  const selectedFeatures = useMemo(() => {
+    return selectedFeature ? [selectedFeature] : [];
+  }, [selectedFeature]);
+
   return isLoading ? null : (
     <Map
       ref={mapRef}
       mapboxgl={mapboxgl}
       loadingSpinnerColor="#71CA55"
-      mapStyles={{
-        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-      }}
-      initialViewport={{
-        zoom: 12.229005488986582,
-        center: {
-          lat: 48.16290360284438,
-          lng: 17.125377342563297,
-        },
-      }}
-      sources={{
-        udr: udrData,
-        odp: odpData,
-      }}
+      mapStyles={mapStyles}
+      initialViewport={initialViewport}
+      sources={sources}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
-      selectedFeatures={selectedFeature ? [selectedFeature] : []}
-      onFeaturesClick={(features) => {
-        mapRef.current?.moveToFeatures(features);
-        setSelectedFeature(features[0] ?? null);
-        setSelectedMarker(null);
-      }}
+      selectedFeatures={selectedFeatures}
+      onFeaturesClick={onFeaturesClick}
     >
       <Filter expression={markerFilter.expression}>
         <Cluster features={markersData?.features ?? []} radius={48}>
@@ -309,7 +330,7 @@ export const App = () => {
 
         <Slot
           name="mobile-detail"
-          openPadding={{ bottom: 200 }}
+          // openPadding={{ bottom: 200 }}
           avoidControls={false}
           isVisible={isDetailOpen}
         >

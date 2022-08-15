@@ -1,25 +1,25 @@
-import React, {
-  useRef,
-  createContext,
-  useMemo,
-  useCallback,
-  useState,
-  forwardRef,
-  useImperativeHandle,
-  ReactNode,
-  useReducer,
-} from "react";
-import { Sources, MapIcon, Viewport, PartialViewport } from "../../types";
-import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
 import { useEffectDebugger, usePrevious } from "@bratislava/utils";
+import { Feature } from "geojson";
+import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
+import {
+  createContext,
+  forwardRef,
+  ReactNode,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
+import { MapIcon, PartialViewport, Sources, Viewport } from "../../types";
 import { DevelopmentInfo } from "../DevelopmentInfo/DevelopmentInfo";
 import {
   mergeViewports,
   ViewportActionKind,
   viewportReducer,
 } from "./viewportReducer";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { Feature } from "geojson";
 
 export type MapboxGesturesOptions = {
   disableBearing?: boolean;
@@ -648,8 +648,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         );
 
         map.on("style.load", () => {
-          // loadSources();
-          // loadIcons();
+          loadSources();
+          loadIcons();
           setStyleLoading(false);
         });
       },
