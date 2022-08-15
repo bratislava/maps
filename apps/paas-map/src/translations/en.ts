@@ -1,110 +1,97 @@
 export default {
-  title: "Zone map",
+  title: "Zone map PAAS",
   search: "Search",
   layersHint: "Click on the highlighted streets for more information.",
-  ruzinovRegulation: "Starý Ružinov - východ, regulation from 23.3.2022",
-  paymentOptions: "Payment options",
-  paymentOptionsUrl: "https://paas.sk/en/payment/",
+  filters: {
+    title: "Filter",
+    reset: "Reset",
+    zone: {
+      placeholder: "Zone",
+      multipleZones: "Selected",
+    },
+  },
+  layerGroups: {
+    payment: { title: "Payment" },
+    parking: { title: "Parking" },
+    support: { title: "Support" },
+  },
   layers: {
-    residentsLayer: {
+    residents: {
       title: "Resident",
-      description:
-        "Streets on which you can use the resident or subscription card for the particular zone for parking.",
+      tooltip:
+        "Ulice, na ktorých môžete na parkovanie využiť rezidentskú alebo abonentskú kartu pre danú zónu.",
       detail: {
         title: "Resident",
-        cardValidity: "Validity of RPK, APK",
+        cardValidity: "Validity of resident/abonent cards",
+        cards: "Cards",
+        cardsUrl: "https://paas.sk/en/i-am-a-resident/",
       },
     },
-    visitorsLayer: {
+    visitors: {
       title: "Visitor",
-      description:
-        "Zone visitors pay an hourly rate for parking on these streets at a specified time or they can use their bonus or visitor card.",
+      tooltip:
+        "Ulice, na ktorých návštevníci zóny platia za parkovanie v stanovenom čase hodinovú sadzbu, respektíve môžu využiť na parkovanie bonusovú alebo návštevnícku kartu.",
       detail: {
         title: "Visitor",
         location: "Location",
-        district: "District",
-        zone: "Zone",
-        code: "Parking segment code",
-        price: "Price (€/h)",
-        regulationTime: "Time of regulation (h)",
-        chargingTime: "Time of paid parking (h)",
-        RPKInfo: "RPK information",
-        NPKInfo: "NPK information",
+        parkingSectionCode: "Parking section code",
+        price: "price (€/h)",
+        chargingTime: "Charging time (h)",
+        payment: "Payment",
+        paymentUrl: "https://paas.sk/en/payment/",
       },
     },
-    parkomatsLayer: {
-      title: "Parking machines",
+    parkomats: {
+      title: "Parkomats",
       detail: {
-        title: "Parking machine",
+        title: "Parkomat",
         location: "Location",
-        id: "Parking machine ID",
+        parkomatId: "Parkomat ID",
       },
     },
-    assistantsLayer: {
-      title: "Parking assistants",
+    assistants: {
+      title: "Assistants",
       detail: {
-        title: "Parking assistant",
-        residentZone: "Resident zone",
+        title: "Assistant",
+        residentZone: "Residential zone",
       },
     },
-    branchesLayer: {
-      title: "Contact points",
+    branches: {
+      title: "Branches",
       detail: {
-        title: "Contact point",
+        title: "Branch",
         name: "Name",
         address: "Address",
         openingHours: "Opening hours",
-        place: "Location",
-        additionalInformation: "Additional information",
+        place: "Place",
+        additionalInformation: "Additional informations",
       },
     },
-    partnersLayer: {
+    partners: {
       title: "Partners",
       detail: {
         title: "Partner",
         name: "Name",
         address: "Address",
         openingHours: "Opening hours",
+        navigate: "Navigate",
       },
     },
-    garagesVisitorLayer: {
-      title: "Garages",
+    "parking-lots": {
+      title: "Parking lots",
       detail: {
-        title: "Garage",
+        title: {
+          garage: "garage",
+          "parking-lot": "Parking lot",
+          "p-plus-r": "P+R",
+        },
         name: "Name",
         address: "Address",
-        NPKInfo: "NPK information",
-      },
-    },
-    garagesResidentLayer: {
-      title: "Garages",
-      detail: {
-        title: "Garage",
-        name: "Name",
-        address: "Address",
-        RPKInfo: "RPK information",
-      },
-    },
-    prLayer: {
-      title: "P+R",
-      detail: {
-        title: "P+R",
-        name: "Name",
-        count: "Number of parking lots",
+        count: "Number of parking spots",
         mhd: "Public transport",
         mhdDistance: "Distance to public transport",
-        toCentre: "Distance to centre",
-      },
-    },
-    prRegionLayer: {
-      title: "P+R Region",
-      detail: {
-        title: "P+R Region",
-        name: "Name",
-        type: "Type",
-        count: "Number of parking lots",
-        area: "Area",
-        mhd: "Public transport",
+        toCentre: "Time to centre",
+        navigate: "Navigate",
       },
     },
   },

@@ -56,7 +56,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
       />
       <div className="relative">
         <div className="absolute -bottom-12">
-          <ButtonLink href="https://paas.sk/platba/" text="Platba" />
+          <ButtonLink href={t("paymentUrl")} text={t("payment")} />
         </div>
       </div>
     </div>

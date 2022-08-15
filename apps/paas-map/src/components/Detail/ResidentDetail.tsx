@@ -35,7 +35,7 @@ export const ResidentDetail = ({ properties }: ResidentDetailProps) => {
 
       <div className="relative">
         <div className="absolute -bottom-12">
-          <ButtonLink isSecondary href="https://paas.sk/som-rezident/" text="Karty" />
+          <ButtonLink isSecondary href={t("cardsUrl")} text={t("cards")} />
         </div>
       </div>
     </div>

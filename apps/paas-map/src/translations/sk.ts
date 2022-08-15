@@ -2,9 +2,6 @@ export default {
   title: "Mapa zón PAAS",
   search: "Hľadať",
   layersHint: "Pre viac informácií kliknite na zvýraznené ulice.",
-  ruzinovRegulation: "Starý Ružinov - východ, regulácia od 23.3.2022",
-  paymentOptions: "Možnosti platby",
-  paymentOptionsUrl: "https://paas.sk/platba/",
   filters: {
     title: "Filter",
     reset: "Zrušiť",
@@ -26,6 +23,8 @@ export default {
       detail: {
         title: "Rezident",
         cardValidity: "Platnosť rezidentskej/abonentskej karty",
+        cards: "Karty",
+        cardsUrl: "https://paas.sk/som-rezident/",
       },
     },
     visitors: {
@@ -38,6 +37,8 @@ export default {
         parkingSectionCode: "Kód úseku parkovania",
         price: "Cena (€/h)",
         chargingTime: "Čas spoplatnenia (h)",
+        payment: "Platba",
+        paymentUrl: "https://paas.sk/platba/",
       },
     },
     parkomats: {
