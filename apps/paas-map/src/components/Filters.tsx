@@ -1,9 +1,7 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
-import { Divider, Select, SelectOption, Sidebar } from "@bratislava/react-maps-ui";
+import { Sidebar } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
-import { SelectValueRenderer } from "./SelectValueRenderer";
 import { Layers } from "./Layers";
-import cx from "classnames";
 
 export interface IFiltersProps<LF extends string, MF extends string, ZF extends string> {
   isVisible?: boolean;
@@ -32,7 +30,8 @@ export const Filters = <LF extends string, MF extends string, ZF extends string>
       setVisible={setVisible}
       title={t("title")}
     >
-      <div className="flex justify-between px-6 items-center">
+      <div className="pt-3"></div>
+      {/* <div className="flex justify-between px-6 items-center">
         <h2 className="font-semibold text-md py-1">{t("filters.title")}</h2>
       </div>
 
@@ -59,9 +58,9 @@ export const Filters = <LF extends string, MF extends string, ZF extends string>
             </SelectOption>
           ))}
         </Select>
-      </div>
+      </div> */}
 
-      <Divider className="mx-6" />
+      {/* <Divider className="mx-6" /> */}
 
       <div className="-translate-y-6">
         <Layers layerFilter={layerFilter} markerFilter={markerFilter} />
