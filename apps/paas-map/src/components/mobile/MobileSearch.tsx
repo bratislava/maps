@@ -1,8 +1,8 @@
 import { forwardGeocode, GeocodeFeature, MapHandle } from "@bratislava/react-maps";
 import { SearchBar } from "@bratislava/react-maps-ui";
+import mapboxgl from "mapbox-gl";
 import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import mapboxgl from "mapbox-gl";
 
 export interface IMobileSearchProps {
   mapRef: RefObject<MapHandle>;
@@ -51,11 +51,11 @@ export const MobileSearch = ({ mapRef, mapboxgl, isGeolocation }: IMobileSearchP
         onGeolocationClick={mapRef.current?.toggleGeolocation}
       />
       {!!searchFeatures.length && (
-        <div className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-white rounded-lg py-4">
+        <div className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-background-lightmode dark:bg-background-darkmode rounded-lg py-4">
           {searchFeatures.map((feature: any, i) => {
             return (
               <button
-                className="text-left w-full hover:bg-background px-4 py-2"
+                className="text-left w-full hover:bg-gray-lightmode/10 dark:hover:bg-gray-darkmode/20 px-4 py-2"
                 onMouseDown={() => onSearchFeatureClick(feature)}
                 key={i}
               >
