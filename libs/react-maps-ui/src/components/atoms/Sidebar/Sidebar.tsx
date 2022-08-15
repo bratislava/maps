@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
-import cx from "classnames";
 import { Chevron, X } from "@bratislava/react-maps-icons";
+import cx from "classnames";
+import { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 export interface ISidebarProps {
@@ -20,7 +20,9 @@ export const Sidebar = ({
   position,
   isMobile = true,
 }: ISidebarProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("ui", {
+    keyPrefix: "components.atoms.Sidebar",
+  });
   return (
     <div
       className={cx(
