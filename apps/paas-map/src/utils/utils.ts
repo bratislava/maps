@@ -141,7 +141,12 @@ export const processData = ({
             },
           } as Feature;
         })
-        .filter((f) => f.properties?.["web"] === "ano"),
+        .filter(
+          (f) =>
+            f.properties?.["web"] === "ano" ||
+            (f.properties?.["web"] === "ano - planned" &&
+              (f.properties?.["Status"] === "active" || f.properties?.["Status"] === "planned")),
+        ),
     ],
   });
 

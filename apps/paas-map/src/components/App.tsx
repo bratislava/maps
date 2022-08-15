@@ -362,7 +362,7 @@ export const App = () => {
 
         <Slot
           name="mobile-detail"
-          // openPadding={{ bottom: 200 }}
+          openPadding={{ bottom: 200 }}
           avoidControls={false}
           isVisible={isDetailOpen}
         >

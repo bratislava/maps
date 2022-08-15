@@ -52,14 +52,13 @@ export const Detail = ({ feature, isOpen, onClose, isMobile }: DetailProps) => {
       className="relative z-30"
       open={true}
       expandOnContentDrag
-      onDismiss={onClose}
     >
-      <div className="p-8">{detail}</div>
+      <div className="p-8 text-foreground-lightmode dark:text-foreground-darkmode">{detail}</div>
     </BottomSheet>
   ) : (
     <div
       className={cx(
-        "fixed top-0 right-0 w-96 bg-background-lightmode dark:bg-background-darkmode transition-all duration-500 p-6 border-l-2 border-b-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20 rounded-bl-lg",
+        "fixed top-0 right-0 w-96 text-foreground-lightmode dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode transition-all duration-500 p-6 border-l-2 border-b-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20 rounded-bl-lg",
         {
           "translate-x-full": !isOpen,
           "shadow-lg": isOpen,

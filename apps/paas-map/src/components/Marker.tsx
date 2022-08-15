@@ -37,8 +37,8 @@ export const Marker = ({ features, lat, lng, onClick, isSelected }: IMarkerProps
 
   return feature ? (
     <MapMarker
-      // baseZoom={15}
-      // isRelativeToZoom
+      baseZoom={14}
+      isRelativeToZoom
       ignoreFilters
       onClick={onClickHandler}
       feature={feature}
@@ -47,7 +47,7 @@ export const Marker = ({ features, lat, lng, onClick, isSelected }: IMarkerProps
         <Icon
           isWhite={isSelected}
           count={features.length > 1 ? features.length : undefined}
-          size={64}
+          size={48}
           icon={feature.properties?.icon ?? ""}
         />
       </motion.div>
