@@ -19,7 +19,7 @@ export default {
     residents: {
       title: "Resident",
       tooltip:
-        "Ulice, na ktorých môžete na parkovanie využiť rezidentskú alebo abonentskú kartu pre danú zónu.",
+        "Streets on which you can use the resident or subscription card for the particular zone for parking.",
       detail: {
         title: "Resident",
         planned: "This section is planned",
@@ -31,7 +31,7 @@ export default {
     visitors: {
       title: "Visitor",
       tooltip:
-        "Ulice, na ktorých návštevníci zóny platia za parkovanie v stanovenom čase hodinovú sadzbu, respektíve môžu využiť na parkovanie bonusovú alebo návštevnícku kartu.",
+        "Zone visitors pay an hourly rate for parking on these streets at a specified time or they can use their bonus or visitor card.",
       detail: {
         title: "Visitor",
         planned: "This section is planned",

@@ -4,7 +4,7 @@ import { Modal, Popover } from "@bratislava/react-maps-ui";
 import * as Accordion from "@radix-ui/react-accordion";
 import { keyframes, styled } from "@stitches/react";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Icon, IIconProps } from "./Icon";
 
@@ -49,12 +49,6 @@ const PrimaryLayerButton = ({
 }) => {
   const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
 
-  const openTooltipModal = useCallback(() => {
-    if (isMobile) {
-      setTooltipModalOpen(true);
-    }
-  }, [isMobile]);
-
   return (
     <>
       <button
@@ -72,7 +66,11 @@ const PrimaryLayerButton = ({
                 className="mt-[2px]"
                 onClick={(e) => {
                   e.stopPropagation();
-                  toggle();
+                  if (isMobile) {
+                    setTooltipModalOpen(true);
+                  } else {
+                    toggle();
+                  }
                 }}
               >
                 <Information className="text-primary mt-[4px]" size="sm" />
