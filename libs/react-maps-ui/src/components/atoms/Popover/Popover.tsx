@@ -1,5 +1,5 @@
-import React, { ReactNode, useRef, useState } from "react";
 import { Popover as HeadlessPopover } from "@headlessui/react";
+import { ReactNode, useState } from "react";
 import { usePopper } from "react-popper";
 
 export interface IPopoverProps {
@@ -45,9 +45,6 @@ export const Popover = ({ button, panel }: IPopoverProps) => {
         style={styles.popper}
         {...attributes.popper}
       >
-        {/* <div ref={setArrowElement} style={styles.arrow} {...attributes.arrow}>
-          
-        </div> */}
         {panel}
       </HeadlessPopover.Panel>
     </HeadlessPopover>

@@ -34,8 +34,8 @@ export const ResidentDetail = ({ properties }: ResidentDetailProps) => {
       )}
 
       <div className="relative">
-        <div className="absolute -bottom-12">
-          <ButtonLink isSecondary href={t("cardsUrl")} text={t("cards")} />
+        <div className="sm:absolute -bottom-12">
+          <ButtonLink noShadow isSecondary href={t("cardsUrl")} text={t("cards")} />
         </div>
       </div>
     </div>

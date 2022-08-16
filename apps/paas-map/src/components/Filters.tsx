@@ -63,7 +63,7 @@ export const Filters = <LF extends string, MF extends string, ZF extends string>
       {/* <Divider className="mx-6" /> */}
 
       <div className="-translate-y-6">
-        <Layers layerFilter={layerFilter} markerFilter={markerFilter} />
+        <Layers isMobile={isMobile} layerFilter={layerFilter} markerFilter={markerFilter} />
       </div>
     </Sidebar>
   );

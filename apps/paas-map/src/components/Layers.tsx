@@ -1,9 +1,10 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
 import { Chevron, Eye, EyeCrossed } from "@bratislava/react-maps-icons";
+import { Modal } from "@bratislava/react-maps-ui";
 import * as Accordion from "@radix-ui/react-accordion";
 import { keyframes, styled } from "@stitches/react";
 import cx from "classnames";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Icon, IIconProps } from "./Icon";
 
@@ -37,29 +38,61 @@ const PrimaryLayerButton = ({
   toggle,
   icon,
   tooltip,
+  isMobile,
 }: {
   title: string;
   icon: IIconProps["icon"];
   isActive: boolean;
   toggle: () => void;
   tooltip: string;
+  isMobile: boolean;
 }) => {
+  const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
+
+  const openTooltipModal = useCallback(() => {
+    if (isMobile) {
+      setTooltipModalOpen(true);
+    }
+  }, [isMobile]);
+
   return (
-    <button
-      onClick={toggle}
-      className={cx("flex w-full justify-between items-center gap-2 px-6 py-2", {
-        "bg-gray-lightmode bg-opacity-10 dark:bg-gray-darkmode dark:bg-opacity-10": isActive,
-      })}
-    >
-      <div className="flex items-center gap-2">
-        <Icon icon={icon} size={40} />
-        <span className="font-semibold">{title}</span>
-        {/* <div className="mt-[2px] text-primary">
-          <Information size="default" />
-        </div> */}
-      </div>
-      <div>{isActive ? <Eye width={18} height={18} /> : <EyeCrossed width={18} height={18} />}</div>
-    </button>
+    <>
+      <button
+        onClick={toggle}
+        className={cx("flex w-full justify-between items-center gap-2 px-6 py-2", {
+          "bg-gray-lightmode bg-opacity-10 dark:bg-gray-darkmode dark:bg-opacity-10": isActive,
+        })}
+      >
+        <div className="flex items-center gap-2">
+          <Icon icon={icon} size={40} />
+          <span className="font-semibold">{title}</span>
+          {/* <Popover
+            button={
+              <div className="mt-[2px]" onClick={openTooltipModal}>
+                <Information className="text-primary mt-[4px]" size="sm" />
+              </div>
+            }
+            panel={
+              <div className="flex flex-col gap-2">
+                <div className="text-md font-semibold">dwadawd</div>
+                <div className="">{tooltip}</div>
+              </div>
+            }
+          /> */}
+        </div>
+        <div>
+          {isActive ? <Eye width={18} height={18} /> : <EyeCrossed width={18} height={18} />}
+        </div>
+      </button>
+
+      <Modal
+        className="max-w-lg"
+        isOpen={isTooltipModalOpen}
+        title={title}
+        description={tooltip}
+        onClose={() => setTooltipModalOpen(false)}
+      ></Modal>
+    </>
   );
 };
 
@@ -123,11 +156,13 @@ const SubLayerButton = ({
 export interface ILayerProps<LF extends string, MF extends string> {
   layerFilter: IFilterResult<LF>;
   markerFilter: IFilterResult<MF>;
+  isMobile: boolean;
 }
 
 export const Layers = <LF extends string, MF extends string>({
   layerFilter,
   markerFilter,
+  isMobile,
 }: ILayerProps<LF, MF>) => {
   const { t } = useTranslation();
 
@@ -153,6 +188,7 @@ export const Layers = <LF extends string, MF extends string>({
         icon="visitor"
         title={t("layers.visitors.title")}
         tooltip={t("layers.visitors.tooltip")}
+        isMobile={isMobile}
       />
 
       {/* RESIDENTS */}
@@ -162,6 +198,7 @@ export const Layers = <LF extends string, MF extends string>({
         icon="resident"
         title={t("layers.residents.title")}
         tooltip={t("layers.residents.tooltip")}
+        isMobile={isMobile}
       />
 
       {/* PAYMENT */}
@@ -204,11 +241,11 @@ export const Layers = <LF extends string, MF extends string>({
       <Accordion.Item value="parking">
         <Accordion.Header>
           <SecondaryLayerButton
-            isActive={markerFilter.isAnyKeyActive(["parking-lots"] as MF[])}
+            isActive={markerFilter.isAnyKeyActive(["parking-lots", "garages", "p-plus-r"] as MF[])}
             toggle={() =>
               markerFilter.setActive(
                 ["parking-lots"] as MF[],
-                !markerFilter.isAnyKeyActive(["parking-lots"] as MF[]),
+                !markerFilter.isAnyKeyActive(["parking-lots", "garages", "p-plus-r"] as MF[]),
               )
             }
             title={t("layerGroups.parking.title")}
@@ -220,6 +257,18 @@ export const Layers = <LF extends string, MF extends string>({
             isActive={markerFilter.isAnyKeyActive(["parking-lots"] as MF[])}
             toggle={() => markerFilter.toggleActive("parking-lots" as MF)}
             title={t("layers.parking-lots.title")}
+          />
+          <SubLayerButton
+            icon="garage"
+            isActive={markerFilter.isAnyKeyActive(["garages"] as MF[])}
+            toggle={() => markerFilter.toggleActive("garages" as MF)}
+            title={t("layers.garages.title")}
+          />
+          <SubLayerButton
+            icon="p-plus-r"
+            isActive={markerFilter.isAnyKeyActive(["p-plus-r"] as MF[])}
+            toggle={() => markerFilter.toggleActive("p-plus-r" as MF)}
+            title={t("layers.p-plus-r.title")}
           />
         </StyledAccordionContent>
       </Accordion.Item>

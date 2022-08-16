@@ -55,8 +55,8 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
         }
       />
       <div className="relative">
-        <div className="absolute -bottom-12">
-          <ButtonLink href={t("paymentUrl")} text={t("payment")} />
+        <div className="sm:absolute -bottom-12">
+          <ButtonLink noShadow href={t("paymentUrl")} text={t("payment")} />
         </div>
       </div>
     </div>

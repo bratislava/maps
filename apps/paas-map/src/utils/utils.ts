@@ -108,9 +108,16 @@ export const processData = ({
       ...rawParkingLotsData.features
         .map((feature) => {
           GLOBAL_ID++;
-          const type = feature.properties?.["Typ_en"];
-          const kind = "parking-lots";
-          const icon = type == "P+R" ? "p-plus-r" : type == "garage" ? "garage" : "parking-lot";
+          const type =
+            feature.properties?.["Typ_en"] == "P+R"
+              ? "p-plus-r"
+              : feature.properties?.["Typ_en"] == "garage"
+              ? "garage"
+              : "parking-lot";
+
+          const kind =
+            type == "p-plus-r" ? "p-plus-r" : type == "garage" ? "garages" : "parking-lots";
+          const icon = type;
           return {
             ...feature,
             id: GLOBAL_ID,
@@ -143,9 +150,8 @@ export const processData = ({
         })
         .filter(
           (f) =>
-            f.properties?.["web"] === "ano" ||
-            (f.properties?.["web"] === "ano - planned" &&
-              (f.properties?.["Status"] === "active" || f.properties?.["Status"] === "planned")),
+            (f.properties?.["web"] === "ano" || f.properties?.["web"] === "ano - planned") &&
+            (f.properties?.["Status"] === "active" || f.properties?.["Status"] === "planned"),
         ),
     ],
   });
@@ -153,18 +159,22 @@ export const processData = ({
   const odpData: FeatureCollection = addDistrictPropertyToLayer({
     type: "FeatureCollection",
     features: [
-      ...rawOdpData.features.map((feature) => {
-        GLOBAL_ID++;
-        const layer = "residents";
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            layer,
-          },
-        } as Feature;
-      }),
+      ...rawOdpData.features
+        .map((feature) => {
+          GLOBAL_ID++;
+          const layer = "residents";
+          return {
+            ...feature,
+            id: GLOBAL_ID,
+            properties: {
+              ...feature.properties,
+              layer,
+            },
+          } as Feature;
+        })
+        .filter(
+          (f) => f.properties?.["Status"] === "active" || f.properties?.["Status"] === "planned",
+        ),
     ],
   });
 

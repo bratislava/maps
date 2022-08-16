@@ -9,6 +9,13 @@ const styles = [
         "#fcac00",
         "#4287f5",
       ],
+      "line-dasharray": [
+        "match",
+        ["get", "Status"],
+        "planned",
+        ["literal", [2, 2]],
+        ["literal", [1, 0]],
+      ],
       "line-width": [
         "interpolate",
         ["linear"],

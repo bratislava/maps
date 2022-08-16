@@ -14,7 +14,7 @@ import {
   Slot,
   SlotType,
   ThemeController,
-  ViewportController,
+  ViewportController
 } from "@bratislava/react-maps";
 
 import { Cluster, Filter, Layer, useFilter } from "@bratislava/react-mapbox";
@@ -37,6 +37,10 @@ import { Marker } from "./Marker";
 
 export const App = () => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    document.title = t("title");
+  }, [t]);
 
   const { data: rawAssistantsData } = useArcgis(
     "https://geoportal.bratislava.sk/hsite/rest/services/doprava/Asistenti_PAAS/MapServer/51",
@@ -135,7 +139,18 @@ export const App = () => {
   const markerFilter = useFilter({
     property: "kind",
     keepOnEmpty: true,
-    keys: useMemo(() => ["assistants", "branches", "parkomats", "partners", "parking-lots"], []),
+    keys: useMemo(
+      () => [
+        "assistants",
+        "branches",
+        "parkomats",
+        "partners",
+        "parking-lots",
+        "garages",
+        "p-plus-r",
+      ],
+      [],
+    ),
     defaultValues: useMemo(
       () => ({
         assistants: false,
@@ -143,6 +158,8 @@ export const App = () => {
         parkomats: false,
         partners: false,
         "parking-lots": false,
+        garages: false,
+        "p-plus-r": false,
       }),
       [],
     ),
@@ -150,12 +167,12 @@ export const App = () => {
 
   const setActiveOnlyVisitorLayers = useCallback(() => {
     layerFilter.setActiveOnly(["visitors"], true);
-    markerFilter.setActiveOnly(["assistants", "partners", "parkomats", "parking-lots"]);
+    markerFilter.setActiveOnly(["assistants", "partners", "parkomats", "parking-lots", "garages", "p-plus-r"]);
   }, [layerFilter, markerFilter]);
 
   const setActiveOnlyResidentLayers = useCallback(() => {
     layerFilter.setActiveOnly(["residents"], true);
-    markerFilter.setActiveOnly(["branches", "parking-lots"]);
+    markerFilter.setActiveOnly(["branches", "parking-lots", "garages", "p-plus-r"]);
   }, [layerFilter, markerFilter]);
 
   // make sure only one layer is selected

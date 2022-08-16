@@ -1,18 +1,25 @@
 const styles = [
   {
-    id: 'udr-line',
-    type: 'line',
+    id: "udr-line",
+    type: "line",
     paint: {
-      'line-color': [
-        'case',
-        ['boolean', ['feature-state', 'selected'], false],
-        '#fcac00',
-        '#89c764',
+      "line-color": [
+        "case",
+        ["boolean", ["feature-state", "selected"], false],
+        "#fcac00",
+        "#89c764",
       ],
-      'line-width': [
-        'interpolate',
-        ['linear'],
-        ['zoom'],
+      "line-dasharray": [
+        "match",
+        ["get", "Status"],
+        "planned",
+        ["literal", [2, 2]],
+        ["literal", [1, 0]],
+      ],
+      "line-width": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
         // zoom is 11 (or less) -> circle radius will be 1px
         11,
         1,
@@ -23,21 +30,16 @@ const styles = [
     },
   },
   {
-    id: 'udr-fill',
-    type: 'fill',
+    id: "udr-fill",
+    type: "fill",
     paint: {
-      'fill-color': [
-        'case',
-        ['boolean', ['feature-state', 'selected'], false],
-        '#fcac00',
-        '#89c764',
+      "fill-color": [
+        "case",
+        ["boolean", ["feature-state", "selected"], false],
+        "#fcac00",
+        "#89c764",
       ],
-      'fill-opacity': [
-        'case',
-        ['boolean', ['feature-state', 'hover'], false],
-        0.4,
-        0.2,
-      ],
+      "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], 0.4, 0.2],
     },
   },
 ];

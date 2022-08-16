@@ -94,5 +94,11 @@ export default {
         navigate: "Navigate",
       },
     },
+    garages: {
+      title: "Garages",
+    },
+    "p-plus-r": {
+      title: "P+R",
+    },
   },
 };

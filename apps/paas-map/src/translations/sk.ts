@@ -94,5 +94,11 @@ export default {
         navigate: "Navigovať",
       },
     },
+    garages: {
+      title: "Garáže",
+    },
+    "p-plus-r": {
+      title: "P+R",
+    },
   },
 };

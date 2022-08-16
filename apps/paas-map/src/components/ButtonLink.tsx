@@ -5,19 +5,21 @@ export interface IButtonProps {
   href: string;
   text: string;
   isSecondary?: boolean;
+  noShadow?: boolean;
 }
 
-export const ButtonLink = ({ href, text, isSecondary = false }: IButtonProps) => {
+export const ButtonLink = ({ href, text, isSecondary = false, noShadow = false }: IButtonProps) => {
   return (
     <a
       href={href}
       target="_blank"
       rel="noreferrer"
       className={classnames(
-        "group shadow-lg font-semibold select-none cursor-pointer flex items-center gap-4 w-fit px-6 h-12 rounded-lg",
+        "group font-semibold select-none cursor-pointer flex items-center gap-4 w-fit px-6 h-12 rounded-lg",
         {
           "bg-primary text-secondary": !isSecondary,
           "bg-secondary text-primary": isSecondary,
+          "shadow-lg": !noShadow,
         },
       )}
     >
