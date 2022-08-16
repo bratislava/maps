@@ -1,3 +1,17 @@
 # Paas map
 
-Data comes from static files.
+Data comes from our Arcgis server:
+
+Assistants: https://geoportal.bratislava.sk/hsite/rest/services/doprava/Asistenti_PAAS/MapServer/51
+
+Parkomats: https://geoportal.bratislava.sk/hsite/rest/services/doprava/Parkomaty/MapServer/17
+
+Partners: https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Affiliate_Partners/MapServer/128
+
+ParkingLots: https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Parkovisk%C3%A1/MapServer/118
+
+Branches: https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Pobo%C4%8Dka/MapServer/87
+
+UDR: https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/UDR_P/MapServer/40
+
+ODP: for now ODP data are static
