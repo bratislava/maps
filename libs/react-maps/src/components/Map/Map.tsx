@@ -1,44 +1,44 @@
-import React, {
-  ReactNode,
-  useEffect,
-  useCallback,
-  useState,
-  useImperativeHandle,
-  forwardRef,
-  useRef,
-  createContext,
-  useMemo,
-  useReducer,
-  Dispatch,
-  MutableRefObject,
-} from "react";
-import { LoadingSpinner, Modal } from "@bratislava/react-maps-ui";
 import {
   Mapbox,
+  MapboxGesturesOptions,
   MapboxHandle,
+  MapIcon,
   Marker,
   mergeViewports,
+  PartialPadding,
+  PartialViewport,
   Sources,
   Viewport,
-  MapIcon,
-  PartialViewport,
-  PartialPadding,
-  MapboxGesturesOptions,
 } from "@bratislava/react-mapbox";
-import { useResizeDetector } from "react-resize-detector";
+import { LoadingSpinner, Modal } from "@bratislava/react-maps-ui";
 import cx from "classnames";
+import React, {
+  createContext,
+  Dispatch,
+  forwardRef,
+  MutableRefObject,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
+import { useResizeDetector } from "react-resize-detector";
 import { IMapState, MapAction, MapActionKind, mapReducer } from "./mapReducer";
 
-import {} from "../../types";
 import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
+import {} from "../../types";
 
-import Mousetrap from "mousetrap";
-import { Feature } from "geojson";
-import { getFeatureDistrict } from "../../utils/districts";
-import { useTranslation } from "react-i18next";
 import { ArrowCounterclockwise } from "@bratislava/react-maps-icons";
-import DATA_DISTRICTS from "../../data/layers/districts.json";
 import bbox from "@turf/bbox";
+import { Feature } from "geojson";
+import Mousetrap from "mousetrap";
+import { useTranslation } from "react-i18next";
+import DATA_DISTRICTS from "../../data/layers/districts.json";
+import { getFeatureDistrict } from "../../utils/districts";
 
 export type IMapProps = {
   mapboxgl: typeof mapboxgl;

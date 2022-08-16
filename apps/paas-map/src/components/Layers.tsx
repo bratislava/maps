@@ -1,6 +1,6 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
-import { Chevron, Eye, EyeCrossed } from "@bratislava/react-maps-icons";
-import { Modal } from "@bratislava/react-maps-ui";
+import { Chevron, Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
+import { Modal, Popover } from "@bratislava/react-maps-ui";
 import * as Accordion from "@radix-ui/react-accordion";
 import { keyframes, styled } from "@stitches/react";
 import cx from "classnames";
@@ -66,19 +66,25 @@ const PrimaryLayerButton = ({
         <div className="flex items-center gap-2">
           <Icon icon={icon} size={40} />
           <span className="font-semibold">{title}</span>
-          {/* <Popover
-            button={
-              <div className="mt-[2px]" onClick={openTooltipModal}>
+          <Popover
+            button={({ toggle }) => (
+              <div
+                className="mt-[2px]"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggle();
+                }}
+              >
                 <Information className="text-primary mt-[4px]" size="sm" />
               </div>
-            }
+            )}
             panel={
               <div className="flex flex-col gap-2">
-                <div className="text-md font-semibold">dwadawd</div>
+                <div className="text-md font-semibold">{title}</div>
                 <div className="">{tooltip}</div>
               </div>
             }
-          /> */}
+          />
         </div>
         <div>
           {isActive ? <Eye width={18} height={18} /> : <EyeCrossed width={18} height={18} />}
