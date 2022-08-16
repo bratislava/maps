@@ -14,7 +14,7 @@ import {
   Slot,
   SlotType,
   ThemeController,
-  ViewportController
+  ViewportController,
 } from "@bratislava/react-maps";
 
 import { Cluster, Filter, Layer, useFilter } from "@bratislava/react-mapbox";
@@ -167,7 +167,14 @@ export const App = () => {
 
   const setActiveOnlyVisitorLayers = useCallback(() => {
     layerFilter.setActiveOnly(["visitors"], true);
-    markerFilter.setActiveOnly(["assistants", "partners", "parkomats", "parking-lots", "garages", "p-plus-r"]);
+    markerFilter.setActiveOnly([
+      "assistants",
+      "partners",
+      "parkomats",
+      "parking-lots",
+      "garages",
+      "p-plus-r",
+    ]);
   }, [layerFilter, markerFilter]);
 
   const setActiveOnlyResidentLayers = useCallback(() => {
@@ -305,7 +312,7 @@ export const App = () => {
       onFeaturesClick={onFeaturesClick}
     >
       <Filter expression={markerFilter.expression}>
-        <Cluster features={markersData?.features ?? []} radius={48}>
+        <Cluster features={markersData?.features ?? []} radius={28}>
           {({ features, lng, lat, key, clusterExpansionZoom }) => (
             <Marker
               isSelected={features[0].id === selectedMarker?.id}

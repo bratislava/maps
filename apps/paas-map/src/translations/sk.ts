@@ -22,6 +22,7 @@ export default {
         "Ulice, na ktorých môžete na parkovanie využiť rezidentskú alebo abonentskú kartu pre danú zónu.",
       detail: {
         title: "Rezident",
+        planned: "Tento úsek je plánovaný",
         cardValidity: "Platnosť rezidentskej/abonentskej karty",
         cards: "Karty",
         cardsUrl: "https://paas.sk/som-rezident/",
@@ -33,6 +34,7 @@ export default {
         "Ulice, na ktorých návštevníci zóny platia za parkovanie v stanovenom čase hodinovú sadzbu, respektíve môžu využiť na parkovanie bonusovú alebo návštevnícku kartu.",
       detail: {
         title: "Návštevník",
+        planned: "Tento úsek je plánovaný",
         location: "Lokalita",
         parkingSectionCode: "Kód úseku parkovania",
         price: "Cena (€/h)",

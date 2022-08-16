@@ -2,7 +2,8 @@ import { X } from "@bratislava/react-maps-icons";
 import cx from "classnames";
 import { Feature, Point } from "geojson";
 import { MapboxGeoJSONFeature } from "mapbox-gl";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useResizeDetector } from "react-resize-detector";
 import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 import AssistantDetail, { AssistantProperties, assistantPropertiesSchema } from "./AssistantDetail";
 import BranchDetail, { BranchProperties, branchPropertiesSchema } from "./BranchDetail";
@@ -25,35 +26,55 @@ export interface DetailProps {
 export const Detail = ({ feature, isOpen, onClose, isMobile }: DetailProps) => {
   const sheetRef = useRef<BottomSheetRef>(null);
 
-  if (!feature) return null;
+  const { ref: mobileContentRef, height: mobileContentHeight } =
+    useResizeDetector<HTMLDivElement | null>();
 
-  const detail = assistantPropertiesSchema.safeParse(feature.properties).success ? (
-    <AssistantDetail properties={feature.properties as AssistantProperties} />
-  ) : branchPropertiesSchema.safeParse(feature.properties).success ? (
-    <BranchDetail properties={feature.properties as BranchProperties} />
-  ) : residentPropertiesSchema.safeParse(feature.properties).success ? (
-    <ResidentDetail properties={feature.properties as ResidentProperties} />
-  ) : visitorPropertiesSchema.safeParse(feature.properties).success ? (
-    <VisitorDetail properties={feature.properties as VisitorProperties} />
-  ) : parkomatPropertiesSchema.safeParse(feature.properties).success ? (
-    <ParkomatDetail properties={feature.properties as ParkomatProperties} />
-  ) : partnerPropertiesSchema.safeParse(feature.properties).success ? (
-    <PartnerDetail properties={feature.properties as PartnerProperties} />
-  ) : parkingLotPropertiesSchema.safeParse(feature.properties).success ? (
-    <ParkingLotDetail properties={feature.properties as ParkingLotProperties} />
-  ) : null;
+  useEffect(() => {
+    if (isOpen) {
+      sheetRef.current?.snapTo((mobileContentHeight ?? 0) + 72);
+    } else {
+      sheetRef.current?.snapTo(0);
+    }
+  }, [isOpen, mobileContentHeight]);
 
-  return !detail ? null : isMobile ? (
+  const detail = (
+    <div>
+      {feature ? (
+        assistantPropertiesSchema.safeParse(feature.properties).success ? (
+          <AssistantDetail properties={feature.properties as AssistantProperties} />
+        ) : branchPropertiesSchema.safeParse(feature.properties).success ? (
+          <BranchDetail properties={feature.properties as BranchProperties} />
+        ) : residentPropertiesSchema.safeParse(feature.properties).success ? (
+          <ResidentDetail properties={feature.properties as ResidentProperties} />
+        ) : visitorPropertiesSchema.safeParse(feature.properties).success ? (
+          <VisitorDetail properties={feature.properties as VisitorProperties} />
+        ) : parkomatPropertiesSchema.safeParse(feature.properties).success ? (
+          <ParkomatDetail properties={feature.properties as ParkomatProperties} />
+        ) : partnerPropertiesSchema.safeParse(feature.properties).success ? (
+          <PartnerDetail properties={feature.properties as PartnerProperties} />
+        ) : parkingLotPropertiesSchema.safeParse(feature.properties).success ? (
+          <ParkingLotDetail properties={feature.properties as ParkingLotProperties} />
+        ) : null
+      ) : null}
+    </div>
+  );
+
+  return isMobile ? (
     <BottomSheet
       ref={sheetRef}
-      snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 3]}
-      defaultSnap={({ snapPoints }) => snapPoints[1]}
+      snapPoints={({ maxHeight }) => [maxHeight, (mobileContentHeight ?? 0) + 72, 0]}
+      defaultSnap={({ snapPoints }) => snapPoints[2]}
       blocking={false}
       className="relative z-30"
       open={true}
       expandOnContentDrag
     >
-      <div className="p-8 text-foreground-lightmode dark:text-foreground-darkmode">{detail}</div>
+      <div
+        ref={mobileContentRef}
+        className="p-8 text-foreground-lightmode dark:text-foreground-darkmode"
+      >
+        {detail}
+      </div>
     </BottomSheet>
   ) : (
     <div

@@ -30,7 +30,7 @@ export const SearchBar = ({
       value={value}
       {...etcProps}
     />
-    <div className="absolute right-0 bottom-0 top-0 flex items-center">
+    <div className="absolute right-[3px] gap-[4px] bottom-0 top-0 flex items-center">
       <div className="p-2">
         <MagnifyingGlass size="lg" />
       </div>
@@ -39,7 +39,7 @@ export const SearchBar = ({
           <div className="md:hidden h-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20 w-[2px]"></div>
           <button
             onClick={onGeolocationClick}
-            className="md:hidden h-10 flex items-center justify-center p-2"
+            className="md:hidden h-10 flex items-center justify-center p-2 translate-x-[1px]"
           >
             <Location size="lg" isActive={isGeolocation} />
           </button>
