@@ -2,8 +2,7 @@ import { X } from "@bratislava/react-maps-icons";
 import cx from "classnames";
 import { Feature, Point } from "geojson";
 import { MapboxGeoJSONFeature } from "mapbox-gl";
-import { useEffect, useRef } from "react";
-import { useResizeDetector } from "react-resize-detector";
+import { useRef } from "react";
 import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 import AssistantDetail, { AssistantProperties, assistantPropertiesSchema } from "./AssistantDetail";
 import BranchDetail, { BranchProperties, branchPropertiesSchema } from "./BranchDetail";
@@ -25,17 +24,6 @@ export interface DetailProps {
 
 export const Detail = ({ feature, isOpen, onClose, isMobile }: DetailProps) => {
   const sheetRef = useRef<BottomSheetRef>(null);
-
-  const { ref: mobileContentRef, height: mobileContentHeight } =
-    useResizeDetector<HTMLDivElement | null>();
-
-  useEffect(() => {
-    if (isOpen) {
-      sheetRef.current?.snapTo((mobileContentHeight ?? 0) + 72);
-    } else {
-      sheetRef.current?.snapTo(0);
-    }
-  }, [isOpen, mobileContentHeight]);
 
   const detail = (
     <div>
@@ -62,19 +50,14 @@ export const Detail = ({ feature, isOpen, onClose, isMobile }: DetailProps) => {
   return isMobile ? (
     <BottomSheet
       ref={sheetRef}
-      snapPoints={({ maxHeight }) => [maxHeight, (mobileContentHeight ?? 0) + 72, 0]}
-      defaultSnap={({ snapPoints }) => snapPoints[2]}
+      snapPoints={({ maxHeight, minHeight }) => [maxHeight, minHeight, 80]}
+      defaultSnap={({ snapPoints }) => snapPoints[1]}
       blocking={false}
       className="relative z-30"
-      open={true}
+      open={!!feature}
       expandOnContentDrag
     >
-      <div
-        ref={mobileContentRef}
-        className="p-8 text-foreground-lightmode dark:text-foreground-darkmode"
-      >
-        {detail}
-      </div>
+      <div className="p-8 text-foreground-lightmode dark:text-foreground-darkmode">{detail}</div>
     </BottomSheet>
   ) : (
     <div

@@ -36,7 +36,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
 
   return (
     <div className="flex flex-col justify-end w-full gap-4">
-      <div className="font-semibold">{t("title")}</div>
+      <div className="font-semibold pb-1">{t("title")}</div>
       {properties.Status === "planned" && <div className="font-semibold">{t("planned")}</div>}
       <Row label={t("location")} text={properties["Názov"]} />
       <Row label={t("parkingSectionCode")} text={`${properties["UDR_ID"]}`} />

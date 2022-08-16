@@ -16,6 +16,7 @@ export default {
     support: { title: "Support" },
   },
   layers: {
+    title: "Layers",
     residents: {
       title: "Resident",
       tooltip:

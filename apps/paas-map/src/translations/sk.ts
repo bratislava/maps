@@ -16,6 +16,7 @@ export default {
     support: { title: "Podpora" },
   },
   layers: {
+    title: "Vrstvy",
     residents: {
       title: "Rezident",
       tooltip:

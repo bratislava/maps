@@ -25,7 +25,7 @@ export const ResidentDetail = ({ properties }: ResidentDetailProps) => {
 
   return (
     <div className="flex flex-col justify-end w-full gap-4">
-      <div className="font-semibold">{t("title")}</div>
+      <div className="font-semibold pb-1">{t("title")}</div>
       {properties.Status === "planned" && <div className="font-semibold">{t("planned")}</div>}
       <Row label={t("cardValidity")} text={properties["Kód_parko"]} />
 

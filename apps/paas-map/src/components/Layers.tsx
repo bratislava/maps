@@ -73,7 +73,7 @@ const PrimaryLayerButton = ({
                   }
                 }}
               >
-                <Information className="text-primary mt-[4px]" size="sm" />
+                <Information className="text-primary mt-[4px]" size="default" />
               </div>
             )}
             panel={

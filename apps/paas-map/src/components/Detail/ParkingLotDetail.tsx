@@ -45,7 +45,7 @@ export const ParkingLotDetail = ({ properties }: ParkingLotDetailProps) => {
 
   return (
     <div className="flex flex-col justify-end w-full gap-4">
-      <div className="font-semibold">{title}</div>
+      <div className="font-semibold pb-1">{title}</div>
       <Row
         label={t("name")}
         text={language === "sk" ? properties["Nazov_sk"] : properties["Nazov_en"]}

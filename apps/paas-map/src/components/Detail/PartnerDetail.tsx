@@ -25,7 +25,7 @@ export const PartnerDetail = ({ properties }: PartnerDetailProps) => {
 
   return (
     <div className="flex flex-col justify-end w-full gap-4">
-      <div className="font-semibold">{t("title")}</div>
+      <div className="font-semibold pb-1">{t("title")}</div>
       <Row label={t("name")} text={properties["Nazov"]} />
       <Row label={t("address")} text={properties["adresa"]} />
       <Row

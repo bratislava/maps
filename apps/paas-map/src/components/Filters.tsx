@@ -30,12 +30,11 @@ export const Filters = <LF extends string, MF extends string, ZF extends string>
       setVisible={setVisible}
       title={t("title")}
     >
-      <div className="pt-3"></div>
       {/* <div className="flex justify-between px-6 items-center">
         <h2 className="font-semibold text-md py-1">{t("filters.title")}</h2>
       </div>
 
-      <div className={cx("w-full flex flex-col gap-4", { "px-6": !isMobile })}>
+      <div className={classnames("w-full flex flex-col gap-4", { "px-6": !isMobile })}>
         <Select
           noBorder={isMobile}
           className="w-full col-span-3"
@@ -62,7 +61,11 @@ export const Filters = <LF extends string, MF extends string, ZF extends string>
 
       {/* <Divider className="mx-6" /> */}
 
-      <div className="-translate-y-6">
+      <div className="md:-translate-y-4 flex flex-col gap-4">
+        <div className="flex  justify-between px-6 items-center">
+          <h2 className="font-semibold text-md py-1">{t("layers.title")}</h2>
+        </div>
+
         <Layers isMobile={isMobile} layerFilter={layerFilter} markerFilter={markerFilter} />
       </div>
     </Sidebar>
