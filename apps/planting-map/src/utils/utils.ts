@@ -1,6 +1,6 @@
 import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps";
 import { getUniqueValuesFromFeatures } from "@bratislava/utils";
-import { FeatureCollection, Feature } from "geojson";
+import { Feature, FeatureCollection } from "geojson";
 
 const seasonMapping = {
   JAR: "spring",
@@ -122,7 +122,7 @@ export const processData = (rawData: FeatureCollection) => {
         feature.properties?.PROJEKT === "10 000"
           ? "planting"
           : feature.properties?.PROJEKT === "NAHRADKA"
-          ? "substitute-planting"
+          ? "replacement-planting"
           : null;
 
       const donor = feature.properties?.Donor?.trim();

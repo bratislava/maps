@@ -33,6 +33,8 @@ export default {
     },
   },
   layers: {
+    planting: "Výsadba",
+    replacementPlanting: "Náhradná výsadba",
     esri: {
       detail: {
         title: "Detail dreviny",

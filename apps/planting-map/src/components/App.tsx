@@ -1,43 +1,43 @@
+import cx from "classnames";
 import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import cx from "classnames";
-import "../styles.css";
 import { useResizeDetector } from "react-resize-detector";
+import "../styles.css";
 
 // maps
 import {
-  Slot,
+  DISTRICTS_GEOJSON,
   Layout,
-  MapHandle,
   Map,
+  MapHandle,
+  Slot,
+  SlotType,
   ThemeController,
   ViewportController,
-  SlotType,
 } from "@bratislava/react-maps";
 
-import { Layer, useFilter, useCombinedFilter, Marker } from "@bratislava/react-mapbox";
-import DISTRICTS_GEOJSON from "@bratislava/react-mapbox/src/assets/layers/districts.json";
+import { Layer, Marker, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 import { useArcgis } from "@bratislava/react-use-arcgis";
 
 // components
 import { Detail } from "./Detail";
 
 // layer styles
-import ESRI_STYLE from "../assets/layers/esri/esri";
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
+import ESRI_STYLE from "../assets/layers/esri/esri";
 
 // utils
-import { processData, treeKindNameSkMappingObject } from "../utils/utils";
-import mapboxgl from "mapbox-gl";
-import { Feature, FeatureCollection } from "geojson";
-import { MobileHeader } from "./mobile/MobileHeader";
-import { MobileFilters } from "./mobile/MobileFilters";
-import { DesktopFilters } from "./desktop/DesktopFilters";
-import { MobileSearch } from "./mobile/MobileSearch";
-import { ILayerCategory } from "./Layers";
 import { Modal, Sidebar } from "@bratislava/react-maps-ui";
-import { Legend } from "./Legend";
 import { usePrevious } from "@bratislava/utils";
+import { FeatureCollection } from "geojson";
+import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
+import { processData, treeKindNameSkMappingObject } from "../utils/utils";
+import { DesktopFilters } from "./desktop/DesktopFilters";
+import { ILayerCategory } from "./Layers";
+import { Legend } from "./Legend";
+import { MobileFilters } from "./mobile/MobileFilters";
+import { MobileHeader } from "./mobile/MobileHeader";
+import { MobileSearch } from "./mobile/MobileSearch";
 
 const URL = "https://geoportal.bratislava.sk/hsite/rest/services/zp/STROMY/MapServer/0";
 
@@ -71,16 +71,16 @@ export const App = () => {
       setUniqueDistricts(uniqueDistricts);
       setUniqueSeasons(uniqueSeasons);
       setUniqueKinds(uniqueKinds);
-      setUniqueLayers(["planting", "substitute-planting"]);
+      setUniqueLayers(["planting", "replacement-planting"]);
 
       setLayerCategories([
         {
-          label: "Výsadba",
+          label: t("layers.planting"),
           subLayers: ["planting"],
         },
         {
-          label: "Náhradná výsadba",
-          subLayers: ["substitute-planting"],
+          label: t("layers.replacementPlanting"),
+          subLayers: ["replacement-planting"],
         },
       ]);
       setLoading(false);
@@ -90,7 +90,7 @@ export const App = () => {
   const mapRef = useRef<MapHandle>(null);
   mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
-  const [selectedFeatures, setSelectedFeatures] = useState<Feature[] | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
   const [isGeolocation, setGeolocation] = useState(false);
 
@@ -164,8 +164,8 @@ export const App = () => {
   });
 
   const closeDetail = useCallback(() => {
-    mapRef.current?.deselectAllFeatures();
-  }, [mapRef]);
+    setSelectedFeature(null);
+  }, []);
 
   // close detailbox when sidebar is opened on mobile
   useEffect(() => {
@@ -186,10 +186,7 @@ export const App = () => {
     }
   }, [previousMobile, isMobile]);
 
-  const isDetailOpen = useMemo(
-    () => (selectedFeatures ? !!selectedFeatures.length : undefined),
-    [selectedFeatures],
-  );
+  const isDetailOpen = useMemo(() => !!selectedFeature, [selectedFeature]);
 
   const onLegendClick = useCallback((e: MouseEvent) => {
     setLegendVisible((isLegendVisible) => !isLegendVisible);
@@ -198,34 +195,25 @@ export const App = () => {
 
   // fit to district
   useEffect(() => {
-    districtFilter.activeKeys.length == 1
-      ? mapRef.current?.fitToDistrict(districtFilter.activeKeys[0])
-      : mapRef.current?.changeViewport({
-          center: {
-            lat: 48.148598,
-            lng: 17.107748,
-          },
-          zoom: 10.75,
-        });
-  }, [districtFilter.activeKeys, mapRef]);
+    mapRef.current?.fitDistrict(districtFilter.activeKeys);
+  }, [districtFilter.activeKeys]);
 
   // move point to center when selected
   useEffect(() => {
     const MAP = mapRef.current;
-    if (MAP && selectedFeatures && selectedFeatures.length) {
-      const feature = selectedFeatures[0];
+    if (MAP && selectedFeature) {
       setTimeout(() => {
-        if (feature.geometry.type === "Point") {
+        if (selectedFeature.geometry.type === "Point") {
           mapRef.current?.changeViewport({
             center: {
-              lng: feature.geometry.coordinates[0],
-              lat: feature.geometry.coordinates[1],
+              lng: selectedFeature.geometry.coordinates[0],
+              lat: selectedFeature.geometry.coordinates[1],
             },
           });
         }
       }, 0);
     }
-  }, [selectedFeatures, mapRef]);
+  }, [selectedFeature]);
 
   const { height: desktopDetailHeight, ref: desktopDetailRef } =
     useResizeDetector<HTMLDivElement>();
@@ -236,31 +224,52 @@ export const App = () => {
       : ["legend", "geolocation", "compass", ["fullscreen", "zoom"]];
   }, [isMobile]);
 
+  const selectedFeatures = useMemo(() => {
+    return selectedFeature ? [selectedFeature] : [];
+  }, [selectedFeature]);
+
+  const initialViewport = useMemo(
+    () => ({
+      zoom: 12.229005488986582,
+      center: {
+        lat: 48.148598,
+        lng: 17.107748,
+      },
+    }),
+    [],
+  );
+
+  const mapStyles = useMemo(
+    () => ({
+      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+    }),
+    [],
+  );
+
+  const sources = useMemo(
+    () => ({
+      ESRI_DATA: data,
+      DISTRICTS_GEOJSON,
+    }),
+    [data],
+  );
+
   return isLoading ? null : (
     <Map
       loadingSpinnerColor="#237c36"
       ref={mapRef}
       mapboxgl={mapboxgl}
-      mapStyles={{
-        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-      }}
-      initialViewport={{
-        center: {
-          lat: 48.148598,
-          lng: 17.107748,
-        },
-      }}
+      mapStyles={mapStyles}
+      initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
-      moveSearchBarOutsideOfSideBarOnLargeScreen
-      sources={{
-        ESRI_DATA: data,
-        DISTRICTS_GEOJSON,
-      }}
-      onSelectedFeaturesChange={setSelectedFeatures}
+      sources={sources}
+      onFeaturesClick={(features) => setSelectedFeature(features[0])}
+      selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
+      onMapClick={closeDetail}
     >
       <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
       <Layer

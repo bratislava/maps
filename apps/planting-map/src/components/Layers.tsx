@@ -46,19 +46,22 @@ export const Layers = ({ filter, layers, tooltips, isMobile }: ILayerProps) => {
             <AccordionItem
               value={label}
               isOpenable={subLayers.length > 1}
-              className={cx("border-l-4 transition-all bg-opacity-10 dark:bg-opacity-10", {
-                "bg-gray-lightmode dark:bg-gray-darkmode border-primary":
-                  filter.isAnyKeyActive(subLayers),
-                "border-background-lightmode dark:border-background-darkmode":
-                  !filter.isAnyKeyActive(subLayers),
-              })}
+              className={cx(
+                "border-l-4 pl-[20px] transition-all bg-opacity-10 dark:bg-opacity-10",
+                {
+                  "bg-gray-lightmode dark:bg-gray-darkmode border-primary":
+                    filter.isAnyKeyActive(subLayers),
+                  "border-background-lightmode dark:border-background-darkmode":
+                    !filter.isAnyKeyActive(subLayers),
+                },
+              )}
               key={index}
               title={
                 <div className="flex gap-2">
                   <div>{label}</div>
                   {tooltips && subLayers.length == 1 && (
                     <Popover
-                      button={
+                      button={() => (
                         <div
                           className="pt-[1px]"
                           onClick={() => {
@@ -67,7 +70,7 @@ export const Layers = ({ filter, layers, tooltips, isMobile }: ILayerProps) => {
                         >
                           <Information className="text-primary mt-[4px]" size="sm" />
                         </div>
-                      }
+                      )}
                       panel={
                         <div className="flex flex-col gap-2">
                           <div className="text-md font-semibold">
@@ -110,7 +113,7 @@ export const Layers = ({ filter, layers, tooltips, isMobile }: ILayerProps) => {
                             <>
                               {tooltips[type] ? (
                                 <Popover
-                                  button={
+                                  button={() => (
                                     <div
                                       className="pt-[1px]"
                                       onClick={() => {
@@ -119,7 +122,7 @@ export const Layers = ({ filter, layers, tooltips, isMobile }: ILayerProps) => {
                                     >
                                       <Information className="text-primary mt-[6px]" size="sm" />
                                     </div>
-                                  }
+                                  )}
                                   panel={
                                     <div className="flex flex-col gap-2">
                                       <div className="text-md font-semibold">

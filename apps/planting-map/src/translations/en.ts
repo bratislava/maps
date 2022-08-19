@@ -33,13 +33,15 @@ export default {
     },
   },
   layers: {
+    planting: "Planting",
+    replacementPlanting: "Replacement Planting",
     esri: {
       detail: {
         title: "Detail",
         nameSk: "Slovak name",
         nameLat: "Latin name",
         cultivar: "Cultivar",
-        log: "Log",
+        log: "Trunk Diameter",
         height: "Height",
         year: "Year of planting",
         donor: "Donor",
