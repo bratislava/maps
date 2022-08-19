@@ -292,7 +292,7 @@ export const App = () => {
           isRelativeToZoom
         >
           <div
-            className="w-4 h-4 bg-background-lightmode dark:bg-background-darkmode border-[6px] rounded-full"
+            className="w-4 h-4 bg-background-lightmode dark:bg-background-darkmode border-[2px] rounded-full"
             style={{ borderColor: selectedFeatures[0].properties?.["color"] }}
           ></div>
         </Marker>
