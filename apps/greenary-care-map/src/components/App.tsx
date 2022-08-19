@@ -1,41 +1,41 @@
+import cx from "classnames";
 import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import cx from "classnames";
-import "../styles.css";
 import { useResizeDetector } from "react-resize-detector";
+import "../styles.css";
 
 // maps
+import { Layer, Marker, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 import {
-  Slot,
+  DISTRICTS_GEOJSON,
   Layout,
-  MapHandle,
   Map,
+  MapHandle,
+  Slot,
+  SlotType,
   ThemeController,
   ViewportController,
-  SlotType,
 } from "@bratislava/react-maps";
-import { Layer, useFilter, Marker, useCombinedFilter } from "@bratislava/react-mapbox";
 import { DropdownArrow, Sidebar, useClickOutside } from "@bratislava/react-maps-ui";
 import { useArcgis } from "@bratislava/react-use-arcgis";
-import DISTRICTS_GEOJSON from "@bratislava/react-mapbox/src/assets/layers/districts.json";
 
 // components
 import { Detail } from "./Detail";
 
 // layer styles
-import ESRI_STYLE from "../assets/layers/esri/esri";
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
+import ESRI_STYLE from "../assets/layers/esri/esri";
 
 // utils
-import { processData, mapCircleColors } from "../utils/utils";
-import mapboxgl from "mapbox-gl";
-import { Feature, FeatureCollection } from "geojson";
-import { MobileHeader } from "./mobile/MobileHeader";
-import { MobileFilters } from "./mobile/MobileFilters";
-import { DesktopFilters } from "./desktop/DesktopFilters";
-import { MobileSearch } from "./mobile/MobileSearch";
-import { Legend } from "./Legend";
 import { usePrevious } from "@bratislava/utils";
+import { FeatureCollection } from "geojson";
+import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
+import { mapCircleColors, processData } from "../utils/utils";
+import { DesktopFilters } from "./desktop/DesktopFilters";
+import { Legend } from "./Legend";
+import { MobileFilters } from "./mobile/MobileFilters";
+import { MobileHeader } from "./mobile/MobileHeader";
+import { MobileSearch } from "./mobile/MobileSearch";
 
 const URL =
   "https://services8.arcgis.com/pRlN1m0su5BYaFAS/ArcGIS/rest/services/orezy_a_vyruby_2022_OTMZ_zobrazenie/FeatureServer/0";
@@ -64,46 +64,47 @@ export const App = () => {
   const [isLegendVisible, setLegendVisible] = useState<boolean | undefined>(undefined);
 
   const tooltips = {
-    orez: "odborný orez dreviny špecifikovaný na základe aktuálneho stavu dreviny alebo dendrologického posudku a zadaný správcom zelene",
+    trimming:
+      "odborný orez dreviny špecifikovaný na základe aktuálneho stavu dreviny alebo dendrologického posudku a zadaný správcom zelene",
 
-    "výrub z rozhodnutia":
+    fellingByPermit:
       "výrub dreviny na základe rozhodnutia o súhlase s výrubom príslušného orgánu ochrany prírody v zmysle § 47 ods. 3) zákona č. 543/2002",
 
-    "výrub havarijný":
+    emergencyFelling:
       "výrub z dôvodu bezprostredného ohrozenia zdravia alebo života človeka alebo pri bezprostrednej hrozbe vzniku značnej škode na majetku v zmysle § 47 ods. 4) písm d) zákona č. 543/2002",
 
-    "výrub inváznej dreviny":
+    invasivePlantsFelling:
       "odstránenie inváznych druhov rastlín výrubom v zmysle § 3 ods. 2) zákona č. 150/2019",
 
-    "injektáž inváznej dreviny":
+    injectionOfInvasivePlants:
       "odstránenie inváznych druhov rastlín chemicky - injektážou kmeňov herbicídnym prípravkom v zmysle § 3 ods. 2) zákona č. 150/2019 a vyhlášky č. 450/2019",
 
-    "frézovanie pňov":
+    stumpRemoval:
       "odstránenie pňa dreviny frézovaním, prípadne iným spôsobom ak frézovanie nie je možné",
 
-    "dendrologický posudok":
+    dendrologicalAssessment:
       "drevina zhodnotená externým certifikovaným arboristom alebo odborne spôsobilou osobou, pričom sa posudzujú kvantitatívne a kvalitatívne parametre dreviny a na základe vyhodnotenia súčasného stavu sa navrhnú opatrenia na ošetrenie alebo výrub.",
 
-    "odstránenie padnutého stromu":
+    fallenTreeRemoval:
       "odstránenie stromu a jeho zvyškov, ktorý sa vplyvom počasia alebo na základe skrytých poškodení a hubových ochorení , prípadne vplyvom iných externých činiteľov úplne vyvrátil",
 
-    "manažment imela": "identifikácia imela na drevine a zaradenie do plánu odstraňovania imela",
+    mistletoeManagement: "identifikácia imela na drevine a zaradenie do plánu odstraňovania imela",
   };
 
   useEffect(() => {
     if (rawData) {
       const knownCategories = [
         {
-          label: "Výrub",
-          types: ["výrub z rozhodnutia", "výrub havarijný", "výrub inváznej dreviny"],
+          label: t("categories.felling"),
+          types: ["fellingByPermit", "emergencyFelling", "invasivePlantsFelling"],
         },
         {
-          label: "Orez",
-          types: ["orez"],
+          label: t("categories.trimming"),
+          types: ["trimming"],
         },
         {
-          label: "Invázne dreviny",
-          types: ["injektáž inváznej dreviny", "výrub inváznej dreviny"],
+          label: t("categories.invasivePlants"),
+          types: ["injectionOfInvasivePlants", "invasivePlantsFelling"],
         },
       ];
 
@@ -119,18 +120,18 @@ export const App = () => {
       setTypeCategories([
         ...knownCategories,
         {
-          label: "Ostatné",
+          label: t("categories.others"),
           types: otherTypes,
         },
       ]);
       setLoading(false);
     }
-  }, [rawData]);
+  }, [rawData, t]);
 
   const mapRef = useRef<MapHandle>(null);
   mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
-  const [selectedFeatures, setSelectedFeatures] = useState<Feature[] | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>();
   const [isMobile, setMobile] = useState<boolean | null>(null);
   const [isGeolocation, setGeolocation] = useState(false);
 
@@ -199,8 +200,8 @@ export const App = () => {
   });
 
   const closeDetail = useCallback(() => {
-    mapRef.current?.deselectAllFeatures();
-  }, [mapRef]);
+    setSelectedFeature(null);
+  }, []);
 
   // close detailbox when sidebar is opened on mobile
   useEffect(() => {
@@ -224,10 +225,7 @@ export const App = () => {
     }
   }, [previousMobile, isMobile]);
 
-  const isDetailOpen = useMemo(
-    () => (selectedFeatures ? !!selectedFeatures.length : undefined),
-    [selectedFeatures],
-  );
+  const isDetailOpen = useMemo(() => !!selectedFeature, [selectedFeature]);
 
   const onLegendClick = useCallback((e: MouseEvent) => {
     setLegendVisible((isLegendVisible) => !isLegendVisible);
@@ -236,34 +234,25 @@ export const App = () => {
 
   // fit to district
   useEffect(() => {
-    districtFilter.activeKeys.length == 1
-      ? mapRef.current?.fitToDistrict(districtFilter.activeKeys[0])
-      : mapRef.current?.changeViewport({
-          center: {
-            lat: 48.148598,
-            lng: 17.107748,
-          },
-          zoom: 10.75,
-        });
-  }, [districtFilter.activeKeys, mapRef]);
+    mapRef.current?.fitDistrict(districtFilter.activeKeys);
+  }, [districtFilter.activeKeys]);
 
   // move point to center when selected
   useEffect(() => {
     const MAP = mapRef.current;
-    if (MAP && selectedFeatures && selectedFeatures.length) {
-      const feature = selectedFeatures[0];
+    if (MAP && selectedFeature) {
       setTimeout(() => {
-        if (feature.geometry.type === "Point") {
+        if (selectedFeature.geometry.type === "Point") {
           mapRef.current?.changeViewport({
             center: {
-              lng: feature.geometry.coordinates[0],
-              lat: feature.geometry.coordinates[1],
+              lng: selectedFeature.geometry.coordinates[0],
+              lat: selectedFeature.geometry.coordinates[1],
             },
           });
         }
       }, 0);
     }
-  }, [selectedFeatures, mapRef]);
+  }, [selectedFeature]);
 
   const { height: desktopDetailHeight, ref: desktopDetailRef } =
     useResizeDetector<HTMLDivElement>();
@@ -278,29 +267,55 @@ export const App = () => {
       : ["legend", "geolocation", "compass", ["fullscreen", "zoom"]];
   }, [isMobile]);
 
+  const initialViewport = useMemo(
+    () => ({
+      zoom: 12.229005488986582,
+      center: {
+        lat: 48.148598,
+        lng: 17.107748,
+      },
+    }),
+    [],
+  );
+
+  const mapStyles = useMemo(
+    () => ({
+      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+    }),
+    [],
+  );
+
+  const sources = useMemo(
+    () => ({
+      ESRI_DATA: data,
+      DISTRICTS_GEOJSON,
+    }),
+    [data],
+  );
+
+  const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
+    mapRef.current?.moveToFeatures(features);
+    setSelectedFeature(features[0] ?? null);
+  }, []);
+
+  const selectedFeatures = useMemo(() => {
+    return selectedFeature ? [selectedFeature] : [];
+  }, [selectedFeature]);
+
   return isLoading ? null : (
     <Map
       loadingSpinnerColor="#237c36"
       ref={mapRef}
       mapboxgl={mapboxgl}
-      mapStyles={{
-        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-      }}
-      initialViewport={{
-        center: {
-          lat: 48.148598,
-          lng: 17.107748,
-        },
-      }}
+      mapStyles={mapStyles}
+      initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
-      moveSearchBarOutsideOfSideBarOnLargeScreen
-      sources={{
-        ESRI_DATA: data,
-        DISTRICTS_GEOJSON,
-      }}
-      onSelectedFeaturesChange={setSelectedFeatures}
+      sources={sources}
+      onMapClick={closeDetail}
+      selectedFeatures={selectedFeatures}
+      onFeaturesClick={onFeaturesClick}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
     >
@@ -325,7 +340,7 @@ export const App = () => {
           isRelativeToZoom
         >
           <div
-            className="w-10 h-10 bg-background-lightmode dark:bg-background-darkmode border-[6px] rounded-full"
+            className="w-4 h-4 bg-background-lightmode dark:bg-background-darkmode border-[2px] rounded-full"
             style={{ borderColor: selectedFeatures[0].properties?.["color"] }}
           ></div>
         </Marker>
@@ -399,7 +414,7 @@ export const App = () => {
             setVisible={setLegendVisible}
             position="right"
           >
-            <Legend mapCircleColors={{ ...mapCircleColors, "hranica mestskej časti": "#E29F45" }} />
+            <Legend mapCircleColors={{ ...mapCircleColors, districtBorder: "#E29F45" }} />
           </Sidebar>
         </Slot>
       </Layout>
@@ -462,7 +477,7 @@ export const App = () => {
             )}
           >
             <h3 className="px-6 pt-6 text-md font-semibold">Legenda</h3>
-            <Legend mapCircleColors={{ ...mapCircleColors, "hranica mestskej časti": "#E29F45" }} />
+            <Legend mapCircleColors={{ ...mapCircleColors, districtBorder: "#E29F45" }} />
             <DropdownArrow isBottom />
           </div>
         </Slot>

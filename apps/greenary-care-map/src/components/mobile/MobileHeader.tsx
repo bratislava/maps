@@ -9,7 +9,7 @@ export const MobileHeader = ({ onFunnelClick }: IMobileHeaderProps) => {
   return (
     <div className="fixed top-4 right-4 z-10 sm:hidden">
       <IconButton onClick={onFunnelClick}>
-        <Funnel className="w-12 h-12" />
+        <Funnel size="md" />
       </IconButton>
     </div>
   );

@@ -1,8 +1,8 @@
-import { useTranslation } from "react-i18next";
-import { Feature } from "geojson";
-import { useArcgeoAttachments } from "@bratislava/react-use-arcgis";
-import { useState, useEffect } from "react";
 import { X } from "@bratislava/react-maps-icons";
+import { useArcgisAttachments } from "@bratislava/react-use-arcgis";
+import { Feature } from "geojson";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const Row = ({ label, text }: { label: string; text: string }) => {
   if (!text || (text === " " && !label)) {
@@ -40,7 +40,7 @@ export const Detail = ({ features, arcgisServerUrl, onClose }: DetailProps) => {
     }
   }, [features, setObjectId]);
 
-  const { data: attachments } = useArcgeoAttachments(arcgisServerUrl, objectId);
+  const { data: attachments } = useArcgisAttachments(arcgisServerUrl, objectId);
 
   return !features[0] ? null : (
     <>
@@ -50,7 +50,9 @@ export const Detail = ({ features, arcgisServerUrl, onClose }: DetailProps) => {
         </button>
         <div className="flex flex-col space-y-4">
           <div className="first-letter:uppercase font-bold font-md text-[20px]">
-            {feature?.properties?.["TYP_VYKONU_1"] ?? t(`layers.esri.detail.title`)}
+            {feature?.properties?.["TYP_VYKONU_1"]
+              ? t(`categories.${feature?.properties?.["TYP_VYKONU_1"]}`)
+              : t(`layers.esri.detail.title`)}
           </div>
           <Row
             label={t(`layers.esri.detail.slovakName`)}

@@ -1,10 +1,12 @@
 import cx from "classnames";
+import { useTranslation } from "react-i18next";
 
 export interface ILegendProps {
   mapCircleColors: { [index: string]: string | string[] };
 }
 
 export const Legend = ({ mapCircleColors }: ILegendProps) => {
+  const { t } = useTranslation();
   return (
     <div className="py-4">
       {Object.keys(mapCircleColors).map((type) => {
@@ -15,14 +17,18 @@ export const Legend = ({ mapCircleColors }: ILegendProps) => {
           <div key={type} className="flex gap-2 items-center px-6 py-2">
             <div
               className={cx({
-                "w-4 h-4 rounded-full": type !== "hranica mestskej časti",
-                "w-4 h-1 rounded-lg": type === "hranica mestskej časti",
+                "w-4 h-4 rounded-full": type !== "districtBorder",
+                "w-4 h-1 rounded-lg": type === "districtBorder",
               })}
               style={{
                 backgroundColor: color,
               }}
             ></div>
-            <div className="text-[14px]">{type}</div>
+            {type === "districtBorder" ? (
+              <div className="text-[14px]">{t("districtBorder")}</div>
+            ) : (
+              <div className="text-[14px]">{t(`categories.${type}`)}</div>
+            )}
           </div>
         );
       })}

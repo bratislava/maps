@@ -4,18 +4,31 @@ import {
   getSeasonFromDate,
   getUniqueValuesFromFeatures,
 } from "@bratislava/utils";
-import { FeatureCollection, Feature } from "geojson";
+import { Feature, FeatureCollection } from "geojson";
 
 // predefined colors for points
 export const mapCircleColors: { [index: string]: string | string[] } = {
-  "výrub z rozhodnutia": "#E03F00",
-  "výrub havarijný": "#E57D00",
-  "výrub inváznej dreviny": "#F4B056",
-  orez: ["#FFD400", "#FCE304", "#FFF500", "#FCE300", "#FFE045", "#FEE980", "#FFE600"],
-  "injektáž inváznej dreviny": "#351900",
-  "odstránenie padnutého stromu": "#BC9F82",
-  "manažment imela": "#7F674A",
-  "frézovanie pňa": "#54463B",
+  fellingByPermit: "#E03F00",
+  emergencyFelling: "#E57D00",
+  invasivePlantsFelling: "#F4B056",
+  trimming: ["#FFD400", "#FCE304", "#FFF500", "#FCE300", "#FFE045", "#FEE980", "#FFE600"],
+  injectionOfInvasivePlants: "#351900",
+  fallenTreeRemoval: "#BC9F82",
+  mistletoeManagement: "#7F674A",
+  stumpRemoval: "#54463B",
+};
+
+export const mapSlovakTypeToEnglishKey: { [index: string]: string } = {
+  "výrub z rozhodnutia": "fellingByPermit",
+  "výrub havarijný": "emergencyFelling",
+  "výrub inváznej dreviny": "invasivePlantsFelling",
+  orez: "trimming",
+  "injektáž inváznej dreviny": "injectionOfInvasivePlants",
+  "odstránenie padnutého stromu": "fallenTreeRemoval",
+  "manažment imela": "mistletoeManagement",
+  "frézovanie pňa": "stumpRemoval",
+  "frézovanie pňov": "stumpRemoval",
+  "dendrologický posudok": "dendrologicalAssessment",
 };
 
 export const processData = (
@@ -25,7 +38,8 @@ export const processData = (
   const data: FeatureCollection = addDistrictPropertyToLayer({
     ...rawData,
     features: rawData.features.map((feature) => {
-      const type = feature.properties?.TYP_VYKONU_1?.toLowerCase();
+      const slovakType = feature.properties?.TYP_VYKONU_1?.toLowerCase();
+      const type = mapSlovakTypeToEnglishKey[slovakType ?? ""];
       const dateString = feature.properties?.TERMIN_REAL_1;
       const year = dateString ? new Date(dateString).getFullYear().toString() : undefined;
       const season = getSeasonFromDate(dateString);

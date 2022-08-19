@@ -3,7 +3,7 @@ import { Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
 import { Accordion, AccordionItem, Checkbox, Modal, Popover } from "@bratislava/react-maps-ui";
 import cx from "classnames";
 import { useCallback, useState } from "react";
-import { capitalizeFirstLetter } from "../utils/utils";
+import { useTranslation } from "react-i18next";
 
 export interface ILayerProps<T> {
   typeFilter: IFilterResult<T>;
@@ -40,6 +40,11 @@ export const Layers = <T extends string>({
     setTooltipModalOpen(false);
   }, []);
 
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
+
   return (
     <div className="flex flex-col w-full">
       <Accordion>
@@ -48,35 +53,40 @@ export const Layers = <T extends string>({
             <AccordionItem
               value={label}
               isOpenable={types.length > 1}
-              className={cx("border-l-4 transition-all bg-opacity-10 dark:bg-opacity-10", {
-                "bg-gray-lightmode dark:bg-gray-darkmode border-primary": typeFilter.isAnyKeyActive(
-                  types as T[],
-                ),
-                "border-background-lightmode dark:border-background-darkmode":
-                  !typeFilter.isAnyKeyActive(types as T[]),
-              })}
+              className={cx(
+                "border-l-4 pl-[20px] transition-all bg-opacity-10 dark:bg-opacity-10",
+                {
+                  "bg-gray-lightmode dark:bg-gray-darkmode border-primary":
+                    typeFilter.isAnyKeyActive(types as T[]),
+                  "border-background-lightmode dark:border-background-darkmode":
+                    !typeFilter.isAnyKeyActive(types as T[]),
+                },
+              )}
               key={index}
               title={
                 <div className="flex gap-2">
                   <div>{label}</div>
-                  {types.length == 1 && (
+                  {types.length == 1 && language === "sk" && (
                     <Popover
-                      button={
+                      button={({ toggle }) => (
                         <div
-                          className="pt-[1px]"
+                          className="pt-[1px] cursor-pointer"
                           onClick={(e) => {
-                            openTooltipModal(types[0]);
+                            e.stopPropagation();
+                            if (isMobile) {
+                              openTooltipModal(types[0]);
+                            } else {
+                              toggle();
+                            }
                           }}
                         >
                           <Information className="text-primary mt-[4px]" size="sm" />
                         </div>
-                      }
+                      )}
                       panel={
                         <div className="flex flex-col gap-2">
-                          <div className="text-md font-semibold">
-                            {capitalizeFirstLetter(types[0])}
-                          </div>
-                          <div className="">{capitalizeFirstLetter(typeTooltips[types[0]])}</div>
+                          <div className="text-md font-semibold">{label}</div>
+                          <div className="">{typeTooltips[types[0]]}</div>
                         </div>
                       }
                     />
@@ -100,7 +110,7 @@ export const Layers = <T extends string>({
                 </button>
               }
             >
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 pb-4">
                 {types.map((type) => {
                   return (
                     <Checkbox
@@ -108,39 +118,34 @@ export const Layers = <T extends string>({
                       id={type}
                       label={
                         <div className="flex items-center gap-2">
-                          <span className="pb-[2px]">{type}</span>
-                          {typeTooltips[type] ? (
+                          <span className="pb-[2px]">{t(`categories.${type}`)}</span>
+                          {language === "sk" && (
                             <Popover
-                              button={
+                              button={({ toggle }) => (
                                 <div
-                                  className="pt-[1px]"
+                                  className="pt-[px] cursor-pointer"
                                   onClick={(e) => {
-                                    openTooltipModal(type);
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    if (isMobile) {
+                                      openTooltipModal(type);
+                                    } else {
+                                      toggle();
+                                    }
                                   }}
                                 >
-                                  <Information className="text-primary mt-[6px]" size="sm" />
+                                  <Information className="text-primary mt-[2px]" size="sm" />
                                 </div>
-                              }
+                              )}
                               panel={
                                 <div className="flex flex-col gap-2">
                                   <div className="text-md font-semibold">
-                                    {capitalizeFirstLetter(type)}
+                                    {t(`categories.${type}`)}
                                   </div>
-                                  <div className="">
-                                    {capitalizeFirstLetter(typeTooltips[type])}
-                                  </div>
+                                  <div className="">{typeTooltips[type]}</div>
                                 </div>
                               }
                             />
-                          ) : (
-                            <div
-                              className="pt-[1px]"
-                              onClick={(e) => {
-                                openTooltipModal(type);
-                              }}
-                            >
-                              <Information className="text-primary mt-[2px]" size="sm" />
-                            </div>
                           )}
                         </div>
                       }
@@ -158,8 +163,8 @@ export const Layers = <T extends string>({
       <Modal
         className="max-w-lg"
         isOpen={isTooltipModalOpen}
-        title={capitalizeFirstLetter(currentTooltipType ?? "")}
-        description={capitalizeFirstLetter(typeTooltips[currentTooltipType ?? ""] ?? "")}
+        title={t(`categories.${currentTooltipType ?? ""}`)}
+        description={typeTooltips[currentTooltipType ?? ""] ?? ""}
         onClose={closeTooltipModal}
       ></Modal>
     </div>

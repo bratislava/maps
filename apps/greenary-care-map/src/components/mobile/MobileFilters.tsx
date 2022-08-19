@@ -1,13 +1,13 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
 import { Funnel } from "@bratislava/react-maps-icons";
 import {
-  Divider,
-  Select,
-  TagFilter,
-  IActiveFilter,
   ActiveFilters,
+  Divider,
+  IActiveFilter,
+  Select,
   SelectOption,
   Sidebar,
+  TagFilter,
 } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { Layers } from "../Layers";
@@ -69,9 +69,9 @@ export const MobileFilters = <
       </div>
 
       <div>
-        <div className="flex px-6 items-center">
+        <div className="flex px-6 gap-2 items-center">
           <div className="-ml-2">
-            <Funnel />
+            <Funnel size="lg" />
           </div>
           <h2 className="font-bold text-md py-1">{t("filters.title")}</h2>
         </div>

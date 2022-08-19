@@ -7,7 +7,7 @@ export const getLangFromQuery = () => {
   if (langQuery === "sk" || langQuery === "en") {
     return langQuery;
   } else {
-    return "en";
+    return "sk";
   }
 };
 
