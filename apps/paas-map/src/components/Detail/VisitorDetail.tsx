@@ -9,8 +9,8 @@ export const visitorPropertiesSchema = z.object({
   UDR_ID: z.number().nullable(),
   Informacia_RPK_sk: z.string().nullable().optional(),
   Informacia_RPK_en: z.string().nullable().optional(),
-  Informacia_NPK_sk: z.string().nullable().optional(),
-  Informacia_NPK_en: z.string().nullable().optional(),
+  Informácia_NPK_sk: z.string().nullable().optional(),
+  Informácia_NPK_en: z.string().nullable().optional(),
   Cas_spoplatnenia_sk: z.string().nullable().optional(),
   Cas_spoplatnenia_en: z.string().nullable().optional(),
   Zakladna_cena: z.number().nullable().optional(),
@@ -48,7 +48,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
         text={language === "sk" ? properties["Informacia_RPK_sk"] : properties["Informacia_RPK_en"]}
       />
       <Row
-        text={language === "sk" ? properties["Informacia_NPK_sk"] : properties["Informacia_NPK_en"]}
+        text={language === "sk" ? properties["Informácia_NPK_sk"] : properties["Informácia_NPK_en"]}
       />
       <Row
         label={t("chargingTime")}
