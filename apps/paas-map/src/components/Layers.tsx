@@ -4,8 +4,8 @@ import { Modal, Popover } from "@bratislava/react-maps-ui";
 import * as Accordion from "@radix-ui/react-accordion";
 import { keyframes, styled } from "@stitches/react";
 import cx from "classnames";
-import { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Icon, IIconProps } from "./Icon";
 
 const slideDown = keyframes({
@@ -39,6 +39,7 @@ const PrimaryLayerButton = ({
   icon,
   tooltip,
   isMobile,
+  onMobileTooltipClick,
 }: {
   title: string;
   icon: IIconProps["icon"];
@@ -46,9 +47,8 @@ const PrimaryLayerButton = ({
   toggle: () => void;
   tooltip: string;
   isMobile: boolean;
+  onMobileTooltipClick: (title: string, description: ReactNode) => void;
 }) => {
-  const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
-
   return (
     <>
       <button
@@ -67,7 +67,7 @@ const PrimaryLayerButton = ({
                 onClick={(e) => {
                   e.stopPropagation();
                   if (isMobile) {
-                    setTooltipModalOpen(true);
+                    onMobileTooltipClick(title, tooltip);
                   } else {
                     toggle();
                   }
@@ -77,7 +77,7 @@ const PrimaryLayerButton = ({
               </div>
             )}
             panel={
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 w-[400px]">
                 <div className="text-md font-semibold">{title}</div>
                 <div className="">{tooltip}</div>
               </div>
@@ -88,14 +88,6 @@ const PrimaryLayerButton = ({
           {isActive ? <Eye width={18} height={18} /> : <EyeCrossed width={18} height={18} />}
         </div>
       </button>
-
-      <Modal
-        className="max-w-lg"
-        isOpen={isTooltipModalOpen}
-        title={title}
-        description={tooltip}
-        onClose={() => setTooltipModalOpen(false)}
-      ></Modal>
     </>
   );
 };
@@ -104,15 +96,46 @@ const SecondaryLayerButton = ({
   title,
   isActive,
   toggle,
+  isMobile,
+  tooltip,
+  onMobileTooltipClick,
 }: {
+  tooltip?: ReactNode | string;
   title: string;
   isActive: boolean;
   toggle: () => void;
+  isMobile: boolean;
+  onMobileTooltipClick: (title: string, description: ReactNode) => void;
 }) => {
   return (
     <div className="flex w-full justify-between items-center gap-2">
       <div className="flex items-center gap-2 py-2 pl-6">
         <span className="font-semibold">{title}</span>
+        {tooltip && (
+          <Popover
+            button={({ toggle }) => (
+              <div
+                className="mt-[2px] cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (isMobile) {
+                    onMobileTooltipClick(title, tooltip);
+                  } else {
+                    toggle();
+                  }
+                }}
+              >
+                <Information className="text-primary mt-[4px]" size="default" />
+              </div>
+            )}
+            panel={
+              <div className="flex flex-col gap-2 w-[400px]">
+                <div className="text-md font-semibold">{title}</div>
+                <div className="">{tooltip}</div>
+              </div>
+            }
+          />
+        )}
       </div>
       <div
         className={cx("flex items-center h-12 px-6 gap-6", {
@@ -135,11 +158,17 @@ const SubLayerButton = ({
   isActive,
   toggle,
   icon,
+  isMobile,
+  tooltip,
+  onMobileTooltipClick,
 }: {
+  tooltip?: ReactNode | string;
   title: string;
   icon: IIconProps["icon"];
   isActive: boolean;
   toggle: () => void;
+  isMobile: boolean;
+  onMobileTooltipClick: (title: string, description: ReactNode) => void;
 }) => {
   return (
     <button
@@ -151,6 +180,31 @@ const SubLayerButton = ({
       <div className="flex items-center gap-2">
         <Icon icon={icon} size={40} />
         <span className="font-semibold">{title}</span>
+        {tooltip && (
+          <Popover
+            button={({ toggle }) => (
+              <div
+                className="mt-[2px] cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (isMobile) {
+                    onMobileTooltipClick(title, tooltip);
+                  } else {
+                    toggle();
+                  }
+                }}
+              >
+                <Information className="text-primary mt-[4px]" size="default" />
+              </div>
+            )}
+            panel={
+              <div className="flex flex-col gap-2 w-[400px]">
+                <div className="text-md font-semibold">{title}</div>
+                <div className="">{tooltip}</div>
+              </div>
+            }
+          />
+        )}
       </div>
       <div>{isActive ? <Eye width={18} height={18} /> : <EyeCrossed width={18} height={18} />}</div>
     </button>
@@ -170,6 +224,16 @@ export const Layers = <LF extends string, MF extends string>({
 }: ILayerProps<LF, MF>) => {
   const { t } = useTranslation();
 
+  const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
+  const [tooltipTitle, setTooltipTitle] = useState("");
+  const [tooltipDescription, setTooltipDescription] = useState<ReactNode>("");
+
+  const openMobileModalTooltip = useCallback((title: string, description: ReactNode) => {
+    setTooltipTitle(title);
+    setTooltipDescription(description);
+    setTooltipModalOpen(true);
+  }, []);
+
   const [value, setValue] = useState<string[]>([]);
 
   const visitorsLayerOpenedValue = useMemo(() => ["payment"], []);
@@ -184,122 +248,207 @@ export const Layers = <LF extends string, MF extends string>({
   }, [layerFilter.activeKeys, residentLayerOpenedValue, visitorsLayerOpenedValue]);
 
   return (
-    <Accordion.Root value={value} onValueChange={setValue} type="multiple">
-      {/* VISITORS */}
-      <PrimaryLayerButton
-        isActive={layerFilter.isAnyKeyActive(["visitors"] as LF[])}
-        toggle={() => layerFilter.setActive("visitors" as LF)}
-        icon="visitor"
-        title={t("layers.visitors.title")}
-        tooltip={t("layers.visitors.tooltip")}
-        isMobile={isMobile}
-      />
+    <>
+      <Accordion.Root value={value} onValueChange={setValue} type="multiple">
+        {/* VISITORS */}
+        <PrimaryLayerButton
+          onMobileTooltipClick={openMobileModalTooltip}
+          isActive={layerFilter.isAnyKeyActive(["visitors"] as LF[])}
+          toggle={() => layerFilter.setActive("visitors" as LF)}
+          icon="visitor"
+          title={t("layers.visitors.title")}
+          tooltip={t("layers.visitors.tooltip")}
+          isMobile={isMobile}
+        />
 
-      {/* RESIDENTS */}
-      <PrimaryLayerButton
-        isActive={layerFilter.isAnyKeyActive(["residents"] as LF[])}
-        toggle={() => layerFilter.setActive("residents" as LF)}
-        icon="resident"
-        title={t("layers.residents.title")}
-        tooltip={t("layers.residents.tooltip")}
-        isMobile={isMobile}
-      />
+        {/* RESIDENTS */}
+        <PrimaryLayerButton
+          onMobileTooltipClick={openMobileModalTooltip}
+          isActive={layerFilter.isAnyKeyActive(["residents"] as LF[])}
+          toggle={() => layerFilter.setActive("residents" as LF)}
+          icon="resident"
+          title={t("layers.residents.title")}
+          tooltip={t("layers.residents.tooltip")}
+          isMobile={isMobile}
+        />
 
-      {/* PAYMENT */}
-      <Accordion.Item value="payment">
-        <Accordion.Header>
-          <SecondaryLayerButton
-            isActive={markerFilter.isAnyKeyActive(["parkomats", "assistants", "partners"] as MF[])}
-            toggle={() =>
-              markerFilter.setActive(
-                ["parkomats", "assistants", "partners"] as MF[],
-                !markerFilter.isAnyKeyActive(["parkomats", "assistants", "partners"] as MF[]),
-              )
-            }
-            title={t("layerGroups.payment.title")}
-          />
-        </Accordion.Header>
-        <StyledAccordionContent className="overflow-hidden">
-          <SubLayerButton
-            icon="parkomat"
-            isActive={markerFilter.isAnyKeyActive(["parkomats"] as MF[])}
-            toggle={() => markerFilter.toggleActive("parkomats" as MF)}
-            title={t("layers.parkomats.title")}
-          />
-          <SubLayerButton
-            icon="assistant"
-            isActive={markerFilter.isAnyKeyActive(["assistants"] as MF[])}
-            toggle={() => markerFilter.toggleActive("assistants" as MF)}
-            title={t("layers.assistants.title")}
-          />
-          <SubLayerButton
-            icon="partner"
-            isActive={markerFilter.isAnyKeyActive(["partners"] as MF[])}
-            toggle={() => markerFilter.toggleActive("partners" as MF)}
-            title={t("layers.partners.title")}
-          />
-        </StyledAccordionContent>
-      </Accordion.Item>
+        {/* PAYMENT */}
+        <Accordion.Item value="payment">
+          <Accordion.Header>
+            <SecondaryLayerButton
+              isMobile={isMobile}
+              onMobileTooltipClick={openMobileModalTooltip}
+              isActive={markerFilter.isAnyKeyActive([
+                "parkomats",
+                "assistants",
+                "partners",
+              ] as MF[])}
+              toggle={() =>
+                markerFilter.setActive(
+                  ["parkomats", "assistants", "partners"] as MF[],
+                  !markerFilter.isAnyKeyActive(["parkomats", "assistants", "partners"] as MF[]),
+                )
+              }
+              title={t("layerGroups.payment.title")}
+              tooltip={
+                <Trans i18nKey="layerGroups.payment.tooltip">
+                  before
+                  <a
+                    className="underline text-secondary font-semibold"
+                    href={t("layerGroups.payment.tooltipLink")}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    link
+                  </a>
+                  after
+                </Trans>
+              }
+            />
+          </Accordion.Header>
+          <StyledAccordionContent className="overflow-hidden">
+            <SubLayerButton
+              isMobile={isMobile}
+              onMobileTooltipClick={openMobileModalTooltip}
+              icon="parkomat"
+              isActive={markerFilter.isAnyKeyActive(["parkomats"] as MF[])}
+              toggle={() => markerFilter.toggleActive("parkomats" as MF)}
+              title={t("layers.parkomats.title")}
+            />
+            <SubLayerButton
+              isMobile={isMobile}
+              onMobileTooltipClick={openMobileModalTooltip}
+              icon="assistant"
+              isActive={markerFilter.isAnyKeyActive(["assistants"] as MF[])}
+              toggle={() => markerFilter.toggleActive("assistants" as MF)}
+              title={t("layers.assistants.title")}
+            />
+            <SubLayerButton
+              isMobile={isMobile}
+              onMobileTooltipClick={openMobileModalTooltip}
+              icon="partner"
+              isActive={markerFilter.isAnyKeyActive(["partners"] as MF[])}
+              toggle={() => markerFilter.toggleActive("partners" as MF)}
+              title={t("layers.partners.title")}
+            />
+          </StyledAccordionContent>
+        </Accordion.Item>
 
-      {/* PARKING */}
-      <Accordion.Item value="parking">
-        <Accordion.Header>
-          <SecondaryLayerButton
-            isActive={markerFilter.isAnyKeyActive(["parking-lots", "garages", "p-plus-r"] as MF[])}
-            toggle={() =>
-              markerFilter.setActive(
-                ["parking-lots"] as MF[],
-                !markerFilter.isAnyKeyActive(["parking-lots", "garages", "p-plus-r"] as MF[]),
-              )
-            }
-            title={t("layerGroups.parking.title")}
-          />
-        </Accordion.Header>
-        <StyledAccordionContent className="overflow-hidden">
-          <SubLayerButton
-            icon="parking-lot"
-            isActive={markerFilter.isAnyKeyActive(["parking-lots"] as MF[])}
-            toggle={() => markerFilter.toggleActive("parking-lots" as MF)}
-            title={t("layers.parking-lots.title")}
-          />
-          <SubLayerButton
-            icon="garage"
-            isActive={markerFilter.isAnyKeyActive(["garages"] as MF[])}
-            toggle={() => markerFilter.toggleActive("garages" as MF)}
-            title={t("layers.garages.title")}
-          />
-          <SubLayerButton
-            icon="p-plus-r"
-            isActive={markerFilter.isAnyKeyActive(["p-plus-r"] as MF[])}
-            toggle={() => markerFilter.toggleActive("p-plus-r" as MF)}
-            title={t("layers.p-plus-r.title")}
-          />
-        </StyledAccordionContent>
-      </Accordion.Item>
+        {/* PARKING */}
+        <Accordion.Item value="parking">
+          <Accordion.Header>
+            <SecondaryLayerButton
+              isMobile={isMobile}
+              onMobileTooltipClick={openMobileModalTooltip}
+              isActive={markerFilter.isAnyKeyActive([
+                "parking-lots",
+                "garages",
+                "p-plus-r",
+              ] as MF[])}
+              toggle={() =>
+                markerFilter.setActive(
+                  ["parking-lots"] as MF[],
+                  !markerFilter.isAnyKeyActive(["parking-lots", "garages", "p-plus-r"] as MF[]),
+                )
+              }
+              title={t("layerGroups.parking.title")}
+            />
+          </Accordion.Header>
+          <StyledAccordionContent className="overflow-hidden">
+            <SubLayerButton
+              isMobile={isMobile}
+              onMobileTooltipClick={openMobileModalTooltip}
+              icon="parking-lot"
+              isActive={markerFilter.isAnyKeyActive(["parking-lots"] as MF[])}
+              toggle={() => markerFilter.toggleActive("parking-lots" as MF)}
+              title={t("layers.parking-lots.title")}
+            />
+            <SubLayerButton
+              isMobile={isMobile}
+              onMobileTooltipClick={openMobileModalTooltip}
+              icon="garage"
+              isActive={markerFilter.isAnyKeyActive(["garages"] as MF[])}
+              toggle={() => markerFilter.toggleActive("garages" as MF)}
+              title={t("layers.garages.title")}
+            />
+            <SubLayerButton
+              isMobile={isMobile}
+              onMobileTooltipClick={openMobileModalTooltip}
+              icon="p-plus-r"
+              isActive={markerFilter.isAnyKeyActive(["p-plus-r"] as MF[])}
+              toggle={() => markerFilter.toggleActive("p-plus-r" as MF)}
+              title={t("layers.p-plus-r.title")}
+              tooltip={
+                <a
+                  className="underline text-secondary font-semibold"
+                  href="https://paas.sk/zachytne-parkoviska/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {t("layers.p-plus-r.tooltip")}
+                </a>
+              }
+            />
+          </StyledAccordionContent>
+        </Accordion.Item>
 
-      {/* SUPPORT */}
-      <Accordion.Item value="support">
-        <Accordion.Header>
-          <SecondaryLayerButton
-            isActive={markerFilter.isAnyKeyActive(["branches"] as MF[])}
-            toggle={() =>
-              markerFilter.setActive(
-                ["branches"] as MF[],
-                !markerFilter.isAnyKeyActive(["branches"] as MF[]),
-              )
-            }
-            title={t("layerGroups.support.title")}
-          />
-        </Accordion.Header>
-        <StyledAccordionContent className="overflow-hidden">
-          <SubLayerButton
-            icon="branch"
-            isActive={markerFilter.isAnyKeyActive(["branches"] as MF[])}
-            toggle={() => markerFilter.toggleActive("branches" as MF)}
-            title={t("layers.branches.title")}
-          />
-        </StyledAccordionContent>
-      </Accordion.Item>
-    </Accordion.Root>
+        {/* SUPPORT */}
+        <Accordion.Item value="support">
+          <Accordion.Header>
+            <SecondaryLayerButton
+              isMobile={isMobile}
+              onMobileTooltipClick={openMobileModalTooltip}
+              isActive={markerFilter.isAnyKeyActive(["branches"] as MF[])}
+              toggle={() =>
+                markerFilter.setActive(
+                  ["branches"] as MF[],
+                  !markerFilter.isAnyKeyActive(["branches"] as MF[]),
+                )
+              }
+              title={t("layerGroups.support.title")}
+              tooltip={
+                <Trans i18nKey="layerGroups.support.tooltip">
+                  before
+                  <a
+                    className="underline text-secondary font-semibold"
+                    href={t("layerGroups.support.tooltipLink")}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    link
+                  </a>
+                  middle
+                  <a
+                    className="underline text-secondary font-semibold"
+                    href={t("layerGroups.support.tooltipPhone")}
+                  >
+                    phone
+                  </a>
+                  after
+                </Trans>
+              }
+            />
+          </Accordion.Header>
+          <StyledAccordionContent className="overflow-hidden">
+            <SubLayerButton
+              isMobile={isMobile}
+              onMobileTooltipClick={openMobileModalTooltip}
+              icon="branch"
+              isActive={markerFilter.isAnyKeyActive(["branches"] as MF[])}
+              toggle={() => markerFilter.toggleActive("branches" as MF)}
+              title={t("layers.branches.title")}
+            />
+          </StyledAccordionContent>
+        </Accordion.Item>
+      </Accordion.Root>
+
+      <Modal
+        className="max-w-lg"
+        isOpen={isTooltipModalOpen}
+        title={tooltipTitle}
+        description={tooltipDescription}
+        onClose={() => setTooltipModalOpen(false)}
+      ></Modal>
+    </>
   );
 };

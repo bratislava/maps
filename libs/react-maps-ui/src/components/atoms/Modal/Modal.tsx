@@ -1,13 +1,13 @@
-import React, { Fragment, ReactNode } from "react";
-import { Dialog, Transition } from "@headlessui/react";
 import { X } from "@bratislava/react-maps-icons";
+import { Dialog, Transition } from "@headlessui/react";
 import cx from "classnames";
+import { Fragment, ReactNode } from "react";
 
 export interface IModalProps {
   isOpen?: boolean;
   onClose?: () => void;
   title?: string | ReactNode;
-  description?: string;
+  description?: string | ReactNode;
   children?: ReactNode;
   className?: string;
   closeButtonIcon?: ReactNode;

@@ -11,9 +11,20 @@ export default {
     },
   },
   layerGroups: {
-    payment: { title: "Platba" },
+    payment: {
+      title: "Platba",
+      tooltip:
+        "Hodinové parkovné môžete uhradiť <1>cez mobilné aplikácie</1>, alebo prostredníctvom parkomatu, partnerskej prevádzke alebo u asistentov v uliciach.",
+      tooltipLink: "http://paas.sk/platba",
+    },
     parking: { title: "Parkovanie" },
-    support: { title: "Podpora" },
+    support: {
+      title: "Podpora",
+      tooltip:
+        "Ak potrebujete pomôcť s registráciou a nákupom parkovacích kariet, kontaktovať náš môžete <1>online</1>, na infolinke <3>0800 200 222</3> alebo osobne na jednom z klientskych miest.",
+      tooltipLink: "https://paas.sk/formular/",
+      tooltipPhone: "tel:0800200222",
+    },
   },
   layers: {
     title: "Vrstvy",
@@ -60,9 +71,9 @@ export default {
       },
     },
     branches: {
-      title: "Pobočky",
+      title: "Klientske miesta",
       detail: {
-        title: "Pobočka",
+        title: "Klientske miesto",
         name: "Názov",
         address: "Adresa",
         openingHours: "Otváracie hodiny",
@@ -71,9 +82,9 @@ export default {
       },
     },
     partners: {
-      title: "Predajné miesta",
+      title: "Partnerské prevádzky",
       detail: {
-        title: "Predajné miesto",
+        title: "Partnerské prevádzka",
         name: "Názov",
         address: "Adresa",
         openingHours: "Otváracie hodiny",
@@ -102,6 +113,7 @@ export default {
     },
     "p-plus-r": {
       title: "P+R",
+      tooltip: "Viac informácií o P+R záchytných parkoviskách.",
     },
   },
 };

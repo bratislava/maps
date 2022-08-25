@@ -64,7 +64,7 @@ export const Popover = ({ button: Button, panel }: IPopoverProps) => {
           {isOpen && (
             <motion.div
               {...getFloatingProps()}
-              className="bg-background-lightmode z-50 w-96 dark:bg-background-darkmode p-8 rounded-lg shadow-lg"
+              className="bg-background-lightmode z-50 w-fit dark:bg-background-darkmode p-8 rounded-lg shadow-lg"
               ref={floating}
               initial={{
                 scale: 0.5,

@@ -11,9 +11,20 @@ export default {
     },
   },
   layerGroups: {
-    payment: { title: "Payment" },
+    payment: {
+      title: "Payment",
+      tooltip:
+        "You can pay for parking via <1>mobile apps</1>, or you can use parking machines, affiliate partners or assistants - their location can be found on the map.",
+      tooltipLink: "www.paas.sk/en/payment",
+    },
     parking: { title: "Parking" },
-    support: { title: "Support" },
+    support: {
+      title: "Support",
+      tooltip:
+        "If you need help with registration, you can contact us <1>online</1>, or by phone on <3>0800 200 222</3> or you can visit one of our customer centres.",
+      tooltipLink: "mailto:registracie@paas.sk",
+      tooltipPhone: "tel:0800200222",
+    },
   },
   layers: {
     title: "Layers",
@@ -45,11 +56,11 @@ export default {
       },
     },
     parkomats: {
-      title: "Parkomats",
+      title: "Parking machines",
       detail: {
-        title: "Parkomat",
+        title: "Parking machine",
         location: "Location",
-        parkomatId: "Parkomat ID",
+        parkomatId: "Parking machine ID",
       },
     },
     assistants: {
@@ -60,9 +71,9 @@ export default {
       },
     },
     branches: {
-      title: "Branches",
+      title: "Customer centres",
       detail: {
-        title: "Branch",
+        title: "Customer centre",
         name: "Name",
         address: "Address",
         openingHours: "Opening hours",
@@ -71,9 +82,9 @@ export default {
       },
     },
     partners: {
-      title: "Partners",
+      title: "Affiliate partners",
       detail: {
-        title: "Partner",
+        title: "Affiliate partner",
         name: "Name",
         address: "Address",
         openingHours: "Opening hours",
@@ -102,6 +113,7 @@ export default {
     },
     "p-plus-r": {
       title: "P+R",
+      tooltip: "More about P+R parking lots.",
     },
   },
 };
