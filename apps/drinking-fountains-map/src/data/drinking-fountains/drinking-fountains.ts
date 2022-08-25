@@ -1,4 +1,4 @@
-import { FeatureCollection, Feature, Point } from "geojson";
+import { Feature, FeatureCollection, Point } from "geojson";
 
 export const rawData: FeatureCollection = {
   type: "FeatureCollection",
@@ -201,6 +201,26 @@ export const rawData: FeatureCollection = {
       },
       properties: {
         location: "Medická záhrada",
+      },
+    },
+    {
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [17.120954, 48.164231],
+      },
+      properties: {
+        location: "Športový areál na Pionierskej",
+      },
+    },
+    {
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [17.061512, 48.147121],
+      },
+      properties: {
+        location: "Vodárenská záhrada",
       },
     },
   ] as Feature<Point>[],
