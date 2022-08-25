@@ -1,5 +1,5 @@
 export default {
-  title: "Pitné fontány",
+  title: "Mapa pitných fontán v Bratislave",
   close: "Zavrieť",
   detail: {
     location: "Lokalita",

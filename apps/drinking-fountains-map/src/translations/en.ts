@@ -1,5 +1,5 @@
 export default {
-  title: "Drinking fountains",
+  title: "Map of drinking fountains in Bratislava",
   close: "Close",
   detail: {
     location: "Location",

@@ -1,10 +1,10 @@
-import React, { MouseEvent, useCallback } from "react";
 import { Marker as MapMarker } from "@bratislava/react-mapbox";
-import { Feature, Point } from "geojson";
 import cx from "classnames";
+import { Feature, Point } from "geojson";
+import { MouseEvent, useCallback } from "react";
 
-import { ReactComponent as MarkerInactiveIcon } from "../assets/marker-inactive.svg";
 import { ReactComponent as MarkerActiveIcon } from "../assets/marker-active.svg";
+import { ReactComponent as MarkerInactiveIcon } from "../assets/marker-inactive.svg";
 
 export interface IMarkerProps {
   feature: Feature<Point>;

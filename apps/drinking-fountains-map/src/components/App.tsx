@@ -1,32 +1,32 @@
-import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import cx from "classnames";
+import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../styles.css";
 
 // maps
+import { Cluster } from "@bratislava/react-mapbox";
 import {
-  Slot,
   Layout,
-  MapHandle,
   Map,
+  MapHandle,
+  Slot,
+  SlotType,
   ThemeController,
   ViewportController,
-  SlotType,
 } from "@bratislava/react-maps";
-import { Cluster } from "@bratislava/react-mapbox";
-import DISTRICTS_GEOJSON from "@bratislava/react-mapbox/src/assets/layers/districts.json";
 
 // components
 import { Detail } from "./Detail";
 
 // utils
-import { processData } from "../utils/utils";
+import { Feature, FeatureCollection, Point } from "geojson";
 import mapboxgl from "mapbox-gl";
-import { Feature, Point, FeatureCollection } from "geojson";
+import { processData } from "../utils/utils";
 
-import { Marker } from "./Marker";
 import { Modal, Sidebar } from "@bratislava/react-maps-ui";
-import { Legend } from "./Legend";
 import { useTranslation } from "react-i18next";
+import { ReactComponent as BALogo } from "../assets/ba-logo.svg";
+import { Legend } from "./Legend";
+import { Marker } from "./Marker";
 
 export const App = () => {
   const { t } = useTranslation();
@@ -78,30 +78,35 @@ export const App = () => {
       : ["legend", "geolocation", "compass", ["fullscreen", "zoom"]];
   }, [isMobile]);
 
+  const mapStyles = useMemo(
+    () => ({
+      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+    }),
+    [],
+  );
+
+  const initialViewport = useMemo(
+    () => ({
+      center: {
+        lat: 48.16055874931445,
+        lng: 17.090805635872925,
+      },
+      zoom: 11.717870557689393,
+    }),
+    [],
+  );
+
   return isLoading ? null : (
     <Map
       ref={mapRef}
       mapboxgl={mapboxgl}
-      mapStyles={{
-        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-      }}
-      initialViewport={{
-        center: {
-          lat: 48.16055874931445,
-          lng: 17.090805635872925,
-        },
-        zoom: 11.717870557689393,
-      }}
+      mapStyles={mapStyles}
+      initialViewport={initialViewport}
       loadingSpinnerColor="#2BACE2"
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
-      moveSearchBarOutsideOfSideBarOnLargeScreen
       onMobileChange={setMobile}
-      sources={{
-        SPORT_GROUNDS_DATA: data,
-        DISTRICTS_GEOJSON,
-      }}
       onMapClick={closeDetail}
     >
       <Cluster features={data?.features ?? []} radius={24}>
@@ -137,6 +142,16 @@ export const App = () => {
           )
         }
       </Cluster>
+
+      <Slot name="header">
+        <div className="fixed border-2 border-background-lightmode dark:border-gray-darkmode/20 left-4 right-4 top-4 sm:right-auto bg-background-lightmode dark:bg-background-darkmode shadow-lg rounded-lg p-4 flex gap-4">
+          <span className="text-primary">
+            <BALogo />
+          </span>
+          <span className="font-semibold">{t("title")}</span>
+        </div>
+      </Slot>
+
       <Slot name="controls">
         <ThemeController
           className={cx("fixed left-4 bottom-8 transform sm:transform-none", {
