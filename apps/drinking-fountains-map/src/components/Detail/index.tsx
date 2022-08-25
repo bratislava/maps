@@ -1,9 +1,9 @@
-import React, { useCallback, useRef, useState } from "react";
-import { Feature, Point } from "geojson";
-import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 import { X } from "@bratislava/react-maps-icons";
-import { Row } from "./Row";
+import { Feature, Point } from "geojson";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
+import { Row } from "./Row";
 
 export interface DetailProps {
   feature: Feature<Point> | null;
@@ -19,7 +19,7 @@ export const Detail = ({ feature, onClose, isMobile }: DetailProps) => {
   if (!feature) return null;
 
   const detail = (
-    <div className="px-8 pb-3 sm:pt-8 pb-26 flex flex-col justify-end text-foreground-lightmode dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode md:pb-8 w-full">
+    <div className="px-8 pb-3 rounded-bl-lg sm:pt-8 pb-26 flex flex-col justify-end text-foreground-lightmode dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode md:pb-8 w-full">
       <button className="hidden sm:block absolute right-4 top-8 p-2" onClick={onClose}>
         <X />
       </button>
