@@ -5,7 +5,7 @@ import { ButtonLink } from "../ButtonLink";
 import { Row } from "./Row";
 
 export const residentPropertiesSchema = z.object({
-  Kód_parko: z.string(),
+  Kod_parkovacej_zony: z.string(),
   Informacia_RPK_sk: z.string().nullable().optional(),
   Informacia_RPK_en: z.string().nullable().optional(),
   Status: z.string(),
@@ -27,7 +27,7 @@ export const ResidentDetail = ({ properties }: ResidentDetailProps) => {
     <div className="flex flex-col justify-end w-full gap-4">
       <div className="font-semibold pb-1">{t("title")}</div>
       {properties.Status === "planned" && <div className="font-semibold">{t("planned")}</div>}
-      <Row label={t("cardValidity")} text={properties["Kód_parko"]} />
+      <Row label={t("cardValidity")} text={properties["Kod_parkovacej_zony"]} />
 
       {properties["Informacia_RPK_sk"] && (
         <div className="font-light text-[14px]">

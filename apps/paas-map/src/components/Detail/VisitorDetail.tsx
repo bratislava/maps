@@ -5,12 +5,12 @@ import { ButtonLink } from "../ButtonLink";
 import { Row } from "./Row";
 
 export const visitorPropertiesSchema = z.object({
-  Názov: z.string(),
+  Nazov: z.string(),
   UDR_ID: z.number().nullable(),
   Informacia_RPK_sk: z.string().nullable().optional(),
   Informacia_RPK_en: z.string().nullable().optional(),
-  Informácia_NPK_sk: z.string().nullable().optional(),
-  Informácia_NPK_en: z.string().nullable().optional(),
+  Informacia_NPK_sk: z.string().nullable().optional(),
+  Informacia_NPK_en: z.string().nullable().optional(),
   Cas_spoplatnenia_sk: z.string().nullable().optional(),
   Cas_spoplatnenia_en: z.string().nullable().optional(),
   Zakladna_cena: z.number().nullable().optional(),
@@ -18,7 +18,7 @@ export const visitorPropertiesSchema = z.object({
   Doplnkova_informacia_en: z.string().nullable().optional(),
   Vyhradene_sk: z.string().nullable().optional(),
   Vyhradene_en: z.string().nullable().optional(),
-  Kód_rezid: z.string().nullable().optional(),
+  Kod_rezidentskej_zony: z.string().nullable().optional(),
   Status: z.string(),
 });
 
@@ -38,7 +38,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
     <div className="flex flex-col justify-end w-full gap-4">
       <div className="font-semibold pb-1">{t("title")}</div>
       {properties.Status === "planned" && <div className="font-semibold">{t("planned")}</div>}
-      <Row label={t("location")} text={properties["Názov"]} />
+      <Row label={t("location")} text={properties["Nazov"]} />
       <Row label={t("parkingSectionCode")} text={`${properties["UDR_ID"]}`} />
       <Row
         label={t("price")}
@@ -48,7 +48,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
         text={language === "sk" ? properties["Informacia_RPK_sk"] : properties["Informacia_RPK_en"]}
       />
       <Row
-        text={language === "sk" ? properties["Informácia_NPK_sk"] : properties["Informácia_NPK_en"]}
+        text={language === "sk" ? properties["Informacia_NPK_sk"] : properties["Informacia_NPK_en"]}
       />
       <Row
         label={t("chargingTime")}
