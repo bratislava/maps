@@ -6,7 +6,7 @@ Assistants: https://geoportal.bratislava.sk/hsite/rest/services/doprava/Asistent
 
 Parkomats: https://geoportal.bratislava.sk/hsite/rest/services/doprava/Parkomaty/MapServer/17
 
-Partners: https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Affiliate_Partners/MapServer/128
+Partners: https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Zmluvn%C3%AD_partneri_PAAS/MapServer/128
 
 ParkingLots: https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Parkovisk%C3%A1/MapServer/118
 

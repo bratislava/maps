@@ -53,7 +53,7 @@ export const App = () => {
   );
 
   const { data: rawPartnersData } = useArcgis(
-    "https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Affiliate_Partners/MapServer/128",
+    "https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Zmluvn%C3%AD_partneri_PAAS/MapServer/128",
     { format: "geojson" },
   );
 
