@@ -144,11 +144,11 @@ export const App = () => {
       </Cluster>
 
       <Slot name="header">
-        <div className="fixed items-center border-2 border-background-lightmode dark:border-gray-darkmode/20 left-4 right-4 top-4 sm:right-auto bg-background-lightmode dark:bg-background-darkmode shadow-lg rounded-lg p-4 flex gap-4">
+        <div className="fixed h-12 items-center border-2 border-background-lightmode dark:border-gray-darkmode/20 left-4 right-4 top-4 sm:right-auto bg-background-lightmode dark:bg-background-darkmode shadow-lg rounded-lg px-4 flex gap-4">
           <span className="text-primary">
             <BALogo />
           </span>
-          <span className="font-semibold">{t("title")}</span>
+          <span className="font-semibold flex-1 text-center">{t("title")}</span>
         </div>
       </Slot>
 

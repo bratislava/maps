@@ -1,5 +1,6 @@
 import { Marker as MapMarker } from "@bratislava/react-mapbox";
 import cx from "classnames";
+import { motion } from "framer-motion";
 import { Feature, Point } from "geojson";
 import { MouseEvent, useCallback } from "react";
 
@@ -24,7 +25,10 @@ export const Marker = ({ feature, onClick, isSelected = false, count }: IMarkerP
 
   return (
     <MapMarker ignoreFilters onClick={onClickHandler} feature={feature}>
-      <div
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.2, type: "easeOut" }}
         className={cx(
           "relative transform active:scale-75 transition-transform cursor-pointer flex items-center justify-center",
           { "z-50": isSelected },
@@ -40,7 +44,7 @@ export const Marker = ({ feature, onClick, isSelected = false, count }: IMarkerP
         ) : (
           <MarkerInactiveIcon className="absolute bottom-0" width={48} height={48} />
         )}
-      </div>
+      </motion.div>
     </MapMarker>
   );
 };
