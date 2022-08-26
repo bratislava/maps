@@ -39,11 +39,16 @@ export const processData = ({
           ? "closures"
           : "digups";
 
+      const startTimestamp = parseInt(originalProperties?.["d_tum_vzniku_poruchy"] ?? "0");
+      const endTimestamp = parseInt(originalProperties?.["term_n_fin_lnej_pravy_povrchu"] ?? "0");
+
       return {
         ...feature,
         properties: {
           ...originalProperties,
           layer,
+          startTimestamp,
+          endTimestamp,
         },
       } as Feature;
     }),
