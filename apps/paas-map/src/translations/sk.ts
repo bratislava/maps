@@ -84,7 +84,7 @@ export default {
     partners: {
       title: "Partnerské prevádzky",
       detail: {
-        title: "Partnerské prevádzka",
+        title: "Partnerská prevádzka",
         name: "Názov",
         address: "Adresa",
         openingHours: "Otváracie hodiny",
