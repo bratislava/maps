@@ -4,9 +4,10 @@ import { useTranslation } from "react-i18next";
 import "../styles.css";
 
 // maps
-import { Layer } from "@bratislava/react-mapbox";
+import { Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 import {
   DISTRICTS_GEOJSON,
+  Layout,
   Map,
   MapHandle,
   Slot,
@@ -20,6 +21,7 @@ import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
 // components
 
 // layer styles
+import CLOSURES_STYLE from "../assets/layers/closures/closures";
 import DIGUPS_STYLE from "../assets/layers/digups/digups";
 import DISORDERS_STYLE from "../assets/layers/disorders/disorders";
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
@@ -29,6 +31,11 @@ import REPAIRS_POLYGONS_STYLE from "../assets/layers/repairs/repairsPolygons";
 // utils
 import { usePrevious } from "@bratislava/utils";
 import { FeatureCollection } from "geojson";
+import { processData } from "../utils/utils";
+import Detail from "./Detail";
+import { Filters } from "./Filters";
+import { ILayerCategory } from "./Layers";
+import { MobileHeader } from "./mobile/MobileHeader";
 import { MobileSearch } from "./mobile/MobileSearch";
 
 const DISORDERS_URL =
@@ -68,6 +75,7 @@ export const App = () => {
 
   const [disordersData, setDisordersData] = useState<FeatureCollection | null>(null);
   const [digupsData, setDigupsData] = useState<FeatureCollection | null>(null);
+  const [closuresData, setClosuresData] = useState<FeatureCollection | null>(null);
 
   const [repairsPointsData, setRepairsPointsData] = useState<FeatureCollection | null>(null);
 
@@ -75,22 +83,68 @@ export const App = () => {
   const [isGeolocation, setGeolocation] = useState(false);
 
   const { data: rawDisordersData } = useArcgis(DISORDERS_URL);
-  const { data: rawDigupsData } = useArcgis(DIGUPS_URL);
+  const { data: rawDigupsAndClosuresData } = useArcgis(DIGUPS_URL);
 
   const { data: rawRepairsPointsData } = useArcgis(REPAIRS_POINTS_URLS);
   const { data: rawRepairsPolygonsData } = useArcgis(REPAIRS_POLYGONS_URLS);
 
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
+  const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
+  const [uniqueLayers, setUniqueLayers] = useState<string[]>([]);
 
   useEffect(() => {
-    if (rawDisordersData && rawDigupsData && rawRepairsPointsData && rawRepairsPolygonsData) {
-      setDisordersData(rawDisordersData);
-      setDigupsData(rawDigupsData);
-      setRepairsPointsData(rawRepairsPointsData);
-      setRepairsPolygonsData(rawRepairsPolygonsData);
+    if (
+      rawDisordersData &&
+      rawDigupsAndClosuresData &&
+      rawRepairsPointsData &&
+      rawRepairsPolygonsData
+    ) {
+      const {
+        disordersData,
+        digupsData,
+        closuresData,
+        repairsPointData,
+        repairsPolygonsData,
+        uniqueDistricts,
+        uniqueLayers,
+      } = processData({
+        rawDisordersData,
+        rawDigupsAndClosuresData,
+        rawRepairsPointsData,
+        rawRepairsPolygonsData,
+      });
+
+      setDisordersData(disordersData);
+      setDigupsData(digupsData);
+      setClosuresData(closuresData);
+      setRepairsPointsData(repairsPointData);
+      setRepairsPolygonsData(repairsPolygonsData);
+
+      setUniqueDistricts(uniqueDistricts);
+      setUniqueLayers(uniqueLayers);
+
+      setLayerCategories([
+        {
+          label: t("layerCategories.digups.title"),
+          subLayers: ["digups"],
+        },
+        {
+          label: t("layerCategories.closures.title"),
+          subLayers: ["closures"],
+        },
+        {
+          label: t("layerCategories.disorders.title"),
+          subLayers: ["disorders"],
+        },
+        {
+          label: t("layerCategories.repairs.title"),
+          subLayers: ["repairs"],
+        },
+      ]);
+
       setLoading(false);
     }
-  }, [rawDisordersData, rawDigupsData, rawRepairsPointsData, rawRepairsPolygonsData]);
+  }, [rawDisordersData, rawDigupsAndClosuresData, rawRepairsPointsData, rawRepairsPolygonsData, t]);
 
   const [isSidebarVisible, setSidebarVisible] = useState(true);
 
@@ -147,11 +201,12 @@ export const App = () => {
     () => ({
       DISORDERS_DATA: disordersData,
       DIGUPS_DATA: digupsData,
+      CLOSURES_DATA: closuresData,
       REPAIRS_POINTS_DATA: repairsPointsData,
       REPAIRS_POLYGONS_DATA: repairsPolygonsData,
       DISTRICTS_GEOJSON,
     }),
-    [digupsData, disordersData, repairsPointsData, repairsPolygonsData],
+    [closuresData, digupsData, disordersData, repairsPointsData, repairsPolygonsData],
   );
 
   const selectedFeatures = useMemo(() => {
@@ -162,9 +217,46 @@ export const App = () => {
     return isMobile ? ["compass", "zoom"] : ["geolocation", "compass", ["fullscreen", "zoom"]];
   }, [isMobile]);
 
+  const districtFilter = useFilter({
+    property: "district",
+    keys: uniqueDistricts,
+  });
+
+  const layerfilter = useFilter({
+    property: "layer",
+    keys: uniqueLayers,
+    defaultValues: useMemo(
+      () => uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {}),
+      [uniqueLayers],
+    ),
+  });
+
+  const combinedFilter = useCombinedFilter({
+    combiner: "all",
+    filters: [
+      {
+        filter: districtFilter,
+        mapToActive: (activeDistricts) => ({
+          title: t("filters.district.title"),
+          items: activeDistricts,
+        }),
+      },
+      {
+        onlyInExpression: true,
+        filter: layerfilter,
+        mapToActive: (activeLayers) => ({
+          title: t("layers"),
+          items: activeLayers.map((l) => t(`layerCategories.${l}.title`)),
+        }),
+      },
+    ],
+  });
+
+  const [layerCategories, setLayerCategories] = useState<ILayerCategory[]>([]);
+
   return isLoading ? null : (
     <Map
-      loadingSpinnerColor="#237c36"
+      loadingSpinnerColor="#0F6D95"
       initialViewport={initialViewport}
       ref={mapRef}
       mapboxgl={mapboxgl}
@@ -177,10 +269,19 @@ export const App = () => {
       onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
     >
-      <Layer isVisible source="DISORDERS_DATA" styles={DISORDERS_STYLE} />
-      <Layer isVisible source="DIGUPS_DATA" styles={DIGUPS_STYLE} />
-      <Layer isVisible source="REPAIRS_POINTS_DATA" styles={REPAIRS_POINTS_STYLE} />
-      <Layer isVisible source="REPAIRS_POLYGONS_DATA" styles={REPAIRS_POLYGONS_STYLE} />
+      <Layer filters={combinedFilter.expression} source="DISORDERS_DATA" styles={DISORDERS_STYLE} />
+      <Layer filters={combinedFilter.expression} source="DIGUPS_DATA" styles={DIGUPS_STYLE} />
+      <Layer filters={combinedFilter.expression} source="CLOSURES_DATA" styles={CLOSURES_STYLE} />
+      <Layer
+        filters={combinedFilter.expression}
+        source="REPAIRS_POINTS_DATA"
+        styles={REPAIRS_POINTS_STYLE}
+      />
+      <Layer
+        filters={combinedFilter.expression}
+        source="REPAIRS_POLYGONS_DATA"
+        styles={REPAIRS_POLYGONS_STYLE}
+      />
       <Layer ignoreClick source="DISTRICTS_GEOJSON" styles={DISTRICTS_STYLE} />
 
       <Slot name="controls">
@@ -195,6 +296,31 @@ export const App = () => {
         />
         <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
       </Slot>
+
+      <Layout isOnlyMobile>
+        <Slot name="mobile-header">
+          <MobileHeader
+            onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
+          />
+        </Slot>
+      </Layout>
+
+      <Filters
+        mapboxgl={mapboxgl}
+        mapRef={mapRef}
+        isGeolocation={isGeolocation}
+        isMobile={isMobile ?? false}
+        isVisible={isSidebarVisible}
+        setVisible={(isVisible) => setSidebarVisible(isVisible ?? false)}
+        districtFilter={districtFilter}
+        areFiltersDefault={combinedFilter.areDefault}
+        activeFilters={combinedFilter.active}
+        onResetFiltersClick={combinedFilter.reset}
+        layerFilter={layerfilter}
+        layerCategories={layerCategories}
+      />
+
+      <Detail feature={selectedFeature} isMobile={isMobile ?? false} />
     </Map>
   );
 };
