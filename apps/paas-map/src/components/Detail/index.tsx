@@ -74,11 +74,11 @@ export const Detail = ({ feature, isOpen, onClose, isMobile }: DetailProps) => {
       </button>
       {detail}
 
-      {/* <div>
+      <div>
         <pre className="p-2 mt-16 h-72 bg-black text-white overflow-auto">
           <code>{JSON.stringify(feature?.properties, null, 2)}</code>
         </pre>
-      </div> */}
+      </div>
     </div>
   );
 };
