@@ -3,20 +3,7 @@
   "private": true,
   "license": "EUPL-1.2",
   "workspaces": [
-    "libs/mapbox-expressions",
-    "libs/mapbox-geocoding",
-    "libs/react-mapbox",
-    "libs/react-maps",
-    "libs/react-maps-icons",
-    "libs/react-maps-ui",
-    "libs/react-use-arcgis",
-    "libs/utils",
-    "apps/closures-and-restrictions-map",
-    "apps/cvicko-map",
-    "apps/drinking-fountains-map",
-    "apps/greenary-care-map",
-    "apps/paas-map",
-    "apps/planting-map",
-    "apps/sport-grounds-map"
+    "libs/*",
+    "apps/*"
   ]
 }

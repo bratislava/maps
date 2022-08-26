@@ -7,5 +7,5 @@ export default defineConfig({
   plugins: [react(), svgr()],
   publicDir: "public",
   envPrefix: "PUBLIC_",
-  base: "/wp-content/uploads/fast-interventions-map/",
+  base: "./",
 });

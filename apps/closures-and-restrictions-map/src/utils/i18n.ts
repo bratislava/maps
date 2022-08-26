@@ -1,30 +1,18 @@
-import { use as i18nextUse } from "i18next";
-import { initReactI18next } from "react-i18next";
+import { i18n as i18next } from "@bratislava/react-maps";
+import enTranslation from "../translations/en";
+import skTranslation from "../translations/sk";
 
-import enTranslation from "../translations/en.js";
-import skTranslation from "../translations/sk.js";
-
-const i18next = i18nextUse(initReactI18next);
-
-export const getLangFromQuery = () => {
+const getLangFromQuery = () => {
   const langQuery = new URLSearchParams(window.location.search).get("lang");
   if (langQuery === "sk" || langQuery === "en") {
     return langQuery;
   } else {
-    return "en";
+    return "sk";
   }
 };
 
-i18next.init({
-  resources: {
-    en: { translation: enTranslation },
-    sk: { translation: skTranslation },
-  },
-  lng: getLangFromQuery(),
-  fallbackLng: "en",
-  interpolation: {
-    escapeValue: false,
-  },
-});
+i18next.addResourceBundle("en", "translation", enTranslation);
+i18next.addResourceBundle("sk", "translation", skTranslation);
+i18next.changeLanguage(getLangFromQuery());
 
-export default i18next;
+export const i18n = i18next;
