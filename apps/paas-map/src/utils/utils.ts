@@ -1,6 +1,5 @@
 import { addDistrictPropertyToLayer } from "@bratislava/react-maps";
 import { Feature, FeatureCollection } from "geojson";
-import { rawOdpData } from "../data/odp";
 
 export interface ProcessDataOptions {
   rawAssistantsData: FeatureCollection;
@@ -9,6 +8,7 @@ export interface ProcessDataOptions {
   rawParkingLotsData: FeatureCollection;
   rawBranchesData: FeatureCollection;
   rawUdrData: FeatureCollection;
+  rawOdpData: FeatureCollection;
 }
 
 export const processData = ({
@@ -18,6 +18,7 @@ export const processData = ({
   rawParkingLotsData,
   rawBranchesData,
   rawUdrData,
+  rawOdpData,
 }: ProcessDataOptions) => {
   let GLOBAL_ID = 0;
 

@@ -14,4 +14,4 @@ Branches: https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Pobo%C4
 
 UDR: https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/UDR_P/MapServer/40
 
-ODP: for now ODP data are static
+ODP: https://geoportal.bratislava.sk/hSite/rest/services/parkovanie/ODP/MapServer/3

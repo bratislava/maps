@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Feature, FeatureCollection } from "geojson";
 
@@ -37,7 +37,7 @@ export const fetchCount = async (url: string) => {
     ].join("&")
   );
   const json = await res.json();
-  return json.count;
+  return json.count ?? 0;
 };
 
 const DEFAULT_OPTIONS: IUseArcgisOptions = {
@@ -63,10 +63,8 @@ export const fetchAllFromArcgis = async (
 
     if (ops.pagination) {
       const totalCount = await fetchCount(url);
-      const requestCount = Math.ceil(
-        totalCount / (ops.countPerRequest ?? 1000)
-      );
-
+      const requestCount =
+        Math.ceil(totalCount / (ops.countPerRequest ?? 1000)) ?? 1;
       const chunks = await Promise.all(
         Array(requestCount)
           .fill(null)

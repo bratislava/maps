@@ -72,6 +72,11 @@ export const App = () => {
     { format: "geojson" },
   );
 
+  const { data: rawOdpData } = useArcgis(
+    "https://geoportal.bratislava.sk/hSite/rest/services/parkovanie/ODP/MapServer/3",
+    { format: "geojson" },
+  );
+
   const [isLoading, setLoading] = useState(true);
   const [markersData, setMarkersData] = useState<FeatureCollection | null>(null);
   const [udrData, setUdrData] = useState<FeatureCollection | null>(null);
@@ -85,7 +90,8 @@ export const App = () => {
       rawPartnersData &&
       rawParkingLotsData &&
       rawBranchesData &&
-      rawUdrData
+      rawUdrData &&
+      rawOdpData
     ) {
       const { markersData, udrData, odpData } = processData({
         rawAssistantsData,
@@ -94,6 +100,7 @@ export const App = () => {
         rawParkingLotsData,
         rawBranchesData,
         rawUdrData,
+        rawOdpData,
       });
       setMarkersData(markersData);
       setUdrData(udrData);
@@ -107,6 +114,7 @@ export const App = () => {
     rawParkingLotsData,
     rawBranchesData,
     rawUdrData,
+    rawOdpData,
   ]);
 
   const mapRef = useRef<MapHandle>(null);
