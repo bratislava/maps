@@ -1,45 +1,61 @@
 import { Slot } from "@bratislava/react-maps";
+import { X } from "@bratislava/react-maps-icons";
 import cx from "classnames";
 import { Feature } from "geojson";
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { BottomSheet } from "react-spring-bottom-sheet";
-import { Row } from "./Row";
-
+import DigupDetail, {
+  DigupClosureDisorderProperties,
+  digupClosureDisorderPropertiesSchema,
+} from "./DigupClosureDisorderDetail";
+import RepairPointDetail, {
+  RepairPointDetailProperties,
+  repairPointPropertiesSchema,
+} from "./RepairPointDetail";
+import RepairPolygonDetail, {
+  RepairPolygonDetailProperties,
+  repairPolygonPropertiesSchema,
+} from "./RepairPolygonDetail";
 export interface DetailProps {
   isMobile: boolean;
   feature: Feature | null;
+  onClose: () => void;
 }
 
-export const Detail = ({ feature, isMobile }: DetailProps) => {
-  const { t } = useTranslation();
-
-  const [rows, setRows] = useState<{ label: string; text: any }[]>([]);
-
-  useEffect(() => {
-    setRows([]);
-    if (feature) {
-      setRows(
-        Object.keys(feature["properties"] as any).map((label) => ({
-          label,
-          text: feature?.properties?.[label],
-        })),
-      );
-    }
-  }, [feature, setRows]);
+export const Detail = ({ feature, isMobile, onClose }: DetailProps) => {
+  const { originalProperties, ...processedProperties } = feature?.properties ?? {};
 
   const detail = !feature ? null : (
     <>
-      <div className="flex flex-col space-y-4 p-8 pt-4 overflow-auto max-h-screen">
-        <div className="flex flex-col space-y-4">
-          {rows.map(({ label, text }) => (
-            <Row key={label} label={label} text={text} />
-          ))}
-        </div>
+      <div className="p-8 text-foreground-lightmode dark:text-foreground-darkmode">
+        {feature ? (
+          digupClosureDisorderPropertiesSchema.safeParse(processedProperties).success ? (
+            <DigupDetail properties={processedProperties as DigupClosureDisorderProperties} />
+          ) : repairPolygonPropertiesSchema.safeParse(processedProperties).success ? (
+            <RepairPolygonDetail
+              properties={processedProperties as RepairPolygonDetailProperties}
+            />
+          ) : repairPointPropertiesSchema.safeParse(processedProperties).success ? (
+            <RepairPointDetail properties={processedProperties as RepairPointDetailProperties} />
+          ) : null
+        ) : null}
       </div>
-      {/* <pre className="p-2 h-72 bg-black text-white overflow-auto">
-        <code>{JSON.stringify(feature?.properties, null, 2)}</code>
-      </pre> */}
+
+      <pre className="p-2 m-2 bg-black rounded-lg text-white overflow-auto">
+        <div className="font-semibold">Processed properties</div>
+        <code>{JSON.stringify(processedProperties, null, 2)}</code>
+      </pre>
+      <pre className="p-2 m-2 bg-black rounded-lg text-white overflow-auto">
+        <div className="font-semibold">Original properties</div>
+        <code>
+          {JSON.stringify(
+            typeof originalProperties === "string"
+              ? JSON.parse(originalProperties)
+              : originalProperties,
+            null,
+            2,
+          )}
+        </code>
+      </pre>
     </>
   );
 
@@ -56,7 +72,12 @@ export const Detail = ({ feature, isMobile }: DetailProps) => {
       </BottomSheet>
     </Slot>
   ) : (
-    <Slot isVisible={!!feature} name="desktop-detail">
+    <Slot
+      openPadding={{ right: 384 }}
+      avoidControls={true}
+      isVisible={!!feature}
+      name="desktop-detail"
+    >
       <div
         className={cx(
           "fixed top-0 right-0 w-96 overflow-auto max-h-full bg-background-lightmode dark:bg-background-darkmode transition-all duration-500",
@@ -66,6 +87,9 @@ export const Detail = ({ feature, isMobile }: DetailProps) => {
           },
         )}
       >
+        <button onClick={onClose} className="absolute top-8 right-6 z-10 hover:text-primary">
+          <X size="default" />
+        </button>
         {detail}
       </div>
     </Slot>

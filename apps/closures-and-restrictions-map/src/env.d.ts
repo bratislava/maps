@@ -1,5 +1,6 @@
-// / <reference types="vite/client" />
-// / <reference types="vite-plugin-svgr/client" />
+/* eslint-disable spaced-comment */
+/// <reference types="vite/client" />
+/// <reference types="vite-plugin-svgr/client" />
 
 interface ImportMetaEnv {
   readonly PUBLIC_MAPBOX_PUBLIC_TOKEN: string;

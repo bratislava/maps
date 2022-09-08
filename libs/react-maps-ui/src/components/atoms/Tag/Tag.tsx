@@ -1,5 +1,5 @@
-import React, { ReactNode, useEffect, useState } from "react";
 import cx from "classnames";
+import { ReactNode } from "react";
 
 export interface ITagProps {
   className?: string;
@@ -17,7 +17,7 @@ export const Tag = ({
   return (
     <div
       className={cx(
-        "rounded select-none text-[14px] transition-all",
+        "rounded select-none text-[14px] font-semibold transition-all",
         {
           "bg-gray-lightmode dark:bg-gray-darkmode bg-opacity-10 dark:bg-opacity-20":
             !className.includes("bg-"),

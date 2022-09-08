@@ -22,7 +22,16 @@ const styles = [
     type: "fill",
     paint: {
       "fill-color": "#D753F8",
-      "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], 0.4, 0.2],
+      "fill-opacity": [
+        "case",
+        [
+          "any",
+          ["boolean", ["feature-state", "hover"], false],
+          ["boolean", ["feature-state", "selected"], false],
+        ],
+        0.4,
+        0.2,
+      ],
     },
   },
 ];

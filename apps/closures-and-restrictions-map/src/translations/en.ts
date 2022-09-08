@@ -1,19 +1,109 @@
 export default {
   title: "Closures and restrictions map",
   search: "Search",
-  layerCategories: {
+  filters: {
+    title: "Filtering",
+    district: {
+      title: "District",
+      placeholder: "District",
+      multipleDistricts: "Selected",
+    },
+    type: {
+      title: "Type",
+      placeholder: "Type",
+      multipleTypes: "Selected",
+      types: {
+        sewerage: "Sewerage",
+        optics: "Optics",
+        gas: "Gas",
+        highVoltage: "High voltage",
+        water: "Water",
+        other: "Other",
+      },
+    },
+    status: {
+      title: "Status",
+      active: "active",
+      done: "finished",
+      planned: "planned",
+    },
+  },
+  layers: {
     title: "Layers",
     digups: {
       title: "Digups",
+      detail: {
+        title: "Digup",
+        startDate: "Start of implementation",
+        endDate: "End of implementation",
+        category: "Category",
+        address: "Address",
+        fullSize: "Total area",
+        width: "Width",
+        length: "Length",
+        investor: "Investor",
+        contractor: "Contractor",
+        permission: "Permission",
+        showDocument: "Show document",
+        problemHint:
+          "Did the digup cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
+        reportProblem: "Report problem",
+      },
     },
     closures: {
       title: "Closures",
+      detail: {
+        title: "Closure",
+        startDate: "Start of implementation",
+        endDate: "End of implementation",
+        category: "Category",
+        address: "Address",
+        fullSize: "Total area",
+        width: "Width",
+        length: "Length",
+        investor: "Investor",
+        contractor: "Contractor",
+        permission: "Permission",
+        showDocument: "Show document",
+        problemHint:
+          "Did the closure cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
+        reportProblem: "Report problem",
+      },
     },
     disorders: {
       title: "Disorders",
+      detail: {
+        title: "Disorder",
+        startDate: "Start of implementation",
+        endDate: "End of implementation",
+        category: "Category",
+        address: "Address",
+        fullSize: "Total area",
+        width: "Width",
+        length: "Length",
+        investor: "Investor",
+        contractor: "Contractor",
+        permission: "Permission",
+        showDocument: "Show document",
+        problemHint:
+          "Did the disorder cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
+        reportProblem: "Report problem",
+      },
     },
     repairs: {
       title: "Repairs",
+      detail: {
+        title: "Repair",
+        location: "Locality",
+        date: "Date",
+        length: "Length",
+        address: "Address",
+        description: "Description",
+        fullSize: "Total area",
+        problemHint:
+          "Did the digup cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
+        reportProblem: "Report problem",
+      },
     },
   },
 };

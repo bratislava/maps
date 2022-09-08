@@ -1,5 +1,5 @@
 export default {
-  title: "Map rozkopávok a uzáverov",
+  title: "Mapa rozkopávok a uzáverov",
   search: "Hľadať",
   filters: {
     title: "Filter",
@@ -8,20 +8,102 @@ export default {
       placeholder: "Mestská časť",
       multipleDistricts: "Zvolených",
     },
+    type: {
+      title: "Typ siete",
+      placeholder: "Typ siete",
+      multipleTypes: "Zvolených",
+      types: {
+        sewerage: "Kanalizácia",
+        optics: "Optika",
+        gas: "Plyn",
+        highVoltage: "Vysoké napätie",
+        water: "Voda",
+        other: "Ostatné",
+      },
+    },
+    status: {
+      title: "Stav",
+      active: "aktuálne",
+      done: "realizované",
+      planned: "plánované",
+    },
   },
-  layerCategories: {
+  layers: {
     title: "Vrstvy",
     digups: {
       title: "Rozkopávky",
+      detail: {
+        title: "Rozkopávka",
+        startDate: "Začiatok realizácie",
+        endDate: "Ukončenie realizácie",
+        category: "Kategória",
+        address: "Adresa",
+        fullSize: "Celkový rozmer",
+        width: "Šírka rozkopávky",
+        length: "Dĺžka rozkopávky",
+        investor: "Investor",
+        contractor: "Zhotoviteľ",
+        permission: "Povolenie",
+        showDocument: "Zobraziť dokument",
+        problemHint:
+          "Nastal kvôli rozkopávke nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
+        reportProblem: "Nahlásiť problém",
+      },
     },
     closures: {
       title: "Uzávierky",
+      detail: {
+        title: "Uzávierka",
+        startDate: "Začiatok realizácie",
+        endDate: "Ukončenie realizácie",
+        category: "Kategória",
+        address: "Adresa",
+        fullSize: "Celkový rozmer",
+        width: "Šírka uzávierky",
+        length: "Dĺžka uzávierky",
+        investor: "Investor",
+        contractor: "Zhotoviteľ",
+        permission: "Povolenie",
+        showDocument: "Zobraziť dokument",
+        problemHint:
+          "Nastal kvôli uzávierke nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
+        reportProblem: "Nahlásiť problém",
+      },
     },
     disorders: {
       title: "Poruchy",
+      detail: {
+        title: "Porucha",
+        startDate: "Začiatok realizácie",
+        endDate: "Ukončenie realizácie",
+        category: "Kategória",
+        address: "Adresa",
+        fullSize: "Celkový rozmer",
+        width: "Šírka",
+        length: "Dĺžka",
+        investor: "Investor",
+        contractor: "Zhotoviteľ",
+        permission: "Povolenie",
+        showDocument: "Zobraziť dokument",
+        problemHint:
+          "Nastal kvôli poruche nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
+        reportProblem: "Nahlásiť problém",
+      },
     },
     repairs: {
       title: "Opravy",
+      detail: {
+        title: "Oprava",
+        location: "Lokalita",
+        date: "Dátum",
+        length: "Dĺžka",
+        address: "Adresa",
+        description: "Popis",
+        fullSize: "Celkový rozmer",
+        problemHint:
+          "Nastal kvôli oprave nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
+        reportProblem: "Nahlásiť problém",
+      },
     },
   },
 };

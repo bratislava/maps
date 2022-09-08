@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import "../styles.css";
 
 // maps
-import { Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
+import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 import {
   DISTRICTS_GEOJSON,
   Layout,
@@ -21,16 +21,20 @@ import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
 // components
 
 // layer styles
-import CLOSURES_STYLE from "../assets/layers/closures/closures";
-import DIGUPS_STYLE from "../assets/layers/digups/digups";
-import DISORDERS_STYLE from "../assets/layers/disorders/disorders";
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
-import REPAIRS_POINTS_STYLE from "../assets/layers/repairs/repairsPoints";
 import REPAIRS_POLYGONS_STYLE from "../assets/layers/repairs/repairsPolygons";
 
 // utils
 import { usePrevious } from "@bratislava/utils";
-import { FeatureCollection } from "geojson";
+import { Feature, FeatureCollection, Point } from "geojson";
+import {
+  DIGUPS_URL,
+  DISORDERS_URL,
+  REPAIRS_2022_ODP_POLYGONS_URL,
+  REPAIRS_2022_POLYGONS_URL,
+  REPAIRS_2022_RECONSTRUCTION_DESIGN_POLYGONS_URL,
+  REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL,
+} from "../utils/urls";
 import { processData } from "../utils/utils";
 import Detail from "./Detail";
 import { Filters } from "./Filters";
@@ -38,23 +42,8 @@ import { ILayerCategory } from "./Layers";
 import { MobileHeader } from "./mobile/MobileHeader";
 import { MobileSearch } from "./mobile/MobileSearch";
 
-const DISORDERS_URL =
-  "https://services8.arcgis.com/pRlN1m0su5BYaFAS/ArcGIS/rest/services/survey123_42a33d618acc4c23bee02bbe005402ca_stakeholder/FeatureServer/0";
-
-const DIGUPS_URL =
-  "https://services8.arcgis.com/pRlN1m0su5BYaFAS/ArcGIS/rest/services/survey123_d681e359eca84126824e7e074e7c3cba_stakeholder/FeatureServer/0";
-
-const REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL =
-  "https://services8.arcgis.com/pRlN1m0su5BYaFAS/arcgis/rest/services/Plan_oprav_2022_Priechody_pre_chodcov_view/FeatureServer/18";
-
-const REPAIRS_2022_ODP_POLYGONS_URL =
-  "https://services8.arcgis.com/pRlN1m0su5BYaFAS/arcgis/rest/services/Plán_Opráv_2022_ODS_read_only/FeatureServer/0";
-
-const REPAIRS_2022_RECONSTRUCTION_DESIGN_POLYGONS_URL =
-  "https://services8.arcgis.com/pRlN1m0su5BYaFAS/arcgis/rest/services/návrh_na_rekonštrukcie_2022/FeatureServer/49";
-
-const REPAIRS_2022_POLYGONS_URL =
-  "https://services8.arcgis.com/pRlN1m0su5BYaFAS/arcgis/rest/services/Plán_opráv_2022_view/FeatureServer/0";
+import { Icon } from "./Icon";
+import { Marker } from "./Marker";
 
 const REPAIRS_POINTS_URLS = [REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL];
 
@@ -73,11 +62,7 @@ export const App = () => {
 
   const [isLoading, setLoading] = useState(true);
 
-  const [disordersData, setDisordersData] = useState<FeatureCollection | null>(null);
-  const [digupsData, setDigupsData] = useState<FeatureCollection | null>(null);
-  const [closuresData, setClosuresData] = useState<FeatureCollection | null>(null);
-
-  const [repairsPointsData, setRepairsPointsData] = useState<FeatureCollection | null>(null);
+  const [markersData, setMarkersData] = useState<FeatureCollection | null>(null);
 
   const [repairsPolygonsData, setRepairsPolygonsData] = useState<FeatureCollection | null>(null);
   const [isGeolocation, setGeolocation] = useState(false);
@@ -89,8 +74,11 @@ export const App = () => {
   const { data: rawRepairsPolygonsData } = useArcgis(REPAIRS_POLYGONS_URLS);
 
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
+  const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
+
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
   const [uniqueLayers, setUniqueLayers] = useState<string[]>([]);
+  const [uniqueTypes, setUniqueTypes] = useState<string[]>([]);
 
   useEffect(() => {
     if (
@@ -99,45 +87,40 @@ export const App = () => {
       rawRepairsPointsData &&
       rawRepairsPolygonsData
     ) {
-      const {
-        disordersData,
-        digupsData,
-        closuresData,
-        repairsPointData,
-        repairsPolygonsData,
-        uniqueDistricts,
-        uniqueLayers,
-      } = processData({
-        rawDisordersData,
-        rawDigupsAndClosuresData,
-        rawRepairsPointsData,
-        rawRepairsPolygonsData,
-      });
+      const { markersData, repairsPolygonsData, uniqueDistricts, uniqueLayers, uniqueTypes } =
+        processData({
+          rawDisordersData,
+          rawDigupsAndClosuresData,
+          rawRepairsPointsData,
+          rawRepairsPolygonsData,
+        });
 
-      setDisordersData(disordersData);
-      setDigupsData(digupsData);
-      setClosuresData(closuresData);
-      setRepairsPointsData(repairsPointData);
+      setMarkersData(markersData);
       setRepairsPolygonsData(repairsPolygonsData);
 
       setUniqueDistricts(uniqueDistricts);
       setUniqueLayers(uniqueLayers);
+      setUniqueTypes(uniqueTypes);
 
       setLayerCategories([
         {
-          label: t("layerCategories.digups.title"),
+          label: t("layers.digups.title"),
+          icon: <Icon icon="digup" size={40} />,
           subLayers: ["digups"],
         },
         {
-          label: t("layerCategories.closures.title"),
+          label: t("layers.closures.title"),
+          icon: <Icon icon="closure" size={40} />,
           subLayers: ["closures"],
         },
         {
-          label: t("layerCategories.disorders.title"),
+          label: t("layers.disorders.title"),
+          icon: <Icon icon="disorder" size={40} />,
           subLayers: ["disorders"],
         },
         {
-          label: t("layerCategories.repairs.title"),
+          label: t("layers.repairs.title"),
+          icon: <Icon icon="repair" size={40} />,
           subLayers: ["repairs"],
         },
       ]);
@@ -167,8 +150,14 @@ export const App = () => {
     }
   }, [isMobile, previousMobile]);
 
+  const isDetailOpen = useMemo(
+    () => !!(selectedFeature ?? selectedMarker),
+    [selectedFeature, selectedMarker],
+  );
+
   const closeDetail = useCallback(() => {
     setSelectedFeature(null);
+    setSelectedMarker(null);
   }, []);
 
   // close detailbox when sidebar is opened on mobile
@@ -199,19 +188,21 @@ export const App = () => {
 
   const sources = useMemo(
     () => ({
-      DISORDERS_DATA: disordersData,
-      DIGUPS_DATA: digupsData,
-      CLOSURES_DATA: closuresData,
-      REPAIRS_POINTS_DATA: repairsPointsData,
       REPAIRS_POLYGONS_DATA: repairsPolygonsData,
       DISTRICTS_GEOJSON,
     }),
-    [closuresData, digupsData, disordersData, repairsPointsData, repairsPolygonsData],
+    [repairsPolygonsData],
   );
 
   const selectedFeatures = useMemo(() => {
     return selectedFeature ? [selectedFeature] : [];
   }, [selectedFeature]);
+
+  const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
+    mapRef.current?.moveToFeatures(features);
+    setSelectedFeature(features[0] ?? null);
+    setSelectedMarker(null);
+  }, []);
 
   const viewportControllerSlots: SlotType = useMemo(() => {
     return isMobile ? ["compass", "zoom"] : ["geolocation", "compass", ["fullscreen", "zoom"]];
@@ -222,11 +213,35 @@ export const App = () => {
     keys: uniqueDistricts,
   });
 
+  // fit to district
+  useEffect(() => {
+    mapRef.current?.fitDistrict(districtFilter.activeKeys);
+  }, [districtFilter.activeKeys]);
+
+  const typeFilter = useFilter({
+    property: "type",
+    comparator: useCallback(({ value, property }: { value: string; property: string }) => {
+      return ["in", value, ["get", property]];
+    }, []),
+    keys: uniqueTypes,
+  });
+
+  const statusFilter = useFilter({
+    property: "status",
+    combiner: "any",
+    keys: useMemo(() => ["planned", "active", "done"], []),
+    defaultValues: useMemo(() => ({ planned: false, active: true, done: false }), []),
+  });
+
   const layerfilter = useFilter({
     property: "layer",
     keys: uniqueLayers,
     defaultValues: useMemo(
-      () => uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {}),
+      () =>
+        uniqueLayers.reduce(
+          (prev, curr) => ({ ...prev, [curr]: curr === "repairs" ? false : true }),
+          {},
+        ),
       [uniqueLayers],
     ),
   });
@@ -242,11 +257,46 @@ export const App = () => {
         }),
       },
       {
+        filter: typeFilter,
+        mapToActive: (activeTypes) => ({
+          title: t("filters.type.title"),
+          items: activeTypes.map((type) => t(`filters.type.types.${type}`)),
+        }),
+      },
+      {
+        filter: statusFilter,
+        mapToActive: (activeStatuses) => ({
+          title: t("filters.status.title"),
+          items: activeStatuses.map((status) => t(`filters.status.${status}`)),
+        }),
+      },
+      {
         onlyInExpression: true,
         filter: layerfilter,
         mapToActive: (activeLayers) => ({
           title: t("layers"),
-          items: activeLayers.map((l) => t(`layerCategories.${l}.title`)),
+          items: activeLayers.map((l) => t(`layers.${l}.title`)),
+        }),
+      },
+    ],
+  });
+
+  const combinedFilterWithoutStatus = useCombinedFilter({
+    combiner: "all",
+    filters: [
+      {
+        filter: districtFilter,
+        mapToActive: (activeDistricts) => ({
+          title: t("filters.district.title"),
+          items: activeDistricts,
+        }),
+      },
+      {
+        onlyInExpression: true,
+        filter: layerfilter,
+        mapToActive: (activeLayers) => ({
+          title: t("layers"),
+          items: activeLayers.map((l) => t(`layers.${l}.title`)),
         }),
       },
     ],
@@ -263,26 +313,58 @@ export const App = () => {
       mapStyles={mapStyles}
       sources={sources}
       isOutsideLoading={isLoading}
-      onFeaturesClick={(features) => setSelectedFeature(features[0])}
+      onFeaturesClick={onFeaturesClick}
       selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
     >
-      <Layer filters={combinedFilter.expression} source="DISORDERS_DATA" styles={DISORDERS_STYLE} />
-      <Layer filters={combinedFilter.expression} source="DIGUPS_DATA" styles={DIGUPS_STYLE} />
-      <Layer filters={combinedFilter.expression} source="CLOSURES_DATA" styles={CLOSURES_STYLE} />
+      <Filter expression={combinedFilter.expression}>
+        <Cluster features={markersData?.features ?? []} radius={64}>
+          {({ features, lng, lat, key, clusterExpansionZoom }) => (
+            <Marker
+              isSelected={features[0].id === selectedMarker?.id}
+              key={key}
+              features={features}
+              lat={lat}
+              lng={lng}
+              onClick={(feature) => {
+                console.log(features[0]);
+                console.log(selectedMarker);
+                if (clusterExpansionZoom) {
+                  mapRef.current?.changeViewport({
+                    zoom: clusterExpansionZoom,
+                    center: {
+                      lat,
+                      lng,
+                    },
+                  });
+                } else {
+                  setSelectedMarker(feature);
+                  setSelectedFeature(null);
+                  mapRef.current?.changeViewport({
+                    center: {
+                      lat,
+                      lng,
+                    },
+                  });
+                }
+              }}
+            />
+          )}
+        </Cluster>
+      </Filter>
       <Layer
-        filters={combinedFilter.expression}
-        source="REPAIRS_POINTS_DATA"
-        styles={REPAIRS_POINTS_STYLE}
-      />
-      <Layer
-        filters={combinedFilter.expression}
+        filters={combinedFilterWithoutStatus.expression}
         source="REPAIRS_POLYGONS_DATA"
         styles={REPAIRS_POLYGONS_STYLE}
       />
-      <Layer ignoreClick source="DISTRICTS_GEOJSON" styles={DISTRICTS_STYLE} />
+      <Layer
+        filters={districtFilter.expression}
+        ignoreClick
+        source="DISTRICTS_GEOJSON"
+        styles={DISTRICTS_STYLE}
+      />
 
       <Slot name="controls">
         <ThemeController
@@ -318,9 +400,15 @@ export const App = () => {
         onResetFiltersClick={combinedFilter.reset}
         layerFilter={layerfilter}
         layerCategories={layerCategories}
+        statusFilter={statusFilter}
+        typeFilter={typeFilter}
       />
 
-      <Detail feature={selectedFeature} isMobile={isMobile ?? false} />
+      <Detail
+        feature={selectedFeature ?? selectedMarker}
+        isMobile={isMobile ?? false}
+        onClose={closeDetail}
+      />
     </Map>
   );
 };

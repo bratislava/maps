@@ -2,11 +2,12 @@ import { IFilterResult } from "@bratislava/react-mapbox";
 import { Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
 import { Accordion, AccordionItem, Checkbox, Modal, Popover } from "@bratislava/react-maps-ui";
 import cx from "classnames";
-import { useCallback, useState } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import { capitalizeFirstLetter } from "../../../planting-map/src/utils/utils";
 
 export interface ILayerCategory {
   label: string;
+  icon: ReactNode;
   subLayers: string[];
 }
 
@@ -41,7 +42,7 @@ export const Layers = ({ filter, layers, tooltips, isMobile }: ILayerProps) => {
   return (
     <div className="flex flex-col w-full">
       <Accordion>
-        {layers.map(({ label, subLayers }, index) => {
+        {layers.map(({ label, icon, subLayers }, index) => {
           return (
             <AccordionItem
               value={label}
@@ -57,7 +58,8 @@ export const Layers = ({ filter, layers, tooltips, isMobile }: ILayerProps) => {
               )}
               key={index}
               title={
-                <div className="flex gap-2">
+                <div className="flex items-center py-2 gap-2">
+                  <div>{icon}</div>
                   <div>{label}</div>
                   {tooltips && subLayers.length == 1 && (
                     <Popover

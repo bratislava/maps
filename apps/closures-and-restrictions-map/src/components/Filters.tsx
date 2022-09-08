@@ -9,6 +9,7 @@ import {
   Select,
   SelectOption,
   Sidebar,
+  TagFilter,
 } from "@bratislava/react-maps-ui";
 import cx from "classnames";
 import mapboxgl from "mapbox-gl";
@@ -27,6 +28,8 @@ export interface IFiltersProps {
   districtFilter: IFilterResult<string>;
   mapboxgl: typeof mapboxgl;
   layerFilter: IFilterResult<string>;
+  typeFilter: IFilterResult<string>;
+  statusFilter: IFilterResult<"planned" | "active" | "done">;
   layerCategories: ILayerCategory[];
   isGeolocation: boolean;
   mapRef: RefObject<MapHandle>;
@@ -45,6 +48,8 @@ export const Filters = ({
   mapboxgl,
   isMobile,
   mapRef,
+  statusFilter,
+  typeFilter,
 }: IFiltersProps) => {
   const { t } = useTranslation();
 
@@ -133,7 +138,7 @@ export const Filters = ({
         </div>
 
         <div
-          className={cx("w-full flex flex-col", {
+          className={cx("w-full flex flex-col gap-4", {
             "px-6": !isMobile,
           })}
         >
@@ -162,12 +167,54 @@ export const Filters = ({
               </SelectOption>
             ))}
           </Select>
+
+          <Select
+            noBorder={isMobile}
+            className="w-full"
+            buttonClassName="px-3"
+            placeholder={t("filters.type.placeholder")}
+            value={typeFilter.activeKeys}
+            isMultiple
+            onChange={(value) => typeFilter.setActiveOnly(value ?? [])}
+            onReset={() => typeFilter.setActiveAll(false)}
+            renderValue={({ values }) => (
+              <SelectValueRenderer
+                values={values.map((v) => t(`filters.type.types.${v}`))}
+                placeholder={t("filters.type.placeholder")}
+                multiplePlaceholder={`${t("filters.type.multipleTypes")} (${values.length})`}
+              />
+            )}
+          >
+            {typeFilter.keys.map((type) => (
+              <SelectOption key={type} value={type}>
+                {t(`filters.type.types.${type}`)}
+              </SelectOption>
+            ))}
+          </Select>
         </div>
+
+        <TagFilter
+          title={t("filters.status.title")}
+          values={statusFilter.values.map((status) => ({
+            key: status.key,
+            label: t(`filters.status.${status.key}`),
+            isActive: status.isActive,
+          }))}
+          onTagClick={(status) => {
+            if (statusFilter.activeKeys.length == 4) {
+              statusFilter.setActiveOnly(status);
+            } else if (
+              !(statusFilter.activeKeys.length == 1 && statusFilter.activeKeys[0] == status)
+            ) {
+              statusFilter.toggleActive(status);
+            }
+          }}
+        />
       </div>
 
       <Divider className="mx-6" />
 
-      <h2 className="font-semibold px-6 text-md">{t("layerCategories.title")}</h2>
+      <h2 className="font-semibold px-6 text-md">{t("layers.title")}</h2>
 
       <Layers isMobile={isMobile ?? false} filter={layerFilter} layers={layerCategories} />
     </>
