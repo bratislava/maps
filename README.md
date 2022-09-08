@@ -39,7 +39,5 @@ yarn workspace <app-name> build:suppress
 
 1. Duplicate folder of any existing app in `/apps` folder. You should choose app which is similar to your requirements.
 3. Rename app in its `package.json` file.
-4. Add workspace path to root's `package.json` file.
-5. Update the `base` url in `vite.config.ts` file.
 6. Develeop.
 7. It is recomended to create new mapbox styles for each new map and replace urls in `.env` files.
