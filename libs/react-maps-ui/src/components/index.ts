@@ -1,6 +1,7 @@
 // atoms
 export * from "./atoms/Accordion/Accordion";
 export * from "./atoms/Accordion/AccordionItem";
+export * from "./atoms/AnimateHeight/AnimateHeight";
 export * from "./atoms/BottomSheet/BottomSheet";
 export * from "./atoms/Checkbox/Checkbox";
 export * from "./atoms/Divider/Divider";
