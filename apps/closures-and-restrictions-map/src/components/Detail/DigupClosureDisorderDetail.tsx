@@ -66,7 +66,7 @@ export const DigupClosureDisorderDetail = ({ properties }: DigupClosureDisorderD
       />
       <Row label={t("startDate")} text={startDate} />
       <Row label={t("endDate")} text={endDate} />
-      {properties.fullSize && (
+      {!!properties.fullSize && (
         <Row
           label={t("fullSize")}
           text={
@@ -77,8 +77,8 @@ export const DigupClosureDisorderDetail = ({ properties }: DigupClosureDisorderD
           }
         />
       )}
-      {properties.length && <Row label={t("length")} text={`${properties.length} m`} />}
-      {properties.width && <Row label={t("width")} text={`${properties.width} m`} />}
+      {!!properties.length && <Row label={t("length")} text={`${properties.length} m`} />}
+      {!!properties.width && <Row label={t("width")} text={`${properties.width} m`} />}
       <Row label={t("investor")} text={properties.investor} />
       <Row label={t("contractor")} text={properties.contractor} />
 
