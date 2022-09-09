@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactComponent as ClosureIcon } from "../assets/icons/closure.svg";
 import { ReactComponent as DigupIcon } from "../assets/icons/digup.svg";
 import { ReactComponent as DisorderIcon } from "../assets/icons/disorder.svg";
+import { ReactComponent as RepairIcon } from "../assets/icons/repair.svg";
 
 const icons = [
   {
@@ -19,7 +20,7 @@ const icons = [
   },
   {
     name: "repair",
-    component: DisorderIcon,
+    component: RepairIcon,
   },
 ] as const;
 
