@@ -1,23 +1,21 @@
-export { ReactComponent as Eye, default as EyeUrl } from "./svg/eye.svg";
-
-export {
-  ReactComponent as EyeCrossed,
-  default as EyeCrossedUrl,
-} from "./svg/eye-crossed.svg";
-
-export { ReactComponent as Tick, default as TickUrl } from "./svg/tick.svg";
-
-export { X } from "./components/X";
-export { Chevron } from "./components/Chevron";
-export { List } from "./components/List";
-export { Information } from "./components/Information";
 export { ArrowCounterclockwise } from "./components/ArrowCounterclockwise";
-export { Location } from "./components/Location";
+export { Chevron } from "./components/Chevron";
 export { Compass } from "./components/Compass";
 export { Darkmode } from "./components/Darkmode";
-export { Plus } from "./components/Plus";
-export { Minus } from "./components/Minus";
 export { Fullscreen } from "./components/Fullscreen";
-export { Satellite } from "./components/Satellite";
 export { Funnel } from "./components/Funnel";
+export { Information } from "./components/Information";
+export { List } from "./components/List";
+export { Location } from "./components/Location";
 export { MagnifyingGlass } from "./components/MagnifyingGlass";
+export { Minus } from "./components/Minus";
+export { Plus } from "./components/Plus";
+export { Satellite } from "./components/Satellite";
+export { Themes } from "./components/Themes";
+export { X } from "./components/X";
+export {
+  default as EyeCrossedUrl,
+  ReactComponent as EyeCrossed,
+} from "./svg/eye-crossed.svg";
+export { default as EyeUrl, ReactComponent as Eye } from "./svg/eye.svg";
+export { default as TickUrl, ReactComponent as Tick } from "./svg/tick.svg";
