@@ -48,6 +48,7 @@ export default {
         problemHint:
           "Did the digup cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
         reportProblem: "Report problem",
+        reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
     },
     closures: {
@@ -68,6 +69,7 @@ export default {
         problemHint:
           "Did the closure cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
         reportProblem: "Report problem",
+        reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
     },
     disorders: {
@@ -88,6 +90,7 @@ export default {
         problemHint:
           "Did the disorder cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
         reportProblem: "Report problem",
+        reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
     },
     repairs: {
@@ -103,6 +106,7 @@ export default {
         problemHint:
           "Did the digup cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
         reportProblem: "Report problem",
+        reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
     },
   },

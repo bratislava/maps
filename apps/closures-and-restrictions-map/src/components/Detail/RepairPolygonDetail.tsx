@@ -61,7 +61,7 @@ export const RepairPolygonDetail = ({ properties }: RepairPolygonDetailProps) =>
         <div className="flex-1">{t("problemHint")}</div>
       </div>
       <a
-        href="https://bratislava.sk"
+        href={t("reportProblemLink")}
         target="_blank"
         className="underline font-semibold"
         rel="noreferrer"

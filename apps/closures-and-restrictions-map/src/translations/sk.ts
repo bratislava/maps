@@ -48,6 +48,7 @@ export default {
         problemHint:
           "Nastal kvôli rozkopávke nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",
+        reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
     },
     closures: {
@@ -68,6 +69,7 @@ export default {
         problemHint:
           "Nastal kvôli uzávierke nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",
+        reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
     },
     disorders: {
@@ -88,6 +90,7 @@ export default {
         problemHint:
           "Nastal kvôli poruche nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",
+        reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
     },
     repairs: {
@@ -103,6 +106,7 @@ export default {
         problemHint:
           "Nastal kvôli oprave nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",
+        reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
     },
   },
