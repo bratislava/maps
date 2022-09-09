@@ -6,6 +6,7 @@ import {
   useFloating,
   useInteractions,
 } from "@floating-ui/react-dom-interactions";
+import cx from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
 import { FC, ReactNode, useRef, useState } from "react";
 import { PopoverArrow } from "./PopoverArrow";
@@ -18,9 +19,14 @@ export interface IPopoverProps {
     toggle: () => void;
   }>;
   panel: ReactNode;
+  isSmall?: boolean;
 }
 
-export const Popover = ({ button: Button, panel }: IPopoverProps) => {
+export const Popover = ({
+  button: Button,
+  panel,
+  isSmall = false,
+}: IPopoverProps) => {
   const arrowRef = useRef(null);
   const [isOpen, setOpen] = useState(false);
 
@@ -64,7 +70,13 @@ export const Popover = ({ button: Button, panel }: IPopoverProps) => {
           {isOpen && (
             <motion.div
               {...getFloatingProps()}
-              className="bg-background-lightmode z-50 w-fit dark:bg-background-darkmode p-8 rounded-lg shadow-lg"
+              className={cx(
+                "bg-background-lightmode z-50 w-fit dark:bg-background-darkmode  rounded-lg shadow-lg",
+                {
+                  "p-8": !isSmall,
+                  "p-2": isSmall,
+                }
+              )}
               ref={floating}
               initial={{
                 scale: 0.5,
@@ -94,6 +106,7 @@ export const Popover = ({ button: Button, panel }: IPopoverProps) => {
                 placement={placement}
                 x={middlewareData.arrow?.x ?? 0}
                 y={middlewareData.arrow?.y ?? 0}
+                isSmall={isSmall}
               />
               {panel}
             </motion.div>

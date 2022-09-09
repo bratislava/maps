@@ -5,14 +5,16 @@ interface IPopoverArrowProps {
   placement: Placement;
   x: number;
   y: number;
+  isSmall?: boolean;
 }
 
 export const PopoverArrow = forwardRef<HTMLDivElement, IPopoverArrowProps>(
-  ({ placement, x, y }, ref) => {
+  ({ placement, x, y, isSmall = false }, ref) => {
     return (
       <div
         ref={ref}
         className={cx("absolute z-10 w-20", {
+          "scale-x-[0.3]": isSmall,
           "-rotate-90 -translate-x-12": placement === "right",
         })}
         style={{
