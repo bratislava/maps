@@ -8,4 +8,12 @@ export default {
   "ScrollZoomBlocker.CtrlMessage": "Use ctrl + scroll to zoom the map",
   "ScrollZoomBlocker.CmdMessage": "Use ⌘ + scroll to zoom the map",
   "TouchPanBlocker.Message": "Use two fingers to move the map",
+  components: {
+    ThemeController: {
+      enableDarkmode: "Light/Dark Base",
+      disableDarkmode: "Light/Dark Base",
+      enableSatellite: "Aerial",
+      disableSatellite: "Aerial",
+    },
+  },
 };
