@@ -1,7 +1,7 @@
-import React, { FC, ReactNode, useCallback } from "react";
-import { Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
+import { Eye, EyeCrossed } from "@bratislava/react-maps-icons";
 import { Accordion, AccordionItem, Checkbox } from "@bratislava/react-maps-ui";
 import cx from "classnames";
+import { FC, ReactNode, useCallback } from "react";
 
 export interface ILayer<L extends string> {
   value: L[] | L;

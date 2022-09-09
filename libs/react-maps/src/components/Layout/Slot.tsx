@@ -1,18 +1,18 @@
-import React, {
-  ReactNode,
-  useState,
-  useEffect,
+import { mapboxContext, PartialPadding } from "@bratislava/react-mapbox";
+import { usePrevious } from "@bratislava/utils";
+import cx from "classnames";
+import {
   Dispatch,
+  forwardRef,
+  ReactNode,
   SetStateAction,
   useContext,
-  forwardRef,
+  useEffect,
   useMemo,
+  useState,
 } from "react";
-import cx from "classnames";
 import { BottomSheet } from "react-spring-bottom-sheet";
-import { mapboxContext, PartialPadding } from "@bratislava/react-mapbox";
 import { mapContext } from "../Map/Map";
-import { usePrevious } from "@bratislava/utils";
 
 export interface ISlotChildProps {
   isVisible: boolean | undefined;

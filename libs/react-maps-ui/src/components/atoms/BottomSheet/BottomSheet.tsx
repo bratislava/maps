@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef } from "react";
+import { ReactNode, useRef } from "react";
 import {
   BottomSheet as ReactSpringBottomSheet,
   BottomSheetRef as ReactSpringBottomSheetRef,

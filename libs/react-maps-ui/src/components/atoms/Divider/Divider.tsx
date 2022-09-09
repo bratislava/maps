@@ -1,4 +1,3 @@
-import React from "react";
 import cx from "classnames";
 import { ReactComponent as SpecialDivider } from "../../../assets/special-divider.svg";
 

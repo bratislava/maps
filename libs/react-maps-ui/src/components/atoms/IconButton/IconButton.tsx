@@ -1,5 +1,5 @@
-import React, { HTMLProps, ReactNode } from "react";
 import cx from "classnames";
+import { HTMLProps, ReactNode } from "react";
 
 interface IconButtonProps extends HTMLProps<HTMLButtonElement> {
   children: ReactNode;

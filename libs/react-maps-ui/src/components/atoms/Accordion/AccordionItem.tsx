@@ -1,8 +1,8 @@
-import React, { ReactNode } from "react";
-import cx from "classnames";
-import { Item, Header, Trigger, Content } from "@radix-ui/react-accordion";
 import { Chevron } from "@bratislava/react-maps-icons";
-import { styled, keyframes } from "@stitches/react";
+import { Content, Header, Item, Trigger } from "@radix-ui/react-accordion";
+import { keyframes, styled } from "@stitches/react";
+import cx from "classnames";
+import { ReactNode } from "react";
 
 const AccordionChevron = styled(Chevron, {
   "[data-state=open] &": { transform: "rotate(180deg)" },

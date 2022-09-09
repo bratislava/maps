@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
-import cx from "classnames";
 import { Root } from "@radix-ui/react-accordion";
+import cx from "classnames";
+import { ReactNode } from "react";
 
 export interface IAccordionProps {
   children?: ReactNode;

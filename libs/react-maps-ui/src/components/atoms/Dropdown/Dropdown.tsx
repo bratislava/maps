@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
 import { Popover } from "@headlessui/react";
+import { ReactNode } from "react";
 
 export interface IDropdownProps {
   children: ReactNode;

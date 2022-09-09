@@ -1,6 +1,6 @@
-import { Feature } from "geojson";
-import React, { createContext, ReactNode, useCallback, useMemo } from "react";
 import { evaluate, ExpOrValue } from "@bratislava/mapbox-expressions";
+import { Feature } from "geojson";
+import { createContext, ReactNode, useCallback, useMemo } from "react";
 
 export interface IFilterProps {
   expression?: any;

@@ -1,5 +1,5 @@
-import React, { Fragment, ReactNode, useEffect, useState } from "react";
 import cx from "classnames";
+import { Fragment, ReactNode, useEffect, useState } from "react";
 
 interface IconButtonGroupProps {
   children: ReactNode[];

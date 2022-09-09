@@ -12,7 +12,7 @@ import {
 } from "@bratislava/react-mapbox";
 import { LoadingSpinner, Modal } from "@bratislava/react-maps-ui";
 import cx from "classnames";
-import React, {
+import {
   createContext,
   Dispatch,
   forwardRef,

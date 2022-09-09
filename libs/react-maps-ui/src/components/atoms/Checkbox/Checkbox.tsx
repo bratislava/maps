@@ -1,7 +1,7 @@
-import React, { ReactNode } from "react";
-import cx from "classnames";
-import { Root, Indicator } from "@radix-ui/react-checkbox";
 import { Tick } from "@bratislava/react-maps-icons";
+import { Indicator, Root } from "@radix-ui/react-checkbox";
+import cx from "classnames";
+import { ReactNode } from "react";
 
 export interface CheckboxProps {
   id: string;

@@ -1,6 +1,5 @@
-import React from "react";
-import { IIconComponentProps } from "../types";
 import { useIconParams } from "../hooks/useIconParams";
+import { IIconComponentProps } from "../types";
 
 export interface IDarkmodeProps extends IIconComponentProps {
   className?: string;

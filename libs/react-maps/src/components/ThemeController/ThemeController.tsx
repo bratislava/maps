@@ -1,7 +1,7 @@
 import { Darkmode, Satellite, Themes } from "@bratislava/react-maps-icons";
 import { AnimateHeight, Popover } from "@bratislava/react-maps-ui";
 import cx from "classnames";
-import React, { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { mapContext } from "../Map/Map";
 import { MapActionKind } from "../Map/mapReducer";

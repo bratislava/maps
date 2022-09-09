@@ -1,10 +1,10 @@
 import cx from "classnames";
-import React, { forwardRef, MouseEvent, useCallback } from "react";
-import { ZoomButtons } from "./ZoomButtons";
-import { FullscreenButton } from "./FullscreenButton";
+import { forwardRef, MouseEvent, useCallback } from "react";
 import { CompassButton } from "./CompassButton";
+import { FullscreenButton } from "./FullscreenButton";
 import { GeolocationButton } from "./GeolocationButton";
 import { LegendButton } from "./LegendButton";
+import { ZoomButtons } from "./ZoomButtons";
 
 export type SlotType =
   | "legend"

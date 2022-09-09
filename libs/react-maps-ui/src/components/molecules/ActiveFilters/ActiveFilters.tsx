@@ -1,4 +1,3 @@
-import React from "react";
 import { X } from "@bratislava/react-maps-icons";
 import cx from "classnames";
 import AnimateHeight from "react-animate-height";

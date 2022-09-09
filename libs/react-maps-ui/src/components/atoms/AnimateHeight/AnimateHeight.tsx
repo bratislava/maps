@@ -1,6 +1,6 @@
 import cx from "classnames";
 import { motion, useReducedMotion, Variant } from "framer-motion";
-import React, { ReactNode, useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 import { useResizeDetector } from "react-resize-detector";
 
 type AnimateHeightProps = {

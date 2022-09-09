@@ -1,4 +1,3 @@
-import React from "react";
 import { Viewport } from "../../types";
 
 export interface IDevelopmentInfoProps {

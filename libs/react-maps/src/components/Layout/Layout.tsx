@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useEffect, useContext } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { mapContext } from "../Map/Map";
 
 export interface ILayoutProps {

@@ -1,6 +1,6 @@
 import { Compass } from "@bratislava/react-maps-icons";
 import { IconButton } from "@bratislava/react-maps-ui";
-import React, { useCallback, useContext } from "react";
+import { useCallback, useContext } from "react";
 import { mapContext } from "../Map/Map";
 
 export const CompassButton = () => {

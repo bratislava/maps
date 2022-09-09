@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
-import cx from "classnames";
 import { Listbox } from "@headlessui/react";
+import cx from "classnames";
+import { ReactNode } from "react";
 
 export interface ISelectOptionProps {
   value: string;
