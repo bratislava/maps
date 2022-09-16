@@ -82,6 +82,8 @@ export const Filters = ({
             areFiltersDefault={areFiltersDefault}
             activeFilters={activeFilters}
             onResetClick={onResetFiltersClick}
+            title={t("activeFilters")}
+            resetFiltersButtonText={t("resetFilters")}
           />
         </div>
       )}
