@@ -1,5 +1,6 @@
 export default {
   title: "Výsadba drevín",
+  tabTitle: "Mapa výsadby drevín",
   search: "Hľadať",
   close: "Zavrieť",
   loading: "Načítavanie",

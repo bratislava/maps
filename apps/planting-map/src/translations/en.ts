@@ -1,5 +1,6 @@
 export default {
   title: "Greenery planting",
+  tabTitle: "Greenery planting map",
   search: "Search",
   close: "Close",
   loading: "Loading",

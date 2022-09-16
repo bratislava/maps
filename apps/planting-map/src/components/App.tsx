@@ -44,6 +44,10 @@ const URL = "https://geoportal.bratislava.sk/hsite/rest/services/zp/STROMY/MapSe
 export const App = () => {
   const { t } = useTranslation();
 
+  useEffect(() => {
+    document.title = t("tabTitle");
+  }, [t]);
+
   const [layerCategories, setLayerCategories] = useState<ILayerCategory[]>([]);
 
   const [isLoading, setLoading] = useState(true);
