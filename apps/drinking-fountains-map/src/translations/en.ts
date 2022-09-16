@@ -27,8 +27,7 @@ export default {
     title: "Map information",
     description:
       "Map of drinking fountains in Bratislava. The fountains are placed based on the <1>principles and standards of drinking fountains</1> in public spaces from the Metropolitan Institute of Bratislava.",
-    descriptionLink:
-      "https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene",
+    descriptionLink: "https://mib.sk/manual-verejnych-priestorov/principy-a-standardy/",
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },

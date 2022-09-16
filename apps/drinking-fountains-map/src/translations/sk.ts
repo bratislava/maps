@@ -27,8 +27,7 @@ export default {
     title: "Informácie o mape",
     description:
       "Mapa pitných fontán v Bratislave. Fontány sú umiestňované na základe <1>princípov a štandardov pitných fontán</1> vo verejnom priestore od Metropolitného inštitútu Bratislavy.",
-    descriptionLink:
-      "https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene",
+    descriptionLink: "https://mib.sk/manual-verejnych-priestorov/principy-a-standardy/",
     footer: "Zanechajte nám spätnú väzbu na <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },
