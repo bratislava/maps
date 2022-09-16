@@ -619,7 +619,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         </Modal>
 
         <Modal
-          className="max-w-lg !p-0"
+          className="max-w-xl !p-0"
           isOpen={isInformationModalOpen}
           closeButtonInCorner
           onClose={() => setInformationModalOpen(false)}
