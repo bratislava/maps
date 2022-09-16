@@ -57,7 +57,7 @@ export const App = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    document.title = t("title");
+    document.title = t("tabTitle");
   }, [t]);
 
   const [isLoading, setLoading] = useState(true);

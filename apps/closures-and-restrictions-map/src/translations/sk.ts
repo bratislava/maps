@@ -1,5 +1,6 @@
 export default {
-  title: "Mapa rozkopávok a uzáverov",
+  title: "Mapa rozkopávok a uzávierok",
+  tabTitle: "Mapa rozkopávok a uzávierok v Bratislave",
   search: "Hľadať",
   filters: {
     title: "Filter",
