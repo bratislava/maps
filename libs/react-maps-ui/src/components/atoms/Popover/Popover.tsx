@@ -71,7 +71,7 @@ export const Popover = ({
             <motion.div
               {...getFloatingProps()}
               className={cx(
-                "bg-background-lightmode z-50 w-fit dark:bg-background-darkmode border-2 border-white dark:border-gray-darkmode/20 rounded-lg shadow-lg text-foreground-lightmode dark:text-foreground-darkmode",
+                "bg-background-lightmode z-50 w-fit dark:bg-background-darkmode border-2 border-background-lightmode dark:border-gray-darkmode/20 rounded-lg shadow-lg text-foreground-lightmode dark:text-foreground-darkmode",
                 {
                   "p-8": !isSmall,
                   "p-2": isSmall,

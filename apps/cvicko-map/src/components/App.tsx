@@ -18,7 +18,7 @@ import { AnimationChangeEvent, LineString } from "@bratislava/react-mapbox";
 // utils
 import mapboxgl from "mapbox-gl";
 import { getCvickoIdFromQuery, getIsHomepageFromQuery } from "../utils/utils";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { CvickoMarker } from "./CvickoMarker";
 
 import { coordinates as apolloBasicCoordinates } from "../assets/layers/running-tracks/basic/apollo";
@@ -227,6 +227,44 @@ export const App = () => {
         onMapClick={closeDetail}
         disableBearing
         disablePitch
+        scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
+        scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
+        touchPanBlockerMessage={t("tooltips.touchPanBlockerMessage")}
+        errors={{
+          generic: t("errors.generic"),
+          notLocatedInBratislava: t("errors.notLocatedInBratislava"),
+          noGeolocationSupport: t("errors.noGeolocationSupport"),
+        }}
+        mapInformation={{
+          title: t("informationModal.title"),
+          description: t("informationModal.description"),
+          partners: [
+            {
+              name: "bratislava",
+              link: "https://bratislava.sk",
+              image: "logos/bratislava.png",
+            },
+            {
+              name: "inovation",
+              link: "https://inovacie.bratislava.sk/",
+              image: "logos/inovation.png",
+            },
+            {
+              name: "csob",
+              link: "https://www.csob.sk/o-nas/pomahame-a-podporujeme/csob-nadacia",
+              image: "logos/csob.png",
+              height: 72,
+            },
+          ],
+          footer: (
+            <Trans i18nKey="informationModal.footer">
+              before
+              <a href={t("informationModal.footerLink")} className="underline font-semibold">
+                link
+              </a>
+            </Trans>
+          ),
+        }}
       >
         {/* Apollo running track animation button */}
         <RunningTrackButtonMarker
@@ -352,7 +390,11 @@ export const App = () => {
             </IconButton>
           ) : (
             <>
-              <ThemeController className="fixed left-4 bottom-8 sm:transform" />
+              <ThemeController
+                darkLightModeTooltip={t("tooltips.darkLightMode")}
+                satelliteModeTooltip={t("tooltips.satelliteMode")}
+                className="fixed left-4 bottom-8 sm:transform"
+              />
               <ViewportController
                 className={cx("fixed right-4 bottom-8 sm:transform", {
                   "-translate-x-96": avoidViewportControls,

@@ -58,7 +58,7 @@ export const PopoverArrow = forwardRef<HTMLDivElement, IPopoverArrowProps>(
               fill-background-lightmode 
               stroke-background-lightmode 
               dark:fill-background-darkmode 
-              dark:stroke-[#4b4b4b]
+              dark:stroke-gray-darkmode/20
             "
               d="M60,6L30,0L0,6h1.1"
             />

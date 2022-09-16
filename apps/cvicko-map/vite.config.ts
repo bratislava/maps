@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), svgr(), checker({ typescript: true })],
   publicDir: "public",
   envPrefix: "PUBLIC_",
-  base: "/static-pages/cvicko-map/",
+  base: "./",
   build: {
     chunkSizeWarningLimit: 1000,
   },

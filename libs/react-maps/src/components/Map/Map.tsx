@@ -82,7 +82,13 @@ export type IMapProps = {
   mapInformation: {
     title: string;
     description: ReactNode;
-    partners: { name: string; link: string; image: string }[];
+    partners: {
+      name: string;
+      link: string;
+      image: string;
+      height?: number;
+      width?: number;
+    }[];
     footer: ReactNode;
   };
 } & MapboxGesturesOptions;
@@ -533,6 +539,19 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               cooperativeGestures={cooperativeGestures}
               locale={mapboxLocale}
             >
+              {/* information button */}
+              <Slot name="information-button">
+                <IconButton
+                  onClick={() => setInformationModalOpen(true)}
+                  className={cx(
+                    "absolute left-4 top-4 w-8 h-8 sm:top-6 sm:left-auto sm:right-6 rounded-full",
+                    mapInformationButtonClassName
+                  )}
+                >
+                  <InformationAlt size="sm" />
+                </IconButton>
+              </Slot>
+
               <>{children}</>
 
               {/* geolocation marker */}
@@ -558,19 +577,6 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                   </div>
                 </Marker>
               )}
-
-              {/* information button */}
-              <Slot name="information-button">
-                <IconButton
-                  onClick={() => setInformationModalOpen(true)}
-                  className={cx(
-                    "absolute left-4 top-4 w-8 h-8 sm:top-6 sm:left-auto sm:right-6 rounded-full",
-                    mapInformationButtonClassName
-                  )}
-                >
-                  <InformationAlt size="sm" />
-                </IconButton>
-              </Slot>
             </Mapbox>
           </div>
         </mapContext.Provider>
@@ -633,14 +639,18 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                   rel="noreferrer"
                 >
                   <img
-                    className="w-36 h-9 object-contain"
+                    className="object-contain"
+                    style={{
+                      height: partner.height ?? 36,
+                      width: partner.width ?? "auto",
+                    }}
                     src={partner.image}
                     alt={partner.name}
                   />
                 </a>
               ))}
             </div>
-            <div className="bg-gray-lightmode/5 px-6 py-4 flex gap-5 items-center">
+            <div className="bg-gray-lightmode/5 dark:bg-gray-darkmode/10 px-6 py-4 flex gap-5 items-center">
               <Feedback size="xl" />
               <div className="text-[14px]">{mapInformation.footer}</div>
             </div>
