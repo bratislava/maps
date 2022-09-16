@@ -227,12 +227,12 @@ export const App = () => {
           {
             name: "bratislava",
             link: "https://bratislava.sk",
-            image: "/logos/bratislava.png",
+            image: "logos/bratislava.png",
           },
           {
             name: "inovation",
             link: "https://inovacie.bratislava.sk/",
-            image: "/logos/inovation.png",
+            image: "logos/inovation.png",
           },
         ],
         footer: (
