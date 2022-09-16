@@ -97,7 +97,7 @@ export default {
         title: {
           garage: "garage",
           "parking-lot": "Parking lot",
-          "p-plus-r": "P+R",
+          "p-plus-r": "P+R parking lot",
         },
         name: "Name",
         address: "Address",
@@ -112,8 +112,29 @@ export default {
       title: "Garages",
     },
     "p-plus-r": {
-      title: "P+R",
+      title: "P+R parking lots",
       tooltip: "More about P+R parking lots.",
     },
+  },
+  // react-maps-ui
+  activeFilters: "Active filters",
+  resetFilters: "Reset filters",
+  errors: {
+    generic: "Error",
+    notLocatedInBratislava: "You are not located in Bratislava",
+    noGeolocationSupport: "Your device or browser does not support geolocation",
+  },
+  tooltips: {
+    darkLightMode: "Light/Dark Base",
+    satelliteMode: "Aerial",
+    scrollZoomBlockerCtrlMessage: "Use ctrl + scroll to zoom the map",
+    scrollZoomBlockerCmdMessage: "Use ⌘ + scroll to zoom the map",
+    touchPanBlockerMessage: "Use two fingers to move the map",
+  },
+  informationModal: {
+    title: "Map information",
+    description: "Map of parking assistant PAAS.",
+    footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
+    footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },
 };

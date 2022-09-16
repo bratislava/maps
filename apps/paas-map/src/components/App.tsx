@@ -1,6 +1,6 @@
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useResizeDetector } from "react-resize-detector";
 import odpStyles from "../layer-styles/residents/residents";
 import udrStyles from "../layer-styles/visitors/visitors";
@@ -318,6 +318,44 @@ export const App = () => {
       onMapClick={closeDetail}
       selectedFeatures={selectedFeatures}
       onFeaturesClick={onFeaturesClick}
+      scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
+      scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
+      touchPanBlockerMessage={t("tooltips.touchPanBlockerMessage")}
+      mapInformationButtonClassName="!top-20 sm:!top-6"
+      errors={{
+        generic: t("errors.generic"),
+        notLocatedInBratislava: t("errors.notLocatedInBratislava"),
+        noGeolocationSupport: t("errors.noGeolocationSupport"),
+      }}
+      mapInformation={{
+        title: t("informationModal.title"),
+        description: t("informationModal.description"),
+        partners: [
+          {
+            name: "bratislava",
+            link: "https://bratislava.sk",
+            image: "logos/bratislava.png",
+          },
+          {
+            name: "inovation",
+            link: "https://inovacie.bratislava.sk/",
+            image: "logos/inovation.png",
+          },
+          {
+            name: "geoportal",
+            link: "https://geoportal.bratislava.sk/pfa/apps/sites/#/verejny-mapovy-portal",
+            image: "logos/geoportal.png",
+          },
+        ],
+        footer: (
+          <Trans i18nKey="informationModal.footer">
+            before
+            <a href={t("informationModal.footerLink")} className="underline font-semibold">
+              link
+            </a>
+          </Trans>
+        ),
+      }}
     >
       <Filter expression={markerFilter.expression}>
         <Cluster features={markersData?.features ?? []} radius={28}>
@@ -358,6 +396,8 @@ export const App = () => {
 
       <Slot name="controls">
         <ThemeController
+          darkLightModeTooltip={t("tooltips.darkLightMode")}
+          satelliteModeTooltip={t("tooltips.satelliteMode")}
           className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
             "translate-x-96": isSidebarVisible && !isMobile,
           })}
