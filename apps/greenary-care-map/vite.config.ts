@@ -7,5 +7,5 @@ export default defineConfig({
   plugins: [react(), svgr(), checker({ typescript: true })],
   publicDir: "public",
   envPrefix: "PUBLIC_",
-  base: "/static-pages/greenary-care-map/",
+  base: "./",
 });
