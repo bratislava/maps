@@ -51,7 +51,7 @@ export const Modal = ({
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          <div className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center p-6 z-50">
+          <div className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center p-8 z-50">
             <Dialog.Panel
               className={cx(
                 "relative bg-background-lightmode dark:bg-background-darkmode rounded-xl flex flex-col p-8 gap-4",

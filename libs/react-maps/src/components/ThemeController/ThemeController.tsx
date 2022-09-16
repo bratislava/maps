@@ -2,19 +2,21 @@ import { Darkmode, Satellite, Themes } from "@bratislava/react-maps-icons";
 import { AnimateHeight, Popover } from "@bratislava/react-maps-ui";
 import cx from "classnames";
 import { useCallback, useContext, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { mapContext } from "../Map/Map";
 import { MapActionKind } from "../Map/mapReducer";
 
 interface ThemeControllerProps {
   className?: string;
+  satelliteModeTooltip: string;
+  darkLightModeTooltip: string;
 }
 
-export const ThemeController = ({ className }: ThemeControllerProps) => {
+export const ThemeController = ({
+  className,
+  satelliteModeTooltip,
+  darkLightModeTooltip,
+}: ThemeControllerProps) => {
   const { mapState, dispatchMapState } = useContext(mapContext);
-  const { t } = useTranslation("map", {
-    keyPrefix: "components.ThemeController",
-  });
 
   const [isOpen, setOpen] = useState(false);
 
@@ -71,13 +73,7 @@ export const ThemeController = ({ className }: ThemeControllerProps) => {
                 <Satellite size="xl" />
               </button>
             )}
-            panel={
-              <div>
-                {mapState?.isSatellite
-                  ? t("disableSatellite")
-                  : t("enableSatellite")}
-              </div>
-            }
+            panel={<div>{satelliteModeTooltip}</div>}
           />
           <div className="mx-auto h-[2px] w-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20"></div>
           <Popover
@@ -92,13 +88,7 @@ export const ThemeController = ({ className }: ThemeControllerProps) => {
                 <Darkmode size="xl" />
               </button>
             )}
-            panel={
-              <div>
-                {mapState?.isDarkmode
-                  ? t("disableDarkmode")
-                  : t("enableDarkmode")}
-              </div>
-            }
+            panel={<div>{darkLightModeTooltip}</div>}
           />
         </AnimateHeight>
         <button

@@ -43,6 +43,8 @@ export const MobileFilters = ({
           areFiltersDefault={areFiltersDefault}
           activeFilters={activeFilters}
           onResetClick={onResetFiltersClick}
+          title={t("activeFilters")}
+          resetFiltersButtonText={t("resetFilters")}
         />
       </div>
 

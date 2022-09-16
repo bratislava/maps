@@ -1,6 +1,6 @@
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import "../styles.css";
 
 // maps
@@ -199,6 +199,51 @@ export const App = () => {
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
+      scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
+      scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
+      touchPanBlockerMessage={t("tooltips.touchPanBlockerMessage")}
+      errors={{
+        generic: t("errors.generic"),
+        notLocatedInBratislava: t("errors.notLocatedInBratislava"),
+        noGeolocationSupport: t("errors.noGeolocationSupport"),
+      }}
+      mapInformation={{
+        title: t("informationModal.title"),
+        description: (
+          <Trans i18nKey="informationModal.description">
+            before
+            <a
+              className="underline text-secondary font-semibold"
+              href={t("informationModal.descriptionLink")}
+              target="_blank"
+              rel="noreferrer"
+            >
+              link
+            </a>
+            after
+          </Trans>
+        ),
+        partners: [
+          {
+            name: "bratislava",
+            link: "https://bratislava.sk",
+            image: "/logos/bratislava.png",
+          },
+          {
+            name: "inovation",
+            link: "https://inovacie.bratislava.sk/",
+            image: "/logos/inovation.png",
+          },
+        ],
+        footer: (
+          <Trans i18nKey="informationModal.footer">
+            before
+            <a href={t("informationModal.footerLink")} className="underline font-semibold">
+              link
+            </a>
+          </Trans>
+        ),
+      }}
     >
       {/* <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} /> */}
       <Layer
@@ -229,6 +274,8 @@ export const App = () => {
 
       <Slot name="controls">
         <ThemeController
+          darkLightModeTooltip={t("tooltips.darkLightMode")}
+          satelliteModeTooltip={t("tooltips.satelliteMode")}
           className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
             "translate-x-96": isSidebarVisible && !isMobile,
           })}

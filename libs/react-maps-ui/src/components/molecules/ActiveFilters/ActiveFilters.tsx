@@ -1,7 +1,6 @@
 import { X } from "@bratislava/react-maps-icons";
 import cx from "classnames";
 import AnimateHeight from "react-animate-height";
-import { useTranslation } from "react-i18next";
 import { useResizeDetector } from "react-resize-detector";
 
 export interface IActiveFilter {
@@ -13,16 +12,17 @@ export interface IActiveFiltersProps {
   areFiltersDefault?: boolean;
   activeFilters: IActiveFilter[];
   onResetClick: () => void;
+  title: string;
+  resetFiltersButtonText: string;
 }
 
 export const ActiveFilters = ({
   areFiltersDefault = true,
   activeFilters,
   onResetClick,
+  title,
+  resetFiltersButtonText,
 }: IActiveFiltersProps) => {
-  const { t } = useTranslation("ui", {
-    keyPrefix: "components.molecules.ActiveFilters",
-  });
   const { height: activeFiltersContentHeight, ref: activeFiltersContentRef } =
     useResizeDetector();
 
@@ -39,7 +39,7 @@ export const ActiveFilters = ({
     >
       <div ref={activeFiltersContentRef}>
         <div className="p-6 flex flex-col gap-4">
-          <h2 className="font-semibold text-md">{t("activeFilters")}</h2>
+          <h2 className="font-semibold text-md">{title}</h2>
 
           <div className="flex gap-x-8 flex-wrap">
             {activeFilters
@@ -55,7 +55,7 @@ export const ActiveFilters = ({
             onClick={onResetClick}
             className="flex gap-2 items-center hover:underline"
           >
-            <span className="font-semibold">{t("resetFilters")}</span>
+            <span className="font-semibold">{resetFiltersButtonText}</span>
             <X className="text-primary" />
           </button>
         </div>

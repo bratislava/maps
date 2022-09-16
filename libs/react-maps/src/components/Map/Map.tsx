@@ -10,7 +10,7 @@ import {
   Sources,
   Viewport,
 } from "@bratislava/react-mapbox";
-import { LoadingSpinner, Modal } from "@bratislava/react-maps-ui";
+import { IconButton, LoadingSpinner, Modal } from "@bratislava/react-maps-ui";
 import cx from "classnames";
 import {
   createContext,
@@ -32,13 +32,18 @@ import { IMapState, MapAction, MapActionKind, mapReducer } from "./mapReducer";
 import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
 import {} from "../../types";
 
-import { ArrowCounterclockwise } from "@bratislava/react-maps-icons";
+import {
+  ArrowCounterclockwise,
+  Feedback,
+  InformationAlt,
+} from "@bratislava/react-maps-icons";
 import bbox from "@turf/bbox";
 import { Feature } from "geojson";
 import Mousetrap from "mousetrap";
 import { useTranslation } from "react-i18next";
 import DATA_DISTRICTS from "../../data/layers/districts.json";
 import { getFeatureDistrict } from "../../utils/districts";
+import { Slot } from "../Layout/Slot";
 
 export type IMapProps = {
   mapboxgl: typeof mapboxgl;
@@ -65,6 +70,21 @@ export type IMapProps = {
   maxBounds?: [[number, number], [number, number]];
   cooperativeGestures?: boolean;
   interactive?: boolean;
+  scrollZoomBlockerCtrlMessage: string;
+  scrollZoomBlockerCmdMessage: string;
+  touchPanBlockerMessage: string;
+  errors: {
+    generic: string;
+    notLocatedInBratislava: string;
+    noGeolocationSupport: string;
+  };
+  mapInformationButtonClassName?: string;
+  mapInformation: {
+    title: string;
+    description: ReactNode;
+    partners: { name: string; link: string; image: string }[];
+    footer: ReactNode;
+  };
 } & MapboxGesturesOptions;
 
 export type MapHandle = {
@@ -123,6 +143,12 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       maxBounds,
       cooperativeGestures = false,
       interactive,
+      scrollZoomBlockerCtrlMessage,
+      scrollZoomBlockerCmdMessage,
+      touchPanBlockerMessage,
+      errors,
+      mapInformation,
+      mapInformationButtonClassName,
     },
     forwardedRef
   ) => {
@@ -192,7 +218,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                 });
 
                 if (!isInBratislava) {
-                  alert(t("errors.notLocatedInBratislava"));
+                  alert(errors.notLocatedInBratislava);
                   return;
                 }
 
@@ -208,11 +234,11 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                 });
               },
               (error) => {
-                alert(`${t("error")}: ${error.message}`);
+                alert(`${errors.generic}: ${error.message}`);
               }
             );
           } else {
-            alert(t("errors.noGeolocationSupport"));
+            alert(errors.noGeolocationSupport);
           }
         } else {
           dispatchMapState({
@@ -220,7 +246,11 @@ export const Map = forwardRef<MapHandle, IMapProps>(
           });
         }
       },
-      [t]
+      [
+        errors.generic,
+        errors.noGeolocationSupport,
+        errors.notLocatedInBratislava,
+      ]
     );
 
     const [, setControlsMarginTop] = useState(0);
@@ -458,18 +488,20 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       }
     }, [isMobile, containerWidth, containerHeight]);
 
-    const CtrlMessage = useMemo(() => t("ScrollZoomBlocker.CtrlMessage"), [t]);
-    const CmdMessage = useMemo(() => t("ScrollZoomBlocker.CmdMessage"), [t]);
-    const TouchPanMessage = useMemo(() => t("TouchPanBlocker.Message"), [t]);
-
     const mapboxLocale = useMemo(
       () => ({
-        "ScrollZoomBlocker.CtrlMessage": CtrlMessage,
-        "ScrollZoomBlocker.CmdMessage": CmdMessage,
-        "TouchPanBlocker.Message": TouchPanMessage,
+        "ScrollZoomBlocker.CtrlMessage": scrollZoomBlockerCtrlMessage,
+        "ScrollZoomBlocker.CmdMessage": scrollZoomBlockerCmdMessage,
+        "TouchPanBlocker.Message": touchPanBlockerMessage,
       }),
-      [CmdMessage, CtrlMessage, TouchPanMessage]
+      [
+        scrollZoomBlockerCtrlMessage,
+        scrollZoomBlockerCmdMessage,
+        touchPanBlockerMessage,
+      ]
     );
+
+    const [isInformationModalOpen, setInformationModalOpen] = useState(false);
 
     return (
       <div className={cx("h-full w-full relative text-foreground-lightmode")}>
@@ -502,6 +534,8 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               locale={mapboxLocale}
             >
               <>{children}</>
+
+              {/* geolocation marker */}
               {mapState.isGeolocation && mapState.geolocationMarkerLngLat && (
                 <Marker
                   feature={{
@@ -524,6 +558,19 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                   </div>
                 </Marker>
               )}
+
+              {/* information button */}
+              <Slot name="information-button">
+                <IconButton
+                  onClick={() => setInformationModalOpen(true)}
+                  className={cx(
+                    "absolute left-4 top-4 w-8 h-8 sm:top-6 sm:left-auto sm:right-6 rounded-full",
+                    mapInformationButtonClassName
+                  )}
+                >
+                  <InformationAlt size="sm" />
+                </IconButton>
+              </Slot>
             </Mapbox>
           </div>
         </mapContext.Provider>
@@ -561,6 +608,41 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               >
                 mapy.inovacie@bratislava.sk
               </a>
+            </div>
+          </div>
+        </Modal>
+
+        <Modal
+          className="max-w-lg !p-0"
+          isOpen={isInformationModalOpen}
+          closeButtonInCorner
+          onClose={() => setInformationModalOpen(false)}
+        >
+          <div className="flex flex-col gap-6 pt-6">
+            <div className="font-medium text-md px-6">
+              {mapInformation.title}
+            </div>
+            <div className="px-6">{mapInformation.description}</div>
+            <div className="flex flex-wrap px-6 justify-center items-center gap-4 py-2">
+              {mapInformation.partners.map((partner, index) => (
+                <a
+                  key={index}
+                  target="_blank"
+                  href={partner.link}
+                  className="block"
+                  rel="noreferrer"
+                >
+                  <img
+                    className="w-36 h-9 object-contain"
+                    src={partner.image}
+                    alt={partner.name}
+                  />
+                </a>
+              ))}
+            </div>
+            <div className="bg-gray-lightmode/5 px-6 py-4 flex gap-5 items-center">
+              <Feedback size="xl" />
+              <div className="text-[14px]">{mapInformation.footer}</div>
             </div>
           </div>
         </Modal>
