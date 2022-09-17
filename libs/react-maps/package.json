@@ -44,6 +44,7 @@
     "react-i18next": "^11.16.9"
   },
   "dependencies": {
-    "mapbox-gl": "^2.9.2"
+    "mapbox-gl": "^2.9.2",
+    "usehooks-ts": "^2.6.0"
   }
 }

@@ -1,9 +1,10 @@
 import { Darkmode, Satellite, Themes } from "@bratislava/react-maps-icons";
 import { AnimateHeight, Popover } from "@bratislava/react-maps-ui";
 import cx from "classnames";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
 import { mapContext } from "../Map/Map";
 import { MapActionKind } from "../Map/mapReducer";
+import { useOnClickOutside } from "usehooks-ts";
 
 interface ThemeControllerProps {
   className?: string;
@@ -43,6 +44,14 @@ export const ThemeController = ({
     [dispatchMapState]
   );
 
+  const ref = useRef(null);
+
+  const handleClickOutside = () => {
+    setOpen(false);
+  };
+
+  useOnClickOutside(ref, handleClickOutside);
+
   return (
     <div
       className={cx(
@@ -65,9 +74,10 @@ export const ThemeController = ({
               <button
                 onMouseEnter={open}
                 onMouseLeave={close}
-                onMouseDown={() =>
-                  handleSatelliteChange(!mapState?.isSatellite)
-                }
+                onMouseDown={() => {
+                  handleDarkmodeChange(!mapState?.isDarkmode);
+                  close();
+                }}
                 className="w-12 h-12 flex items-center justify-center"
               >
                 <Satellite size="xl" />
@@ -82,7 +92,10 @@ export const ThemeController = ({
               <button
                 onMouseEnter={open}
                 onMouseLeave={close}
-                onMouseDown={() => handleDarkmodeChange(!mapState?.isDarkmode)}
+                onMouseDown={() => {
+                  handleDarkmodeChange(!mapState?.isDarkmode);
+                  close();
+                }}
                 className="w-12 h-12 flex items-center justify-center"
               >
                 <Darkmode size="xl" />
@@ -92,8 +105,8 @@ export const ThemeController = ({
           />
         </AnimateHeight>
         <button
-          onFocus={() => setOpen(true)}
-          onBlur={() => setOpen(false)}
+          ref={ref}
+          onClick={() => setOpen(!isOpen)}
           className="w-12 h-11 flex items-center justify-center"
         >
           <Themes size="xl" />
