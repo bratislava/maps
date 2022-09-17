@@ -75,7 +75,7 @@ export const ThemeController = ({
                 onMouseEnter={open}
                 onMouseLeave={close}
                 onMouseDown={() => {
-                  handleDarkmodeChange(!mapState?.isDarkmode);
+                  handleSatelliteChange(!mapState?.isSatellite);
                   close();
                 }}
                 className="w-12 h-12 flex items-center justify-center"
