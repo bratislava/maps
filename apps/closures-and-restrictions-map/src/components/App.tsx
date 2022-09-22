@@ -16,7 +16,7 @@ import {
   ViewportController,
 } from "@bratislava/react-maps";
 import { useArcgis } from "@bratislava/react-use-arcgis";
-import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
+import { MapboxGeoJSONFeature } from "mapbox-gl";
 
 // components
 
@@ -132,7 +132,6 @@ export const App = () => {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
 
   const mapRef = useRef<MapHandle>(null);
-  mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
   const [isMobile, setMobile] = useState<boolean | null>(null);
   const previousSidebarVisible = usePrevious(isSidebarVisible);
@@ -150,10 +149,10 @@ export const App = () => {
     }
   }, [isMobile, previousMobile]);
 
-  const isDetailOpen = useMemo(
-    () => !!(selectedFeature ?? selectedMarker),
-    [selectedFeature, selectedMarker],
-  );
+  // const isDetailOpen = useMemo(
+  //   () => !!(selectedFeature ?? selectedMarker),
+  //   [selectedFeature, selectedMarker],
+  // );
 
   const closeDetail = useCallback(() => {
     setSelectedFeature(null);
@@ -309,7 +308,7 @@ export const App = () => {
       loadingSpinnerColor="#0F6D95"
       initialViewport={initialViewport}
       ref={mapRef}
-      mapboxgl={mapboxgl}
+      mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={mapStyles}
       sources={sources}
       isOutsideLoading={isLoading}
@@ -423,7 +422,7 @@ export const App = () => {
           className="fixed right-4 bottom-[88px] sm:bottom-8"
           slots={viewportControllerSlots}
         />
-        <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
+        <MobileSearch mapRef={mapRef} isGeolocation={isGeolocation} />
       </Slot>
 
       <Layout isOnlyMobile>
@@ -435,7 +434,6 @@ export const App = () => {
       </Layout>
 
       <Filters
-        mapboxgl={mapboxgl}
         mapRef={mapRef}
         isGeolocation={isGeolocation}
         isMobile={isMobile ?? false}

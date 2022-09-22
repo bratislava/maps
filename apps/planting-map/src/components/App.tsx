@@ -30,7 +30,7 @@ import ESRI_STYLE from "../assets/layers/esri/esri";
 import { Modal, Sidebar } from "@bratislava/react-maps-ui";
 import { usePrevious } from "@bratislava/utils";
 import { FeatureCollection } from "geojson";
-import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
+import { MapboxGeoJSONFeature } from "mapbox-gl";
 import { processData, treeKindNameSkMappingObject } from "../utils/utils";
 import { DesktopFilters } from "./desktop/DesktopFilters";
 import { ILayerCategory } from "./Layers";
@@ -89,10 +89,9 @@ export const App = () => {
       ]);
       setLoading(false);
     }
-  }, [rawData]);
+  }, [rawData, t]);
 
   const mapRef = useRef<MapHandle>(null);
-  mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
@@ -263,7 +262,7 @@ export const App = () => {
     <Map
       loadingSpinnerColor="#237c36"
       ref={mapRef}
-      mapboxgl={mapboxgl}
+      mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={mapStyles}
       initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
@@ -365,7 +364,7 @@ export const App = () => {
           slots={viewportControllerSlots}
           onLegendClick={onLegendClick}
         />
-        <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
+        <MobileSearch mapRef={mapRef} isGeolocation={isGeolocation} />
       </Slot>
 
       <Layout isOnlyMobile>
@@ -429,7 +428,6 @@ export const App = () => {
           }}
         >
           <DesktopFilters
-            mapboxgl={mapboxgl}
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
             areFiltersDefault={combinedFilter.areDefault}

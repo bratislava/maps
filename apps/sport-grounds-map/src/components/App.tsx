@@ -24,7 +24,6 @@ import { Detail } from "./Detail";
 
 // utils
 import { processData } from "../utils/utils";
-import mapboxgl from "mapbox-gl";
 import { Feature, Point, FeatureCollection } from "geojson";
 import { MobileHeader } from "./mobile/MobileHeader";
 import { MobileFilters } from "./mobile/MobileFilters";
@@ -69,7 +68,6 @@ export const App = () => {
   }, []);
 
   const mapRef = useRef<MapHandle>(null);
-  mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
   const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
@@ -259,7 +257,7 @@ export const App = () => {
   return isLoading ? null : (
     <Map
       ref={mapRef}
-      mapboxgl={mapboxgl}
+      mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={{
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
@@ -378,7 +376,7 @@ export const App = () => {
           })}
           slots={viewportControllerSlots}
         />
-        <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
+        <MobileSearch mapRef={mapRef} isGeolocation={isGeolocation} />
       </Slot>
 
       <Layout isOnlyMobile>
@@ -422,7 +420,6 @@ export const App = () => {
           }}
         >
           <DesktopFilters
-            mapboxgl={mapboxgl}
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
             areFiltersDefault={combinedFilter.areDefault}

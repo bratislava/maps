@@ -2,15 +2,13 @@ import { forwardGeocode, GeocodeFeature, MapHandle } from "@bratislava/react-map
 import { SearchBar } from "@bratislava/react-maps-ui";
 import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import mapboxgl from "mapbox-gl";
 
 export interface IMobileSearchProps {
   mapRef: RefObject<MapHandle>;
-  mapboxgl: typeof mapboxgl;
   isGeolocation: boolean;
 }
 
-export const MobileSearch = ({ mapRef, mapboxgl, isGeolocation }: IMobileSearchProps) => {
+export const MobileSearch = ({ mapRef, isGeolocation }: IMobileSearchProps) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchFeatures, setSearchFeatures] = useState<GeocodeFeature[]>([]);
 
@@ -40,12 +38,16 @@ export const MobileSearch = ({ mapRef, mapboxgl, isGeolocation }: IMobileSearchP
         value={searchQuery}
         placeholder={t("search")}
         onFocus={(e) => {
-          forwardGeocode(mapboxgl, e.target.value).then((results) => setSearchFeatures(results));
+          forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
+            (results) => setSearchFeatures(results),
+          );
         }}
         onBlur={() => setSearchFeatures([])}
         onChange={(e) => {
           setSearchQuery(e.target.value);
-          forwardGeocode(mapboxgl, e.target.value).then((results) => setSearchFeatures(results));
+          forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
+            (results) => setSearchFeatures(results),
+          );
         }}
         isGeolocation={isGeolocation}
         onGeolocationClick={mapRef.current?.toggleGeolocation}

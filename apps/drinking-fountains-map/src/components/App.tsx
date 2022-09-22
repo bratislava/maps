@@ -19,7 +19,6 @@ import { Detail } from "./Detail";
 
 // utils
 import { Feature, FeatureCollection, Point } from "geojson";
-import mapboxgl from "mapbox-gl";
 import { processData } from "../utils/utils";
 
 import { Modal, Sidebar } from "@bratislava/react-maps-ui";
@@ -47,7 +46,6 @@ export const App = () => {
   }, []);
 
   const mapRef = useRef<MapHandle>(null);
-  mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
   const isDetailOpen = useMemo(() => !!selectedFeature, [selectedFeature]);
 
@@ -100,7 +98,7 @@ export const App = () => {
   return isLoading ? null : (
     <Map
       ref={mapRef}
-      mapboxgl={mapboxgl}
+      mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={mapStyles}
       initialViewport={initialViewport}
       loadingSpinnerColor="#2BACE2"

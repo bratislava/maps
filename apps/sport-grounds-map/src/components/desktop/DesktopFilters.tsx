@@ -11,7 +11,6 @@ import {
   Layers,
   ILayerGroup,
 } from "@bratislava/react-maps-ui";
-import mapboxgl from "mapbox-gl";
 import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SelectValueRenderer } from "../SelectValueRenderer";
@@ -22,7 +21,6 @@ export interface IDesktopFiltersProps<DF, SPF, TF, LF extends string> {
   areFiltersDefault: boolean;
   onResetFiltersClick: () => void;
   mapRef: RefObject<MapHandle>;
-  mapboxgl: typeof mapboxgl;
   isGeolocation: boolean;
   districtFilter: IFilterResult<DF>;
   layerFilter: IFilterResult<LF>;
@@ -42,7 +40,6 @@ export const DesktopFilters = <
   areFiltersDefault,
   onResetFiltersClick,
   mapRef,
-  mapboxgl,
   layerFilter,
   isGeolocation,
   sportGroundFilter,
@@ -85,12 +82,16 @@ export const DesktopFilters = <
           value={searchQuery}
           placeholder={t("search")}
           onFocus={(e) => {
-            forwardGeocode(mapboxgl, e.target.value).then((results) => setSearchFeatures(results));
+            forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
+              (results) => setSearchFeatures(results),
+            );
           }}
           onBlur={() => setSearchFeatures([])}
           onChange={(e) => {
             setSearchQuery(e.target.value);
-            forwardGeocode(mapboxgl, e.target.value).then((results) => setSearchFeatures(results));
+            forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
+              (results) => setSearchFeatures(results),
+            );
           }}
           isGeolocation={isGeolocation}
           onGeolocationClick={mapRef.current?.toggleGeolocation}

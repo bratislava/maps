@@ -24,7 +24,7 @@ import { Detail } from "./Detail";
 
 // utils
 import { Feature, FeatureCollection, Point } from "geojson";
-import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
+import { MapboxGeoJSONFeature } from "mapbox-gl";
 import { processData } from "../utils/utils";
 import { MobileHeader } from "./mobile/MobileHeader";
 import { MobileSearch } from "./mobile/MobileSearch";
@@ -118,7 +118,6 @@ export const App = () => {
   ]);
 
   const mapRef = useRef<MapHandle>(null);
-  mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
   const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
@@ -306,7 +305,7 @@ export const App = () => {
   return isLoading ? null : (
     <Map
       ref={mapRef}
-      mapboxgl={mapboxgl}
+      mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       loadingSpinnerColor="#71CA55"
       mapStyles={mapStyles}
       initialViewport={initialViewport}
@@ -408,7 +407,7 @@ export const App = () => {
           })}
           slots={viewportControllerSlots}
         />
-        <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
+        <MobileSearch mapRef={mapRef} isGeolocation={isGeolocation} />
       </Slot>
 
       <Layout isOnlyMobile>
@@ -452,7 +451,6 @@ export const App = () => {
           <DesktopSearch
             areFiltersOpen={isSidebarVisible ?? false}
             mapRef={mapRef}
-            mapboxgl={mapboxgl}
             isGeolocation={isGeolocation}
           />
         </Slot>

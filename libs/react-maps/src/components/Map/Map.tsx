@@ -46,7 +46,7 @@ import { getFeatureDistrict } from "../../utils/districts";
 import { Slot } from "../Layout/Slot";
 
 export type IMapProps = {
-  mapboxgl: typeof mapboxgl;
+  mapboxAccessToken: string;
   sources?: Sources;
   isDevelopment?: boolean;
   icons?: {
@@ -130,7 +130,7 @@ export const mapContext = createContext<IMapContext>({
 export const Map = forwardRef<MapHandle, IMapProps>(
   (
     {
-      mapboxgl,
+      mapboxAccessToken,
       sources,
       icons,
       mapStyles,
@@ -524,7 +524,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               isSatellite={mapState.isSatellite}
               layerPrefix={layerPrefix}
               mapStyles={mapStyles}
-              mapboxgl={mapboxgl}
+              mapboxAccessToken={mapboxAccessToken}
               sources={sources}
               icons={icons}
               onFeaturesClick={onFeaturesClick}

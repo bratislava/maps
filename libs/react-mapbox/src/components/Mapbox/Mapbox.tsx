@@ -27,7 +27,7 @@ export type MapboxGesturesOptions = {
 };
 
 export type MapboxProps = {
-  mapboxgl: typeof mapboxgl;
+  mapboxAccessToken: string;
   sources?: Sources;
   isDarkmode?: boolean;
   isSatellite?: boolean;
@@ -101,7 +101,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       selectedFeatures,
       mapStyles: { dark: darkStyle, light: lightStyle },
       onFeaturesClick,
-      mapboxgl,
+      mapboxAccessToken,
       children,
       layerPrefix = "BRATISLAVA",
       onViewportChange,
@@ -505,6 +505,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           } = initialViewport;
 
           const newMap = new mapboxgl.Map({
+            accessToken: mapboxAccessToken,
             container: mapContainer.current ?? "",
             style: "mapbox://styles/bratislava01/cl6nyu0bf000h14pqgl91pari",
             maxZoom: 20,

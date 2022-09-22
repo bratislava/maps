@@ -1,23 +1,16 @@
 import { forwardGeocode, GeocodeFeature, MapHandle } from "@bratislava/react-maps";
 import { SearchBar } from "@bratislava/react-maps-ui";
 import cx from "classnames";
-import mapboxgl from "mapbox-gl";
 import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export interface IDesktopSearchProps {
   mapRef: RefObject<MapHandle>;
-  mapboxgl: typeof mapboxgl;
   isGeolocation: boolean;
   areFiltersOpen: boolean;
 }
 
-export const DesktopSearch = ({
-  mapRef,
-  mapboxgl,
-  isGeolocation,
-  areFiltersOpen,
-}: IDesktopSearchProps) => {
+export const DesktopSearch = ({ mapRef, isGeolocation, areFiltersOpen }: IDesktopSearchProps) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchFeatures, setSearchFeatures] = useState<GeocodeFeature[]>([]);
 
@@ -54,12 +47,16 @@ export const DesktopSearch = ({
         value={searchQuery}
         placeholder={t("search")}
         onFocus={(e) => {
-          forwardGeocode(mapboxgl, e.target.value).then((results) => setSearchFeatures(results));
+          forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
+            (results) => setSearchFeatures(results),
+          );
         }}
         onBlur={() => setSearchFeatures([])}
         onChange={(e) => {
           setSearchQuery(e.target.value);
-          forwardGeocode(mapboxgl, e.target.value).then((results) => setSearchFeatures(results));
+          forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
+            (results) => setSearchFeatures(results),
+          );
         }}
         isGeolocation={isGeolocation}
         onGeolocationClick={mapRef.current?.toggleGeolocation}

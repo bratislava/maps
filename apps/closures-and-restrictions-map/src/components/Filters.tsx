@@ -12,7 +12,6 @@ import {
   TagFilter,
 } from "@bratislava/react-maps-ui";
 import cx from "classnames";
-import mapboxgl from "mapbox-gl";
 import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ILayerCategory, Layers } from "./Layers";
@@ -26,7 +25,6 @@ export interface IFiltersProps {
   activeFilters: IActiveFilter[];
   onResetFiltersClick: () => void;
   districtFilter: IFilterResult<string>;
-  mapboxgl: typeof mapboxgl;
   layerFilter: IFilterResult<string>;
   typeFilter: IFilterResult<string>;
   statusFilter: IFilterResult<"planned" | "active" | "done">;
@@ -45,7 +43,6 @@ export const Filters = ({
   isGeolocation,
   layerCategories,
   layerFilter,
-  mapboxgl,
   isMobile,
   mapRef,
   statusFilter,
@@ -94,15 +91,15 @@ export const Filters = ({
             value={searchQuery}
             placeholder={t("search")}
             onFocus={(e) => {
-              forwardGeocode(mapboxgl, e.target.value).then((results) =>
-                setSearchFeatures(results),
+              forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
+                (results) => setSearchFeatures(results),
               );
             }}
             onBlur={() => setSearchFeatures([])}
             onChange={(e) => {
               setSearchQuery(e.target.value);
-              forwardGeocode(mapboxgl, e.target.value).then((results) =>
-                setSearchFeatures(results),
+              forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
+                (results) => setSearchFeatures(results),
               );
             }}
             isGeolocation={isGeolocation}

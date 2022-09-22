@@ -23,7 +23,7 @@ import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 // utils
 import { usePrevious } from "@bratislava/utils";
 import { FeatureCollection } from "geojson";
-import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
+import { MapboxGeoJSONFeature } from "mapbox-gl";
 import { processData } from "../utils/utils";
 import { DesktopFilters } from "./desktop/DesktopFilters";
 import { MobileFilters } from "./mobile/MobileFilters";
@@ -53,7 +53,6 @@ export const App = () => {
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
 
   const mapRef = useRef<MapHandle>(null);
-  mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
@@ -188,7 +187,7 @@ export const App = () => {
     <Map
       loadingSpinnerColor="#F1B830"
       ref={mapRef}
-      mapboxgl={mapboxgl}
+      mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={mapStyles}
       initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
@@ -284,7 +283,7 @@ export const App = () => {
           className="fixed right-4 bottom-[88px] sm:bottom-8"
           slots={viewportControllerSlots}
         />
-        <MobileSearch mapRef={mapRef} mapboxgl={mapboxgl} isGeolocation={isGeolocation} />
+        <MobileSearch mapRef={mapRef} isGeolocation={isGeolocation} />
       </Slot>
 
       <Layout isOnlyMobile>
@@ -316,7 +315,6 @@ export const App = () => {
           }}
         >
           <DesktopFilters
-            mapboxgl={mapboxgl}
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
             areFiltersDefault={combinedFilter.areDefault}

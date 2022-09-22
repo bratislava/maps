@@ -16,7 +16,6 @@ import {
 import { AnimationChangeEvent, LineString } from "@bratislava/react-mapbox";
 
 // utils
-import mapboxgl from "mapbox-gl";
 import { getCvickoIdFromQuery, getIsHomepageFromQuery } from "../utils/utils";
 import { Trans, useTranslation } from "react-i18next";
 import { CvickoMarker } from "./CvickoMarker";
@@ -61,7 +60,6 @@ export const App = () => {
   const { height: containerHeight, ref: containerRef } = useResizeDetector<HTMLDivElement>();
 
   const mapRef = useRef<MapHandle>(null);
-  mapboxgl.accessToken = import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
   const { t } = useTranslation();
 
@@ -217,7 +215,7 @@ export const App = () => {
         interactive={!isAnimating}
         loadingSpinnerColor="#00D4DF"
         ref={mapRef}
-        mapboxgl={mapboxgl}
+        mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
         mapStyles={mapStyles}
         initialViewport={ininialViewport}
         isDevelopment={import.meta.env.DEV}
