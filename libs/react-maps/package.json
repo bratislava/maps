@@ -12,6 +12,7 @@
     "@turf/boolean-intersects": "^6.5.0",
     "@turf/combine": "^6.5.0",
     "@turf/union": "^6.5.0",
+    "@types/flexsearch": "^0.7.3",
     "@types/geojson": "^7946.0.8",
     "@types/mapbox-gl": "2.7.5",
     "@types/mapbox__mapbox-sdk": "^0.13.4",
@@ -44,7 +45,9 @@
     "react-i18next": "^11.16.9"
   },
   "dependencies": {
+    "flexsearch": "^0.7.21",
     "mapbox-gl": "^2.9.2",
+    "slugify": "^1.6.5",
     "usehooks-ts": "^2.6.0"
   }
 }

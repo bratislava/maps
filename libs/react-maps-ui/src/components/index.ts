@@ -13,6 +13,8 @@ export * from "./atoms/LoadingSpinner/LoadingSpinner";
 export * from "./atoms/Modal/Modal";
 export * from "./atoms/Popover/Popover";
 export * from "./atoms/SearchBar/SearchBar";
+export * from "./atoms/ComboBox/ComboBox";
+export * from "./atoms/AddressSearchBox/AddressSearchBox";
 export * from "./atoms/Select/Select";
 export * from "./atoms/Select/SelectOption";
 export * from "./atoms/Sidebar/Sidebar";

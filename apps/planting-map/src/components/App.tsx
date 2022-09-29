@@ -3,10 +3,10 @@ import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "r
 import { Trans, useTranslation } from "react-i18next";
 import { useResizeDetector } from "react-resize-detector";
 import "../styles.css";
+import { point } from "@turf/turf";
 
 // maps
 import {
-  DISTRICTS_GEOJSON,
   Layout,
   Map,
   MapHandle,
@@ -15,6 +15,8 @@ import {
   ThemeController,
   ViewportController,
 } from "@bratislava/react-maps";
+
+import { DISTRICTS_GEOJSON, ADDRESSES_GEOJSON } from "@bratislava/geojson-data";
 
 import { Layer, Marker, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 import { useArcgis } from "@bratislava/react-use-arcgis";
@@ -27,9 +29,9 @@ import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 import ESRI_STYLE from "../assets/layers/esri/esri";
 
 // utils
-import { Modal, Sidebar } from "@bratislava/react-maps-ui";
+import { Modal, Popover, Sidebar } from "@bratislava/react-maps-ui";
 import { usePrevious } from "@bratislava/utils";
-import { FeatureCollection } from "geojson";
+import { FeatureCollection, Feature, Point } from "geojson";
 import { MapboxGeoJSONFeature } from "mapbox-gl";
 import { processData, treeKindNameSkMappingObject } from "../utils/utils";
 import { DesktopFilters } from "./desktop/DesktopFilters";
@@ -254,9 +256,12 @@ export const App = () => {
     () => ({
       ESRI_DATA: data,
       DISTRICTS_GEOJSON,
+      ADDRESSES_GEOJSON,
     }),
     [data],
   );
+
+  const [searchedAddressFeature, setSearchedAddressFeature] = useState<Feature<Point> | null>(null);
 
   return isLoading ? null : (
     <Map
@@ -324,6 +329,14 @@ export const App = () => {
         ),
       }}
     >
+      {searchedAddressFeature && (
+        <Marker isRelativeToZoom className="relative" feature={searchedAddressFeature}>
+          <div className="bg-primary w-4 h-4 rotate-45 rounded-full rounded-br-none p-1">
+            <div className="bg-background-lightmode dark:bg-background-darkmode w-2 h-2 rounded-full" />
+          </div>
+        </Marker>
+      )}
+
       <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
       <Layer
         ignoreClick
@@ -333,17 +346,7 @@ export const App = () => {
       />
 
       {!!selectedFeatures?.length && selectedFeatures[0].geometry.type === "Point" && (
-        <Marker
-          feature={{
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: selectedFeatures[0].geometry.coordinates,
-            },
-            properties: {},
-          }}
-          isRelativeToZoom
-        >
+        <Marker feature={point(selectedFeatures[0].geometry.coordinates)} isRelativeToZoom>
           <div
             className="w-4 h-4 bg-background-lightmode dark:bg-background-darkmode border-[2px] rounded-full"
             style={{ borderColor: selectedFeatures[0].properties?.["color"] }}
@@ -364,7 +367,12 @@ export const App = () => {
           slots={viewportControllerSlots}
           onLegendClick={onLegendClick}
         />
-        <MobileSearch mapRef={mapRef} isGeolocation={isGeolocation} />
+        <MobileSearch
+          mapRef={mapRef}
+          isGeolocation={isGeolocation}
+          onSearchFeatureClick={setSearchedAddressFeature}
+          onSearchFeatureReset={() => setSearchedAddressFeature(null)}
+        />
       </Slot>
 
       <Layout isOnlyMobile>
@@ -441,6 +449,8 @@ export const App = () => {
             layerCategories={layerCategories}
             kindFilter={kindFilter}
             filters={combinedFilter.expression}
+            onSearchFeatureClick={setSearchedAddressFeature}
+            onSearchFeatureReset={() => setSearchedAddressFeature(null)}
           />
         </Slot>
 

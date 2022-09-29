@@ -41,7 +41,7 @@ import bbox from "@turf/bbox";
 import { Feature } from "geojson";
 import Mousetrap from "mousetrap";
 import { useTranslation } from "react-i18next";
-import DATA_DISTRICTS from "../../data/layers/districts.json";
+import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { getFeatureDistrict } from "../../utils/districts";
 import { Slot } from "../Layout/Slot";
 
@@ -306,7 +306,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
           const districts = Array.isArray(district) ? district : [district];
 
-          const districtFeatures = DATA_DISTRICTS.features.filter(
+          const districtFeatures = DISTRICTS_GEOJSON.features.filter(
             (feature) => districts.indexOf(feature.properties.name) !== -1
           );
 

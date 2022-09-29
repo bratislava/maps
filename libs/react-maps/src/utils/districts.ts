@@ -1,4 +1,4 @@
-import DATA_DISTRICTS from "../data/layers/districts.json";
+import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import booleanIntersects from "@turf/boolean-intersects";
 import { Feature, FeatureCollection } from "geojson";
 
@@ -42,7 +42,7 @@ export const addDistrictPropertyToLayer = (
 };
 
 export const getFeatureDistrict = (feature: Feature): District | null => {
-  const districtFeatures = DATA_DISTRICTS.features;
+  const districtFeatures = DISTRICTS_GEOJSON.features;
 
   for (let i = 0; i < districtFeatures.length; i++) {
     const districtFeature = districtFeatures[i];

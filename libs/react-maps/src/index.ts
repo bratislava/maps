@@ -6,4 +6,3 @@ export * from "./components/Layout/Slot";
 export * from "./components/ThemeController/ThemeController";
 export * from "./components/ViewportController/ViewportController";
 export * from "./utils/districts";
-export { default as DISTRICTS_GEOJSON } from "./data/layers/districts.json";

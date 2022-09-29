@@ -1,36 +1,40 @@
-import { forwardGeocode, GeocodeFeature, MapHandle } from "@bratislava/react-maps";
+import { MapHandle } from "@bratislava/react-maps";
 import { FilterExpression, IFilterResult } from "@bratislava/react-mapbox";
 import { X } from "@bratislava/react-maps-icons";
-import { Divider, Select, SearchBar, SelectOption, Sidebar } from "@bratislava/react-maps-ui";
+import {
+  Divider,
+  Select,
+  SelectOption,
+  Sidebar,
+  AddressSearchBox,
+  AddressPointFeature,
+} from "@bratislava/react-maps-ui";
 import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { treeKindNameSkMappingObject } from "../../utils/utils";
 import { ILayerCategory, Layers } from "../Layers";
 import { SelectValueRenderer } from "../SelectValueRenderer";
+import { Feature, Point } from "geojson";
 
-export interface IDesktopFiltersProps<Y, D, S, T, K> {
+export interface IDesktopFiltersProps {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
   onResetFiltersClick: () => void;
   mapRef: RefObject<MapHandle>;
   isGeolocation: boolean;
-  yearFilter: IFilterResult<Y>;
-  districtFilter: IFilterResult<D>;
-  kindFilter: IFilterResult<K>;
-  seasonFilter: IFilterResult<S>;
-  layerFilter: IFilterResult<T>;
+  yearFilter: IFilterResult<string>;
+  districtFilter: IFilterResult<string>;
+  kindFilter: IFilterResult<string>;
+  seasonFilter: IFilterResult<string>;
+  layerFilter: IFilterResult<string>;
   layerCategories: ILayerCategory[];
   filters: FilterExpression;
+  onSearchFeatureClick: (feature: Feature<Point>) => void;
+  onSearchFeatureReset: () => void;
 }
 
-export const DesktopFilters = <
-  Y extends string,
-  D extends string,
-  S extends string,
-  T extends string,
-  K extends string,
->({
+export const DesktopFilters = ({
   isVisible,
   setVisible,
   areFiltersDefault,
@@ -40,33 +44,28 @@ export const DesktopFilters = <
   yearFilter,
   districtFilter,
   kindFilter,
-  seasonFilter,
-  filters,
   layerFilter,
   layerCategories,
-}: IDesktopFiltersProps<Y, D, S, T, K>) => {
+  onSearchFeatureClick,
+  onSearchFeatureReset,
+}: IDesktopFiltersProps) => {
   const { t } = useTranslation();
 
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchFeatures, setSearchFeatures] = useState<GeocodeFeature[]>([]);
 
-  const onSearchFeatureClick = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (feature: any) => {
-      setSearchQuery(feature.place_name_sk.split(",")[0]);
-      setSearchFeatures([]);
-      if (feature.geometry.type === "Point") {
-        mapRef.current?.changeViewport({
-          center: {
-            lng: feature.geometry.coordinates[0],
-            lat: feature.geometry.coordinates[1],
-          },
-          zoom: 17,
-        });
-      }
+  const handleSearchFeatureClick = useCallback(
+    (feature: AddressPointFeature) => {
+      setSearchQuery(`${feature.properties.name} ${feature.properties.number}`);
+      mapRef.current?.fitFeature(feature);
+      onSearchFeatureClick(feature);
     },
-    [mapRef],
+    [mapRef, onSearchFeatureClick],
   );
+
+  const onResetPress = useCallback(() => {
+    setSearchQuery("");
+    onSearchFeatureReset();
+  }, [onSearchFeatureReset]);
 
   return (
     <Sidebar
@@ -77,42 +76,14 @@ export const DesktopFilters = <
       title={t("title")}
     >
       <div className="mx-6 relative">
-        <SearchBar
-          value={searchQuery}
-          placeholder={t("search")}
-          onFocus={(e) => {
-            forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
-              (results) => setSearchFeatures(results),
-            );
-          }}
-          onBlur={() => setSearchFeatures([])}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
-              (results) => setSearchFeatures(results),
-            );
-          }}
+        <AddressSearchBox
+          searchQuery={searchQuery}
+          onSearchQueryChange={setSearchQuery}
+          onResetPress={onResetPress}
+          onAddressPress={handleSearchFeatureClick}
           isGeolocation={isGeolocation}
           onGeolocationClick={mapRef.current?.toggleGeolocation}
         />
-        {!!searchFeatures.length && (
-          <div className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-background-lightmode dark:bg-background-darkmode rounded-lg py-4">
-            {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              searchFeatures.map((feature: any, i) => {
-                return (
-                  <button
-                    className="text-left w-full hover:bg-gray-lightmode hover:dark:bg-gray-darkmode hover:bg-opacity-10 hover:dark:bg-opacity-20 px-4 py-2"
-                    onMouseDown={() => onSearchFeatureClick(feature)}
-                    key={i}
-                  >
-                    {feature.place_name_sk.split(",")[0]}
-                  </button>
-                );
-              })
-            }
-          </div>
-        )}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -134,7 +105,7 @@ export const DesktopFilters = <
             className="w-full col-span-3"
             value={districtFilter.activeKeys}
             isMultiple
-            onChange={(value) => districtFilter.setActiveOnly((value ?? []) as D[])}
+            onChange={(value) => districtFilter.setActiveOnly(value ?? [])}
             onReset={() => districtFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer
@@ -157,7 +128,7 @@ export const DesktopFilters = <
             className="w-full"
             value={yearFilter.activeKeys}
             isMultiple
-            onChange={(value) => yearFilter.setActiveOnly((value ?? []) as Y[])}
+            onChange={(value) => yearFilter.setActiveOnly(value ?? [])}
             onReset={() => yearFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer
@@ -179,7 +150,7 @@ export const DesktopFilters = <
             className="w-full col-span-2"
             value={kindFilter.activeKeys}
             isMultiple
-            onChange={(value) => kindFilter.setActiveOnly((value ?? []) as K[])}
+            onChange={(value) => kindFilter.setActiveOnly(value ?? [])}
             onReset={() => kindFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer

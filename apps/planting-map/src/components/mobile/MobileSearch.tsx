@@ -1,39 +1,48 @@
-import { forwardGeocode, GeocodeFeature, MapHandle } from "@bratislava/react-maps";
-import { SearchBar } from "@bratislava/react-maps-ui";
+import { MapHandle } from "@bratislava/react-maps";
+import { AddressPointFeature, AddressSearchBox } from "@bratislava/react-maps-ui";
 import { RefObject, useCallback, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Feature, Point } from "geojson";
 export interface IMobileSearchProps {
   mapRef: RefObject<MapHandle>;
   isGeolocation: boolean;
+  onSearchFeatureClick: (feature: Feature<Point>) => void;
+  onSearchFeatureReset: () => void;
 }
 
-export const MobileSearch = ({ mapRef, isGeolocation }: IMobileSearchProps) => {
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchFeatures, setSearchFeatures] = useState<GeocodeFeature[]>([]);
+export const MobileSearch = ({
+  mapRef,
+  isGeolocation,
+  onSearchFeatureClick,
+  onSearchFeatureReset,
+}: IMobileSearchProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const onSearchFeatureClick = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (feature: any) => {
-      setSearchQuery(feature.place_name_sk.split(",")[0]);
-      setSearchFeatures([]);
-      if (feature.geometry.type === "Point") {
-        mapRef.current?.changeViewport({
-          center: {
-            lng: feature.geometry.coordinates[0],
-            lat: feature.geometry.coordinates[1],
-          },
-          zoom: 17,
-        });
-      }
+  const handleSearchFeatureClick = useCallback(
+    (feature: AddressPointFeature) => {
+      setSearchQuery(`${feature.properties.name} ${feature.properties.number}`);
+      mapRef.current?.fitFeature(feature);
+      onSearchFeatureClick(feature);
     },
-    [mapRef],
+    [mapRef, onSearchFeatureClick],
   );
 
-  const { t } = useTranslation();
+  const onResetPress = useCallback(() => {
+    setSearchQuery("");
+    onSearchFeatureReset();
+  }, [onSearchFeatureReset]);
 
   return (
     <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
-      <SearchBar
+      <AddressSearchBox
+        direction="top"
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        onResetPress={onResetPress}
+        onAddressPress={handleSearchFeatureClick}
+        isGeolocation={isGeolocation}
+        onGeolocationClick={mapRef.current?.toggleGeolocation}
+      />
+      {/* <SearchBar
         value={searchQuery}
         placeholder={t("search")}
         onFocus={(e) => {
@@ -65,7 +74,7 @@ export const MobileSearch = ({ mapRef, isGeolocation }: IMobileSearchProps) => {
             );
           })}
         </div>
-      )}
+      )} */}
     </div>
   );
 };
