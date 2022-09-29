@@ -44,12 +44,31 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
         label={t("price")}
         text={properties["Zakladna_cena"] ? `${properties["Zakladna_cena"]?.toFixed(2)} €` : null}
       />
-      <Row
-        text={language === "sk" ? properties["Informacia_RPK_sk"] : properties["Informacia_RPK_en"]}
-      />
-      <Row
-        text={language === "sk" ? properties["Informacia_NPK_sk"] : properties["Informacia_NPK_en"]}
-      />
+
+      {properties["Informacia_NPK_sk"] && language === "sk" && (
+        <div className="font-light">{properties["Informacia_NPK_sk"]}</div>
+      )}
+
+      {properties["Informacia_NPK_en"] && language === "en" && (
+        <div className="font-light">{properties["Informacia_NPK_en"]}</div>
+      )}
+
+      {properties["Informacia_RPK_sk"] && language === "sk" && (
+        <div className="font-light">{properties["Informacia_RPK_sk"]}</div>
+      )}
+
+      {properties["Informacia_RPK_en"] && language === "en" && (
+        <div className="font-light">{properties["Informacia_RPK_en"]}</div>
+      )}
+
+      {properties["Doplnkova_informacia_sk"] && language === "sk" && (
+        <div className="font-light">{properties["Doplnkova_informacia_sk"]}</div>
+      )}
+
+      {properties["Doplnkova_informacia_en"] && language === "en" && (
+        <div className="font-light">{properties["Doplnkova_informacia_en"]}</div>
+      )}
+
       <Row
         label={t("chargingTime")}
         text={

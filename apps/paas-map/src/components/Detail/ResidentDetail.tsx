@@ -29,10 +29,12 @@ export const ResidentDetail = ({ properties }: ResidentDetailProps) => {
       {properties.Status === "planned" && <div className="font-semibold">{t("planned")}</div>}
       <Row label={t("cardValidity")} text={properties["Kod_parkovacej_zony"]} />
 
-      {properties["Informacia_RPK_sk"] && (
-        <div className="font-light text-[14px]">
-          {language === "sk" ? properties["Informacia_RPK_sk"] : properties["Informacia_RPK_en"]}
-        </div>
+      {properties["Informacia_RPK_sk"] && language === "sk" && (
+        <div className="font-light">{properties["Informacia_RPK_sk"]}</div>
+      )}
+
+      {properties["Informacia_RPK_en"] && language === "en" && (
+        <div className="font-light">{properties["Informacia_RPK_en"]}</div>
       )}
 
       <div className="relative">
