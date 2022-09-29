@@ -17,7 +17,8 @@ export const Marker = ({ features, lat, lng, onClick, isSelected }: IMarkerProps
     () =>
       features.length
         ? ({
-            ...features[0],
+            ...(features.find((f) => f.properties?.Parkomat_ID) ?? features[0]),
+            // ...features[0],
             geometry: {
               type: "Point",
               coordinates: [lng, lat],

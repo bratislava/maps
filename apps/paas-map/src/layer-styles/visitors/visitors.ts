@@ -11,7 +11,7 @@ const styles = [
       ],
       "line-dasharray": [
         "match",
-        ["get", "Status"],
+        ["get", "web"],
         "planned",
         ["literal", [2, 2]],
         ["literal", [1, 0]],

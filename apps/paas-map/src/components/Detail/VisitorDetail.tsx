@@ -33,7 +33,6 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
     t,
     i18n: { language },
   } = useTranslation("translation", { keyPrefix: "layers.visitors.detail" });
-
   return (
     <div className="flex flex-col justify-end w-full gap-4">
       <div className="font-semibold pb-1">{t("title")}</div>
