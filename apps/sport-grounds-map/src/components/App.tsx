@@ -254,26 +254,42 @@ export const App = () => {
     return isMobile ? ["compass", "zoom"] : ["geolocation", "compass", ["fullscreen", "zoom"]];
   }, [isMobile]);
 
+  const initialViewport = useMemo(
+    () => ({
+      zoom: 12.229005488986582,
+      center: {
+        lat: 48.148598,
+        lng: 17.107748,
+      },
+    }),
+    [],
+  );
+
+  const mapStyles = useMemo(
+    () => ({
+      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+    }),
+    [],
+  );
+
+  const sources = useMemo(
+    () => ({
+      SPORT_GROUNDS_DATA: data,
+      DISTRICTS_GEOJSON,
+    }),
+    [data],
+  );
+
   return isLoading ? null : (
     <Map
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
-      mapStyles={{
-        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-      }}
-      initialViewport={{
-        center: {
-          lat: 48.148598,
-          lng: 17.107748,
-        },
-      }}
+      mapStyles={mapStyles}
+      initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
-      sources={{
-        SPORT_GROUNDS_DATA: data,
-        DISTRICTS_GEOJSON,
-      }}
+      sources={sources}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
