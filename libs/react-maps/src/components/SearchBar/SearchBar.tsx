@@ -32,13 +32,39 @@ export const SearchBar = ({
   });
 
   const options = useMemo(() => {
+    console.log(results);
     return (
-      results?.map((result) => ({
-        // ugly workaround for ugly addresses from mapbox
-        title: result.text + (result.address ? ` ${result.address}` : ""),
-        value: result.place_name,
-        feature: result,
-      })) ?? []
+      results?.map((result) => {
+        if (result.place_type.includes("poi")) {
+          return {
+            title:
+              result.text +
+              (result.properties.address
+                ? `, ${result.properties.address}`
+                : ""),
+            label: (
+              <div>
+                {result.text}
+                <span className="opacity-75 font-normal">
+                  {result.properties.address
+                    ? `, ${result.properties.address}`
+                    : ""}
+                </span>
+              </div>
+            ),
+            value: result.place_name,
+            feature: result,
+          };
+        }
+
+        return {
+          // ugly workaround for ugly addresses from mapbox
+          title: result.text + (result.address ? ` ${result.address}` : ""),
+          label: result.text + (result.address ? ` ${result.address}` : ""),
+          value: result.place_name,
+          feature: result,
+        };
+      }) ?? []
     );
   }, [results]);
 
@@ -48,8 +74,8 @@ export const SearchBar = ({
         lng: option.feature.geometry.coordinates[0],
         lat: option.feature.geometry.coordinates[1],
       });
-      mapMethods.fitFeature(point(option.feature.geometry.coordinates), {
-        padding: 200,
+      mapMethods.moveToFeatures(point(option.feature.geometry.coordinates), {
+        zoom: 14.75,
       });
     },
     [mapMethods]
@@ -70,17 +96,15 @@ export const SearchBar = ({
       placeholder={placeholder}
       rightSlot={
         <div className="absolute right-[3px] gap-[4px] bottom-0 top-0 flex items-center">
-          {searchQuery && searchQuery.length && (
-            <>
-              <button className="p-2" onClick={handleResetPress}>
-                <X size="sm" />
-              </button>
-              <div className="h-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20 w-[2px]"></div>
-            </>
+          {searchQuery && searchQuery.length ? (
+            <button className="p-3" onClick={handleResetPress}>
+              <X size="sm" />
+            </button>
+          ) : (
+            <div className="p-2">
+              <MagnifyingGlass size="lg" />
+            </div>
           )}
-          <div className="p-2">
-            <MagnifyingGlass size="lg" />
-          </div>
           <div className="md:hidden h-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20 w-[2px]"></div>
           <button
             onClick={mapMethods.toggleGeolocation}

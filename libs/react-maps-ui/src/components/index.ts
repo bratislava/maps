@@ -14,7 +14,6 @@ export * from "./atoms/Modal/Modal";
 export * from "./atoms/Popover/Popover";
 export * from "./atoms/SearchBar/SearchBar";
 export * from "./atoms/ComboBox/ComboBox";
-export * from "./atoms/AddressSearchBoxStaticAddresses/AddressSearchBox";
 export * from "./atoms/Select/Select";
 export * from "./atoms/Select/SelectOption";
 export * from "./atoms/Sidebar/Sidebar";

@@ -108,7 +108,10 @@ export interface IMapMethods {
     features: Feature | Feature[],
     options?: { padding?: number }
   ) => void;
-  moveToFeatures: (features: Feature | Feature[]) => void;
+  moveToFeatures: (
+    features: Feature | Feature[],
+    options?: { zoom?: number }
+  ) => void;
   turnOnGeolocation: () => void;
   turnOffGeolocation: () => void;
   toggleGeolocation: () => void;
@@ -367,7 +370,10 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       });
     };
 
-    const moveToFeatures = (features: Feature | Feature[]) => {
+    const moveToFeatures = (
+      features: Feature | Feature[],
+      options?: { zoom?: number }
+    ) => {
       if (!mapboxRef.current) return;
       const MAP = mapboxRef.current;
 
@@ -384,6 +390,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
           lat,
           lng,
         },
+        zoom: options?.zoom,
       });
     };
 
