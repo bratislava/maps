@@ -4,17 +4,17 @@ import { useCallback, useContext } from "react";
 import { mapContext } from "../Map/Map";
 
 export const ZoomButtons = () => {
-  const { mapState, changeViewport } = useContext(mapContext);
+  const { mapState, methods: mapMethods } = useContext(mapContext);
 
   // ZOOM IN HANDLER
   const handleZoomInClick = useCallback(() => {
-    changeViewport({ zoom: (mapState?.viewport.zoom ?? 0) + 0.5 });
-  }, [changeViewport, mapState?.viewport.zoom]);
+    mapMethods.changeViewport({ zoom: (mapState?.viewport.zoom ?? 0) + 0.5 });
+  }, [mapMethods, mapState?.viewport.zoom]);
 
   // ZOOM OUT HANDLER
   const handleZoomOutClick = useCallback(() => {
-    changeViewport({ zoom: (mapState?.viewport.zoom ?? 0) - 0.5 });
-  }, [changeViewport, mapState?.viewport.zoom]);
+    mapMethods.changeViewport({ zoom: (mapState?.viewport.zoom ?? 0) - 0.5 });
+  }, [mapMethods, mapState?.viewport.zoom]);
 
   return (
     <IconButtonGroup>

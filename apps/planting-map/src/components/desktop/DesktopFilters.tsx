@@ -1,28 +1,17 @@
-import { MapHandle } from "@bratislava/react-maps";
+import { SearchBar } from "@bratislava/react-maps";
 import { FilterExpression, IFilterResult } from "@bratislava/react-mapbox";
 import { X } from "@bratislava/react-maps-icons";
-import {
-  Divider,
-  Select,
-  SelectOption,
-  Sidebar,
-  AddressSearchBox,
-  AddressPointFeature,
-} from "@bratislava/react-maps-ui";
-import { RefObject, useCallback, useState } from "react";
+import { Divider, Select, SelectOption, Sidebar } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { treeKindNameSkMappingObject } from "../../utils/utils";
 import { ILayerCategory, Layers } from "../Layers";
 import { SelectValueRenderer } from "../SelectValueRenderer";
-import { Feature, Point } from "geojson";
 
 export interface IDesktopFiltersProps {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
   onResetFiltersClick: () => void;
-  mapRef: RefObject<MapHandle>;
-  isGeolocation: boolean;
   yearFilter: IFilterResult<string>;
   districtFilter: IFilterResult<string>;
   kindFilter: IFilterResult<string>;
@@ -30,8 +19,6 @@ export interface IDesktopFiltersProps {
   layerFilter: IFilterResult<string>;
   layerCategories: ILayerCategory[];
   filters: FilterExpression;
-  onSearchFeatureClick: (feature: Feature<Point>) => void;
-  onSearchFeatureReset: () => void;
 }
 
 export const DesktopFilters = ({
@@ -39,33 +26,13 @@ export const DesktopFilters = ({
   setVisible,
   areFiltersDefault,
   onResetFiltersClick,
-  mapRef,
-  isGeolocation,
   yearFilter,
   districtFilter,
   kindFilter,
   layerFilter,
   layerCategories,
-  onSearchFeatureClick,
-  onSearchFeatureReset,
 }: IDesktopFiltersProps) => {
-  const { t } = useTranslation();
-
-  const [searchQuery, setSearchQuery] = useState<string>("");
-
-  const handleSearchFeatureClick = useCallback(
-    (feature: AddressPointFeature) => {
-      setSearchQuery(`${feature.properties.name} ${feature.properties.number}`);
-      mapRef.current?.fitFeature(feature);
-      onSearchFeatureClick(feature);
-    },
-    [mapRef, onSearchFeatureClick],
-  );
-
-  const onResetPress = useCallback(() => {
-    setSearchQuery("");
-    onSearchFeatureReset();
-  }, [onSearchFeatureReset]);
+  const { t, i18n } = useTranslation();
 
   return (
     <Sidebar
@@ -74,16 +41,10 @@ export const DesktopFilters = ({
       isVisible={isVisible}
       setVisible={setVisible}
       title={t("title")}
+      closeText={t("close")}
     >
       <div className="mx-6 relative">
-        <AddressSearchBox
-          searchQuery={searchQuery}
-          onSearchQueryChange={setSearchQuery}
-          onResetPress={onResetPress}
-          onAddressPress={handleSearchFeatureClick}
-          isGeolocation={isGeolocation}
-          onGeolocationClick={mapRef.current?.toggleGeolocation}
-        />
+        <SearchBar placeholder={t("search")} language={i18n.language} />
       </div>
 
       <div className="flex flex-col gap-2">

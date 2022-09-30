@@ -10,6 +10,7 @@ import {
   Layout,
   Map,
   MapHandle,
+  SearchBar,
   Slot,
   SlotType,
   ThemeController,
@@ -29,9 +30,9 @@ import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 import ESRI_STYLE from "../assets/layers/esri/esri";
 
 // utils
-import { Modal, Popover, Sidebar } from "@bratislava/react-maps-ui";
+import { Modal, Sidebar } from "@bratislava/react-maps-ui";
 import { usePrevious } from "@bratislava/utils";
-import { FeatureCollection, Feature, Point } from "geojson";
+import { FeatureCollection } from "geojson";
 import { MapboxGeoJSONFeature } from "mapbox-gl";
 import { processData, treeKindNameSkMappingObject } from "../utils/utils";
 import { DesktopFilters } from "./desktop/DesktopFilters";
@@ -39,12 +40,11 @@ import { ILayerCategory } from "./Layers";
 import { Legend } from "./Legend";
 import { MobileFilters } from "./mobile/MobileFilters";
 import { MobileHeader } from "./mobile/MobileHeader";
-import { MobileSearch } from "./mobile/MobileSearch";
 
 const URL = "https://geoportal.bratislava.sk/hsite/rest/services/zp/STROMY/MapServer/0";
 
 export const App = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     document.title = t("tabTitle");
@@ -97,7 +97,6 @@ export const App = () => {
 
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
-  const [isGeolocation, setGeolocation] = useState(false);
 
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
@@ -261,8 +260,6 @@ export const App = () => {
     [data],
   );
 
-  const [searchedAddressFeature, setSearchedAddressFeature] = useState<Feature<Point> | null>(null);
-
   return isLoading ? null : (
     <Map
       loadingSpinnerColor="#237c36"
@@ -276,7 +273,6 @@ export const App = () => {
       onFeaturesClick={(features) => setSelectedFeature(features[0])}
       selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
-      onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
       scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
       scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
@@ -329,14 +325,6 @@ export const App = () => {
         ),
       }}
     >
-      {searchedAddressFeature && (
-        <Marker isRelativeToZoom className="relative" feature={searchedAddressFeature}>
-          <div className="bg-primary w-4 h-4 rotate-45 rounded-full rounded-br-none p-1">
-            <div className="bg-background-lightmode dark:bg-background-darkmode w-2 h-2 rounded-full" />
-          </div>
-        </Marker>
-      )}
-
       <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
       <Layer
         ignoreClick
@@ -367,12 +355,10 @@ export const App = () => {
           slots={viewportControllerSlots}
           onLegendClick={onLegendClick}
         />
-        <MobileSearch
-          mapRef={mapRef}
-          isGeolocation={isGeolocation}
-          onSearchFeatureClick={setSearchedAddressFeature}
-          onSearchFeatureReset={() => setSearchedAddressFeature(null)}
-        />
+
+        <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
+          <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
+        </div>
       </Slot>
 
       <Layout isOnlyMobile>
@@ -420,6 +406,7 @@ export const App = () => {
             isVisible={isLegendVisible}
             setVisible={setLegendVisible}
             position="right"
+            closeText={t("close")}
           >
             <Legend />
           </Sidebar>
@@ -440,17 +427,13 @@ export const App = () => {
             setVisible={setSidebarVisible}
             areFiltersDefault={combinedFilter.areDefault}
             onResetFiltersClick={combinedFilter.reset}
-            mapRef={mapRef}
             yearFilter={yearFilter}
             districtFilter={districtFilter}
             seasonFilter={seasonFilter}
             layerFilter={layerFilter}
-            isGeolocation={isGeolocation}
             layerCategories={layerCategories}
             kindFilter={kindFilter}
             filters={combinedFilter.expression}
-            onSearchFeatureClick={setSearchedAddressFeature}
-            onSearchFeatureReset={() => setSearchedAddressFeature(null)}
           />
         </Slot>
 

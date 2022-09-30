@@ -1,4 +1,5 @@
 import {
+  LngLat,
   Mapbox,
   MapboxGesturesOptions,
   MapboxHandle,
@@ -40,10 +41,10 @@ import {
 import bbox from "@turf/bbox";
 import { Feature } from "geojson";
 import Mousetrap from "mousetrap";
-import { useTranslation } from "react-i18next";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { getFeatureDistrict } from "../../utils/districts";
 import { Slot } from "../Layout/Slot";
+import { point } from "@turf/helpers";
 
 export type IMapProps = {
   mapboxAccessToken: string;
@@ -93,38 +94,59 @@ export type IMapProps = {
   };
 } & MapboxGesturesOptions;
 
-export type MapHandle = {
-  changeViewport: (viewport: PartialViewport, duration?: number) => void;
+export interface IMapMethods {
+  changeViewport: (
+    wantedViewport: PartialViewport,
+    duration?: number
+  ) => void | undefined;
   fitDistrict: (district: string | string[]) => void;
-  fitFeature: (features: Feature | Feature[]) => void;
-  moveToFeatures: (features: Feature | Feature[]) => void;
   fitBounds: (
     bounds: mapboxgl.LngLatBoundsLike,
     options?: mapboxgl.FitBoundsOptions
   ) => void;
+  fitFeature: (
+    features: Feature | Feature[],
+    options?: { padding?: number }
+  ) => void;
+  moveToFeatures: (features: Feature | Feature[]) => void;
   turnOnGeolocation: () => void;
   turnOffGeolocation: () => void;
   toggleGeolocation: () => void;
-};
+  changeMargin: (margin: PartialPadding) => void;
+  addSearchMarker: (lngLat: LngLat) => void;
+  removeSearchMarker: () => void;
+}
+
+export type MapHandle = IMapMethods;
 
 export interface IMapContext {
-  isMobile: boolean | null;
-  changeMargin: (margin: PartialPadding) => void;
+  mapboxAccessToken: string;
   mapState: IMapState | null;
   dispatchMapState: Dispatch<MapAction> | null;
   containerRef: MutableRefObject<HTMLDivElement | null> | null;
-  changeViewport: (viewport: PartialViewport, duration?: number) => void;
-  geolocationChangeHandler: (isGeolocation: boolean) => void;
+  isMobile: boolean | null;
+  methods: IMapMethods;
 }
 
 export const mapContext = createContext<IMapContext>({
-  isMobile: false,
-  changeMargin: () => void 0,
+  mapboxAccessToken: "",
   mapState: null,
   dispatchMapState: null,
   containerRef: null,
-  changeViewport: () => void 0,
-  geolocationChangeHandler: () => void 0,
+  isMobile: false,
+  methods: {
+    changeViewport: () => void 0,
+    fitDistrict: () => void 0,
+    fitBounds: () => void 0,
+    fitFeature: () => void 0,
+    moveToFeatures: () => void 0,
+    turnOnGeolocation: () => void 0,
+    turnOffGeolocation: () => void 0,
+    toggleGeolocation: () => void 0,
+    changeMargin: () => void 0,
+    addSearchMarker: () => void 0,
+    removeSearchMarker: () => void 0,
+  },
 });
 
 export const Map = forwardRef<MapHandle, IMapProps>(
@@ -158,8 +180,6 @@ export const Map = forwardRef<MapHandle, IMapProps>(
     },
     forwardedRef
   ) => {
-    const { t } = useTranslation("map");
-
     const mapboxRef = useRef<MapboxHandle>(null);
 
     const [isDevInfoVisible, setDevInfoVisible] = useState(false);
@@ -194,6 +214,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       viewport: initialViewport,
       isGeolocation: false,
       geolocationMarkerLngLat: null,
+      searchMarkerLngLat: null,
     });
 
     const [isMobile, setMobile] = useState<boolean | null>(null);
@@ -292,94 +313,120 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       }
     }, [isDevelopment, toggleDevInfo]);
 
-    // EXPOSING METHODS FOR PARENT COMPONENT
-    useImperativeHandle(
-      forwardedRef,
+    const changeViewport = (
+      wantedViewport: PartialViewport,
+      duration?: number
+    ) => mapboxRef?.current?.changeViewport(wantedViewport, duration);
+
+    const fitDistrict = (district: string | string[]) => {
+      if (!mapboxRef.current) return;
+      const MAP = mapboxRef.current;
+
+      const districts = Array.isArray(district) ? district : [district];
+
+      const districtFeatures = DISTRICTS_GEOJSON.features.filter(
+        (feature) => districts.indexOf(feature.properties.name) !== -1
+      );
+
+      if (!districtFeatures.length) return;
+
+      const boundingBox = bbox({
+        type: "FeatureCollection",
+        features: districtFeatures,
+      }) as [number, number, number, number];
+
+      MAP.fitBounds(boundingBox, { padding: 128 });
+    };
+
+    const fitBounds = (
+      bounds: mapboxgl.LngLatBoundsLike,
+      options?: mapboxgl.FitBoundsOptions
+    ) => {
+      if (!mapboxRef.current) return;
+      const MAP = mapboxRef.current;
+      MAP.fitBounds(bounds, options);
+    };
+
+    const fitFeature = (
+      features: Feature | Feature[],
+      options?: { padding?: number }
+    ) => {
+      if (!mapboxRef.current) return;
+      const MAP = mapboxRef.current;
+
+      const boundingBox = bbox({
+        type: "FeatureCollection",
+        features: Array.isArray(features) ? features : [features],
+      }) as [number, number, number, number];
+
+      MAP.fitBounds(boundingBox, {
+        padding: options?.padding ?? 128,
+        bearing: 0,
+        pitch: 0,
+        duration: 500,
+      });
+    };
+
+    const moveToFeatures = (features: Feature | Feature[]) => {
+      if (!mapboxRef.current) return;
+      const MAP = mapboxRef.current;
+
+      const [minX, minY, maxX, maxY] = bbox({
+        type: "FeatureCollection",
+        features: Array.isArray(features) ? features : [features],
+      }) as [number, number, number, number];
+
+      const lng = (minX + maxX) / 2;
+      const lat = (minY + maxY) / 2;
+
+      MAP.changeViewport({
+        center: {
+          lat,
+          lng,
+        },
+      });
+    };
+
+    const changeMargin = (margin: PartialPadding) => {
+      if (margin.top !== undefined) setControlsMarginTop(margin.top);
+      if (margin.right !== undefined) setControlsMarginRight(margin.right);
+      if (margin.bottom !== undefined) setControlsMarginBottom(margin.bottom);
+      if (margin.left !== undefined) setControlsMarginLeft(margin.left);
+    };
+
+    const addSearchMarker = (lngLat: LngLat) => {
+      dispatchMapState({
+        type: MapActionKind.AddSearchMarker,
+        searchMarkerLngLat: lngLat,
+      });
+    };
+
+    const removeSearchMarker = () => {
+      dispatchMapState({
+        type: MapActionKind.RemoveSearchMarker,
+      });
+    };
+
+    const mapMethods = useMemo(
       () => ({
-        changeViewport(wantedViewport, duration) {
-          mapboxRef?.current?.changeViewport(wantedViewport, duration);
-        },
-
-        fitDistrict(district) {
-          if (!mapboxRef.current) return;
-          const MAP = mapboxRef.current;
-
-          const districts = Array.isArray(district) ? district : [district];
-
-          const districtFeatures = DISTRICTS_GEOJSON.features.filter(
-            (feature) => districts.indexOf(feature.properties.name) !== -1
-          );
-
-          if (!districtFeatures.length) return;
-
-          const boundingBox = bbox({
-            type: "FeatureCollection",
-            features: districtFeatures,
-          }) as [number, number, number, number];
-
-          MAP.fitBounds(boundingBox, { padding: 128 });
-        },
-
-        fitBounds(
-          bounds: mapboxgl.LngLatBoundsLike,
-          options?: mapboxgl.FitBoundsOptions
-        ) {
-          if (!mapboxRef.current) return;
-          const MAP = mapboxRef.current;
-          MAP.fitBounds(bounds, options);
-        },
-
-        fitFeature(features: Feature | Feature[]) {
-          if (!mapboxRef.current) return;
-          const MAP = mapboxRef.current;
-
-          const boundingBox = bbox({
-            type: "FeatureCollection",
-            features: Array.isArray(features) ? features : [features],
-          }) as [number, number, number, number];
-
-          MAP.fitBounds(boundingBox, {
-            padding: 128,
-            bearing: 0,
-            pitch: 0,
-            duration: 500,
-          });
-        },
-
-        moveToFeatures(features: Feature | Feature[]) {
-          if (!mapboxRef.current) return;
-          const MAP = mapboxRef.current;
-
-          const [minX, minY, maxX, maxY] = bbox({
-            type: "FeatureCollection",
-            features: Array.isArray(features) ? features : [features],
-          }) as [number, number, number, number];
-
-          const lng = (minX + maxX) / 2;
-          const lat = (minY + maxY) / 2;
-
-          MAP.changeViewport({
-            center: {
-              lat,
-              lng,
-            },
-          });
-        },
-
-        turnOnGeolocation() {
-          geolocationChangeHandler(true);
-        },
-
-        turnOffGeolocation() {
-          geolocationChangeHandler(false);
-        },
-
-        toggleGeolocation() {
-          geolocationChangeHandler(!mapState.isGeolocation);
-        },
+        changeViewport,
+        fitDistrict,
+        fitBounds,
+        fitFeature,
+        moveToFeatures,
+        changeMargin,
+        turnOnGeolocation: () => geolocationChangeHandler(true),
+        turnOffGeolocation: () => geolocationChangeHandler(false),
+        toggleGeolocation: () =>
+          geolocationChangeHandler(!mapState.isGeolocation),
+        addSearchMarker,
+        removeSearchMarker,
       }),
       [geolocationChangeHandler, mapState.isGeolocation]
     );
+
+    // EXPOSING METHODS FOR PARENT COMPONENT
+    useImperativeHandle(forwardedRef, () => mapMethods, [mapMethods]);
 
     const onViewportChange = useCallback((viewport: Viewport) => {
       dispatchMapState({
@@ -414,13 +461,6 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
     const onLoad = useCallback(() => {
       setLoading(false);
-    }, []);
-
-    const changeMargin = useCallback((margin: PartialPadding) => {
-      if (margin.top !== undefined) setControlsMarginTop(margin.top);
-      if (margin.right !== undefined) setControlsMarginRight(margin.right);
-      if (margin.bottom !== undefined) setControlsMarginBottom(margin.bottom);
-      if (margin.left !== undefined) setControlsMarginLeft(margin.left);
     }, []);
 
     // CALCULATE MAP PADDING ON DETAIL AND FILTERS TOGGLING
@@ -470,16 +510,14 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
     const mapContextValue: IMapContext = useMemo(
       () => ({
-        isMobile,
-        changeMargin,
+        mapboxAccessToken,
         mapState,
         dispatchMapState,
+        isMobile,
         containerRef,
-        changeViewport: (wantedViewport: PartialViewport, duration?: number) =>
-          mapboxRef?.current?.changeViewport(wantedViewport, duration),
-        geolocationChangeHandler,
+        methods: mapMethods,
       }),
-      [isMobile, changeMargin, mapState, containerRef, geolocationChangeHandler]
+      [mapboxAccessToken, mapState, isMobile, containerRef, mapMethods]
     );
 
     // DISPLAY/HIDE WARNING MODAL TO ROTATE DEVICE TO PORTRAIT MODE
@@ -575,6 +613,20 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                     </div>
                     <div className="absolute w-4 h-4 bg-white dark:bg-black border-4 border-black dark:border-white rounded-full"></div>
                   </div>
+                </Marker>
+              )}
+
+              {/* search marker */}
+              {mapState.searchMarkerLngLat && (
+                <Marker
+                  feature={point([
+                    mapState.searchMarkerLngLat.lng,
+                    mapState.searchMarkerLngLat.lat,
+                  ])}
+                  isRelativeToZoom
+                  className="relative"
+                >
+                  <div className="bg-primary w-4 h-4 rotate-45 rounded-full rounded-br-none p-1"></div>
                 </Marker>
               )}
             </Mapbox>

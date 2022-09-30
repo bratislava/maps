@@ -4,12 +4,12 @@ import { useCallback, useContext } from "react";
 import { mapContext } from "../Map/Map";
 
 export const CompassButton = () => {
-  const { mapState, changeViewport } = useContext(mapContext);
+  const { mapState, methods: mapMethods } = useContext(mapContext);
 
   // RESET BEARING HANDLER
   const handleCompassClick = useCallback(() => {
-    changeViewport({ bearing: 0 });
-  }, [changeViewport]);
+    mapMethods.changeViewport({ bearing: 0 });
+  }, [mapMethods]);
 
   return (
     <IconButton onClick={handleCompassClick}>

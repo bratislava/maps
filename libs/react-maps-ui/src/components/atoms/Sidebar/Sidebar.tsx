@@ -1,7 +1,6 @@
 import { Chevron, X } from "@bratislava/react-maps-icons";
 import cx from "classnames";
 import { ReactNode } from "react";
-import { useTranslation } from "react-i18next";
 
 export interface ISidebarProps {
   isVisible?: boolean;
@@ -10,6 +9,7 @@ export interface ISidebarProps {
   title?: string;
   position: "left" | "right";
   isMobile?: boolean;
+  closeText: string;
 }
 
 export const Sidebar = ({
@@ -19,10 +19,8 @@ export const Sidebar = ({
   title,
   position,
   isMobile = true,
+  closeText,
 }: ISidebarProps) => {
-  const { t } = useTranslation("ui", {
-    keyPrefix: "components.atoms.Sidebar",
-  });
   return (
     <div
       className={cx(
@@ -132,7 +130,7 @@ export const Sidebar = ({
             onClick={() => setVisible(false)}
             className="flex w-full sticky font-medium py-3 top-full gap-2 justify-center items-center bg-gray-lightmode dark:bg-gray-darkmode transition-all bg-opacity-10 dark:bg-opacity-10 hover:bg-opacity-20 hover:dark:bg-opacity-20 focus:bg-opacity-20 focus:dark:bg-opacity-20 active:bg-opacity-30 active:dark:bg-opacity-30 hover:underline"
           >
-            <span>{t("close")}</span>
+            <span>{closeText}</span>
             <X className="text-primary" />
           </button>
         )}

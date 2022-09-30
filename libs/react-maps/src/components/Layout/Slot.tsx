@@ -117,7 +117,7 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
     );
 
     const { changeViewport } = useContext(mapboxContext);
-    const { changeMargin } = useContext(mapContext);
+    const { methods: mapMethods } = useContext(mapContext);
 
     useEffect(() => {
       const padding = {} as PartialPadding;
@@ -150,9 +150,9 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
 
     useEffect(() => {
       if (JSON.stringify(margin) !== JSON.stringify(previousMargin)) {
-        changeMargin(margin);
+        mapMethods.changeMargin(margin);
       }
-    }, [margin, previousMargin, changeMargin]);
+    }, [margin, previousMargin, mapMethods]);
 
     return bottomSheetOptions ? (
       <BottomSheet

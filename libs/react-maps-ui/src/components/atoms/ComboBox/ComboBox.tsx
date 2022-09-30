@@ -4,7 +4,7 @@ import cx from "classnames";
 
 export type IOption = {
   value: string;
-  title: ReactNode;
+  title: string;
 };
 
 export interface ComboBoxProps<T extends IOption> {
@@ -14,6 +14,7 @@ export interface ComboBoxProps<T extends IOption> {
   onOptionPress: (option: T) => void;
   placeholder?: string;
   rightSlot?: ReactNode;
+  direction?: "top" | "bottom";
 }
 
 export const ComboBox = <T extends IOption>({
@@ -23,6 +24,7 @@ export const ComboBox = <T extends IOption>({
   searchQuery,
   placeholder,
   rightSlot,
+  direction = "bottom",
 }: ComboBoxProps<T>) => {
   const [selectedOption, setSelectedOption] = useState<T | null>(null);
 
@@ -45,13 +47,21 @@ export const ComboBox = <T extends IOption>({
             className="w-full bg-background-lightmode dark:bg-background-darkmode placeholder:text-foreground-lightmode placeholder:dark:text-foreground-darkmode border-2 font-medium placeholder:font-medium border-gray-lightmode dark:border-gray-darkmode border-opacity-10 dark:border-opacity-20 h-12 rounded-lg px-3 outline-none focus:border-primary focus:border-opacity-100 focus:dark:border-primary transition-all"
             value={searchQuery}
             onChange={(event) => onSearchQueryChange(event.target.value)}
-            displayValue={(option: T | null) => option?.value ?? ""}
+            displayValue={(option: T | null) => option?.title ?? ""}
             placeholder={placeholder}
           />
           {rightSlot}
         </div>
         {options.length ? (
-          <Combobox.Options className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-background-lightmode border-2 dark:bg-background-darkmode border-background-lightmode dark:border-gray-darkmode/20 rounded-lg py-4">
+          <Combobox.Options
+            className={cx(
+              "w-full absolute z-20 shadow-lg mb-3 bg-background-lightmode border-2 dark:bg-background-darkmode border-background-lightmode dark:border-gray-darkmode/20 rounded-lg py-2",
+              {
+                "top-14": direction === "bottom",
+                "bottom-11": direction === "top",
+              }
+            )}
+          >
             {options.map((option) => (
               <Combobox.Option
                 className="text-left w-full hover:bg-background"

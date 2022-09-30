@@ -1,4 +1,4 @@
-import { LngLat, PartialViewport, Viewport } from "@bratislava/react-mapbox";
+import { LngLat, Viewport } from "@bratislava/react-mapbox";
 
 export enum MapActionKind {
   EnableDarkmode = "EnableDarkmode",
@@ -10,6 +10,8 @@ export enum MapActionKind {
   ChangeViewport = "ChangeViewport",
   EnableGeolocation = "EnableGeolocation",
   DisableGeolocation = "DisableGeolocation",
+  AddSearchMarker = "AddSearchMarker",
+  RemoveSearchMarker = "RemoveSearchMarker",
 }
 
 interface IMapEnableDarkmodeAction {
@@ -53,6 +55,15 @@ interface IMapDisableGeolocationAction {
   type: MapActionKind.DisableGeolocation;
 }
 
+interface IMapAddSearchMarkerAction {
+  type: MapActionKind.AddSearchMarker;
+  searchMarkerLngLat: LngLat;
+}
+
+interface IMapRemoveSearchMarkerAction {
+  type: MapActionKind.RemoveSearchMarker;
+}
+
 export type MapAction =
   | IMapEnableDarkmodeAction
   | IMapDisableDarkmodeAction
@@ -62,7 +73,9 @@ export type MapAction =
   | IMapSetFullscreenAction
   | IMapChangeViewportAction
   | IMapEnableGeolocationAction
-  | IMapDisableGeolocationAction;
+  | IMapDisableGeolocationAction
+  | IMapAddSearchMarkerAction
+  | IMapRemoveSearchMarkerAction;
 
 export interface IMapState {
   isSatellite: boolean;
@@ -71,6 +84,7 @@ export interface IMapState {
   viewport: Viewport;
   isGeolocation: boolean;
   geolocationMarkerLngLat: LngLat | null;
+  searchMarkerLngLat: LngLat | null;
 }
 
 export const mapReducer = (state: IMapState, action: MapAction): IMapState => {
@@ -133,6 +147,18 @@ export const mapReducer = (state: IMapState, action: MapAction): IMapState => {
         ...state,
         isGeolocation: false,
         geolocationMarkerLngLat: null,
+      };
+
+    case MapActionKind.AddSearchMarker:
+      return {
+        ...state,
+        searchMarkerLngLat: action.searchMarkerLngLat,
+      };
+
+    case MapActionKind.RemoveSearchMarker:
+      return {
+        ...state,
+        searchMarkerLngLat: null,
       };
   }
 };

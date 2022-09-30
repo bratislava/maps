@@ -13,27 +13,21 @@ import { treeKindNameSkMappingObject } from "../../utils/utils";
 import { ILayerCategory, Layers } from "../Layers";
 import { SelectValueRenderer } from "../SelectValueRenderer";
 
-export interface IMobileFiltersProps<Y, D, S, T, K> {
+export interface IMobileFiltersProps {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
   activeFilters: IActiveFilter[];
   onResetFiltersClick: () => void;
-  yearFilter: IFilterResult<Y>;
-  districtFilter: IFilterResult<D>;
-  seasonFilter: IFilterResult<S>;
-  layerFilter: IFilterResult<T>;
-  kindFilter: IFilterResult<K>;
+  yearFilter: IFilterResult<string>;
+  districtFilter: IFilterResult<string>;
+  seasonFilter: IFilterResult<string>;
+  layerFilter: IFilterResult<string>;
+  kindFilter: IFilterResult<string>;
   layerCategories: ILayerCategory[];
 }
 
-export const MobileFilters = <
-  Y extends string,
-  D extends string,
-  S extends string,
-  T extends string,
-  K extends string,
->({
+export const MobileFilters = ({
   isVisible,
   setVisible,
   areFiltersDefault,
@@ -42,10 +36,9 @@ export const MobileFilters = <
   yearFilter,
   districtFilter,
   kindFilter,
-  seasonFilter,
   layerFilter,
   layerCategories,
-}: IMobileFiltersProps<Y, D, S, T, K>) => {
+}: IMobileFiltersProps) => {
   const { t } = useTranslation();
 
   return (
@@ -55,6 +48,7 @@ export const MobileFilters = <
       isVisible={isVisible}
       setVisible={setVisible}
       title={t("title")}
+      closeText={t("close")}
     >
       <div>
         <ActiveFilters
@@ -67,10 +61,8 @@ export const MobileFilters = <
       </div>
 
       <div>
-        <div className="flex px-6 items-center">
-          <div className="-ml-2">
-            <Funnel />
-          </div>
+        <div className="flex px-6 gap-2 items-center">
+          <Funnel />
           <h2 className="font-bold text-md py-1">{t("filters.title")}</h2>
         </div>
 
@@ -82,7 +74,7 @@ export const MobileFilters = <
             placeholder={t("filters.district.placeholder")}
             value={districtFilter.activeKeys}
             isMultiple
-            onChange={(value) => districtFilter.setActiveOnly((value ?? []) as D[])}
+            onChange={(value) => districtFilter.setActiveOnly(value ?? [])}
             onReset={() => districtFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer
@@ -108,7 +100,7 @@ export const MobileFilters = <
             placeholder={t("filters.year.placeholder")}
             value={yearFilter.activeKeys}
             isMultiple
-            onChange={(value) => yearFilter.setActiveOnly((value ?? []) as Y[])}
+            onChange={(value) => yearFilter.setActiveOnly(value ?? [])}
             onReset={() => yearFilter.setActiveAll(false)}
           >
             {yearFilter.keys.map((year) => (
@@ -124,7 +116,7 @@ export const MobileFilters = <
             buttonClassName="px-3"
             value={kindFilter.activeKeys}
             isMultiple
-            onChange={(value) => kindFilter.setActiveOnly((value ?? []) as K[])}
+            onChange={(value) => kindFilter.setActiveOnly(value ?? [])}
             onReset={() => kindFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer
