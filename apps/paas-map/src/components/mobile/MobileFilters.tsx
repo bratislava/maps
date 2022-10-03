@@ -53,6 +53,7 @@ export const MobileFilters = <
       position="right"
       isVisible={isVisible}
       setVisible={setVisible}
+      closeText={t("close")}
     >
       <div>
         <ActiveFilters

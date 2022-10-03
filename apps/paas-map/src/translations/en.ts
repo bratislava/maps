@@ -1,6 +1,7 @@
 export default {
   title: "Zone map PAAS",
   search: "Search",
+  close: "Close",
   layersHint: "Click on the highlighted streets for more information.",
   filters: {
     title: "Filter",

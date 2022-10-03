@@ -1,6 +1,7 @@
 export default {
   title: "Mapa zón PAAS",
   search: "Hľadať",
+  close: "Zavrieť",
   layersHint: "Pre viac informácií kliknite na zvýraznené ulice.",
   filters: {
     title: "Filter",

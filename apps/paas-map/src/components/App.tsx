@@ -11,6 +11,7 @@ import {
   Layout,
   Map,
   MapHandle,
+  SearchBar,
   Slot,
   SlotType,
   ThemeController,
@@ -27,7 +28,6 @@ import { Feature, FeatureCollection, Point } from "geojson";
 import { MapboxGeoJSONFeature } from "mapbox-gl";
 import { processData } from "../utils/utils";
 import { MobileHeader } from "./mobile/MobileHeader";
-import { MobileSearch } from "./mobile/MobileSearch";
 
 import { useArcgis } from "@bratislava/react-use-arcgis";
 import { usePrevious } from "@bratislava/utils";
@@ -36,7 +36,7 @@ import { Filters } from "./Filters";
 import { Marker } from "./Marker";
 
 export const App = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     document.title = t("title");
@@ -407,7 +407,9 @@ export const App = () => {
           })}
           slots={viewportControllerSlots}
         />
-        <MobileSearch mapRef={mapRef} isGeolocation={isGeolocation} />
+        <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
+          <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
+        </div>
       </Slot>
 
       <Layout isOnlyMobile>
@@ -448,11 +450,7 @@ export const App = () => {
 
       <Layout isOnlyDesktop>
         <Slot name="desktop-search">
-          <DesktopSearch
-            areFiltersOpen={isSidebarVisible ?? false}
-            mapRef={mapRef}
-            isGeolocation={isGeolocation}
-          />
+          <DesktopSearch areFiltersOpen={isSidebarVisible ?? false} />
         </Slot>
 
         <Slot

@@ -29,6 +29,7 @@ export const Filters = <LF extends string, MF extends string, ZF extends string>
       isVisible={isVisible}
       setVisible={setVisible}
       title={t("title")}
+      closeText={t("close")}
     >
       {/* <div className="flex justify-between px-6 items-center">
         <h2 className="font-semibold text-md py-1">{t("filters.title")}</h2>
