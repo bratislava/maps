@@ -7,10 +7,10 @@ import "../styles.css";
 // maps
 import { Layer, Marker, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 import {
-  DISTRICTS_GEOJSON,
   Layout,
   Map,
   MapHandle,
+  SearchBar,
   Slot,
   SlotType,
   ThemeController,
@@ -35,13 +35,14 @@ import { DesktopFilters } from "./desktop/DesktopFilters";
 import { Legend } from "./Legend";
 import { MobileFilters } from "./mobile/MobileFilters";
 import { MobileHeader } from "./mobile/MobileHeader";
-import { MobileSearch } from "./mobile/MobileSearch";
+
+import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 
 const URL =
   "https://services8.arcgis.com/pRlN1m0su5BYaFAS/ArcGIS/rest/services/orezy_a_vyruby_2022_OTMZ_zobrazenie/FeatureServer/0";
 
 export const App = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [typeCategories, setTypeCategories] = useState<
     {
@@ -412,7 +413,9 @@ export const App = () => {
           slots={viewportControllerSlots}
           onLegendClick={onLegendClick}
         />
-        <MobileSearch mapRef={mapRef} isGeolocation={isGeolocation} />
+        <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
+          <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
+        </div>
       </Slot>
 
       <Layout isOnlyMobile>
@@ -468,6 +471,7 @@ export const App = () => {
             isVisible={isLegendVisible}
             setVisible={setLegendVisible}
             position="right"
+            closeText={t("close")}
           >
             <Legend mapCircleColors={{ ...mapCircleColors, districtBorder: "#E29F45" }} />
           </Sidebar>
@@ -488,12 +492,10 @@ export const App = () => {
             setVisible={setSidebarVisible}
             areFiltersDefault={combinedFilter.areDefault}
             onResetFiltersClick={combinedFilter.reset}
-            mapRef={mapRef}
             yearFilter={yearFilter}
             districtFilter={districtFilter}
             seasonFilter={seasonFilter}
             typeFilter={typeFilter}
-            isGeolocation={isGeolocation}
             typeCategories={typeCategories}
             typeTooltips={tooltips}
           />

@@ -1,30 +1,20 @@
-import { forwardGeocode, GeocodeFeature, MapHandle } from "@bratislava/react-maps";
+import { SearchBar } from "@bratislava/react-maps";
 import { IFilterResult } from "@bratislava/react-mapbox";
 import { X } from "@bratislava/react-maps-icons";
-import {
-  Divider,
-  Select,
-  TagFilter,
-  SearchBar,
-  SelectOption,
-  Sidebar,
-} from "@bratislava/react-maps-ui";
-import { RefObject, useCallback, useState } from "react";
+import { Divider, Select, TagFilter, SelectOption, Sidebar } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { Layers } from "../Layers";
 import { SelectValueRenderer } from "../SelectValueRenderer";
 
-export interface IDesktopFiltersProps<Y, D, S, T> {
+export interface IDesktopFiltersProps {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
   onResetFiltersClick: () => void;
-  mapRef: RefObject<MapHandle>;
-  isGeolocation: boolean;
-  yearFilter: IFilterResult<Y>;
-  districtFilter: IFilterResult<D>;
-  seasonFilter: IFilterResult<S>;
-  typeFilter: IFilterResult<T>;
+  yearFilter: IFilterResult<string>;
+  districtFilter: IFilterResult<string>;
+  seasonFilter: IFilterResult<string>;
+  typeFilter: IFilterResult<string>;
   typeCategories: {
     label: string;
     types: string[];
@@ -34,47 +24,19 @@ export interface IDesktopFiltersProps<Y, D, S, T> {
   };
 }
 
-export const DesktopFilters = <
-  Y extends string,
-  D extends string,
-  S extends string,
-  T extends string,
->({
+export const DesktopFilters = ({
   isVisible,
   setVisible,
   areFiltersDefault,
   onResetFiltersClick,
-  mapRef,
-  isGeolocation,
   yearFilter,
   districtFilter,
   seasonFilter,
   typeFilter,
   typeCategories,
   typeTooltips,
-}: IDesktopFiltersProps<Y, D, S, T>) => {
-  const { t } = useTranslation();
-
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchFeatures, setSearchFeatures] = useState<GeocodeFeature[]>([]);
-
-  const onSearchFeatureClick = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (feature: any) => {
-      setSearchQuery(feature.place_name_sk.split(",")[0]);
-      setSearchFeatures([]);
-      if (feature.geometry.type === "Point") {
-        mapRef.current?.changeViewport({
-          center: {
-            lng: feature.geometry.coordinates[0],
-            lat: feature.geometry.coordinates[1],
-          },
-          zoom: 17,
-        });
-      }
-    },
-    [mapRef],
-  );
+}: IDesktopFiltersProps) => {
+  const { t, i18n } = useTranslation();
 
   return (
     <Sidebar
@@ -83,44 +45,10 @@ export const DesktopFilters = <
       isVisible={isVisible}
       setVisible={setVisible}
       title={t("title")}
+      closeText={t("close")}
     >
       <div className="mx-6 relative">
-        <SearchBar
-          value={searchQuery}
-          placeholder={t("search")}
-          onFocus={(e) => {
-            forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
-              (results) => setSearchFeatures(results),
-            );
-          }}
-          onBlur={() => setSearchFeatures([])}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
-              (results) => setSearchFeatures(results),
-            );
-          }}
-          isGeolocation={isGeolocation}
-          onGeolocationClick={mapRef.current?.toggleGeolocation}
-        />
-        {!!searchFeatures.length && (
-          <div className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-background-lightmode dark:bg-background-darkmode rounded-lg py-4">
-            {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              searchFeatures.map((feature: any, i) => {
-                return (
-                  <button
-                    className="text-left w-full hover:bg-gray-lightmode hover:dark:bg-gray-darkmode hover:bg-opacity-10 hover:dark:bg-opacity-20 px-4 py-2"
-                    onMouseDown={() => onSearchFeatureClick(feature)}
-                    key={i}
-                  >
-                    {feature.place_name_sk.split(",")[0]}
-                  </button>
-                );
-              })
-            }
-          </div>
-        )}
+        <SearchBar language={i18n.language} placeholder={t("search")} direction="bottom" />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -142,7 +70,7 @@ export const DesktopFilters = <
             className="w-full"
             value={yearFilter.activeKeys}
             isMultiple
-            onChange={(value) => yearFilter.setActiveOnly((value ?? []) as Y[])}
+            onChange={(value) => yearFilter.setActiveOnly(value ?? [])}
             onReset={() => yearFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer
@@ -164,7 +92,7 @@ export const DesktopFilters = <
             className="w-full col-span-2"
             value={districtFilter.activeKeys}
             isMultiple
-            onChange={(value) => districtFilter.setActiveOnly((value ?? []) as D[])}
+            onChange={(value) => districtFilter.setActiveOnly(value ?? [])}
             onReset={() => districtFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer

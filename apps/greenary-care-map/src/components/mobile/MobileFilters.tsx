@@ -13,16 +13,16 @@ import { useTranslation } from "react-i18next";
 import { Layers } from "../Layers";
 import { SelectValueRenderer } from "../SelectValueRenderer";
 
-export interface IMobileFiltersProps<Y, D, S, T> {
+export interface IMobileFiltersProps {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
   activeFilters: IActiveFilter[];
   onResetFiltersClick: () => void;
-  yearFilter: IFilterResult<Y>;
-  districtFilter: IFilterResult<D>;
-  seasonFilter: IFilterResult<S>;
-  typeFilter: IFilterResult<T>;
+  yearFilter: IFilterResult<string>;
+  districtFilter: IFilterResult<string>;
+  seasonFilter: IFilterResult<string>;
+  typeFilter: IFilterResult<string>;
   typeCategories: {
     label: string;
     types: string[];
@@ -32,12 +32,7 @@ export interface IMobileFiltersProps<Y, D, S, T> {
   };
 }
 
-export const MobileFilters = <
-  Y extends string,
-  D extends string,
-  S extends string,
-  T extends string,
->({
+export const MobileFilters = ({
   isVisible,
   setVisible,
   areFiltersDefault,
@@ -49,7 +44,7 @@ export const MobileFilters = <
   typeFilter,
   typeCategories,
   typeTooltips,
-}: IMobileFiltersProps<Y, D, S, T>) => {
+}: IMobileFiltersProps) => {
   const { t } = useTranslation();
 
   return (
@@ -59,6 +54,7 @@ export const MobileFilters = <
       isVisible={isVisible}
       setVisible={setVisible}
       title={t("title")}
+      closeText={t("close")}
     >
       <div className="">
         <ActiveFilters
@@ -86,7 +82,7 @@ export const MobileFilters = <
             placeholder={t("filters.district.placeholder")}
             value={districtFilter.activeKeys}
             isMultiple
-            onChange={(value) => districtFilter.setActiveOnly((value ?? []) as D[])}
+            onChange={(value) => districtFilter.setActiveOnly(value ?? [])}
             onReset={() => districtFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer
@@ -112,7 +108,7 @@ export const MobileFilters = <
             placeholder={t("filters.year.placeholder")}
             value={yearFilter.activeKeys}
             isMultiple
-            onChange={(value) => yearFilter.setActiveOnly((value ?? []) as Y[])}
+            onChange={(value) => yearFilter.setActiveOnly(value ?? [])}
             onReset={() => yearFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer
