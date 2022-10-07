@@ -240,6 +240,7 @@ export const App = () => {
             isVisible={isLegendVisible}
             setVisible={setLegendVisible}
             position="right"
+            closeText={t("close")}
           >
             <Legend />
           </Sidebar>
