@@ -16,6 +16,8 @@ export const PopoverArrow = forwardRef<HTMLDivElement, IPopoverArrowProps>(
         className={cx("absolute z-10 w-20", {
           "scale-x-[0.3]": isSmall,
           "-rotate-90 -translate-x-[50px]": placement === "right",
+          "rotate-90 right-0 translate-x-[50px]": placement === "left",
+          "-translate-y-[10px]": placement === "bottom",
         })}
         style={{
           left: `${x}px`,

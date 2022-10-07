@@ -54,6 +54,9 @@ export default {
         chargingTime: "Charging time (h)",
         payment: "Payment",
         paymentUrl: "https://paas.sk/en/payment/",
+        additionalInfo:
+          "The bonus card cannot be used on the busiest sections (sections charged at the rate of 2 euros/h, especially in the city center). <1>More information about the bonus card</1>",
+        additionalInfoUrl: "https://paas.sk/en/i-am-not-a-resident/",
       },
     },
     parkomats: {

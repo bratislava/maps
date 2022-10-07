@@ -54,6 +54,9 @@ export default {
         chargingTime: "Čas spoplatnenia (h)",
         payment: "Platba",
         paymentUrl: "https://paas.sk/platba/",
+        additionalInfo:
+          "Bonusovú kartu nie je možné využiť na najviac vyťažených úsekoch (úseky spoplatnené sadzbou 2 eur/h, najmä v centre mesta). <1>Viac informácií o bonusovej karte</1>",
+        additionalInfoUrl: "https://paas.sk/nie-som-rezident/#bonusova",
       },
     },
     parkomats: {

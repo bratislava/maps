@@ -1,4 +1,6 @@
-export const Row = ({ label, text }: { label?: string | null; text?: string | null }) => {
+import { ReactNode } from "react";
+
+export const Row = ({ label, text }: { label?: ReactNode | null; text?: string | null }) => {
   if (!text || (text === " " && !label)) {
     return null;
   } else {

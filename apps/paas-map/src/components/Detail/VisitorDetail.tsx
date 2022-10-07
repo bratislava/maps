@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
-import { useTranslation } from "react-i18next";
+import { Information } from "@bratislava/react-maps-icons";
+import { Popover } from "@bratislava/react-maps-ui";
+import { Trans, useTranslation } from "react-i18next";
 import { z } from "zod";
 import { ButtonLink } from "../ButtonLink";
 import { Row } from "./Row";
@@ -61,11 +63,63 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
       )}
 
       {properties["Doplnkova_informacia_sk"] && language === "sk" && (
-        <div className="font-light">{properties["Doplnkova_informacia_sk"]}</div>
+        <div className="font-light">
+          {properties["Doplnkova_informacia_sk"]}{" "}
+          <Popover
+            placement="bottom"
+            button={({ toggle }) => (
+              <span className="cursor-pointer transform" onClick={toggle}>
+                <Information className="inline-block text-primary translate-y-1" size="default" />
+              </span>
+            )}
+            panel={
+              <div className="flex flex-col gap-2 w-[248px]">
+                <Trans t={t} i18nKey="additionalInfo">
+                  before
+                  <a
+                    className="underline text-primary"
+                    href={t("additionalInfoLink")}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    link text
+                  </a>
+                </Trans>
+              </div>
+            }
+          />
+        </div>
       )}
 
       {properties["Doplnkova_informacia_en"] && language === "en" && (
-        <div className="font-light">{properties["Doplnkova_informacia_en"]}</div>
+        <div className="font-light">
+          {properties["Doplnkova_informacia_en"]}{" "}
+          <Popover
+            placement="bottom"
+            button={({ toggle }) => (
+              <span className="cursor-pointer transform" onClick={toggle}>
+                <Information className="inline-block text-primary translate-y-1" size="default" />
+              </span>
+            )}
+            panel={
+              <div className="flex flex-col gap-2 w-[248px]">
+                <span>
+                  <Trans t={t} i18nKey="additionalInfo">
+                    before
+                    <a
+                      className="underline text-secondary font-semibold"
+                      href={t("additionalInfoUrl")}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      link text
+                    </a>
+                  </Trans>
+                </span>
+              </div>
+            }
+          />
+        </div>
       )}
 
       <Row

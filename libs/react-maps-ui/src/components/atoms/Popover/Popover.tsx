@@ -2,9 +2,12 @@ import {
   arrow,
   FloatingPortal,
   offset,
+  Placement,
   useDismiss,
   useFloating,
   useInteractions,
+  autoPlacement,
+  shift,
 } from "@floating-ui/react-dom-interactions";
 import cx from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
@@ -20,12 +23,14 @@ export interface IPopoverProps {
   }>;
   panel: ReactNode;
   isSmall?: boolean;
+  placement?: Placement;
 }
 
 export const Popover = ({
   button: Button,
   panel,
   isSmall = false,
+  placement: placementInput = "right",
 }: IPopoverProps) => {
   const arrowRef = useRef(null);
   const [isOpen, setOpen] = useState(false);
@@ -40,11 +45,16 @@ export const Popover = ({
     middlewareData,
     context,
   } = useFloating({
-    placement: "right",
+    placement: placementInput,
     open: isOpen,
     onOpenChange: setOpen,
     strategy: "fixed",
-    middleware: [offset(12), arrow({ element: arrowRef })],
+    middleware: [
+      offset(12),
+      arrow({ element: arrowRef }),
+      shift(),
+      autoPlacement(),
+    ],
   });
 
   const { getReferenceProps, getFloatingProps } = useInteractions([
@@ -56,8 +66,12 @@ export const Popover = ({
   ]);
 
   return (
-    <div className="relative">
-      <div ref={reference} {...getReferenceProps()}>
+    <>
+      <div
+        className="inline-block w-fit"
+        ref={reference}
+        {...getReferenceProps()}
+      >
         <Button
           isOpen={isOpen}
           open={() => setOpen(true)}
@@ -79,16 +93,19 @@ export const Popover = ({
               )}
               ref={floating}
               initial={{
-                scale: 0.5,
+                // scale: 0.8,
                 opacity: 0,
               }}
               animate={{
-                originX: 0,
-                scale: isOpen ? 1 : 0.5,
-                opacity: isOpen ? 1 : 0.5,
+                originX: 0.5,
+                // placement === "right" ? 0 : placement === "left" ? 1 : 0.5,
+                originY: 0.5,
+                // placement === "bottom" ? 0 : placement === "top" ? 1 : 0.5,
+                // scale: isOpen ? 1 : 0.8,
+                opacity: isOpen ? 1 : 0,
               }}
               exit={{
-                scale: 0.5,
+                // scale: 0.8,
                 opacity: 0,
               }}
               transition={{
@@ -101,18 +118,18 @@ export const Popover = ({
                 left: x ?? 0,
               }}
             >
-              <PopoverArrow
+              {/* <PopoverArrow
                 ref={arrowRef}
                 placement={placement}
                 x={middlewareData.arrow?.x ?? 0}
                 y={middlewareData.arrow?.y ?? 0}
                 isSmall={isSmall}
-              />
+              /> */}
               {panel}
             </motion.div>
           )}
         </AnimatePresence>
       </FloatingPortal>
-    </div>
+    </>
   );
 };
