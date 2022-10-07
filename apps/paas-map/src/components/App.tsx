@@ -302,6 +302,11 @@ export const App = () => {
     return selectedFeature ? [selectedFeature] : [];
   }, [selectedFeature]);
 
+  // close detail when layers change
+  useEffect(() => {
+    closeDetail();
+  }, [closeDetail, layerFilter.activeKeys, markerFilter.activeKeys]);
+
   return isLoading ? null : (
     <Map
       ref={mapRef}
