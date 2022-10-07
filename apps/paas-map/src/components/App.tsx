@@ -42,6 +42,11 @@ export const App = () => {
     document.title = t("title");
   }, [t]);
 
+  const { data: rawZonesData } = useArcgis(
+    "https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Hranica_RZ/MapServer/1",
+    { format: "geojson" },
+  );
+
   const { data: rawAssistantsData } = useArcgis(
     "https://geoportal.bratislava.sk/hsite/rest/services/doprava/Asistenti_PAAS/MapServer/51",
     { format: "geojson" },
@@ -91,9 +96,13 @@ export const App = () => {
       rawParkingLotsData &&
       rawBranchesData &&
       rawUdrData &&
-      rawOdpData
+      rawOdpData &&
+      rawZonesData
     ) {
+      console.log("rawZonesData", rawZonesData);
+
       const { markersData, udrData, odpData } = processData({
+        rawZonesData,
         rawAssistantsData,
         rawParkomatsData,
         rawPartnersData,
@@ -115,6 +124,7 @@ export const App = () => {
     rawBranchesData,
     rawUdrData,
     rawOdpData,
+    rawZonesData,
   ]);
 
   const mapRef = useRef<MapHandle>(null);

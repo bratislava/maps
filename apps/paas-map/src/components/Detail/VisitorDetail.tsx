@@ -74,17 +74,19 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
             )}
             panel={
               <div className="flex flex-col gap-2 w-[248px]">
-                <Trans t={t} i18nKey="additionalInfo">
-                  before
-                  <a
-                    className="underline text-primary"
-                    href={t("additionalInfoLink")}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    link text
-                  </a>
-                </Trans>
+                <span>
+                  <Trans t={t} i18nKey="additionalInfo">
+                    before
+                    <a
+                      className="underline text-secondary font-semibold dark:text-primary"
+                      href={t("additionalInfoLink")}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      link text
+                    </a>
+                  </Trans>
+                </span>
               </div>
             }
           />
@@ -98,7 +100,10 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
             placement="bottom"
             button={({ toggle }) => (
               <span className="cursor-pointer transform" onClick={toggle}>
-                <Information className="inline-block text-primary translate-y-1" size="default" />
+                <Information
+                  className="inline-block text-primary translate-y-1 dark:text-primary"
+                  size="default"
+                />
               </span>
             )}
             panel={

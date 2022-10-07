@@ -294,7 +294,7 @@ export const Layers = <LF extends string, MF extends string>({
                 <Trans i18nKey="layerGroups.payment.tooltip">
                   before
                   <a
-                    className="underline text-secondary font-semibold"
+                    className="underline text-secondary font-semibold dark:text-primary"
                     href={t("layerGroups.payment.tooltipLink")}
                     target="_blank"
                     rel="noreferrer"
@@ -380,7 +380,7 @@ export const Layers = <LF extends string, MF extends string>({
               title={t("layers.p-plus-r.title")}
               tooltip={
                 <a
-                  className="underline text-secondary font-semibold"
+                  className="underline text-secondary font-semibold dark:text-primary"
                   href="https://paas.sk/zachytne-parkoviska/"
                   target="_blank"
                   rel="noreferrer"

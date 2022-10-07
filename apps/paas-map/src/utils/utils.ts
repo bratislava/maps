@@ -9,9 +9,11 @@ export interface ProcessDataOptions {
   rawBranchesData: FeatureCollection;
   rawUdrData: FeatureCollection;
   rawOdpData: FeatureCollection;
+  rawZonesData: FeatureCollection;
 }
 
 export const processData = ({
+  rawZonesData,
   rawAssistantsData,
   rawParkomatsData,
   rawPartnersData,
