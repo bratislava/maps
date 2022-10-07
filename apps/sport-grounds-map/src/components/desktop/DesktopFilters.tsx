@@ -1,73 +1,42 @@
-import { forwardGeocode, GeocodeFeature, MapHandle } from "@bratislava/react-maps";
 import { IFilterResult } from "@bratislava/react-mapbox";
+import { SearchBar } from "@bratislava/react-maps";
 import { X } from "@bratislava/react-maps-icons";
 import {
   Divider,
   Select,
   TagFilter,
-  SearchBar,
   SelectOption,
   Sidebar,
   Layers,
   ILayerGroup,
 } from "@bratislava/react-maps-ui";
-import { RefObject, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SelectValueRenderer } from "../SelectValueRenderer";
 
-export interface IDesktopFiltersProps<DF, SPF, TF, LF extends string> {
+export interface IDesktopFiltersProps {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
   onResetFiltersClick: () => void;
-  mapRef: RefObject<MapHandle>;
-  isGeolocation: boolean;
-  districtFilter: IFilterResult<DF>;
-  layerFilter: IFilterResult<LF>;
-  sportGroundFilter: IFilterResult<SPF>;
-  tagFilter: IFilterResult<TF>;
-  layerGroups: ILayerGroup<LF>[];
+  districtFilter: IFilterResult<string>;
+  layerFilter: IFilterResult<any>;
+  sportGroundFilter: IFilterResult<any>;
+  tagFilter: IFilterResult<string>;
+  layerGroups: ILayerGroup<string>[];
 }
 
-export const DesktopFilters = <
-  DF extends string,
-  SPF extends string,
-  TF extends string,
-  LF extends string,
->({
+export const DesktopFilters = ({
   isVisible,
   setVisible,
   areFiltersDefault,
   onResetFiltersClick,
-  mapRef,
   layerFilter,
-  isGeolocation,
   sportGroundFilter,
   districtFilter,
   tagFilter,
   layerGroups,
-}: IDesktopFiltersProps<DF, SPF, TF, LF>) => {
-  const { t } = useTranslation();
-
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchFeatures, setSearchFeatures] = useState<GeocodeFeature[]>([]);
-
-  const onSearchFeatureClick = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (feature: any) => {
-      setSearchQuery(feature.place_name_sk.split(",")[0]);
-      setSearchFeatures([]);
-      if (feature.geometry.type === "Point") {
-        mapRef.current?.changeViewport({
-          center: {
-            lng: feature.geometry.coordinates[0],
-            lat: feature.geometry.coordinates[1],
-          },
-        });
-      }
-    },
-    [mapRef],
-  );
+}: IDesktopFiltersProps) => {
+  const { t, i18n } = useTranslation();
 
   return (
     <Sidebar
@@ -76,41 +45,10 @@ export const DesktopFilters = <
       isVisible={isVisible}
       setVisible={setVisible}
       title={t("title")}
+      closeText={t("close")}
     >
       <div className="mx-6 relative">
-        <SearchBar
-          value={searchQuery}
-          placeholder={t("search")}
-          onFocus={(e) => {
-            forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
-              (results) => setSearchFeatures(results),
-            );
-          }}
-          onBlur={() => setSearchFeatures([])}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            forwardGeocode(import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN, e.target.value).then(
-              (results) => setSearchFeatures(results),
-            );
-          }}
-          isGeolocation={isGeolocation}
-          onGeolocationClick={mapRef.current?.toggleGeolocation}
-        />
-        {!!searchFeatures.length && (
-          <div className="w-full absolute z-20 shadow-lg bottom-11 sm:bottom-auto sm:top-full mb-3 bg-white rounded-lg py-4">
-            {searchFeatures.map((feature: any, i) => {
-              return (
-                <button
-                  className="text-left w-full hover:bg-background px-4 py-2"
-                  onMouseDown={() => onSearchFeatureClick(feature)}
-                  key={i}
-                >
-                  {feature.place_name_sk.split(",")[0]}
-                </button>
-              );
-            })}
-          </div>
-        )}
+        <SearchBar language={i18n.language} placeholder={t("search")} direction="bottom" />
       </div>
 
       <div className="flex justify-between px-6 items-center">
@@ -128,7 +66,7 @@ export const DesktopFilters = <
           className="w-full"
           value={districtFilter.activeKeys}
           isMultiple
-          onChange={(value) => districtFilter.setActiveOnly((value ?? []) as DF[])}
+          onChange={(value) => districtFilter.setActiveOnly(value ?? [])}
           onReset={() => districtFilter.setActiveAll(false)}
           renderValue={({ values }) => (
             <SelectValueRenderer
@@ -149,7 +87,7 @@ export const DesktopFilters = <
           className="w-full"
           value={sportGroundFilter.activeKeys}
           isMultiple
-          onChange={(value) => sportGroundFilter.setActiveOnly((value ?? []) as SPF[])}
+          onChange={(value) => sportGroundFilter.setActiveOnly(value ?? [])}
           onReset={() => sportGroundFilter.setActiveAll(false)}
           renderValue={({ values }) => (
             <SelectValueRenderer

@@ -13,8 +13,10 @@ import {
   ThemeController,
   ViewportController,
   SlotType,
-  DISTRICTS_GEOJSON,
+  SearchBar,
 } from "@bratislava/react-maps";
+
+import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 
 // maps
 import { Layer, useFilter, Cluster, Filter, useCombinedFilter } from "@bratislava/react-mapbox";
@@ -28,7 +30,6 @@ import { Feature, Point, FeatureCollection } from "geojson";
 import { MobileHeader } from "./mobile/MobileHeader";
 import { MobileFilters } from "./mobile/MobileFilters";
 import { DesktopFilters } from "./desktop/DesktopFilters";
-import { MobileSearch } from "./mobile/MobileSearch";
 
 import RAW_DATA_SPORT_GROUNDS_FEATURES from "../data/sport-grounds/sport-grounds-data";
 import RAW_DATA_SPORT_GROUNDS_ALT_FEATURES from "../data/sport-grounds/sport-grounds-alt-data";
@@ -41,7 +42,7 @@ import { Icon, IIconProps } from "./Icon";
 import { usePrevious } from "@bratislava/utils";
 
 export const App = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     document.title = t("tabTitle");
@@ -392,7 +393,9 @@ export const App = () => {
           })}
           slots={viewportControllerSlots}
         />
-        <MobileSearch mapRef={mapRef} isGeolocation={isGeolocation} />
+        <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
+          <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
+        </div>
       </Slot>
 
       <Layout isOnlyMobile>
@@ -440,13 +443,11 @@ export const App = () => {
             setVisible={setSidebarVisible}
             areFiltersDefault={combinedFilter.areDefault}
             onResetFiltersClick={combinedFilter.reset}
-            mapRef={mapRef}
             districtFilter={districtFilter}
             layerFilter={layerFilter}
             sportGroundFilter={sportGroundFilter}
             tagFilter={tagFilter}
             layerGroups={layerGroups}
-            isGeolocation={isGeolocation}
           />
         </Slot>
 

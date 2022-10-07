@@ -14,25 +14,20 @@ import {
 import { useTranslation } from "react-i18next";
 import { SelectValueRenderer } from "../SelectValueRenderer";
 
-export interface IMobileFiltersProps<DF, SGF, TF, LF extends string> {
+export interface IMobileFiltersProps {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
   activeFilters: IActiveFilter[];
   onResetFiltersClick: () => void;
-  districtFilter: IFilterResult<DF>;
-  tagFilter: IFilterResult<TF>;
-  layerFilter: IFilterResult<LF>;
-  sportGroundFilter: IFilterResult<SGF>;
-  layerGroups: ILayerGroup<LF>[];
+  districtFilter: IFilterResult<string>;
+  tagFilter: IFilterResult<string>;
+  layerFilter: IFilterResult<any>;
+  sportGroundFilter: IFilterResult<any>;
+  layerGroups: ILayerGroup<string>[];
 }
 
-export const MobileFilters = <
-  DF extends string,
-  SGF extends string,
-  TF extends string,
-  LF extends string,
->({
+export const MobileFilters = ({
   isVisible,
   setVisible,
   areFiltersDefault,
@@ -43,7 +38,7 @@ export const MobileFilters = <
   tagFilter,
   layerGroups,
   layerFilter,
-}: IMobileFiltersProps<DF, SGF, TF, LF>) => {
+}: IMobileFiltersProps) => {
   const { t } = useTranslation();
 
   return (
@@ -53,6 +48,7 @@ export const MobileFilters = <
       position="right"
       isVisible={isVisible}
       setVisible={setVisible}
+      closeText={t("close")}
     >
       <div>
         <ActiveFilters
@@ -80,7 +76,7 @@ export const MobileFilters = <
             placeholder={t("filters.district.placeholder")}
             value={districtFilter.activeKeys}
             isMultiple
-            onChange={(value) => districtFilter.setActiveOnly((value ?? []) as DF[])}
+            onChange={(value) => districtFilter.setActiveOnly(value ?? [])}
             onReset={() => districtFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer
@@ -106,7 +102,7 @@ export const MobileFilters = <
             placeholder={t("filters.sportGround.placeholder")}
             value={sportGroundFilter.activeKeys}
             isMultiple
-            onChange={(value) => sportGroundFilter.setActiveOnly((value ?? []) as SGF[])}
+            onChange={(value) => sportGroundFilter.setActiveOnly(value ?? [])}
             onReset={() => sportGroundFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer
