@@ -344,8 +344,6 @@ export const App = () => {
 
       <Slot name="controls">
         <ThemeController
-          darkLightModeTooltip={t("tooltips.darkLightMode")}
-          satelliteModeTooltip={t("tooltips.satelliteMode")}
           className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
             "translate-x-96": isSidebarVisible && !isMobile,
           })}

@@ -7,6 +7,11 @@
     "lint:fix": "eslint --fix src/**/*.{js,jsx,ts,tsx,json}",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc.yml"
   },
+  "lang": "translations",
+  "supportedLocales": [
+    "en",
+    "sk"
+  ],
   "main": "src/index.ts",
   "devDependencies": {
     "@js-joda/core": "^5.2.0 ",
@@ -54,6 +59,7 @@
   "dependencies": {
     "flexsearch": "^0.7.21",
     "mapbox-gl": "^2.9.2",
+    "react-intl": "^6.1.2",
     "slugify": "^1.6.5",
     "swr": "^1.3.0",
     "usehooks-ts": "^2.7.1"

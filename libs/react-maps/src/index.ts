@@ -1,5 +1,6 @@
 export * from './types';
 export * from './utils/districts';
+export { default as i18n } from './utils/i18n';
 
 // components
 export * from './components/Layout/Layout';

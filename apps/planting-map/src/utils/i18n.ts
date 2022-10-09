@@ -3,6 +3,8 @@ import { initReactI18next } from "react-i18next";
 import enTranslation from "../translations/en";
 import skTranslation from "../translations/sk";
 
+import { i18n as ReactMapsI18n } from "@bratislava/react-maps";
+
 const getLangFromQuery = () => {
   const langQuery = new URLSearchParams(window.location.search).get("lang");
   if (langQuery === "sk" || langQuery === "en") {
@@ -28,5 +30,9 @@ i18n
       escapeValue: false, // react already safes from xss
     },
   });
+
+i18n.on("languageChanged", (lng) => {
+  ReactMapsI18n.changeLanguage(lng);
+});
 
 export default i18n;

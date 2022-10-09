@@ -15,13 +15,7 @@
     "declarationDir": "types",
     "emitDeclarationOnly": true,
     "resolveJsonModule": true,
-    "baseUrl": ".",
-    "paths": {
-      // remap rsg-components/anything to its version in react-styleguidist
-      "rsg-components/*": [
-        "node_modules/react-styleguidist/lib/client/rsg-components/*"
-      ]
-    }
+    "baseUrl": "."
   },
-  "include": ["src/index.ts", "src/custom.d.ts"]
+  "include": ["src/index.ts", "src/react-i18next.d.ts"]
 }

@@ -2,23 +2,26 @@ import { Darkmode, Satellite, Themes } from '@bratislava/react-maps-icons';
 import { AnimateHeight, Popover } from '@bratislava/react-maps-ui';
 import cx from 'classnames';
 import { useCallback, useContext, useRef, useState } from 'react';
+import { useTranslation, I18nextProvider } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 
 import { mapContext } from '../Map/Map';
 import { MapActionKind } from '../Map/mapReducer';
 
+import i18n from '../../utils/i18n';
+
 interface ThemeControllerProps {
   className?: string;
-  satelliteModeTooltip: string;
-  darkLightModeTooltip: string;
 }
 
-export function ThemeController({
+const ThemeControllerWithoutTranslations = ({
   className,
-  satelliteModeTooltip,
-  darkLightModeTooltip,
-}: ThemeControllerProps) {
+}: ThemeControllerProps) => {
   const { mapState, dispatchMapState } = useContext(mapContext);
+
+  const { t } = useTranslation('maps', {
+    keyPrefix: 'components.ThemeController',
+  });
 
   const [isOpen, setOpen] = useState(false);
 
@@ -31,7 +34,7 @@ export function ThemeController({
         });
       document.body.classList[isDarkmode ? 'add' : 'remove']('dark');
     },
-    [dispatchMapState]
+    [dispatchMapState],
   );
 
   const handleSatelliteChange = useCallback(
@@ -42,7 +45,7 @@ export function ThemeController({
           value: isSatellite,
         });
     },
-    [dispatchMapState]
+    [dispatchMapState],
   );
 
   const ref = useRef(null);
@@ -57,7 +60,7 @@ export function ThemeController({
     <div
       className={cx(
         'transform duration-500 ease-in-out flex gap-2 transition-transform',
-        className
+        className,
       )}
     >
       <div
@@ -65,14 +68,19 @@ export function ThemeController({
           'flex flex-col h-auto text-font items-center justify-center pointer-events-auto shadow-lg bg-background-lightmode dark:bg-background-darkmode rounded-lg border-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20 w-12',
           {
             // "transform active:scale-75 transition-all": !noAnimation,
-          }
+          },
         )}
       >
         <AnimateHeight isVisible={isOpen} className="flex flex-col">
           <Popover
             isSmall
-            button={({ open, close }) => (
+            button={({ isOpen, open, close }) => (
               <button
+                aria-label={
+                  isOpen
+                    ? t('aria.disableSatelliteLayer')
+                    : t('aria.enableSatelliteLayer')
+                }
                 onMouseEnter={open}
                 onMouseLeave={close}
                 onMouseDown={() => {
@@ -84,13 +92,18 @@ export function ThemeController({
                 <Satellite size="xl" />
               </button>
             )}
-            panel={<div>{satelliteModeTooltip}</div>}
+            panel={<div>{t('satelliteMode')}</div>}
           />
           <div className="mx-auto h-[2px] w-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20" />
           <Popover
             isSmall
             button={({ open, close }) => (
               <button
+                aria-label={
+                  mapState?.isDarkmode
+                    ? t('aria.setLightBase')
+                    : t('aria.setDarkBase')
+                }
                 onMouseEnter={open}
                 onMouseLeave={close}
                 onMouseDown={() => {
@@ -102,10 +115,13 @@ export function ThemeController({
                 <Darkmode size="xl" />
               </button>
             )}
-            panel={<div>{darkLightModeTooltip}</div>}
+            panel={<div>{t('darkLightMode')}</div>}
           />
         </AnimateHeight>
         <button
+          aria-label={
+            isOpen ? t('aria.closeBaseOptions') : t('aria.openBaseOptions')
+          }
           ref={ref}
           onClick={() => setOpen(!isOpen)}
           className="w-12 h-11 flex items-center justify-center"
@@ -115,6 +131,12 @@ export function ThemeController({
       </div>
     </div>
   );
-}
+};
 
-export default ThemeController;
+export const ThemeController = (props: ThemeControllerProps) => {
+  return (
+    <I18nextProvider i18n={i18n}>
+      <ThemeControllerWithoutTranslations {...props} />
+    </I18nextProvider>
+  );
+};
