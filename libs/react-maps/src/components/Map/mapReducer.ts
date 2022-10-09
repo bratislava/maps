@@ -1,17 +1,17 @@
-import { LngLat, Viewport } from "@bratislava/react-mapbox";
+import { LngLat, Viewport } from '@bratislava/react-mapbox';
 
 export enum MapActionKind {
-  EnableDarkmode = "EnableDarkmode",
-  DisableDarkmode = "DisableDarkmode",
-  ToggleDarkmode = "ToggleDarkmode",
-  SetDarkmode = "SetDarkmode",
-  SetSatellite = "SetSatellite",
-  SetFullscreen = "SetFullscreen",
-  ChangeViewport = "ChangeViewport",
-  EnableGeolocation = "EnableGeolocation",
-  DisableGeolocation = "DisableGeolocation",
-  AddSearchMarker = "AddSearchMarker",
-  RemoveSearchMarker = "RemoveSearchMarker",
+  EnableDarkmode = 'EnableDarkmode',
+  DisableDarkmode = 'DisableDarkmode',
+  ToggleDarkmode = 'ToggleDarkmode',
+  SetDarkmode = 'SetDarkmode',
+  SetSatellite = 'SetSatellite',
+  SetFullscreen = 'SetFullscreen',
+  ChangeViewport = 'ChangeViewport',
+  EnableGeolocation = 'EnableGeolocation',
+  DisableGeolocation = 'DisableGeolocation',
+  AddSearchMarker = 'AddSearchMarker',
+  RemoveSearchMarker = 'RemoveSearchMarker',
 }
 
 interface IMapEnableDarkmodeAction {
@@ -89,76 +89,87 @@ export interface IMapState {
 
 export const mapReducer = (state: IMapState, action: MapAction): IMapState => {
   switch (action.type) {
-    case MapActionKind.EnableDarkmode:
+    case MapActionKind.EnableDarkmode: {
       return {
         ...state,
         isSatellite: false,
         isDarkmode: true,
       };
+    }
 
-    case MapActionKind.DisableDarkmode:
+    case MapActionKind.DisableDarkmode: {
       return {
         ...state,
         isSatellite: false,
         isDarkmode: false,
       };
+    }
 
-    case MapActionKind.ToggleDarkmode:
+    case MapActionKind.ToggleDarkmode: {
       return {
         ...state,
         isSatellite: false,
         isDarkmode: !state.isDarkmode,
       };
+    }
 
-    case MapActionKind.SetDarkmode:
+    case MapActionKind.SetDarkmode: {
       return {
         ...state,
         isSatellite: false,
         isDarkmode: action.value,
       };
+    }
 
-    case MapActionKind.SetSatellite:
+    case MapActionKind.SetSatellite: {
       return {
         ...state,
         isSatellite: action.value,
       };
+    }
 
-    case MapActionKind.SetFullscreen:
+    case MapActionKind.SetFullscreen: {
       return {
         ...state,
         isFullscreen: action.value,
       };
+    }
 
-    case MapActionKind.ChangeViewport:
+    case MapActionKind.ChangeViewport: {
       return {
         ...state,
         viewport: action.viewport,
       };
+    }
 
-    case MapActionKind.EnableGeolocation:
+    case MapActionKind.EnableGeolocation: {
       return {
         ...state,
         isGeolocation: true,
         geolocationMarkerLngLat: action.geolocationMarkerLngLat,
       };
+    }
 
-    case MapActionKind.DisableGeolocation:
+    case MapActionKind.DisableGeolocation: {
       return {
         ...state,
         isGeolocation: false,
         geolocationMarkerLngLat: null,
       };
+    }
 
-    case MapActionKind.AddSearchMarker:
+    case MapActionKind.AddSearchMarker: {
       return {
         ...state,
         searchMarkerLngLat: action.searchMarkerLngLat,
       };
+    }
 
-    case MapActionKind.RemoveSearchMarker:
+    case MapActionKind.RemoveSearchMarker: {
       return {
         ...state,
         searchMarkerLngLat: null,
       };
+    }
   }
 };

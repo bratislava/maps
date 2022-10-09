@@ -1,10 +1,10 @@
-import useSWR from "swr";
 import Geocoding, {
-  GeocodeQueryType,
   BoundingBox,
-} from "@mapbox/mapbox-sdk/services/geocoding";
-import { useDebounce } from "usehooks-ts";
-import { useMemo } from "react";
+  GeocodeQueryType,
+} from '@mapbox/mapbox-sdk/services/geocoding';
+import { useMemo } from 'react';
+import useSWR from 'swr';
+import { useDebounce } from 'usehooks-ts';
 
 type ForwardGeocodeRequestOptions = {
   countries: string[];
@@ -14,8 +14,8 @@ type ForwardGeocodeRequestOptions = {
 };
 
 const DEFAULT_FORWARD_GEOCODE_REQUEST_OPTIONS: ForwardGeocodeRequestOptions = {
-  countries: ["sk"], // Slovakia only
-  types: ["address", "poi"], // addresses and point of interests only
+  countries: ['sk'], // Slovakia only
+  types: ['address', 'poi'], // addresses and point of interests only
   limit: 10, // 10 results max
   bbox: [16.9932, 48.0967, 17.2051, 48.2082], // bbox of Bratislava,
 };

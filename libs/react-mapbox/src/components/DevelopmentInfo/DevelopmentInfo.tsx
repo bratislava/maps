@@ -1,4 +1,4 @@
-import { Viewport } from "../../types";
+import { Viewport } from '../../types';
 
 export interface IDevelopmentInfoProps {
   isDevelopment?: boolean;

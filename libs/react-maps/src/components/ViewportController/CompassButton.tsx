@@ -1,9 +1,10 @@
-import { Compass } from "@bratislava/react-maps-icons";
-import { IconButton } from "@bratislava/react-maps-ui";
-import { useCallback, useContext } from "react";
-import { mapContext } from "../Map/Map";
+import { Compass } from '@bratislava/react-maps-icons';
+import { IconButton } from '@bratislava/react-maps-ui';
+import { useCallback, useContext } from 'react';
 
-export const CompassButton = () => {
+import { mapContext } from '../Map/Map';
+
+export function CompassButton() {
   const { mapState, methods: mapMethods } = useContext(mapContext);
 
   // RESET BEARING HANDLER
@@ -22,4 +23,4 @@ export const CompassButton = () => {
       </div>
     </IconButton>
   );
-};
+}

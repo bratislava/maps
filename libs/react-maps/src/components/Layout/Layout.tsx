@@ -1,5 +1,6 @@
-import { ReactNode, useContext, useEffect, useState } from "react";
-import { mapContext } from "../Map/Map";
+import { ReactNode, useContext, useEffect, useState } from 'react';
+
+import { mapContext } from '../Map/Map';
 
 export interface ILayoutProps {
   isOnlyMobile?: boolean;
@@ -7,11 +8,11 @@ export interface ILayoutProps {
   children?: ReactNode;
 }
 
-export const Layout = ({
+export function Layout({
   isOnlyMobile = false,
   isOnlyDesktop = false,
   children,
-}: ILayoutProps) => {
+}: ILayoutProps) {
   const { isMobile } = useContext(mapContext);
 
   const [isVisible, setVisible] = useState(false);
@@ -32,4 +33,4 @@ export const Layout = ({
   }, [isOnlyMobile, isOnlyDesktop, setVisible, isMobile]);
 
   return <>{isVisible && children}</>;
-};
+}

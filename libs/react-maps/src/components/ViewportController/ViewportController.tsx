@@ -1,17 +1,18 @@
-import cx from "classnames";
-import { forwardRef, MouseEvent, useCallback } from "react";
-import { CompassButton } from "./CompassButton";
-import { FullscreenButton } from "./FullscreenButton";
-import { GeolocationButton } from "./GeolocationButton";
-import { LegendButton } from "./LegendButton";
-import { ZoomButtons } from "./ZoomButtons";
+import cx from 'classnames';
+import { forwardRef, MouseEvent, useCallback } from 'react';
+
+import { CompassButton } from './CompassButton';
+import { FullscreenButton } from './FullscreenButton';
+import { GeolocationButton } from './GeolocationButton';
+import { LegendButton } from './LegendButton';
+import { ZoomButtons } from './ZoomButtons';
 
 export type SlotType =
-  | "legend"
-  | "geolocation"
-  | "compass"
-  | "zoom"
-  | "fullscreen"
+  | 'legend'
+  | 'geolocation'
+  | 'compass'
+  | 'zoom'
+  | 'fullscreen'
   | SlotType[];
 
 interface ViewportControllerProps {
@@ -28,30 +29,36 @@ export const ViewportController = forwardRef<
     {
       className,
       onLegendClick = () => void 0,
-      slots = ["geolocation", "compass", ["fullscreen", "zoom"]],
+      slots = ['geolocation', 'compass', ['fullscreen', 'zoom']],
     },
     ref
   ) => {
     const RenderSlot = useCallback(
       ({ slot }: { slot: SlotType }) => {
         switch (slot) {
-          case "legend":
+          case 'legend': {
             return <LegendButton onLegendClick={onLegendClick} />;
+          }
 
-          case "geolocation":
+          case 'geolocation': {
             return <GeolocationButton />;
+          }
 
-          case "compass":
+          case 'compass': {
             return <CompassButton />;
+          }
 
-          case "fullscreen":
+          case 'fullscreen': {
             return <FullscreenButton />;
+          }
 
-          case "zoom":
+          case 'zoom': {
             return <ZoomButtons />;
+          }
 
-          default:
+          default: {
             return null;
+          }
         }
       },
       [onLegendClick]
@@ -61,7 +68,7 @@ export const ViewportController = forwardRef<
       <div
         ref={ref}
         className={cx(
-          "transform  duration-500 ease-in-out transition-transform pointer-events-none",
+          'transform  duration-500 ease-in-out transition-transform pointer-events-none',
           className
         )}
       >
@@ -83,4 +90,4 @@ export const ViewportController = forwardRef<
   }
 );
 
-ViewportController.displayName = "ViewportController";
+ViewportController.displayName = 'ViewportController';

@@ -1,4 +1,4 @@
-import { Feature, Point } from "geojson";
+import { Feature, Point } from 'geojson';
 import {
   FC,
   useCallback,
@@ -6,10 +6,10 @@ import {
   useEffect,
   useMemo,
   useState,
-} from "react";
-import Supercluster from "supercluster";
-import { filterContext } from "../Filter/Filter";
-import { mapboxContext } from "../Mapbox/Mapbox";
+} from 'react';
+import Supercluster from 'supercluster';
+import { filterContext } from '../Filter/Filter';
+import { mapboxContext } from '../Mapbox/Mapbox';
 
 export interface IClusterChildProps {
   key: number | string;
@@ -36,17 +36,17 @@ export const Cluster = ({
   const pointFeatures = useMemo(
     () =>
       features.filter(
-        (f) => f.geometry.type === "Point"
+        (f) => f.geometry.type === 'Point',
       ) as Supercluster.PointFeature<Supercluster.AnyProps>[],
-    [features]
+    [features],
   );
 
   const supercluster = useMemo(() => {
     const s = new Supercluster({ radius });
     s.load(
       pointFeatures.filter((f) =>
-        isFeatureVisible === undefined ? true : isFeatureVisible(f)
-      )
+        isFeatureVisible === undefined ? true : isFeatureVisible(f),
+      ),
     );
     return s;
   }, [pointFeatures, radius, isFeatureVisible]);
@@ -80,7 +80,7 @@ export const Cluster = ({
         if (isCluster) {
           const features = supercluster.getLeaves(
             cluster.properties.cluster_id,
-            Infinity
+            Infinity,
           );
           return {
             key: features[0].id ?? key,
@@ -89,7 +89,7 @@ export const Cluster = ({
             lat: cluster.geometry.coordinates[1],
             isCluster,
             clusterExpansionZoom: supercluster.getClusterExpansionZoom(
-              cluster.properties.cluster_id
+              cluster.properties.cluster_id,
             ),
           };
         } else {
@@ -103,15 +103,15 @@ export const Cluster = ({
             clusterExpansionZoom: null,
           };
         }
-      })
+      }),
     );
   }, [map, supercluster]);
 
   useEffect(() => {
     recalculate();
-    map?.on("moveend", recalculate);
+    map?.on('moveend', recalculate);
     return () => {
-      map?.off("moveend", recalculate);
+      map?.off('moveend', recalculate);
     };
   }, [map, recalculate]);
 

@@ -1,3 +1,4 @@
+import { DISTRICTS_GEOJSON } from '@bratislava/geojson-data';
 import {
   LngLat,
   Mapbox,
@@ -10,9 +11,19 @@ import {
   PartialViewport,
   Sources,
   Viewport,
-} from "@bratislava/react-mapbox";
-import { IconButton, LoadingSpinner, Modal } from "@bratislava/react-maps-ui";
-import cx from "classnames";
+} from '@bratislava/react-mapbox';
+import {
+  ArrowCounterclockwise,
+  Feedback,
+  InformationAlt,
+} from '@bratislava/react-maps-icons';
+import { IconButton, LoadingSpinner, Modal } from '@bratislava/react-maps-ui';
+import bbox from '@turf/bbox';
+import { point } from '@turf/helpers';
+import cx from 'classnames';
+import { Feature } from 'geojson';
+import mapboxgl, { MapboxGeoJSONFeature } from 'mapbox-gl';
+import Mousetrap from 'mousetrap';
 import {
   createContext,
   Dispatch,
@@ -26,25 +37,12 @@ import {
   useReducer,
   useRef,
   useState,
-} from "react";
-import { useResizeDetector } from "react-resize-detector";
-import { IMapState, MapAction, MapActionKind, mapReducer } from "./mapReducer";
+} from 'react';
+import { useResizeDetector } from 'react-resize-detector';
 
-import mapboxgl, { MapboxGeoJSONFeature } from "mapbox-gl";
-import {} from "../../types";
-
-import {
-  ArrowCounterclockwise,
-  Feedback,
-  InformationAlt,
-} from "@bratislava/react-maps-icons";
-import bbox from "@turf/bbox";
-import { Feature } from "geojson";
-import Mousetrap from "mousetrap";
-import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
-import { getFeatureDistrict } from "../../utils/districts";
-import { Slot } from "../Layout/Slot";
-import { point } from "@turf/helpers";
+import { getFeatureDistrict } from '../../utils/districts';
+import { Slot } from '../Layout/Slot';
+import { IMapState, MapAction, MapActionKind, mapReducer } from './mapReducer';
 
 export type IMapProps = {
   mapboxAccessToken: string;
@@ -132,7 +130,7 @@ export interface IMapContext {
 }
 
 export const mapContext = createContext<IMapContext>({
-  mapboxAccessToken: "",
+  mapboxAccessToken: '',
   mapState: null,
   dispatchMapState: null,
   containerRef: null,
@@ -160,7 +158,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       icons,
       mapStyles,
       children,
-      layerPrefix = "BRATISLAVA",
+      layerPrefix = 'BRATISLAVA',
       isDevelopment = false,
       initialViewport: inputInitialViewport,
       selectedFeatures,
@@ -227,7 +225,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       (isGeolocation: boolean) => {
         if (isGeolocation) {
           // if browser supports geolocation
-          if ("geolocation" in navigator) {
+          if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition(
               (position) => {
                 const geolocationMarkerLngLat = {
@@ -236,9 +234,9 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                 };
 
                 const isInBratislava = !!getFeatureDistrict({
-                  type: "Feature",
+                  type: 'Feature',
                   geometry: {
-                    type: "Point",
+                    type: 'Point',
                     coordinates: [
                       geolocationMarkerLngLat.lng,
                       geolocationMarkerLngLat.lat,
@@ -252,7 +250,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                   return;
                 }
 
-                console.log("ADDING GEOLOCATION MARKER");
+                console.log('ADDING GEOLOCATION MARKER');
                 mapboxRef.current?.changeViewport({
                   center: geolocationMarkerLngLat,
                   zoom: 18,
@@ -304,14 +302,14 @@ export const Map = forwardRef<MapHandle, IMapProps>(
     useEffect(() => {
       if (isDevelopment) {
         const moustrapBind = Mousetrap.bind(
-          ["ctrl+shift+d", "command+shift+d"],
+          ['ctrl+shift+d', 'command+shift+d'],
           () => {
             toggleDevInfo();
             return false;
           }
         );
         return () => {
-          moustrapBind.unbind(["ctrl+shift+d", "command+shift+d"]);
+          moustrapBind.unbind(['ctrl+shift+d', 'command+shift+d']);
         };
       }
     }, [isDevelopment, toggleDevInfo]);
@@ -328,13 +326,13 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       const districts = Array.isArray(district) ? district : [district];
 
       const districtFeatures = DISTRICTS_GEOJSON.features.filter(
-        (feature) => districts.indexOf(feature.properties.name) !== -1
+        (feature) => districts.includes(feature.properties.name)
       );
 
-      if (!districtFeatures.length) return;
+      if (districtFeatures.length === 0) return;
 
       const boundingBox = bbox({
-        type: "FeatureCollection",
+        type: 'FeatureCollection',
         features: districtFeatures,
       }) as [number, number, number, number];
 
@@ -358,7 +356,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       const MAP = mapboxRef.current;
 
       const boundingBox = bbox({
-        type: "FeatureCollection",
+        type: 'FeatureCollection',
         features: Array.isArray(features) ? features : [features],
       }) as [number, number, number, number];
 
@@ -378,7 +376,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       const MAP = mapboxRef.current;
 
       const [minX, minY, maxX, maxY] = bbox({
-        type: "FeatureCollection",
+        type: 'FeatureCollection',
         features: Array.isArray(features) ? features : [features],
       }) as [number, number, number, number];
 
@@ -474,10 +472,10 @@ export const Map = forwardRef<MapHandle, IMapProps>(
     useEffect(() => {
       // move the mapbox logo
       const mapboxLogoElement = document.querySelector(
-        ".mapboxgl-ctrl-bottom-left"
+        '.mapboxgl-ctrl-bottom-left'
       );
       const informationElement = document.querySelector(
-        ".mapboxgl-ctrl-bottom-right .mapboxgl-ctrl"
+        '.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl'
       );
       if (!mapboxLogoElement || !informationElement) return;
 
@@ -501,8 +499,8 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         margin-bottom: 4px !important;
       `;
 
-      mapboxLogoElement.setAttribute("style", mapboxLogoStyle);
-      informationElement.setAttribute("style", informationStyle);
+      mapboxLogoElement.setAttribute('style', mapboxLogoStyle);
+      informationElement.setAttribute('style', informationStyle);
     }, [
       controlsMarginBottom,
       controlsMarginLeft,
@@ -541,9 +539,9 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
     const mapboxLocale = useMemo(
       () => ({
-        "ScrollZoomBlocker.CtrlMessage": scrollZoomBlockerCtrlMessage,
-        "ScrollZoomBlocker.CmdMessage": scrollZoomBlockerCmdMessage,
-        "TouchPanBlocker.Message": touchPanBlockerMessage,
+        'ScrollZoomBlocker.CtrlMessage': scrollZoomBlockerCtrlMessage,
+        'ScrollZoomBlocker.CmdMessage': scrollZoomBlockerCmdMessage,
+        'TouchPanBlocker.Message': touchPanBlockerMessage,
       }),
       [
         scrollZoomBlockerCtrlMessage,
@@ -555,7 +553,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
 
     return (
-      <div className={cx("h-full w-full relative text-foreground-lightmode")}>
+      <div className={cx('h-full w-full relative text-foreground-lightmode')}>
         <mapContext.Provider value={mapContextValue}>
           <div
             ref={containerRef}
@@ -589,7 +587,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                 <IconButton
                   onClick={() => setInformationModalOpen(true)}
                   className={cx(
-                    "absolute left-4 top-4 w-8 h-8 sm:top-6 sm:left-auto sm:right-6 rounded-full",
+                    'absolute left-4 top-4 w-8 h-8 sm:top-6 sm:left-auto sm:right-6 rounded-full',
                     mapInformationButtonClassName
                   )}
                 >
@@ -603,9 +601,9 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               {mapState.isGeolocation && mapState.geolocationMarkerLngLat && (
                 <Marker
                   feature={{
-                    type: "Feature",
+                    type: 'Feature',
                     geometry: {
-                      type: "Point",
+                      type: 'Point',
                       coordinates: [
                         mapState.geolocationMarkerLngLat.lng,
                         mapState.geolocationMarkerLngLat.lat,
@@ -616,9 +614,9 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                 >
                   <div className="relative flex items-center justify-center">
                     <div className="opacity-20 flex items-center justify-center">
-                      <div className="absolute bg-gray-lightmode dark:bg-gray-darkmode w-20 h-20 rounded-full animate-ping"></div>
+                      <div className="absolute bg-gray-lightmode dark:bg-gray-darkmode w-20 h-20 rounded-full animate-ping" />
                     </div>
-                    <div className="absolute w-4 h-4 bg-white dark:bg-black border-4 border-black dark:border-white rounded-full"></div>
+                    <div className="absolute w-4 h-4 bg-white dark:bg-black border-4 border-black dark:border-white rounded-full" />
                   </div>
                 </Marker>
               )}
@@ -633,7 +631,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                   isRelativeToZoom
                   className="relative"
                 >
-                  <div className="bg-primary w-4 h-4 rotate-45 rounded-full rounded-br-none p-1"></div>
+                  <div className="bg-primary w-4 h-4 rotate-45 rounded-full rounded-br-none p-1" />
                 </Marker>
               )}
             </Mapbox>
@@ -641,15 +639,15 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         </mapContext.Provider>
         <div
           className={cx(
-            "fixed select-none dark:text-foreground-darkmode z-50 top-0 right-0 bottom-0 left-0 bg-background-lightmode dark:bg-background-darkmode flex items-center justify-center text-primary transition-all delay-1000 duration-1000",
+            'fixed select-none dark:text-foreground-darkmode z-50 top-0 right-0 bottom-0 left-0 bg-background-lightmode dark:bg-background-darkmode flex items-center justify-center text-primary transition-all delay-1000 duration-1000',
             {
-              "visible opacity-100": isLoading,
-              "invisible opacity-0": !isLoading,
+              'visible opacity-100': isLoading,
+              'invisible opacity-0': !isLoading,
             }
           )}
         >
           <LoadingSpinner
-            color={loadingSpinnerColor ?? "#5158D8"}
+            color={loadingSpinnerColor ?? '#5158D8'}
             size={100}
             thickness={200}
             speed={200}
@@ -666,7 +664,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
           <div className="flex flex-col gap-2 text-center pb-4">
             <div>Na mobilnom zariadení je mapu najlepšie používať na výšku</div>
             <div className="text-[14px]">
-              Zanechajte nám spätnú väzbu na adrese{" "}
+              Zanechajte nám spätnú väzbu na adrese{' '}
               <a
                 href="mailto:mapy.inovacie@bratislava.sk"
                 className="underline"
@@ -701,7 +699,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
                     className="object-contain"
                     style={{
                       height: partner.height ?? 36,
-                      width: partner.width ?? "auto",
+                      width: partner.width ?? 'auto',
                     }}
                     src={partner.image}
                     alt={partner.name}
@@ -720,6 +718,6 @@ export const Map = forwardRef<MapHandle, IMapProps>(
   }
 );
 
-Map.displayName = "Map";
+Map.displayName = 'Map';
 
 export default Map;

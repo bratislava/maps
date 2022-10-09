@@ -2,10 +2,14 @@
   "name": "@bratislava/react-maps",
   "version": "1.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
+    "lint:fix": "eslint --fix src/**/*.{js,jsx,ts,tsx,json}",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc.yml"
+  },
   "main": "src/index.ts",
   "devDependencies": {
-    "@js-joda/core": "^5.2.0",
+    "@js-joda/core": "^5.2.0 ",
     "@mapbox/mapbox-sdk": "^0.13.3",
     "@radix-ui/react-select": "^0.1.1",
     "@turf/bbox": "^6.5.0",
@@ -23,6 +27,9 @@
     "autoprefixer": "^10.4.7",
     "cheap-eval": "^0.0.2",
     "classnames": "^2.3.1",
+    "eslint-config-adjunct": "^4.11.2",
+    "eslint-config-auto": "0.7.1",
+    "eslint-plugin-jest": "^27.1.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "i18next": "^21.8.4",
     "mapbox-expression": "^0.0.3",

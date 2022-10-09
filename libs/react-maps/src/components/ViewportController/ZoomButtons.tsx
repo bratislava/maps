@@ -1,9 +1,10 @@
-import { Minus, Plus } from "@bratislava/react-maps-icons";
-import { IconButton, IconButtonGroup } from "@bratislava/react-maps-ui";
-import { useCallback, useContext } from "react";
-import { mapContext } from "../Map/Map";
+import { Minus, Plus } from '@bratislava/react-maps-icons';
+import { IconButton, IconButtonGroup } from '@bratislava/react-maps-ui';
+import { useCallback, useContext } from 'react';
 
-export const ZoomButtons = () => {
+import { mapContext } from '../Map/Map';
+
+export function ZoomButtons() {
   const { mapState, methods: mapMethods } = useContext(mapContext);
 
   // ZOOM IN HANDLER
@@ -26,4 +27,4 @@ export const ZoomButtons = () => {
       </IconButton>
     </IconButtonGroup>
   );
-};
+}

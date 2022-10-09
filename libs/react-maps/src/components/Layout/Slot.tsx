@@ -1,6 +1,6 @@
-import { mapboxContext, PartialPadding } from "@bratislava/react-mapbox";
-import { usePrevious } from "@bratislava/utils";
-import cx from "classnames";
+import { mapboxContext, PartialPadding } from '@bratislava/react-mapbox';
+import { usePrevious } from '@bratislava/utils';
+import cx from 'classnames';
 import {
   Dispatch,
   forwardRef,
@@ -10,9 +10,10 @@ import {
   useEffect,
   useMemo,
   useState,
-} from "react";
-import { BottomSheet } from "react-spring-bottom-sheet";
-import { mapContext } from "../Map/Map";
+} from 'react';
+import { BottomSheet } from 'react-spring-bottom-sheet';
+
+import { mapContext } from '../Map/Map';
 
 export interface ISlotChildProps {
   isVisible: boolean | undefined;
@@ -48,7 +49,7 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
     },
     ref
   ) => {
-    const [isVisible, setVisible] = useState<boolean | undefined>(undefined);
+    const [isVisible, setVisible] = useState<boolean | undefined>();
 
     const [padding, setPadding] = useState({} as PartialPadding);
     const [margin, setMargin] = useState({} as PartialPadding);
@@ -163,7 +164,7 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
         //   inputSetVisible ? inputSetVisible(false) : setVisible(false);
         // }}
         open={isVisible ?? false}
-        className={cx("relative z-30")}
+        className={cx('relative z-30')}
         expandOnContentDrag
         header={bottomSheetOptions.header}
         footer={bottomSheetOptions.footer}
@@ -176,4 +177,4 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
   }
 );
 
-Slot.displayName = "Slot";
+Slot.displayName = 'Slot';

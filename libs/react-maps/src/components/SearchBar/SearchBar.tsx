@@ -1,23 +1,24 @@
-import { ComboBox } from "@bratislava/react-maps-ui";
-import { useCallback, useContext, useMemo, useState } from "react";
-import { Location, MagnifyingGlass, X } from "@bratislava/react-maps-icons";
-import { useMapboxSearch } from "../../hooks/useMapboxSearch";
-import { mapContext } from "../Map/Map";
-import { GeocodeFeature } from "@mapbox/mapbox-sdk/services/geocoding";
-import { point } from "@turf/helpers";
+import { Location, MagnifyingGlass, X } from '@bratislava/react-maps-icons';
+import { ComboBox } from '@bratislava/react-maps-ui';
+import { GeocodeFeature } from '@mapbox/mapbox-sdk/services/geocoding';
+import { point } from '@turf/helpers';
+import { useCallback, useContext, useMemo, useState } from 'react';
+
+import { useMapboxSearch } from '../../hooks/useMapboxSearch';
+import { mapContext } from '../Map/Map';
 
 export interface ISearchBarProps {
-  direction?: "top" | "bottom";
+  direction?: 'top' | 'bottom';
   language: string;
   placeholder: string;
 }
 
-export const SearchBar = ({
+export function SearchBar({
   direction,
   language,
   placeholder,
-}: ISearchBarProps) => {
-  const [searchQuery, setSearchQuery] = useState("");
+}: ISearchBarProps) {
+  const [searchQuery, setSearchQuery] = useState('');
 
   const {
     mapState,
@@ -35,20 +36,20 @@ export const SearchBar = ({
     console.log(results);
     return (
       results?.map((result) => {
-        if (result.place_type.includes("poi")) {
+        if (result.place_type.includes('poi')) {
           return {
             title:
               result.text +
               (result.properties.address
                 ? `, ${result.properties.address}`
-                : ""),
+                : ''),
             label: (
               <div>
                 {result.text}
                 <span className="opacity-75 font-normal">
                   {result.properties.address
                     ? `, ${result.properties.address}`
-                    : ""}
+                    : ''}
                 </span>
               </div>
             ),
@@ -59,8 +60,8 @@ export const SearchBar = ({
 
         return {
           // ugly workaround for ugly addresses from mapbox
-          title: result.text + (result.address ? ` ${result.address}` : ""),
-          label: result.text + (result.address ? ` ${result.address}` : ""),
+          title: result.text + (result.address ? ` ${result.address}` : ''),
+          label: result.text + (result.address ? ` ${result.address}` : ''),
           value: result.place_name,
           feature: result,
         };
@@ -83,7 +84,7 @@ export const SearchBar = ({
 
   const handleResetPress = useCallback(() => {
     mapMethods.removeSearchMarker();
-    setSearchQuery("");
+    setSearchQuery('');
   }, [mapMethods]);
 
   return (
@@ -96,7 +97,7 @@ export const SearchBar = ({
       placeholder={placeholder}
       rightSlot={
         <div className="absolute right-[3px] gap-[4px] bottom-0 top-0 flex items-center">
-          {searchQuery && searchQuery.length ? (
+          {searchQuery && searchQuery.length > 0 ? (
             <button className="p-3" onClick={handleResetPress}>
               <X size="sm" />
             </button>
@@ -105,7 +106,7 @@ export const SearchBar = ({
               <MagnifyingGlass size="lg" />
             </div>
           )}
-          <div className="md:hidden h-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20 w-[2px]"></div>
+          <div className="md:hidden h-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20 w-[2px]" />
           <button
             onClick={mapMethods.toggleGeolocation}
             className="md:hidden h-10 flex items-center justify-center p-2 translate-x-[1px]"
@@ -116,4 +117,4 @@ export const SearchBar = ({
       }
     />
   );
-};
+}

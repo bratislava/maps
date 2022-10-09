@@ -1,10 +1,11 @@
-import { Darkmode, Satellite, Themes } from "@bratislava/react-maps-icons";
-import { AnimateHeight, Popover } from "@bratislava/react-maps-ui";
-import cx from "classnames";
-import { useCallback, useContext, useRef, useState } from "react";
-import { mapContext } from "../Map/Map";
-import { MapActionKind } from "../Map/mapReducer";
-import { useOnClickOutside } from "usehooks-ts";
+import { Darkmode, Satellite, Themes } from '@bratislava/react-maps-icons';
+import { AnimateHeight, Popover } from '@bratislava/react-maps-ui';
+import cx from 'classnames';
+import { useCallback, useContext, useRef, useState } from 'react';
+import { useOnClickOutside } from 'usehooks-ts';
+
+import { mapContext } from '../Map/Map';
+import { MapActionKind } from '../Map/mapReducer';
 
 interface ThemeControllerProps {
   className?: string;
@@ -12,11 +13,11 @@ interface ThemeControllerProps {
   darkLightModeTooltip: string;
 }
 
-export const ThemeController = ({
+export function ThemeController({
   className,
   satelliteModeTooltip,
   darkLightModeTooltip,
-}: ThemeControllerProps) => {
+}: ThemeControllerProps) {
   const { mapState, dispatchMapState } = useContext(mapContext);
 
   const [isOpen, setOpen] = useState(false);
@@ -28,7 +29,7 @@ export const ThemeController = ({
           type: MapActionKind.SetDarkmode,
           value: isDarkmode,
         });
-      document.body.classList[isDarkmode ? "add" : "remove"]("dark");
+      document.body.classList[isDarkmode ? 'add' : 'remove']('dark');
     },
     [dispatchMapState]
   );
@@ -55,13 +56,13 @@ export const ThemeController = ({
   return (
     <div
       className={cx(
-        "transform duration-500 ease-in-out flex gap-2 transition-transform",
+        'transform duration-500 ease-in-out flex gap-2 transition-transform',
         className
       )}
     >
       <div
         className={cx(
-          "flex flex-col h-auto text-font items-center justify-center pointer-events-auto shadow-lg bg-background-lightmode dark:bg-background-darkmode rounded-lg border-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20 w-12",
+          'flex flex-col h-auto text-font items-center justify-center pointer-events-auto shadow-lg bg-background-lightmode dark:bg-background-darkmode rounded-lg border-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20 w-12',
           {
             // "transform active:scale-75 transition-all": !noAnimation,
           }
@@ -85,7 +86,7 @@ export const ThemeController = ({
             )}
             panel={<div>{satelliteModeTooltip}</div>}
           />
-          <div className="mx-auto h-[2px] w-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20"></div>
+          <div className="mx-auto h-[2px] w-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20" />
           <Popover
             isSmall
             button={({ open, close }) => (
@@ -114,6 +115,6 @@ export const ThemeController = ({
       </div>
     </div>
   );
-};
+}
 
 export default ThemeController;
