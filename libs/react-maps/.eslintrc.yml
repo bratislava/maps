@@ -1,11 +1,12 @@
 env:
   browser: true
   es2021: true
+  amd: true
 extends:
-  - auto
   - eslint:recommended
   - plugin:react/recommended
   - plugin:@typescript-eslint/recommended
+  - plugin:tailwindcss/recommended
   - prettier
 overrides: []
 parser: '@typescript-eslint/parser'
@@ -16,6 +17,7 @@ plugins:
   - react
   - react-hooks
   - '@typescript-eslint'
+  - tailwindcss
   - prettier
 rules:
   react/react-in-jsx-scope: 'off'
@@ -23,6 +25,7 @@ rules:
   spaced-comment: 'error'
   quotes: ['error', 'single']
   no-duplicate-imports: 'error'
+  tailwindcss/no-custom-classname: 'off'
 settings:
   import/resolver:
     typescript: {}

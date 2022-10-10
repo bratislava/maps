@@ -12,5 +12,8 @@ export default {
         closeBaseOptions: 'Zavrieť nastavenia podkladu',
       },
     },
+    CompassButton: {
+      resetBearing: 'Resetovať natočenie mapy na sever',
+    },
   },
 };

@@ -14,9 +14,12 @@ const getLangFromQuery = () => {
   }
 };
 
+const queryLanguage = getLangFromQuery();
+
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
+    debug: import.meta.env.DEV,
     resources: {
       en: {
         translation: enTranslation,
@@ -25,11 +28,20 @@ i18n
         translation: skTranslation,
       },
     },
-    lng: getLangFromQuery(),
+    // missingKeyHandler(lngs, ns, key) {
+    //   if (import.meta.env.DEV) {
+    //     console.warn(
+    //       `Missing translation for '${lngs}' language in namespace '${ns}' => key: '${key}'`,
+    //     );
+    //   }
+    // },
+    lng: queryLanguage,
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
   });
+
+ReactMapsI18n.changeLanguage(queryLanguage);
 
 i18n.on("languageChanged", (lng) => {
   ReactMapsI18n.changeLanguage(lng);

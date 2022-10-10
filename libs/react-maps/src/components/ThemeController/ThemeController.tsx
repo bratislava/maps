@@ -87,14 +87,14 @@ const ThemeControllerWithoutTranslations = ({
                   handleSatelliteChange(!mapState?.isSatellite);
                   close();
                 }}
-                className="w-12 h-12 flex items-center justify-center"
+                className="flex h-12 w-12 items-center justify-center"
               >
                 <Satellite size="xl" />
               </button>
             )}
             panel={<div>{t('satelliteMode')}</div>}
           />
-          <div className="mx-auto h-[2px] w-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20" />
+          <div className="bg-gray-lightmode dark:bg-gray-darkmode mx-auto h-[2px] w-8 opacity-20" />
           <Popover
             isSmall
             button={({ open, close }) => (
@@ -110,7 +110,7 @@ const ThemeControllerWithoutTranslations = ({
                   handleDarkmodeChange(!mapState?.isDarkmode);
                   close();
                 }}
-                className="w-12 h-12 flex items-center justify-center"
+                className="flex h-12 w-12 items-center justify-center"
               >
                 <Darkmode size="xl" />
               </button>
@@ -124,7 +124,7 @@ const ThemeControllerWithoutTranslations = ({
           }
           ref={ref}
           onClick={() => setOpen(!isOpen)}
-          className="w-12 h-11 flex items-center justify-center"
+          className="flex h-11 w-12 items-center justify-center"
         >
           <Themes size="xl" />
         </button>

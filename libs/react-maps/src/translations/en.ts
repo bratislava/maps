@@ -12,5 +12,8 @@ export default {
         closeBaseOptions: 'Close base options',
       },
     },
+    CompassButton: {
+      resetBearing: 'Reset bearing to north',
+    },
   },
 };

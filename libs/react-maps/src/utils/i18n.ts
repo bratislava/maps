@@ -12,6 +12,7 @@ const i18n = createInstance({
       maps: skTranslation,
     },
   },
+  fallbackLng: 'en',
   interpolation: {
     escapeValue: false, // not needed for react as it escapes by default
   },
