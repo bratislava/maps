@@ -96,8 +96,6 @@ export const processData = ({
     ].filter((z) => z.properties?.zone && z.properties.Dátum_spustenia),
   };
 
-  console.log("zonesData", zonesData);
-
   const markersData: FeatureCollection = addZonePropertyToLayer(
     {
       type: "FeatureCollection",
@@ -212,8 +210,6 @@ export const processData = ({
     zonesData,
   );
 
-  console.log("markersData", markersData);
-
   const udrData: FeatureCollection = addZonePropertyToLayer(
     {
       type: "FeatureCollection",
@@ -265,8 +261,6 @@ export const processData = ({
     } as FeatureCollection<Polygon>,
     zonesData,
   );
-
-  console.log(getUniqueValuesFromFeatures(zonesData.features, "zone"));
 
   return {
     markersData,
