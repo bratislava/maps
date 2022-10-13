@@ -274,14 +274,6 @@ export const App = () => {
       selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
-      scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
-      scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
-      touchPanBlockerMessage={t("tooltips.touchPanBlockerMessage")}
-      errors={{
-        generic: t("errors.generic"),
-        notLocatedInBratislava: t("errors.notLocatedInBratislava"),
-        noGeolocationSupport: t("errors.noGeolocationSupport"),
-      }}
       mapInformation={{
         title: t("informationModal.title"),
         description: (

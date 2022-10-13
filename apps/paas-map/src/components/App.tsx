@@ -133,7 +133,6 @@ export const App = () => {
   const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
 
   const [isMobile, setMobile] = useState<boolean | null>(null);
-  const [isGeolocation, setGeolocation] = useState(false);
 
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
@@ -328,19 +327,10 @@ export const App = () => {
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
       onMobileChange={setMobile}
-      onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
       selectedFeatures={selectedFeatures}
       onFeaturesClick={onFeaturesClick}
-      scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
-      scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
-      touchPanBlockerMessage={t("tooltips.touchPanBlockerMessage")}
       mapInformationButtonClassName="!top-20 sm:!top-6"
-      errors={{
-        generic: t("errors.generic"),
-        notLocatedInBratislava: t("errors.notLocatedInBratislava"),
-        noGeolocationSupport: t("errors.noGeolocationSupport"),
-      }}
       mapInformation={{
         title: t("informationModal.title"),
         description: t("informationModal.description"),
@@ -410,8 +400,6 @@ export const App = () => {
 
       <Slot name="controls">
         <ThemeController
-          darkLightModeTooltip={t("tooltips.darkLightMode")}
-          satelliteModeTooltip={t("tooltips.satelliteMode")}
           className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
             "translate-x-96": isSidebarVisible && !isMobile,
           })}

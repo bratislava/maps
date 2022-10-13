@@ -97,21 +97,8 @@ export default {
     coniferTrees: "ostatné ihličnaté dreviny",
     decidiousTrees: "ostatné listnaté dreviny",
   },
-  // for libraries
   activeFilters: "Aktívny filter",
   resetFilters: "Zrušiť filter",
-  errors: {
-    generic: "Chyba",
-    notLocatedInBratislava: "Nenachádzate sa v Bratislave",
-    noGeolocationSupport: "Vaše zariadenie alebo prehliadač nepodporuje geolokáciu",
-  },
-  tooltips: {
-    darkLightMode: "Svetlý/Tmavý podklad",
-    satelliteMode: "Letecký podklad",
-    scrollZoomBlockerCtrlMessage: "Použite ctrl + koliesko myši pre priblíženie",
-    scrollZoomBlockerCmdMessage: "Použite ⌘ + koliesko myši pre priblíženie",
-    touchPanBlockerMessage: "Použite dva prsty pre pohyb na mape",
-  },
   informationModal: {
     title: "Informácie o mape",
     description:
