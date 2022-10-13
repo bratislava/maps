@@ -9,7 +9,6 @@
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc.yml"
   },
   "dependencies": {
-    "@turf/turf": "^6.5.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-plugin-jest": "^27.1.1",
     "framer-motion": "^6.5.1",
@@ -18,7 +17,6 @@
     "react-dom": "17.0.2"
   },
   "peerDependencies": {
-    "@turf/turf": "^6.5.0",
     "framer-motion": "^6.5.1",
     "mapbox-gl": "^2.9.2",
     "react": "17.0.2",

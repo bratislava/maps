@@ -1,20 +1,18 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { usePrevious } from "@bratislava/utils";
-import { log } from "../../utils/log";
-import { mapboxContext } from "../Mapbox/Mapbox";
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { usePrevious } from '@bratislava/utils';
+import { log } from '../../utils/log';
+import { mapboxContext } from '../Mapbox/Mapbox';
 import {
   Feature,
   LineString as GeoJsonLineString,
   GeoJsonProperties,
-} from "geojson";
-import { animate } from "framer-motion";
+} from 'geojson';
+import { animate } from 'framer-motion';
 
-import {
-  featureCollection,
-  lineString,
-  length,
-  lineSliceAlong,
-} from "@turf/turf";
+import lineSliceAlong from '@turf/line-slice-along';
+
+import length from '@turf/length';
+import { featureCollection, lineString } from '@turf/helpers';
 
 export interface AnimationChangeEvent {
   value: number;
@@ -25,7 +23,7 @@ export interface ILineStringProps {
   id: string;
   styles: any;
   isVisible?: boolean;
-  coordinates: Feature<GeoJsonLineString>["geometry"]["coordinates"];
+  coordinates: Feature<GeoJsonLineString>['geometry']['coordinates'];
   visiblePart?: number;
   initialVisiblePart?: number;
   duration?: number;
@@ -63,7 +61,7 @@ export const LineString = ({
 
   useEffect(() => {
     const line = lineString(coordinates);
-    const lineLength = length(line, { units: "meters" });
+    const lineLength = length(line, { units: 'meters' });
     line.properties
       ? (line.properties.length = lineLength)
       : (line.properties = { length: lineLength });
@@ -73,7 +71,7 @@ export const LineString = ({
   useEffect(() => {
     if (map && !isLoading && !isStyleLoading) {
       map.addSource(id, {
-        type: "geojson",
+        type: 'geojson',
         data: featureCollection([]),
       });
       setSourceAdded(true);
@@ -97,16 +95,16 @@ export const LineString = ({
 
             map.setLayoutProperty(
               getPrefixedLayer(style.id),
-              "visibility",
-              "visible"
+              'visibility',
+              'visible',
             );
           } else {
             log(`SETTING LAYER ${getPrefixedLayer(style.id)} HIDDEN`);
 
             map.setLayoutProperty(
               getPrefixedLayer(style.id),
-              "visibility",
-              "none"
+              'visibility',
+              'none',
             );
           }
         }
@@ -152,12 +150,12 @@ export const LineString = ({
       const source = map?.getSource(id);
 
       if (visibleLineLength === 0) {
-        if (isSourceAdded && source && source.type === "geojson") {
+        if (isSourceAdded && source && source.type === 'geojson') {
           source.setData(featureCollection([]));
         }
       } else {
         const visibleLine = lineSliceAlong(line, 0, visibleLineLength, {
-          units: "meters",
+          units: 'meters',
         });
 
         const coordinates = visibleLine.geometry.coordinates;
@@ -174,7 +172,7 @@ export const LineString = ({
           completeHandler();
         }
 
-        if (isSourceAdded && source && source.type === "geojson") {
+        if (isSourceAdded && source && source.type === 'geojson') {
           source.setData(featureCollection([visibleLine]));
         }
       }
@@ -187,7 +185,7 @@ export const LineString = ({
       completeHandler,
       visiblePart,
       onAnimationChange,
-    ]
+    ],
   );
 
   useEffect(() => {
