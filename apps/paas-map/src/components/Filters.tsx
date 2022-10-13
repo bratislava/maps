@@ -48,7 +48,7 @@ export const Filters = <LF extends string, MF extends string, ZF extends string>
           onReset={() => zoneFilter.setActiveAll(false)}
           renderValue={({ values }) => (
             <SelectValueRenderer
-              values={values}
+              values={values.map((value) => t(`filters.zone.types.${value}`))}
               placeholder={t("filters.zone.placeholder")}
               multiplePlaceholder={`${t("filters.zone.multipleZones")} (${values.length})`}
             />
@@ -56,7 +56,7 @@ export const Filters = <LF extends string, MF extends string, ZF extends string>
         >
           {zoneFilter.keys.map((zone) => (
             <SelectOption key={zone} value={zone}>
-              {zone}
+              {t(`filters.zone.types.${zone}`)}
             </SelectOption>
           ))}
         </Select>
@@ -64,7 +64,7 @@ export const Filters = <LF extends string, MF extends string, ZF extends string>
 
       <Divider className="mx-6" />
 
-      <div className="md:-translate-y-4 flex flex-col gap-4">
+      <div className=" flex flex-col gap-4">
         <div className="flex  justify-between px-6 items-center">
           <h2 className="font-semibold text-md py-1">{t("layers.title")}</h2>
         </div>

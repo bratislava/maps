@@ -9,6 +9,12 @@ export default {
     zone: {
       placeholder: "Zone",
       multipleZones: "Selected",
+      types: {
+        SM1: "Staré mesto - SM1",
+        NM1: "Nové mesto - NM1",
+        RU1: "Ružinov - RU1",
+        PE1: "Petržalka Dvory 4 - PE1",
+      },
     },
   },
   layerGroups: {
