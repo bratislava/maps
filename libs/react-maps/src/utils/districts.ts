@@ -25,23 +25,22 @@ export const DISTRICTS = [
 type District = typeof DISTRICTS[number];
 
 export const addDistrictPropertyToLayer = (
-  featureCollection: FeatureCollection
+  featureCollection: FeatureCollection,
 ) => ({
-    ...featureCollection,
-    features: featureCollection.features.map((feature: Feature) => ({
-        ...feature,
-        properties: {
-          ...feature.properties,
-          district: getFeatureDistrict(feature),
-        },
-      })),
-  });
+  ...featureCollection,
+  features: featureCollection.features.map((feature: Feature) => ({
+    ...feature,
+    properties: {
+      ...feature.properties,
+      district: getFeatureDistrict(feature),
+    },
+  })),
+});
 
 export const getFeatureDistrict = (feature: Feature): District | null => {
   const districtFeatures = DISTRICTS_GEOJSON.features;
 
   for (const districtFeature of districtFeatures) {
-
     if (booleanIntersects(districtFeature.geometry, feature)) {
       return districtFeature.properties.name as District;
     }

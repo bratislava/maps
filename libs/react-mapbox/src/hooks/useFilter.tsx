@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export type FilterExpression = (string | boolean | FilterExpression)[];
 
@@ -22,14 +22,14 @@ export type ComparatorFunction = ({
 export interface IUseFilterProps<Key extends string> {
   property: string;
   keys: Key[];
-  keepOnEmpty?: boolean;
   defaultValues?: IValues<Key>;
   comparator?: ComparatorFunction;
-  combiner?: "any" | "all";
+  combiner?: 'any' | 'all';
 }
 
 export interface IFilterResult<Key> {
   expression: FilterExpression;
+  keepOnEmptyExpression: FilterExpression;
   values: IFilterValue<Key>[];
   activeKeys: Key[];
   keys: Key[];
@@ -45,7 +45,7 @@ export interface IFilterResult<Key> {
 }
 
 const defaultComparator: ComparatorFunction = ({ value, property }) => [
-  "==",
+  '==',
   property,
   value,
 ];
@@ -53,17 +53,18 @@ const defaultComparator: ComparatorFunction = ({ value, property }) => [
 export const useFilter = <Key extends string>({
   property,
   keys,
-  keepOnEmpty = false,
   defaultValues,
   comparator = defaultComparator,
-  combiner = "any",
+  combiner = 'any',
 }: IUseFilterProps<Key>): IFilterResult<Key> => {
   const [expression, setExpression] = useState<FilterExpression | null>(null);
+  const [keepOnEmptyExpression, setKeepOnEmptyExpression] =
+    useState<FilterExpression>([]);
   const [valuesObject, setValuesObject] = useState<IValues<Key>>(
-    {} as IValues<Key>
+    {} as IValues<Key>,
   );
   const [defaultValuesObject, setDefaultValuesObject] = useState<IValues<Key>>(
-    {} as IValues<Key>
+    {} as IValues<Key>,
   );
 
   useEffect(() => {
@@ -71,21 +72,25 @@ export const useFilter = <Key extends string>({
       keys.reduce((prev, key) => {
         prev[key] = defaultValues?.[key] ?? false;
         return prev;
-      }, {} as IValues<Key>)
+      }, {} as IValues<Key>),
     );
   }, [defaultValues, keys]);
 
   useEffect(() => {
     const activeKeys = keys.filter((key) => valuesObject[key]);
     setExpression(
-      activeKeys.length || keepOnEmpty
+      activeKeys.length
         ? [
             combiner,
             ...activeKeys.map((key) => comparator({ value: key, property })),
           ]
-        : null
+        : null,
     );
-  }, [comparator, combiner, property, keys, valuesObject, keepOnEmpty]);
+    setKeepOnEmptyExpression([
+      combiner,
+      ...activeKeys.map((key) => comparator({ value: key, property })),
+    ]);
+  }, [comparator, combiner, property, keys, valuesObject]);
 
   const values: IFilterValue<Key>[] = useMemo(() => {
     return keys.map((key) => ({ key, isActive: valuesObject[key] }));
@@ -93,12 +98,12 @@ export const useFilter = <Key extends string>({
 
   const activeKeys = useMemo(
     () => keys.filter((key) => valuesObject[key]),
-    [keys, valuesObject]
+    [keys, valuesObject],
   );
 
   const areDefault = useMemo(
     () => JSON.stringify(valuesObject) === JSON.stringify(defaultValuesObject),
-    [valuesObject, defaultValuesObject]
+    [valuesObject, defaultValuesObject],
   );
 
   const setActive = useCallback((inputKeys: Key | Key[], value = true) => {
@@ -124,10 +129,10 @@ export const useFilter = <Key extends string>({
         keys.reduce((prev, key) => {
           prev[key] = value;
           return prev;
-        }, {} as IValues<Key>)
+        }, {} as IValues<Key>),
       );
     },
-    [keys]
+    [keys],
   );
 
   const setActiveOnly = useCallback(
@@ -137,10 +142,10 @@ export const useFilter = <Key extends string>({
           prev[key] =
             (activeKeys === key || activeKeys?.includes(key)) ?? false;
           return prev;
-        }, {} as IValues<Key>)
+        }, {} as IValues<Key>),
       );
     },
-    [keys]
+    [keys],
   );
 
   const toggleActive = useCallback((key: Key) => {
@@ -152,7 +157,7 @@ export const useFilter = <Key extends string>({
       keys.reduce((prev, key) => {
         prev[key] = defaultValuesObject?.[key] ?? false;
         return prev;
-      }, {} as IValues<Key>)
+      }, {} as IValues<Key>),
     );
   }, [keys, defaultValuesObject]);
 
@@ -168,7 +173,7 @@ export const useFilter = <Key extends string>({
       }
       return false;
     },
-    [keys, valuesObject]
+    [keys, valuesObject],
   );
 
   const areKeysActive = useCallback(
@@ -181,7 +186,7 @@ export const useFilter = <Key extends string>({
       }
       return !!valuesObject[keys];
     },
-    [valuesObject]
+    [valuesObject],
   );
 
   const areKeysInactive = useCallback(
@@ -194,11 +199,12 @@ export const useFilter = <Key extends string>({
       }
       return !!valuesObject[keys];
     },
-    [valuesObject]
+    [valuesObject],
   );
 
   return {
     expression: expression ?? [],
+    keepOnEmptyExpression,
     values,
     activeKeys,
     keys,

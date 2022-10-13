@@ -2,8 +2,9 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useResizeDetector } from "react-resize-detector";
-import odpStyles from "../layer-styles/residents/residents";
-import udrStyles from "../layer-styles/visitors/visitors";
+import odpStyles from "../layer-styles/residents";
+import udrStyles from "../layer-styles/visitors";
+import zoneStyles from "../layer-styles/zones";
 import "../styles.css";
 
 // maps
@@ -18,7 +19,7 @@ import {
   ViewportController,
 } from "@bratislava/react-maps";
 
-import { Cluster, Filter, Layer, useFilter } from "@bratislava/react-mapbox";
+import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 
 // components
 import { Detail } from "./Detail";
@@ -84,6 +85,7 @@ export const App = () => {
 
   const [isLoading, setLoading] = useState(true);
   const [markersData, setMarkersData] = useState<FeatureCollection | null>(null);
+  const [zonesData, setZonesData] = useState<FeatureCollection | null>(null);
   const [udrData, setUdrData] = useState<FeatureCollection | null>(null);
   const [odpData, setOdpData] = useState<FeatureCollection | null>(null);
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
@@ -99,9 +101,7 @@ export const App = () => {
       rawOdpData &&
       rawZonesData
     ) {
-      console.log("rawZonesData", rawZonesData);
-
-      const { markersData, udrData, odpData } = processData({
+      const { markersData, udrData, odpData, zonesData } = processData({
         rawZonesData,
         rawAssistantsData,
         rawParkomatsData,
@@ -112,6 +112,7 @@ export const App = () => {
         rawOdpData,
       });
       setMarkersData(markersData);
+      setZonesData(zonesData);
       setUdrData(udrData);
       setOdpData(odpData);
       setLoading(false);
@@ -139,7 +140,6 @@ export const App = () => {
 
   const layerFilter = useFilter({
     property: "layer",
-    keepOnEmpty: true,
     keys: useMemo(() => ["visitors", "residents"], []),
     defaultValues: useMemo(
       () => ({
@@ -154,7 +154,6 @@ export const App = () => {
 
   const markerFilter = useFilter({
     property: "kind",
-    keepOnEmpty: true,
     keys: useMemo(
       () => [
         "assistants",
@@ -271,7 +270,7 @@ export const App = () => {
 
   const zoneFilter = useFilter({
     property: "zone",
-    keys: useMemo(() => ["SM1", "RU1"], []),
+    keys: useMemo(() => ["SM1", "NM1", "RU1", "PE1"], []),
   });
 
   const initialViewport = useMemo(
@@ -297,8 +296,9 @@ export const App = () => {
     () => ({
       udr: udrData,
       odp: odpData,
+      zones: zonesData,
     }),
-    [udrData, odpData],
+    [udrData, odpData, zonesData],
   );
 
   const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
@@ -314,7 +314,27 @@ export const App = () => {
   // close detail when layers change
   useEffect(() => {
     closeDetail();
-  }, [closeDetail, layerFilter.activeKeys, markerFilter.activeKeys]);
+  }, [closeDetail, layerFilter.activeKeys, markerFilter.activeKeys, zoneFilter.activeKeys]);
+
+  const combinedLayerFilter = useCombinedFilter({
+    combiner: "all",
+    filters: [
+      {
+        filter: layerFilter,
+        mapToActive: (activeLayers) => ({
+          title: t("filters.layer.title"),
+          items: activeLayers,
+        }),
+      },
+      {
+        filter: zoneFilter,
+        mapToActive: (activeZones) => ({
+          title: t("filters.zone.title"),
+          items: activeZones,
+        }),
+      },
+    ],
+  });
 
   return isLoading ? null : (
     <Map
@@ -361,7 +381,7 @@ export const App = () => {
         ),
       }}
     >
-      <Filter expression={markerFilter.expression}>
+      <Filter expression={markerFilter.keepOnEmptyExpression}>
         <Cluster features={markersData?.features ?? []} radius={28}>
           {({ features, lng, lat, key, clusterExpansionZoom }) => (
             <Marker
@@ -395,8 +415,10 @@ export const App = () => {
         </Cluster>
       </Filter>
 
-      <Layer filters={layerFilter.expression} source="udr" styles={udrStyles} />
-      <Layer filters={layerFilter.expression} source="odp" styles={odpStyles} />
+      <Layer filters={zoneFilter.keepOnEmptyExpression} source="zones" styles={zoneStyles} />
+
+      <Layer filters={combinedLayerFilter.expression} source="udr" styles={udrStyles} />
+      <Layer filters={combinedLayerFilter.expression} source="odp" styles={odpStyles} />
 
       <Slot name="controls">
         <ThemeController

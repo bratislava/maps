@@ -22,6 +22,7 @@ export const visitorPropertiesSchema = z.object({
   Vyhradene_en: z.string().nullable().optional(),
   Kod_rezidentskej_zony: z.string().nullable().optional(),
   Status: z.string(),
+  zone: z.string().optional(),
 });
 
 export type VisitorProperties = z.infer<typeof visitorPropertiesSchema>;
@@ -37,6 +38,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
   } = useTranslation("translation", { keyPrefix: "layers.visitors.detail" });
   return (
     <div className="flex flex-col justify-end w-full gap-4">
+      {properties.zone}
       <div className="font-semibold pb-1">{t("title")}</div>
       {properties.Status === "planned" && <div className="font-semibold">{t("planned")}</div>}
       <Row label={t("location")} text={properties["Nazov"]} />

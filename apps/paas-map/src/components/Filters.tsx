@@ -1,7 +1,9 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
-import { Sidebar } from "@bratislava/react-maps-ui";
+import { Divider, Select, SelectOption, Sidebar } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { Layers } from "./Layers";
+import { SelectValueRenderer } from "./SelectValueRenderer";
+import cx from "classnames";
 
 export interface IFiltersProps<LF extends string, MF extends string, ZF extends string> {
   isVisible?: boolean;
@@ -31,11 +33,11 @@ export const Filters = <LF extends string, MF extends string, ZF extends string>
       title={t("title")}
       closeText={t("close")}
     >
-      {/* <div className="flex justify-between px-6 items-center">
+      <div className="flex justify-between px-6 items-center">
         <h2 className="font-semibold text-md py-1">{t("filters.title")}</h2>
       </div>
 
-      <div className={classnames("w-full flex flex-col gap-4", { "px-6": !isMobile })}>
+      <div className={cx("w-full flex flex-col gap-4", { "px-6": !isMobile })}>
         <Select
           noBorder={isMobile}
           className="w-full col-span-3"
@@ -58,9 +60,9 @@ export const Filters = <LF extends string, MF extends string, ZF extends string>
             </SelectOption>
           ))}
         </Select>
-      </div> */}
+      </div>
 
-      {/* <Divider className="mx-6" /> */}
+      <Divider className="mx-6" />
 
       <div className="md:-translate-y-4 flex flex-col gap-4">
         <div className="flex  justify-between px-6 items-center">

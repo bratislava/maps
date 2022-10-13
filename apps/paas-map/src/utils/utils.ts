@@ -1,5 +1,51 @@
-import { addDistrictPropertyToLayer } from "@bratislava/react-maps";
 import { Feature, FeatureCollection } from "geojson";
+import intersect from "@turf/intersect";
+import area from "@turf/area";
+import { Polygon } from "@turf/helpers";
+import { getUniqueValuesFromFeatures } from "@bratislava/utils";
+
+const zoneMapping = {
+  SM1: "SM1",
+  NM1a: "NM1",
+  RU1: "RU1",
+  "PE1-Dvory IV": "PE1",
+} as { [key: string]: string };
+
+export const getIntersectionOfFeatureFromFeatures = (
+  feature: Feature<Polygon>,
+  featureCollection: FeatureCollection<Polygon>,
+) => {
+  const availableFeatures = featureCollection.features;
+
+  for (const availableFeature of availableFeatures) {
+    const intersection = intersect(availableFeature.geometry, feature);
+
+    if (!intersection) {
+      continue;
+    }
+
+    if (area(intersection) > area(feature) / 2) {
+      return availableFeature;
+    }
+  }
+  return null;
+};
+
+export const addZonePropertyToLayer = (
+  featureCollection: FeatureCollection<Polygon>,
+  zonesCollection: FeatureCollection<Polygon>,
+) => ({
+  ...featureCollection,
+  features: featureCollection.features.map((feature: Feature<Polygon>) => {
+    return {
+      ...feature,
+      properties: {
+        ...feature.properties,
+        zone: getIntersectionOfFeatureFromFeatures(feature, zonesCollection)?.properties?.zone,
+      },
+    };
+  }),
+});
 
 export interface ProcessDataOptions {
   rawAssistantsData: FeatureCollection;
@@ -7,9 +53,9 @@ export interface ProcessDataOptions {
   rawPartnersData: FeatureCollection;
   rawParkingLotsData: FeatureCollection;
   rawBranchesData: FeatureCollection;
-  rawUdrData: FeatureCollection;
-  rawOdpData: FeatureCollection;
-  rawZonesData: FeatureCollection;
+  rawUdrData: FeatureCollection<any>;
+  rawOdpData: FeatureCollection<any>;
+  rawZonesData: FeatureCollection<any>;
 }
 
 export const processData = ({
@@ -24,7 +70,26 @@ export const processData = ({
 }: ProcessDataOptions) => {
   let GLOBAL_ID = 0;
 
-  const markersData: FeatureCollection = addDistrictPropertyToLayer({
+  const zonesData: FeatureCollection<Polygon> = {
+    type: "FeatureCollection",
+    features: [
+      ...rawZonesData.features.map((feature) => {
+        GLOBAL_ID++;
+        const layer = "zones";
+        return {
+          ...feature,
+          id: GLOBAL_ID,
+          properties: {
+            ...feature.properties,
+            layer,
+            zone: zoneMapping[feature.properties?.Kod_parkovacej_karty],
+          },
+        } as Feature<Polygon>;
+      }),
+    ].filter((z) => z.properties?.zone),
+  };
+
+  const markersData: FeatureCollection = {
     type: "FeatureCollection",
     features: [
       /*
@@ -133,57 +198,66 @@ export const processData = ({
         })
         .filter((f) => f.properties?.["web"] === "ano"),
     ],
-  });
+  };
 
-  const udrData: FeatureCollection = addDistrictPropertyToLayer({
-    type: "FeatureCollection",
-    features: [
-      ...rawUdrData.features
-        .map((feature) => {
-          GLOBAL_ID++;
-          const layer = "visitors";
-          return {
-            ...feature,
-            id: GLOBAL_ID,
-            properties: {
-              ...feature.properties,
-              layer,
-            },
-          } as Feature;
-        })
-        .filter(
-          (f) =>
-            (f.properties?.["web"] === "ano" || f.properties?.["web"] === "ano - planned") &&
-            (f.properties?.["Status"] === "active" || f.properties?.["Status"] === "planned"),
-        ),
-    ],
-  });
+  const udrData: FeatureCollection = addZonePropertyToLayer(
+    {
+      type: "FeatureCollection",
+      features: [
+        ...rawUdrData.features
+          .map((feature) => {
+            GLOBAL_ID++;
+            const layer = "visitors";
+            return {
+              ...feature,
+              id: GLOBAL_ID,
+              properties: {
+                ...feature.properties,
+                layer,
+              },
+            } as Feature;
+          })
+          .filter(
+            (f) =>
+              (f.properties?.["web"] === "ano" || f.properties?.["web"] === "ano - planned") &&
+              (f.properties?.["Status"] === "active" || f.properties?.["Status"] === "planned"),
+          ),
+      ],
+    } as FeatureCollection<Polygon>,
+    zonesData,
+  );
 
-  const odpData: FeatureCollection = addDistrictPropertyToLayer({
-    type: "FeatureCollection",
-    features: [
-      ...rawOdpData.features
-        .map((feature) => {
-          GLOBAL_ID++;
-          const layer = "residents";
-          return {
-            ...feature,
-            id: GLOBAL_ID,
-            properties: {
-              ...feature.properties,
-              layer,
-            },
-          } as Feature;
-        })
-        .filter(
-          (f) => f.properties?.["Status"] === "active" || f.properties?.["Status"] === "planned",
-        ),
-    ],
-  });
+  const odpData: FeatureCollection = addZonePropertyToLayer(
+    {
+      type: "FeatureCollection",
+      features: [
+        ...rawOdpData.features
+          .map((feature) => {
+            GLOBAL_ID++;
+            const layer = "residents";
+            return {
+              ...feature,
+              id: GLOBAL_ID,
+              properties: {
+                ...feature.properties,
+                layer,
+              },
+            } as Feature;
+          })
+          .filter(
+            (f) => f.properties?.["Status"] === "active" || f.properties?.["Status"] === "planned",
+          ),
+      ],
+    } as FeatureCollection<Polygon>,
+    zonesData,
+  );
+
+  console.log(getUniqueValuesFromFeatures(zonesData.features, "zone"));
 
   return {
     markersData,
     udrData,
+    zonesData,
     odpData,
   };
 };
