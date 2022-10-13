@@ -116,6 +116,7 @@ export default {
         mhdDistance: "Distance to public transport",
         toCentre: "Time to centre",
         navigate: "Navigate",
+        operatingTime: "Operating time",
       },
     },
     garages: {

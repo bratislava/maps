@@ -14,7 +14,7 @@ export const parkingLotPropertiesSchema = z.object({
   Povrch_sk: z.string(),
   Povrch_en: z.string(),
   Navigacia: z.string().nullable(),
-  Otvaracie_hodiny: z.string().nullable(),
+  Prevadzkova_doba: z.string().nullable(),
   Informacia_RPK_sk: z.string().nullable(),
   Informacia_RPK_en: z.string().nullable(),
   Informacia_NPK_sk: z.string().nullable(),
@@ -50,25 +50,23 @@ export const ParkingLotDetail = ({ properties }: ParkingLotDetailProps) => {
         label={t("name")}
         text={language === "sk" ? properties["Nazov_sk"] : properties["Nazov_en"]}
       />
-      <Row label={t("address")} text={properties["Adresa"]} />
+      <Row label={t("operatingTime")} text={properties["Prevadzkova_doba"]} />
 
+      <Row label={t("address")} text={properties["Adresa"]} />
       <Row label={t("count")} text={properties["Pocet_parkovacich_miest"]} />
       <Row label={t("mhd")} text={properties["Verejna_doprava"]} />
       <Row label={t("mhdDistance")} text={properties["Vzdialenost"]} />
       <Row label={t("toCentre")} text={properties["Dojazdova_doba"]} />
-
       {properties["Informacia_RPK_sk"] && (
         <div className="font-light text-[14px]">
           {language === "sk" ? properties["Informacia_RPK_sk"] : properties["Informacia_RPK_en"]}
         </div>
       )}
-
       {properties["Informacia_RPK_sk"] && (
         <div className="font-light text-[14px]">
           {language === "sk" ? properties["Informacia_NPK_sk"] : properties["Informacia_NPK_en"]}
         </div>
       )}
-
       {properties.Navigacia && (
         <div>
           <a

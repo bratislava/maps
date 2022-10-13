@@ -116,6 +116,7 @@ export default {
         mhdDistance: "Vzdialenosť MHD",
         toCentre: "Dojazdová doba do centra",
         navigate: "Navigovať",
+        operatingTime: "Prevádzková doba",
       },
     },
     garages: {
