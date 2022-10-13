@@ -336,6 +336,26 @@ export const App = () => {
     ],
   });
 
+  const zoneMarkerFilter = useCombinedFilter({
+    combiner: "all",
+    filters: [
+      {
+        filter: markerFilter,
+        mapToActive: (activeMarkers) => ({
+          title: t("filters.marker.title"),
+          items: activeMarkers,
+        }),
+      },
+      {
+        filter: zoneFilter,
+        mapToActive: (activeZones) => ({
+          title: t("filters.zone.title"),
+          items: activeZones,
+        }),
+      },
+    ],
+  });
+
   return isLoading ? null : (
     <Map
       ref={mapRef}
@@ -381,7 +401,7 @@ export const App = () => {
         ),
       }}
     >
-      <Filter expression={markerFilter.keepOnEmptyExpression}>
+      <Filter expression={zoneMarkerFilter.expression}>
         <Cluster features={markersData?.features ?? []} radius={28}>
           {({ features, lng, lat, key, clusterExpansionZoom }) => (
             <Marker

@@ -1,7 +1,8 @@
 import { Feature, FeatureCollection } from "geojson";
 import intersect from "@turf/intersect";
+import booleanIntersects from "@turf/boolean-intersects";
 import area from "@turf/area";
-import { Polygon } from "@turf/helpers";
+import { Polygon, Point } from "@turf/helpers";
 import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 
 const zoneMapping = {
@@ -12,19 +13,25 @@ const zoneMapping = {
 } as { [key: string]: string };
 
 export const getIntersectionOfFeatureFromFeatures = (
-  feature: Feature<Polygon>,
+  feature: Feature<Polygon | Point>,
   featureCollection: FeatureCollection<Polygon>,
 ) => {
   const availableFeatures = featureCollection.features;
 
   for (const availableFeature of availableFeatures) {
-    const intersection = intersect(availableFeature.geometry, feature);
+    if (feature.geometry.type === "Polygon") {
+      const intersection = intersect(availableFeature.geometry, feature as Feature<Polygon>);
 
-    if (!intersection) {
-      continue;
+      if (!intersection) {
+        continue;
+      }
+
+      if (area(intersection) > area(feature) / 2) {
+        return availableFeature;
+      }
     }
 
-    if (area(intersection) > area(feature) / 2) {
+    if (feature.geometry.type === "Point" && booleanIntersects(availableFeature, feature)) {
       return availableFeature;
     }
   }
@@ -32,11 +39,11 @@ export const getIntersectionOfFeatureFromFeatures = (
 };
 
 export const addZonePropertyToLayer = (
-  featureCollection: FeatureCollection<Polygon>,
+  featureCollection: FeatureCollection<Polygon | Point>,
   zonesCollection: FeatureCollection<Polygon>,
 ) => ({
   ...featureCollection,
-  features: featureCollection.features.map((feature: Feature<Polygon>) => {
+  features: featureCollection.features.map((feature) => {
     return {
       ...feature,
       properties: {
@@ -86,119 +93,126 @@ export const processData = ({
           },
         } as Feature<Polygon>;
       }),
-    ].filter((z) => z.properties?.zone),
+    ].filter((z) => z.properties?.zone && z.properties.Dátum_spustenia),
   };
 
-  const markersData: FeatureCollection = {
-    type: "FeatureCollection",
-    features: [
-      /*
+  console.log("zonesData", zonesData);
+
+  const markersData: FeatureCollection = addZonePropertyToLayer(
+    {
+      type: "FeatureCollection",
+      features: [
+        /*
         ASSISTNANTS
       */
-      ...rawAssistantsData.features
-        .map((feature) => {
-          GLOBAL_ID++;
-          const kind = "assistants";
-          const icon = "assistant";
-          return {
-            ...feature,
-            id: GLOBAL_ID,
-            properties: {
-              ...feature.properties,
-              kind,
-              icon,
-            },
-          } as Feature;
-        })
-        .filter((f) => f.properties?.["web"] === "ano"),
+        ...rawAssistantsData.features
+          .map((feature) => {
+            GLOBAL_ID++;
+            const kind = "assistants";
+            const icon = "assistant";
+            return {
+              ...feature,
+              id: GLOBAL_ID,
+              properties: {
+                ...feature.properties,
+                kind,
+                icon,
+              },
+            } as Feature;
+          })
+          .filter((f) => f.properties?.["web"] === "ano"),
 
-      /*
+        /*
         BRANCHES
       */
-      ...rawBranchesData.features.map((feature) => {
-        GLOBAL_ID++;
-        const kind = "branches";
-        const icon = "branch";
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            kind,
-            icon,
-          },
-        } as Feature;
-      }),
+        ...rawBranchesData.features.map((feature) => {
+          GLOBAL_ID++;
+          const kind = "branches";
+          const icon = "branch";
+          return {
+            ...feature,
+            id: GLOBAL_ID,
+            properties: {
+              ...feature.properties,
+              kind,
+              icon,
+            },
+          } as Feature;
+        }),
 
-      /*
+        /*
         PARKOMATS
       */
-      ...rawParkomatsData.features
-        .map((feature) => {
-          GLOBAL_ID++;
-          const kind = "parkomats";
-          const icon = "parkomat";
-          return {
-            ...feature,
-            id: GLOBAL_ID,
-            properties: {
-              ...feature.properties,
-              kind,
-              icon,
-            },
-          } as Feature;
-        })
-        .filter((f) => f.properties?.["Web"] === "ano"),
+        ...rawParkomatsData.features
+          .map((feature) => {
+            GLOBAL_ID++;
+            const kind = "parkomats";
+            const icon = "parkomat";
+            return {
+              ...feature,
+              id: GLOBAL_ID,
+              properties: {
+                ...feature.properties,
+                kind,
+                icon,
+              },
+            } as Feature;
+          })
+          .filter((f) => f.properties?.["Web"] === "ano"),
 
-      /*
+        /*
         PARTNERS
       */
-      ...rawPartnersData.features
-        .map((feature) => {
-          GLOBAL_ID++;
-          const kind = "partners";
-          const icon = "partner";
-          return {
-            ...feature,
-            id: GLOBAL_ID,
-            properties: {
-              ...feature.properties,
-              kind,
-              icon,
-            },
-          } as Feature;
-        })
-        .filter((f) => f.properties?.["web"] === "ano"),
+        ...rawPartnersData.features
+          .map((feature) => {
+            GLOBAL_ID++;
+            const kind = "partners";
+            const icon = "partner";
+            return {
+              ...feature,
+              id: GLOBAL_ID,
+              properties: {
+                ...feature.properties,
+                kind,
+                icon,
+              },
+            } as Feature;
+          })
+          .filter((f) => f.properties?.["web"] === "ano"),
 
-      /*
+        /*
         PARKING LOTS
       */
-      ...rawParkingLotsData.features
-        .map((feature) => {
-          GLOBAL_ID++;
-          const type =
-            feature.properties?.["Typ_en"] == "P+R"
-              ? "p-plus-r"
-              : feature.properties?.["Typ_en"] == "garage"
-              ? "garage"
-              : "parking-lot";
+        ...rawParkingLotsData.features
+          .map((feature) => {
+            GLOBAL_ID++;
+            const type =
+              feature.properties?.["Typ_en"] == "P+R"
+                ? "p-plus-r"
+                : feature.properties?.["Typ_en"] == "garage"
+                ? "garage"
+                : "parking-lot";
 
-          const kind =
-            type == "p-plus-r" ? "p-plus-r" : type == "garage" ? "garages" : "parking-lots";
-          const icon = type;
-          return {
-            ...feature,
-            id: GLOBAL_ID,
-            properties: {
-              ...feature.properties,
-              kind,
-              icon,
-            },
-          } as Feature;
-        })
-        .filter((f) => f.properties?.["web"] === "ano"),
-    ],
-  };
+            const kind =
+              type == "p-plus-r" ? "p-plus-r" : type == "garage" ? "garages" : "parking-lots";
+            const icon = type;
+            return {
+              ...feature,
+              id: GLOBAL_ID,
+              properties: {
+                ...feature.properties,
+                kind,
+                icon,
+              },
+            } as Feature;
+          })
+          .filter((f) => f.properties?.["web"] === "ano"),
+      ],
+    } as FeatureCollection<Point>,
+    zonesData,
+  );
+
+  console.log("markersData", markersData);
 
   const udrData: FeatureCollection = addZonePropertyToLayer(
     {
