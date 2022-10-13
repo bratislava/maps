@@ -1,5 +1,20 @@
 export default {
   components: {
+    Map: {
+      errors: {
+        generic: 'Chyba',
+        notLocatedInBratislava: 'Nenachádzate sa v Bratislave',
+        noGeolocationSupport:
+          'Vaše zariadenie alebo prehliadač nepodporuje geolokáciu',
+      },
+      tooltips: {
+        scrollZoomBlockerCtrlMessage:
+          'Použite ctrl + koliesko myši pre priblíženie',
+        scrollZoomBlockerCmdMessage:
+          'Použite ⌘ + koliesko myši pre priblíženie',
+        touchPanBlockerMessage: 'Použite dva prsty pre pohyb na mape',
+      },
+    },
     ThemeController: {
       satelliteMode: 'Letecký podklad',
       darkLightMode: 'Svetlý/Tmavý podklad',

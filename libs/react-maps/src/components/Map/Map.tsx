@@ -38,11 +38,14 @@ import {
   useRef,
   useState,
 } from 'react';
+import { I18nextProvider, useTranslation } from 'react-i18next';
 import { useResizeDetector } from 'react-resize-detector';
+import i18n from '../../utils/i18n';
 
 import { getFeatureDistrict } from '../../utils/districts';
 import { Slot } from '../Layout/Slot';
 import { IMapState, MapAction, MapActionKind, mapReducer } from './mapReducer';
+import { i18n as i18nType } from 'i18next';
 
 export type IMapProps = {
   mapboxAccessToken: string;
@@ -69,14 +72,6 @@ export type IMapProps = {
   maxBounds?: [[number, number], [number, number]];
   cooperativeGestures?: boolean;
   interactive?: boolean;
-  scrollZoomBlockerCtrlMessage: string;
-  scrollZoomBlockerCmdMessage: string;
-  touchPanBlockerMessage: string;
-  errors: {
-    generic: string;
-    notLocatedInBratislava: string;
-    noGeolocationSupport: string;
-  };
   mapInformationButtonClassName?: string;
   mapInformation: {
     title: string;
@@ -90,25 +85,26 @@ export type IMapProps = {
     }[];
     footer: ReactNode;
   };
+  prevI18n: i18nType;
 } & MapboxGesturesOptions;
 
 export interface IMapMethods {
   changeViewport: (
     wantedViewport: PartialViewport,
-    duration?: number
+    duration?: number,
   ) => void | undefined;
   fitDistrict: (district: string | string[]) => void;
   fitBounds: (
     bounds: mapboxgl.LngLatBoundsLike,
-    options?: mapboxgl.FitBoundsOptions
+    options?: mapboxgl.FitBoundsOptions,
   ) => void;
   fitFeature: (
     features: Feature | Feature[],
-    options?: { padding?: number }
+    options?: { padding?: number },
   ) => void;
   moveToFeatures: (
     features: Feature | Feature[],
-    options?: { zoom?: number }
+    options?: { zoom?: number },
   ) => void;
   turnOnGeolocation: () => void;
   turnOffGeolocation: () => void;
@@ -150,7 +146,7 @@ export const mapContext = createContext<IMapContext>({
   },
 });
 
-export const Map = forwardRef<MapHandle, IMapProps>(
+const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
   (
     {
       mapboxAccessToken,
@@ -172,16 +168,17 @@ export const Map = forwardRef<MapHandle, IMapProps>(
       maxBounds,
       cooperativeGestures = false,
       interactive,
-      scrollZoomBlockerCtrlMessage,
-      scrollZoomBlockerCmdMessage,
-      touchPanBlockerMessage,
-      errors,
       mapInformation,
       mapInformationButtonClassName,
+      prevI18n,
     },
-    forwardedRef
+    forwardedRef,
   ) => {
     const mapboxRef = useRef<MapboxHandle>(null);
+
+    const { t } = useTranslation('maps', {
+      keyPrefix: 'components.Map',
+    });
 
     const [isDevInfoVisible, setDevInfoVisible] = useState(false);
 
@@ -203,9 +200,9 @@ export const Map = forwardRef<MapHandle, IMapProps>(
               left: 0,
             },
           },
-          inputInitialViewport ?? {}
+          inputInitialViewport ?? {},
         ),
-      [inputInitialViewport]
+      [inputInitialViewport],
     );
 
     const [mapState, dispatchMapState] = useReducer(mapReducer, {
@@ -221,65 +218,58 @@ export const Map = forwardRef<MapHandle, IMapProps>(
     const [isMobile, setMobile] = useState<boolean | null>(null);
     const [isLoading, setLoading] = useState(true);
 
-    const geolocationChangeHandler = useCallback(
-      (isGeolocation: boolean) => {
-        if (isGeolocation) {
-          // if browser supports geolocation
-          if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                const geolocationMarkerLngLat = {
-                  lng: position.coords.longitude,
-                  lat: position.coords.latitude,
-                };
+    const geolocationChangeHandler = useCallback((isGeolocation: boolean) => {
+      if (isGeolocation) {
+        // if browser supports geolocation
+        if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const geolocationMarkerLngLat = {
+                lng: position.coords.longitude,
+                lat: position.coords.latitude,
+              };
 
-                const isInBratislava = !!getFeatureDistrict({
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [
-                      geolocationMarkerLngLat.lng,
-                      geolocationMarkerLngLat.lat,
-                    ],
-                  },
-                  properties: {},
-                });
+              const isInBratislava = !!getFeatureDistrict({
+                type: 'Feature',
+                geometry: {
+                  type: 'Point',
+                  coordinates: [
+                    geolocationMarkerLngLat.lng,
+                    geolocationMarkerLngLat.lat,
+                  ],
+                },
+                properties: {},
+              });
 
-                if (!isInBratislava) {
-                  alert(errors.notLocatedInBratislava);
-                  return;
-                }
-
-                console.log('ADDING GEOLOCATION MARKER');
-                mapboxRef.current?.changeViewport({
-                  center: geolocationMarkerLngLat,
-                  zoom: 18,
-                });
-
-                dispatchMapState({
-                  type: MapActionKind.EnableGeolocation,
-                  geolocationMarkerLngLat,
-                });
-              },
-              (error) => {
-                alert(`${errors.generic}: ${error.message}`);
+              if (!isInBratislava) {
+                alert(t('errors.notLocatedInBratislava'));
+                return;
               }
-            );
-          } else {
-            alert(errors.noGeolocationSupport);
-          }
+
+              console.log('ADDING GEOLOCATION MARKER');
+              mapboxRef.current?.changeViewport({
+                center: geolocationMarkerLngLat,
+                zoom: 18,
+              });
+
+              dispatchMapState({
+                type: MapActionKind.EnableGeolocation,
+                geolocationMarkerLngLat,
+              });
+            },
+            (error) => {
+              alert(`${t('errors.generic')}: ${error.message}`);
+            },
+          );
         } else {
-          dispatchMapState({
-            type: MapActionKind.DisableGeolocation,
-          });
+          alert(t('errors.noGeolocationSupport'));
         }
-      },
-      [
-        errors.generic,
-        errors.noGeolocationSupport,
-        errors.notLocatedInBratislava,
-      ]
-    );
+      } else {
+        dispatchMapState({
+          type: MapActionKind.DisableGeolocation,
+        });
+      }
+    }, []);
 
     const [, setControlsMarginTop] = useState(0);
     const [controlsMarginRight, setControlsMarginRight] = useState(0);
@@ -306,7 +296,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
           () => {
             toggleDevInfo();
             return false;
-          }
+          },
         );
         return () => {
           moustrapBind.unbind(['ctrl+shift+d', 'command+shift+d']);
@@ -316,7 +306,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
     const changeViewport = (
       wantedViewport: PartialViewport,
-      duration?: number
+      duration?: number,
     ) => mapboxRef?.current?.changeViewport(wantedViewport, duration);
 
     const fitDistrict = (district: string | string[]) => {
@@ -325,8 +315,8 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
       const districts = Array.isArray(district) ? district : [district];
 
-      const districtFeatures = DISTRICTS_GEOJSON.features.filter(
-        (feature) => districts.includes(feature.properties.name)
+      const districtFeatures = DISTRICTS_GEOJSON.features.filter((feature) =>
+        districts.includes(feature.properties.name),
       );
 
       if (districtFeatures.length === 0) return;
@@ -341,7 +331,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
     const fitBounds = (
       bounds: mapboxgl.LngLatBoundsLike,
-      options?: mapboxgl.FitBoundsOptions
+      options?: mapboxgl.FitBoundsOptions,
     ) => {
       if (!mapboxRef.current) return;
       const MAP = mapboxRef.current;
@@ -350,7 +340,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
     const fitFeature = (
       features: Feature | Feature[],
-      options?: { padding?: number }
+      options?: { padding?: number },
     ) => {
       if (!mapboxRef.current) return;
       const MAP = mapboxRef.current;
@@ -370,7 +360,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
     const moveToFeatures = (
       features: Feature | Feature[],
-      options?: { zoom?: number }
+      options?: { zoom?: number },
     ) => {
       if (!mapboxRef.current) return;
       const MAP = mapboxRef.current;
@@ -427,7 +417,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         addSearchMarker,
         removeSearchMarker,
       }),
-      [geolocationChangeHandler, mapState.isGeolocation]
+      [geolocationChangeHandler, mapState.isGeolocation],
     );
 
     // EXPOSING METHODS FOR PARENT COMPONENT
@@ -452,7 +442,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
             left: 0,
           },
         },
-        0
+        0,
       );
       setControlsMarginTop(0);
       setControlsMarginRight(0);
@@ -472,10 +462,10 @@ export const Map = forwardRef<MapHandle, IMapProps>(
     useEffect(() => {
       // move the mapbox logo
       const mapboxLogoElement = document.querySelector(
-        '.mapboxgl-ctrl-bottom-left'
+        '.mapboxgl-ctrl-bottom-left',
       );
       const informationElement = document.querySelector(
-        '.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl'
+        '.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl',
       );
       if (!mapboxLogoElement || !informationElement) return;
 
@@ -522,7 +512,7 @@ export const Map = forwardRef<MapHandle, IMapProps>(
         containerRef,
         methods: mapMethods,
       }),
-      [mapboxAccessToken, mapState, isMobile, containerRef, mapMethods]
+      [mapboxAccessToken, mapState, isMobile, containerRef, mapMethods],
     );
 
     // DISPLAY/HIDE WARNING MODAL TO ROTATE DEVICE TO PORTRAIT MODE
@@ -539,185 +529,205 @@ export const Map = forwardRef<MapHandle, IMapProps>(
 
     const mapboxLocale = useMemo(
       () => ({
-        'ScrollZoomBlocker.CtrlMessage': scrollZoomBlockerCtrlMessage,
-        'ScrollZoomBlocker.CmdMessage': scrollZoomBlockerCmdMessage,
-        'TouchPanBlocker.Message': touchPanBlockerMessage,
+        'ScrollZoomBlocker.CtrlMessage': t(
+          'tooltips.scrollZoomBlockerCtrlMessage',
+        ),
+        'ScrollZoomBlocker.CmdMessage': t(
+          'tooltips.scrollZoomBlockerCmdMessage',
+        ),
+        'TouchPanBlocker.Message': t('tooltips.touchPanBlockerMessage'),
       }),
-      [
-        scrollZoomBlockerCtrlMessage,
-        scrollZoomBlockerCmdMessage,
-        touchPanBlockerMessage,
-      ]
+      [t],
     );
 
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
 
     return (
-      <div className={cx('h-full w-full relative text-foreground-lightmode')}>
-        <mapContext.Provider value={mapContextValue}>
-          <div
-            ref={containerRef}
-            className="w-full h-full relative z-10 text-font dark:text-foreground-darkmode"
-          >
-            <Mapbox
-              interactive={interactive}
-              initialViewport={initialViewport}
-              ref={mapboxRef}
-              isDarkmode={mapState.isDarkmode}
-              isSatellite={mapState.isSatellite}
-              layerPrefix={layerPrefix}
-              mapStyles={mapStyles}
-              mapboxAccessToken={mapboxAccessToken}
-              sources={sources}
-              icons={icons}
-              onFeaturesClick={onFeaturesClick}
-              selectedFeatures={selectedFeatures}
-              onLoad={onLoad}
-              onClick={onMapClick}
-              onViewportChange={onViewportChange}
-              isDevelopment={isDevelopment && isDevInfoVisible}
-              disablePitch={disablePitch}
-              disableBearing={disableBearing}
-              maxBounds={maxBounds}
-              cooperativeGestures={cooperativeGestures}
-              locale={mapboxLocale}
+      <I18nextProvider i18n={prevI18n}>
+        <div className={cx('h-full w-full relative text-foreground-lightmode')}>
+          <mapContext.Provider value={mapContextValue}>
+            <div
+              ref={containerRef}
+              className="text-font dark:text-foreground-darkmode relative z-10 h-full w-full"
             >
-              {/* information button */}
-              <Slot name="information-button">
-                <IconButton
-                  onClick={() => setInformationModalOpen(true)}
-                  className={cx(
-                    'absolute left-4 top-4 w-8 h-8 sm:top-6 sm:left-auto sm:right-6 rounded-full',
-                    mapInformationButtonClassName
-                  )}
-                >
-                  <InformationAlt size="sm" />
-                </IconButton>
-              </Slot>
-
-              <>{children}</>
-
-              {/* geolocation marker */}
-              {mapState.isGeolocation && mapState.geolocationMarkerLngLat && (
-                <Marker
-                  feature={{
-                    type: 'Feature',
-                    geometry: {
-                      type: 'Point',
-                      coordinates: [
-                        mapState.geolocationMarkerLngLat.lng,
-                        mapState.geolocationMarkerLngLat.lat,
-                      ],
-                    },
-                    properties: {},
-                  }}
-                >
-                  <div className="relative flex items-center justify-center">
-                    <div className="opacity-20 flex items-center justify-center">
-                      <div className="absolute bg-gray-lightmode dark:bg-gray-darkmode w-20 h-20 rounded-full animate-ping" />
-                    </div>
-                    <div className="absolute w-4 h-4 bg-white dark:bg-black border-4 border-black dark:border-white rounded-full" />
-                  </div>
-                </Marker>
-              )}
-
-              {/* search marker */}
-              {mapState.searchMarkerLngLat && (
-                <Marker
-                  feature={point([
-                    mapState.searchMarkerLngLat.lng,
-                    mapState.searchMarkerLngLat.lat,
-                  ])}
-                  isRelativeToZoom
-                  className="relative"
-                >
-                  <div className="bg-primary w-4 h-4 rotate-45 rounded-full rounded-br-none p-1" />
-                </Marker>
-              )}
-            </Mapbox>
-          </div>
-        </mapContext.Provider>
-        <div
-          className={cx(
-            'fixed select-none dark:text-foreground-darkmode z-50 top-0 right-0 bottom-0 left-0 bg-background-lightmode dark:bg-background-darkmode flex items-center justify-center text-primary transition-all delay-1000 duration-1000',
-            {
-              'visible opacity-100': isLoading,
-              'invisible opacity-0': !isLoading,
-            }
-          )}
-        >
-          <LoadingSpinner
-            color={loadingSpinnerColor ?? '#5158D8'}
-            size={100}
-            thickness={200}
-            speed={200}
-          />
-        </div>
-
-        <Modal
-          className="max-w-xs"
-          isOpen={isDisplayLandscapeModal}
-          closeButtonIcon={
-            <ArrowCounterclockwise size="lg" className="text-white" />
-          }
-        >
-          <div className="flex flex-col gap-2 text-center pb-4">
-            <div>Na mobilnom zariadení je mapu najlepšie používať na výšku</div>
-            <div className="text-[14px]">
-              Zanechajte nám spätnú väzbu na adrese{' '}
-              <a
-                href="mailto:mapy.inovacie@bratislava.sk"
-                className="underline"
+              <Mapbox
+                interactive={interactive}
+                initialViewport={initialViewport}
+                ref={mapboxRef}
+                isDarkmode={mapState.isDarkmode}
+                isSatellite={mapState.isSatellite}
+                layerPrefix={layerPrefix}
+                mapStyles={mapStyles}
+                mapboxAccessToken={mapboxAccessToken}
+                sources={sources}
+                icons={icons}
+                onFeaturesClick={onFeaturesClick}
+                selectedFeatures={selectedFeatures}
+                onLoad={onLoad}
+                onClick={onMapClick}
+                onViewportChange={onViewportChange}
+                isDevelopment={isDevelopment && isDevInfoVisible}
+                disablePitch={disablePitch}
+                disableBearing={disableBearing}
+                maxBounds={maxBounds}
+                cooperativeGestures={cooperativeGestures}
+                locale={mapboxLocale}
               >
-                mapy.inovacie@bratislava.sk
-              </a>
-            </div>
-          </div>
-        </Modal>
+                {/* information button */}
+                <Slot name="information-button">
+                  <IconButton
+                    onClick={() => setInformationModalOpen(true)}
+                    className={cx(
+                      'absolute left-4 top-4 w-8 h-8 sm:top-6 sm:left-auto sm:right-6 rounded-full',
+                      mapInformationButtonClassName,
+                    )}
+                  >
+                    <InformationAlt size="sm" />
+                  </IconButton>
+                </Slot>
 
-        <Modal
-          className="max-w-xl !p-0"
-          isOpen={isInformationModalOpen}
-          closeButtonInCorner
-          onClose={() => setInformationModalOpen(false)}
-        >
-          <div className="flex flex-col gap-6 pt-6">
-            <div className="font-medium text-md px-6">
-              {mapInformation.title}
-            </div>
-            <div className="px-6">{mapInformation.description}</div>
-            <div className="flex flex-wrap px-6 justify-center items-center gap-4 py-2">
-              {mapInformation.partners.map((partner, index) => (
-                <a
-                  key={index}
-                  target="_blank"
-                  href={partner.link}
-                  className="block"
-                  rel="noreferrer"
-                >
-                  <img
-                    className="object-contain"
-                    style={{
-                      height: partner.height ?? 36,
-                      width: partner.width ?? 'auto',
+                <>{children}</>
+
+                {/* geolocation marker */}
+                {mapState.isGeolocation && mapState.geolocationMarkerLngLat && (
+                  <Marker
+                    feature={{
+                      type: 'Feature',
+                      geometry: {
+                        type: 'Point',
+                        coordinates: [
+                          mapState.geolocationMarkerLngLat.lng,
+                          mapState.geolocationMarkerLngLat.lat,
+                        ],
+                      },
+                      properties: {},
                     }}
-                    src={partner.image}
-                    alt={partner.name}
-                  />
-                </a>
-              ))}
+                  >
+                    <div className="relative flex items-center justify-center">
+                      <div className="flex items-center justify-center opacity-20">
+                        <div className="bg-gray-lightmode dark:bg-gray-darkmode absolute h-20 w-20 animate-ping rounded-full" />
+                      </div>
+                      <div className="absolute h-4 w-4 rounded-full border-4 border-black bg-white dark:border-white dark:bg-black" />
+                    </div>
+                  </Marker>
+                )}
+
+                {/* search marker */}
+                {mapState.searchMarkerLngLat && (
+                  <Marker
+                    feature={point([
+                      mapState.searchMarkerLngLat.lng,
+                      mapState.searchMarkerLngLat.lat,
+                    ])}
+                    isRelativeToZoom
+                    className="relative"
+                  >
+                    <div className="bg-primary h-4 w-4 rotate-45 rounded-full rounded-br-none p-1" />
+                  </Marker>
+                )}
+              </Mapbox>
             </div>
-            <div className="bg-gray-lightmode/5 dark:bg-gray-darkmode/10 px-6 py-4 flex gap-5 items-center">
-              <Feedback size="xl" />
-              <div className="text-[14px]">{mapInformation.footer}</div>
-            </div>
+          </mapContext.Provider>
+          <div
+            className={cx(
+              'fixed select-none dark:text-foreground-darkmode z-50 top-0 right-0 bottom-0 left-0 bg-background-lightmode dark:bg-background-darkmode flex items-center justify-center text-primary transition-all delay-1000 duration-1000',
+              {
+                'visible opacity-100': isLoading,
+                'invisible opacity-0': !isLoading,
+              },
+            )}
+          >
+            <LoadingSpinner
+              color={loadingSpinnerColor ?? '#5158D8'}
+              size={100}
+              thickness={200}
+              speed={200}
+            />
           </div>
-        </Modal>
-      </div>
+
+          <Modal
+            className="max-w-xs"
+            isOpen={isDisplayLandscapeModal}
+            closeButtonIcon={
+              <ArrowCounterclockwise size="lg" className="text-white" />
+            }
+          >
+            <div className="flex flex-col gap-2 pb-4 text-center">
+              <div>
+                Na mobilnom zariadení je mapu najlepšie používať na výšku
+              </div>
+              <div className="text-[14px]">
+                Zanechajte nám spätnú väzbu na adrese{' '}
+                <a
+                  href="mailto:mapy.inovacie@bratislava.sk"
+                  className="underline"
+                >
+                  mapy.inovacie@bratislava.sk
+                </a>
+              </div>
+            </div>
+          </Modal>
+
+          <Modal
+            className="max-w-xl !p-0"
+            isOpen={isInformationModalOpen}
+            closeButtonInCorner
+            onClose={() => setInformationModalOpen(false)}
+          >
+            <div className="flex flex-col gap-6 pt-6">
+              <div className="text-md px-6 font-medium">
+                {mapInformation.title}
+              </div>
+              <div className="px-6">{mapInformation.description}</div>
+              <div className="flex flex-wrap items-center justify-center gap-4 px-6 py-2">
+                {mapInformation.partners.map((partner, index) => (
+                  <a
+                    key={index}
+                    target="_blank"
+                    href={partner.link}
+                    className="block"
+                    rel="noreferrer"
+                  >
+                    <img
+                      className="object-contain"
+                      style={{
+                        height: partner.height ?? 36,
+                        width: partner.width ?? 'auto',
+                      }}
+                      src={partner.image}
+                      alt={partner.name}
+                    />
+                  </a>
+                ))}
+              </div>
+              <div className="bg-gray-lightmode/5 dark:bg-gray-darkmode/10 flex items-center gap-5 px-6 py-4">
+                <Feedback size="xl" />
+                <div className="text-[14px]">{mapInformation.footer}</div>
+              </div>
+            </div>
+          </Modal>
+        </div>
+      </I18nextProvider>
     );
-  }
+  },
+);
+
+MapWithoutTranslations.displayName = 'MapWithoutTranslations';
+
+export const Map = forwardRef<MapHandle, Omit<IMapProps, 'prevI18n'>>(
+  (props, forwardedRef) => {
+    const { i18n: prevI18n } = useTranslation();
+
+    return (
+      <I18nextProvider i18n={i18n}>
+        <MapWithoutTranslations
+          {...props}
+          ref={forwardedRef}
+          prevI18n={prevI18n}
+        />
+      </I18nextProvider>
+    );
+  },
 );
 
 Map.displayName = 'Map';
-
-export default Map;
