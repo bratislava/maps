@@ -67,14 +67,16 @@ export const Detail = ({ features, arcgisServerUrl, onClose }: DetailProps) => {
             label={t(`layers.esri.detail.description`)}
             text={feature?.properties?.["POPIS_VYKONU_1"]}
           />
-          <Row
-            label={t(`layers.esri.detail.date`)}
-            text={new Date(feature?.properties?.["TERMIN_REAL_1"]).toLocaleString(i18n.language, {
-              year: "numeric",
-              day: "numeric",
-              month: "numeric",
-            })}
-          />
+          {feature?.properties?.["TERMIN_REAL_1"] && (
+            <Row
+              label={t(`layers.esri.detail.date`)}
+              text={new Date(feature?.properties?.["TERMIN_REAL_1"]).toLocaleString(i18n.language, {
+                year: "numeric",
+                day: "numeric",
+                month: "numeric",
+              })}
+            />
+          )}
           <Row label={t(`layers.esri.detail.district`)} text={feature?.properties?.["district"]} />
 
           {attachments && !!attachments.length && (

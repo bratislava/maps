@@ -137,7 +137,6 @@ export const App = () => {
 
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>();
   const [isMobile, setMobile] = useState<boolean | null>(null);
-  const [isGeolocation, setGeolocation] = useState(false);
 
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
@@ -160,7 +159,6 @@ export const App = () => {
 
   const typeFilter = useFilter({
     property: "TYP_VYKONU_1",
-    keepOnEmpty: true,
     keys: uniqueTypes,
     defaultValues: useMemo(
       () => uniqueTypes.reduce((prev, curr) => ({ ...prev, [curr]: true }), {}),
@@ -321,15 +319,6 @@ export const App = () => {
       selectedFeatures={selectedFeatures}
       onFeaturesClick={onFeaturesClick}
       onMobileChange={setMobile}
-      onGeolocationChange={setGeolocation}
-      scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
-      scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
-      touchPanBlockerMessage={t("tooltips.touchPanBlockerMessage")}
-      errors={{
-        generic: t("errors.generic"),
-        notLocatedInBratislava: t("errors.notLocatedInBratislava"),
-        noGeolocationSupport: t("errors.noGeolocationSupport"),
-      }}
       mapInformation={{
         title: t("informationModal.title"),
         description: (
@@ -402,8 +391,6 @@ export const App = () => {
 
       <Slot name="mobile-controls">
         <ThemeController
-          darkLightModeTooltip={t("tooltips.darkLightMode")}
-          satelliteModeTooltip={t("tooltips.satelliteMode")}
           className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
             "translate-x-96": isSidebarVisible && !isMobile,
           })}
