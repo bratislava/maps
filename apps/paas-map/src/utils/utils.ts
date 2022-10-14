@@ -3,7 +3,6 @@ import intersect from "@turf/intersect";
 import booleanIntersects from "@turf/boolean-intersects";
 import area from "@turf/area";
 import { Polygon, Point } from "@turf/helpers";
-import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 
 const zoneMapping = {
   SM1: "SM1",
@@ -237,30 +236,28 @@ export const processData = ({
     zonesData,
   );
 
-  const odpData: FeatureCollection = addZonePropertyToLayer(
-    {
-      type: "FeatureCollection",
-      features: [
-        ...rawOdpData.features
-          .map((feature) => {
-            GLOBAL_ID++;
-            const layer = "residents";
-            return {
-              ...feature,
-              id: GLOBAL_ID,
-              properties: {
-                ...feature.properties,
-                layer,
-              },
-            } as Feature;
-          })
-          .filter(
-            (f) => f.properties?.["Status"] === "active" || f.properties?.["Status"] === "planned",
-          ),
-      ],
-    } as FeatureCollection<Polygon>,
-    zonesData,
-  );
+  const odpData: FeatureCollection = {
+    type: "FeatureCollection",
+    features: [
+      ...rawOdpData.features
+        .map((feature) => {
+          GLOBAL_ID++;
+          const layer = "residents";
+          return {
+            ...feature,
+            id: GLOBAL_ID,
+            properties: {
+              ...feature.properties,
+              layer,
+              zone: feature.properties?.Kod_parkovacej_zony,
+            },
+          } as Feature;
+        })
+        .filter(
+          (f) => f.properties?.["Status"] === "active" || f.properties?.["Status"] === "planned",
+        ),
+    ],
+  } as FeatureCollection<Polygon>;
 
   return {
     markersData,

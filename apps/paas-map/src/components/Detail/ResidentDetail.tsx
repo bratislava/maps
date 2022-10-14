@@ -9,6 +9,7 @@ export const residentPropertiesSchema = z.object({
   Informacia_RPK_sk: z.string().nullable().optional(),
   Informacia_RPK_en: z.string().nullable().optional(),
   Status: z.string(),
+  zone: z.string().optional(),
 });
 
 export type ResidentProperties = z.infer<typeof residentPropertiesSchema>;
