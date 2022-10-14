@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 /// <reference types="vite-plugin-svgr/client" />
-
+/// <reference types="vite-plugin-pwa/client" />
 interface ImportMetaEnv {
   readonly PUBLIC_MAPBOX_PUBLIC_TOKEN: string;
   readonly PUBLIC_MAPBOX_LIGHT_STYLE: string;
