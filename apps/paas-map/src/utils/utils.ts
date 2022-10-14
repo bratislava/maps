@@ -3,11 +3,13 @@ import intersect from "@turf/intersect";
 import booleanIntersects from "@turf/boolean-intersects";
 import area from "@turf/area";
 import { Polygon, Point } from "@turf/helpers";
+import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 
 const zoneMapping = {
   SM1: "SM1",
   NM1a: "NM1",
   RU1: "RU1",
+  RA1: "RA1",
   "PE1-Dvory IV": "PE1",
 } as { [key: string]: string };
 
@@ -75,6 +77,8 @@ export const processData = ({
   rawOdpData,
 }: ProcessDataOptions) => {
   let GLOBAL_ID = 0;
+
+  // console.log(getUniqueValuesFromFeatures(rawZonesData.features, "Kod_parkovacej_karty"));
 
   const zonesData: FeatureCollection<Polygon> = {
     type: "FeatureCollection",

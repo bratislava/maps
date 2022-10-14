@@ -270,7 +270,7 @@ export const App = () => {
 
   const zoneFilter = useFilter({
     property: "zone",
-    keys: useMemo(() => ["SM1", "NM1", "RU1", "PE1"], []),
+    keys: useMemo(() => ["SM1", "NM1", "RU1", "PE1", "RA1"], []),
   });
 
   const initialViewport = useMemo(
@@ -316,45 +316,13 @@ export const App = () => {
     closeDetail();
   }, [closeDetail, layerFilter.activeKeys, markerFilter.activeKeys, zoneFilter.activeKeys]);
 
-  const combinedLayerFilter = useCombinedFilter({
-    combiner: "all",
-    filters: [
-      {
-        filter: layerFilter,
-        mapToActive: (activeLayers) => ({
-          title: t("filters.layer.title"),
-          items: activeLayers,
-        }),
-      },
-      {
-        filter: zoneFilter,
-        mapToActive: (activeZones) => ({
-          title: t("filters.zone.title"),
-          items: activeZones,
-        }),
-      },
-    ],
-  });
-
-  const zoneMarkerFilter = useCombinedFilter({
-    combiner: "all",
-    filters: [
-      {
-        filter: markerFilter,
-        mapToActive: (activeMarkers) => ({
-          title: t("filters.marker.title"),
-          items: activeMarkers,
-        }),
-      },
-      {
-        filter: zoneFilter,
-        mapToActive: (activeZones) => ({
-          title: t("filters.zone.title"),
-          items: activeZones,
-        }),
-      },
-    ],
-  });
+  // zoom to zone/zones after zone filter change
+  useEffect(() => {
+    const filteredZones = zonesData?.features.filter((zoneFeature) =>
+      zoneFilter.activeKeys.find((activeKey) => activeKey === zoneFeature.properties?.zone),
+    );
+    if (filteredZones?.length) mapRef.current?.fitFeature(filteredZones);
+  }, [zoneFilter.activeKeys, zonesData?.features]);
 
   return isLoading ? null : (
     <Map
@@ -401,7 +369,7 @@ export const App = () => {
         ),
       }}
     >
-      <Filter expression={zoneMarkerFilter.expression}>
+      <Filter expression={markerFilter.keepOnEmptyExpression}>
         <Cluster features={markersData?.features ?? []} radius={28}>
           {({ features, lng, lat, key, clusterExpansionZoom }) => (
             <Marker
@@ -437,8 +405,8 @@ export const App = () => {
 
       <Layer filters={zoneFilter.keepOnEmptyExpression} source="zones" styles={zoneStyles} />
 
-      <Layer filters={combinedLayerFilter.expression} source="udr" styles={udrStyles} />
-      <Layer filters={combinedLayerFilter.expression} source="odp" styles={odpStyles} />
+      <Layer filters={layerFilter.keepOnEmptyExpression} source="udr" styles={udrStyles} />
+      <Layer filters={layerFilter.keepOnEmptyExpression} source="odp" styles={odpStyles} />
 
       <Slot name="controls">
         <ThemeController

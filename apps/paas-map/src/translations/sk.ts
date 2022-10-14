@@ -14,6 +14,7 @@ export default {
         NM1: "Nové mesto - NM1",
         RU1: "Ružinov - RU1",
         PE1: "Petržalka Dvory 4 - PE1",
+        RA1: "Rača Krasňany - RA1",
       },
     },
   },
