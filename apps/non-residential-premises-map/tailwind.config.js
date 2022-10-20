@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-var-requires */
+const colors = require("./src/utils/colors.js");
 
 module.exports = {
   presets: [require("../../libs/react-maps-ui/tailwind.config")],
@@ -13,8 +14,8 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#E46054",
-          soft: "#E46054",
+          DEFAULT: colors.primary,
+          soft: colors.primarySoft,
         },
       },
     },

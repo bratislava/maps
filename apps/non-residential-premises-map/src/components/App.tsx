@@ -1,21 +1,32 @@
+import { useArcgis } from "@bratislava/react-use-arcgis";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import "../styles.css";
+import colors from "../utils/colors.json";
+
+import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 
 // maps
 import {
-  DISTRICTS_GEOJSON,
   Layout,
   Map,
   MapHandle,
+  SearchBar,
   Slot,
   SlotType,
   ThemeController,
   ViewportController,
 } from "@bratislava/react-maps";
 
-import { Layer, Marker, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
+import {
+  Cluster,
+  Filter,
+  Layer,
+  Marker,
+  useCombinedFilter,
+  useFilter,
+} from "@bratislava/react-mapbox";
 
 // layer styles
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
@@ -25,30 +36,47 @@ import { usePrevious } from "@bratislava/utils";
 import { FeatureCollection } from "geojson";
 import { MapboxGeoJSONFeature } from "mapbox-gl";
 import { processData } from "../utils/utils";
-import { DesktopFilters } from "./desktop/DesktopFilters";
-import { MobileFilters } from "./mobile/MobileFilters";
-import { MobileHeader } from "./mobile/MobileHeader";
-import { MobileSearch } from "./mobile/MobileSearch";
+import { Filters } from "./Filters";
+import { point } from "@turf/helpers";
+
+import ESRI_STYLE from "../layer-styles/esri";
+import Detail from "./Detail";
+import { IconButton } from "@bratislava/react-maps-ui";
+import { Funnel } from "@bratislava/react-maps-icons";
+import { Feature } from "@bratislava/utils/src/types";
+
+const GEOPORTAL_LAYER_URL =
+  "https://geoportal.bratislava.sk/hsite/rest/services/majetok/N%C3%A1jom_nebytov%C3%BDch_priestorov_mesta_Bratislava/MapServer/4";
 
 export const App = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const { data: rawData } = useArcgis(GEOPORTAL_LAYER_URL, {
+    format: "geojson",
+  });
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
+  const [uniquePurposes, setUniquePurposes] = useState<string[]>([]);
   const [uniqueOccupancies, setUniqueOccupancies] = useState<string[]>([]);
+
+  const [zoom, setZoom] = useState(0);
 
   useEffect(() => {
     document.title = t("tabTitle");
   }, [t]);
 
   useEffect(() => {
-    const { data, uniqueDistricts, uniqueOccupancies } = processData();
-    setLoading(false);
-    setUniqueDistricts(uniqueDistricts);
-    setUniqueOccupancies(uniqueOccupancies);
-    setData(data);
-  }, []);
+    if (rawData) {
+      const { data, uniqueDistricts, uniquePurposes, uniqueOccupancies } = processData(rawData);
+      setLoading(false);
+      setUniqueDistricts(uniqueDistricts);
+      setUniquePurposes(uniquePurposes);
+      setUniqueOccupancies(uniqueOccupancies);
+      setData(data);
+    }
+  }, [rawData]);
 
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
 
@@ -56,19 +84,18 @@ export const App = () => {
 
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
-  const [isGeolocation, setGeolocation] = useState(false);
 
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
 
-  const purposeFilter = useFilter({
-    property: "purpose",
-    keys: useMemo(() => [] as string[], []),
-  });
-
   const districtFilter = useFilter({
     property: "district",
     keys: uniqueDistricts,
+  });
+
+  const purposeFilter = useFilter({
+    property: "purpose",
+    keys: uniquePurposes,
   });
 
   const occupancyFilter = useFilter({
@@ -84,13 +111,6 @@ export const App = () => {
         mapToActive: (activePurposes) => ({
           title: t("filters.purpose.title"),
           items: activePurposes,
-        }),
-      },
-      {
-        filter: districtFilter,
-        mapToActive: (activeDistricts) => ({
-          title: t("filters.district.title"),
-          items: activeDistricts,
         }),
       },
       {
@@ -183,9 +203,15 @@ export const App = () => {
     [data],
   );
 
+  const areMarkersVisible = useMemo(() => {
+    return zoom < 15;
+  }, [zoom]);
+
+  const isDetailOpen = useMemo(() => !!selectedFeature, [selectedFeature]);
+
   return isLoading ? null : (
     <Map
-      loadingSpinnerColor="#E46054"
+      loadingSpinnerColor={colors.primary}
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={mapStyles}
@@ -196,16 +222,8 @@ export const App = () => {
       onFeaturesClick={(features) => setSelectedFeature(features[0])}
       selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
-      onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
-      scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
-      scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
-      touchPanBlockerMessage={t("tooltips.touchPanBlockerMessage")}
-      errors={{
-        generic: t("errors.generic"),
-        notLocatedInBratislava: t("errors.notLocatedInBratislava"),
-        noGeolocationSupport: t("errors.noGeolocationSupport"),
-      }}
+      onViewportChangeDebounced={({ zoom }) => setZoom(zoom)}
       mapInformation={{
         title: t("informationModal.title"),
         description: (
@@ -233,6 +251,11 @@ export const App = () => {
             link: "https://inovacie.bratislava.sk/",
             image: "logos/inovation.png",
           },
+          {
+            name: "geoportal",
+            link: "https://geoportal.bratislava.sk/pfa/apps/sites/#/verejny-mapovy-portal",
+            image: "logos/geoportal.png",
+          },
         ],
         footer: (
           <Trans i18nKey="informationModal.footer">
@@ -244,10 +267,31 @@ export const App = () => {
         ),
       }}
     >
-      {/* <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} /> */}
+      <Layer isVisible={!areMarkersVisible} source="ESRI_DATA" styles={ESRI_STYLE} />
+
+      <Filter expression={combinedFilter.expression}>
+        {areMarkersVisible && (
+          <Cluster features={data?.features ?? []} radius={28}>
+            {({ features, lng, lat, key }) => (
+              <Marker
+                key={key}
+                feature={point([lng, lat])}
+                onClick={() => {
+                  mapRef.current?.changeViewport({ center: { lat, lng }, zoom: 16 });
+                }}
+              >
+                <div className="w-8 cursor-pointer font-semibold h-8 bg-primary flex items-center justify-center rounded-full text-white">
+                  {features.length}
+                </div>
+              </Marker>
+            )}
+          </Cluster>
+        )}
+      </Filter>
+
       <Layer
         ignoreClick
-        filters={districtFilter.expression}
+        filters={districtFilter.keepOnEmptyExpression}
         source="DISTRICTS_GEOJSON"
         styles={DISTRICTS_STYLE}
       />
@@ -264,17 +308,12 @@ export const App = () => {
           }}
           isRelativeToZoom
         >
-          <div
-            className="w-4 h-4 bg-background-lightmode dark:bg-background-darkmode border-[2px] rounded-full"
-            style={{ borderColor: selectedFeatures[0].properties?.["color"] }}
-          ></div>
+          <div className="w-4 h-4 bg-background-lightmode dark:bg-background-darkmode border-[2px] rounded-full border-primary" />
         </Marker>
       )}
 
       <Slot name="controls">
         <ThemeController
-          darkLightModeTooltip={t("tooltips.darkLightMode")}
-          satelliteModeTooltip={t("tooltips.satelliteMode")}
           className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
             "translate-x-96": isSidebarVisible && !isMobile,
           })}
@@ -283,18 +322,19 @@ export const App = () => {
           className="fixed right-4 bottom-[88px] sm:bottom-8"
           slots={viewportControllerSlots}
         />
-        <MobileSearch mapRef={mapRef} isGeolocation={isGeolocation} />
-      </Slot>
+        <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
+          <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
+        </div>
 
-      <Layout isOnlyMobile>
-        <Slot name="mobile-header">
-          <MobileHeader
-            onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
-          />
-        </Slot>
-
-        <Slot name="mobile-filter" isVisible={isSidebarVisible} setVisible={setSidebarVisible}>
-          <MobileFilters
+        <Slot
+          openPadding={{
+            left: !isMobile ? 384 : 0, // w-96 or 24rem
+          }}
+          name="filters"
+          isVisible={isSidebarVisible}
+          setVisible={setSidebarVisible}
+        >
+          <Filters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
             areFiltersDefault={combinedFilter.areDefault}
@@ -303,31 +343,42 @@ export const App = () => {
             purposeFilter={purposeFilter}
             districtFilter={districtFilter}
             occupancyFilter={occupancyFilter}
+            isMobile={isMobile ?? false}
           />
+        </Slot>
+      </Slot>
+
+      <Layout isOnlyMobile>
+        <Slot name="mobile-header">
+          <div className="fixed top-4 right-4 z-10 sm:hidden">
+            <IconButton onClick={() => setSidebarVisible(true)}>
+              <Funnel size="md" />
+            </IconButton>
+          </div>
+        </Slot>
+
+        <Slot
+          name="mobile-detail"
+          isVisible={isDetailOpen}
+          openPadding={{
+            bottom: window.innerHeight / 2, // w-96 or 24rem
+          }}
+          avoidControls={false}
+        >
+          <Detail isMobile features={selectedFeatures ?? []} onClose={closeDetail} />
         </Slot>
       </Layout>
 
       <Layout isOnlyDesktop>
         <Slot
-          name="desktop-filters"
-          isVisible={isSidebarVisible}
-          setVisible={setSidebarVisible}
+          name="desktop-detail"
+          isVisible={isDetailOpen}
           openPadding={{
-            left: 384, // w-96 or 24rem
+            right: 384,
           }}
+          avoidControls={false}
         >
-          <DesktopFilters
-            isVisible={isSidebarVisible}
-            setVisible={setSidebarVisible}
-            areFiltersDefault={combinedFilter.areDefault}
-            onResetFiltersClick={combinedFilter.reset}
-            mapRef={mapRef}
-            purposeFilter={purposeFilter}
-            districtFilter={districtFilter}
-            isGeolocation={isGeolocation}
-            occupancyFilter={occupancyFilter}
-            filters={combinedFilter.expression}
-          />
+          <Detail isMobile={false} features={selectedFeatures ?? []} onClose={closeDetail} />
         </Slot>
       </Layout>
     </Map>

@@ -1,5 +1,7 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
-import { Funnel } from "@bratislava/react-maps-icons";
+import { SearchBar } from "@bratislava/react-maps";
+import { Funnel, X } from "@bratislava/react-maps-icons";
+import cx from "classnames";
 import {
   ActiveFilters,
   Divider,
@@ -9,40 +11,49 @@ import {
   Sidebar,
 } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
-import { SelectValueRenderer } from "../SelectValueRenderer";
+import { SelectValueRenderer } from "./SelectValueRenderer";
 
-export interface IMobileFiltersProps {
+export interface IFiltersProps {
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
-  activeFilters: IActiveFilter[];
   onResetFiltersClick: () => void;
   purposeFilter: IFilterResult<string>;
   districtFilter: IFilterResult<string>;
   occupancyFilter: IFilterResult<string>;
+  isMobile?: boolean;
+  activeFilters: IActiveFilter[];
 }
 
-export const MobileFilters = ({
+export const Filters = ({
   isVisible,
   setVisible,
   areFiltersDefault,
-  activeFilters,
   onResetFiltersClick,
   purposeFilter,
   districtFilter,
   occupancyFilter,
-}: IMobileFiltersProps) => {
-  const { t } = useTranslation();
+  isMobile = false,
+  activeFilters,
+}: IFiltersProps) => {
+  const { t, i18n } = useTranslation();
 
   return (
     <Sidebar
-      position="right"
-      isMobile
+      position={isMobile ? "right" : "left"}
+      isMobile={isMobile}
       isVisible={isVisible}
       setVisible={setVisible}
       title={t("title")}
+      closeText={t("close")}
     >
-      <div>
+      {!isMobile && (
+        <div className="mx-6 hidden md:block relative">
+          <SearchBar placeholder={t("search")} language={i18n.language} />
+        </div>
+      )}
+
+      {isMobile && (
         <ActiveFilters
           areFiltersDefault={areFiltersDefault}
           activeFilters={activeFilters}
@@ -50,22 +61,30 @@ export const MobileFilters = ({
           title={t("activeFilters")}
           resetFiltersButtonText={t("resetFilters")}
         />
-      </div>
+      )}
 
-      <div>
-        <div className="flex px-6 items-center">
-          <div className="-ml-2">
-            <Funnel />
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between px-6 items-center">
+          <div className="flex gap-2 items-center">
+            {isMobile && <Funnel />}
+            <h2 className="font-semibold text-md py-1">{t("filters.title")}</h2>
           </div>
-          <h2 className="font-bold text-md py-1">{t("filters.title")}</h2>
+          {!areFiltersDefault && (
+            <button
+              onClick={onResetFiltersClick}
+              className="flex gap-2 items-center hover:underline"
+            >
+              <span className="font-semibold">{t("filters.reset")}</span>
+              <X className="text-primary" />
+            </button>
+          )}
         </div>
 
-        <div className="w-full flex flex-col">
+        <div className={cx("w-full gap-4", { "px-6 grid grid-cols-2": !isMobile })}>
           <Select
-            noBorder
-            className="w-full"
-            buttonClassName="px-3"
-            placeholder={t("filters.district.placeholder")}
+            noBorder={isMobile}
+            buttonClassName={isMobile ? "px-3" : ""}
+            className={cx("w-full", { "col-span-2": !isMobile })}
             value={districtFilter.activeKeys}
             isMultiple
             onChange={(value) => districtFilter.setActiveOnly(value ?? [])}
@@ -88,14 +107,20 @@ export const MobileFilters = ({
           </Select>
 
           <Select
-            noBorder
-            className="w-full"
-            buttonClassName="px-3"
-            placeholder={t("filters.purpose.placeholder")}
+            noBorder={isMobile}
+            className={cx("w-full", { "col-span-1": !isMobile })}
+            buttonClassName={isMobile ? "px-3" : ""}
             value={purposeFilter.activeKeys}
             isMultiple
             onChange={(value) => purposeFilter.setActiveOnly(value ?? [])}
             onReset={() => purposeFilter.setActiveAll(false)}
+            renderValue={({ values }) => (
+              <SelectValueRenderer
+                values={values}
+                placeholder={t("filters.purpose.placeholder")}
+                multiplePlaceholder={`${t("filters.district.multiplePurposes")} (${values.length})`}
+              />
+            )}
           >
             {purposeFilter.keys.map((purpose) => (
               <SelectOption key={purpose} value={purpose}>
@@ -105,9 +130,9 @@ export const MobileFilters = ({
           </Select>
 
           <Select
-            noBorder
-            className="w-full"
-            buttonClassName="px-3"
+            noBorder={isMobile}
+            className={cx("w-full", { "col-span-1": !isMobile })}
+            buttonClassName={isMobile ? "px-3" : ""}
             value={occupancyFilter.activeKeys}
             isMultiple
             onChange={(value) => occupancyFilter.setActiveOnly(value ?? [])}
@@ -127,31 +152,34 @@ export const MobileFilters = ({
             ))}
           </Select>
         </div>
-
-        {/* <div className="mt-3">
-          <TagFilter
-            title={t("filters.season.title")}
-            values={seasonFilter.values.map((season) => ({
-              key: season.key,
-              label: t(`filters.season.seasons.${season.key}`),
-              isActive: season.isActive,
-            }))}
-            onTagClick={(season) => {
-              if (seasonFilter.activeKeys.length == 4) {
-                seasonFilter.setActiveOnly(season);
-              } else if (
-                !(seasonFilter.activeKeys.length == 1 && seasonFilter.activeKeys[0] == season)
-              ) {
-                seasonFilter.toggleActive(season);
-              }
-            }}
-          />
-        </div> */}
       </div>
 
-      <Divider className="mx-6" />
+      {/* <TagFilter
+        title={t("filters.season.title")}
+        values={seasonFilter.values.map((season) => ({
+          key: season.key,
+          label: t(`filters.season.seasons.${season.key}`),
+          isActive: season.isActive,
+        }))}
+        onTagClick={(season) => {
+          if (seasonFilter.activeKeys.length == 4) {
+            seasonFilter.setActiveOnly(season);
+          } else if (
+            !(seasonFilter.activeKeys.length == 1 && seasonFilter.activeKeys[0] == season)
+          ) {
+            seasonFilter.toggleActive(season);
+          }
+        }}
+      /> */}
 
-      <h2 className="font-semibold px-6 text-md">{t("layersLabel")}</h2>
+      <Divider className="mx-6" />
+      <div className="flex flex-col gap-3">
+        <h2 className="font-semibold px-6 text-md">{t("layersLabel")}</h2>
+      </div>
+
+      {/* <pre className="p-2 h-72 bg-black text-white overflow-auto">
+        <code>{JSON.stringify(filters, null, 2)}</code>
+      </pre> */}
     </Sidebar>
   );
 };
