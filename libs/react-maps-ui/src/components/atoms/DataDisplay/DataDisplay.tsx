@@ -5,7 +5,7 @@ export const DataDisplay = ({
   text,
 }: {
   label?: ReactNode | null;
-  text?: string | null;
+  text?: string | number | null;
 }) => {
   if (!text || (text === " " && !label)) {
     return null;
@@ -13,16 +13,16 @@ export const DataDisplay = ({
     return (
       <div>
         <div className="font-light text-[14px]">{label}</div>
-        {text.startsWith("http") ? (
+        {text.toString().startsWith("http") ? (
           <a
-            href={text}
+            href={text.toString()}
             className="underline font-semibold"
             target="_blank"
             rel="noreferrer"
           >
-            {new URL(text).hostname.replace("www.", "")}
+            {new URL(text.toString()).hostname.replace("www.", "")}
           </a>
-        ) : text.includes("@") ? (
+        ) : text.toString().includes("@") ? (
           <a href={`mailto:${text}`} className="underline font-semibold">
             {text}
           </a>
