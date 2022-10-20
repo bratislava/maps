@@ -73,6 +73,8 @@ export type IMapProps = {
   cooperativeGestures?: boolean;
   interactive?: boolean;
   mapInformationButtonClassName?: string;
+  onViewportChange?: (viewport: Viewport) => void;
+  onViewportChangeDebounced?: (viewport: Viewport) => void;
   mapInformation: {
     title: string;
     description: ReactNode;
@@ -171,6 +173,8 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
       mapInformation,
       mapInformationButtonClassName,
       prevI18n,
+      onViewportChange,
+      onViewportChangeDebounced,
     },
     forwardedRef,
   ) => {
@@ -423,12 +427,16 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
     // EXPOSING METHODS FOR PARENT COMPONENT
     useImperativeHandle(forwardedRef, () => mapMethods, [mapMethods]);
 
-    const onViewportChange = useCallback((viewport: Viewport) => {
-      dispatchMapState({
-        type: MapActionKind.ChangeViewport,
-        viewport,
-      });
-    }, []);
+    const handleViewportChange = useCallback(
+      (viewport: Viewport) => {
+        if (onViewportChange) onViewportChange(viewport);
+        dispatchMapState({
+          type: MapActionKind.ChangeViewport,
+          viewport,
+        });
+      },
+      [onViewportChange],
+    );
 
     useEffect(() => {
       if (isMobile !== null && onMobileChange) onMobileChange(isMobile);
@@ -565,7 +573,8 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
                 selectedFeatures={selectedFeatures}
                 onLoad={onLoad}
                 onClick={onMapClick}
-                onViewportChange={onViewportChange}
+                onViewportChange={handleViewportChange}
+                onViewportChangeDebounced={onViewportChangeDebounced}
                 isDevelopment={isDevelopment && isDevInfoVisible}
                 disablePitch={disablePitch}
                 disableBearing={disableBearing}
