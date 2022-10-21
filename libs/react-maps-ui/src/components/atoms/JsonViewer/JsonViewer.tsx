@@ -8,7 +8,7 @@ export const JsonViewer = ({ json }: IJsonViewerProps) => {
   return (
     <div>
       <JSONPretty
-        className="overflow-hidden font-bold border-2 border-background-darkmode dark:border-gray-darkmode/20 rounded-lg"
+        className="w-full overflow-hidden font-bold border-2 border-background-darkmode dark:border-gray-darkmode/20 rounded-lg"
         data={json}
         theme={{
           main: "line-height:1.3;color:#6ce1fc;background:#333333;overflow:auto;padding:1rem;",
