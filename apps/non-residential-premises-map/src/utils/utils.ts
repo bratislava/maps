@@ -18,6 +18,7 @@ export const processData = (rawData: FeatureCollection) => {
               (prev, key) => ({ ...prev, [`ORIGINAL_${key}`]: feature.properties?.[key] }),
               {},
             ),
+            locality: feature.properties?.["ulica"],
             purpose: feature.properties?.["Účel"],
             lessee: feature.properties?.["Nájomca"],
             occupancy,

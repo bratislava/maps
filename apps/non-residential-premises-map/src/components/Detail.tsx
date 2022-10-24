@@ -51,6 +51,7 @@ export const Detail = ({ features, onClose, isMobile }: DetailProps) => {
           {feature?.properties?.occupancy === "free" ? t("detail.free") : t("detail.occupied")}
         </Tag>
 
+        <DataDisplay label={t(`detail.locality`)} text={feature?.properties?.locality} />
         <DataDisplay label={t(`detail.purpose`)} text={feature?.properties?.purpose} />
         <DataDisplay label={t(`detail.lessee`)} text={feature?.properties?.lessee} />
         <DataDisplay label={t(`detail.rentUntil`)} text={feature?.properties?.rentUntil} />
