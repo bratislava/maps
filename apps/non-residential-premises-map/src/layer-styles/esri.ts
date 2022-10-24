@@ -1,11 +1,10 @@
-import colors from "../utils/colors.json";
-
 const styles = [
   {
     id: "esri",
     type: "circle",
     paint: {
-      "circle-color": colors.primary,
+      "circle-color": ["get", "color"],
+      "circle-opacity": 1,
       "circle-radius": [
         "interpolate",
         ["linear"],

@@ -6,12 +6,16 @@ import {
   ActiveFilters,
   Divider,
   IActiveFilter,
+  JsonViewer,
   Select,
   SelectOption,
   Sidebar,
+  Slider,
 } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { SelectValueRenderer } from "./SelectValueRenderer";
+
+const isDevelopment = !!import.meta.env.DEV;
 
 export interface IFiltersProps {
   isVisible?: boolean;
@@ -23,6 +27,13 @@ export interface IFiltersProps {
   occupancyFilter: IFilterResult<string>;
   isMobile?: boolean;
   activeFilters: IActiveFilter[];
+
+  minArea: number;
+  maxArea: number;
+  minPrice: number;
+  maxPrice: number;
+  onAreaChange: (minMax: [number, number]) => void;
+  onPriceChange: (minMax: [number, number]) => void;
 }
 
 export const Filters = ({
@@ -35,6 +46,12 @@ export const Filters = ({
   occupancyFilter,
   isMobile = false,
   activeFilters,
+  minArea,
+  maxArea,
+  minPrice,
+  maxPrice,
+  onAreaChange,
+  onPriceChange,
 }: IFiltersProps) => {
   const { t, i18n } = useTranslation();
 
@@ -63,7 +80,7 @@ export const Filters = ({
         />
       )}
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         <div className="flex justify-between px-6 items-center">
           <div className="flex gap-2 items-center">
             {isMobile && <Funnel />}
@@ -81,76 +98,112 @@ export const Filters = ({
         </div>
 
         <div className={cx("w-full gap-4", { "px-6 grid grid-cols-2": !isMobile })}>
-          <Select
-            noBorder={isMobile}
-            buttonClassName={isMobile ? "px-3" : ""}
-            className={cx("w-full", { "col-span-2": !isMobile })}
-            value={districtFilter.activeKeys}
-            isMultiple
-            onChange={(value) => districtFilter.setActiveOnly(value ?? [])}
-            onReset={() => districtFilter.setActiveAll(false)}
-            renderValue={({ values }) => (
-              <SelectValueRenderer
-                values={values}
-                placeholder={t("filters.district.placeholder")}
-                multiplePlaceholder={`${t("filters.district.multipleDistricts")} (${
-                  values.length
-                })`}
-              />
-            )}
-          >
-            {districtFilter.keys.map((district) => (
-              <SelectOption key={district} value={district}>
-                {district}
-              </SelectOption>
-            ))}
-          </Select>
+          <div className={cx("w-full flex flex-col gap-2", { "col-span-2": !isMobile })}>
+            <Select
+              noBorder={isMobile}
+              buttonClassName={isMobile ? "px-3" : ""}
+              value={districtFilter.activeKeys}
+              isMultiple
+              onChange={(value) => districtFilter.setActiveOnly(value ?? [])}
+              onReset={() => districtFilter.setActiveAll(false)}
+              renderValue={({ values }) => (
+                <SelectValueRenderer
+                  values={values}
+                  placeholder={t("filters.district.placeholder")}
+                  multiplePlaceholder={`${t("filters.district.multipleDistricts")} (${
+                    values.length
+                  })`}
+                />
+              )}
+            >
+              {districtFilter.keys.map((district) => (
+                <SelectOption key={district} value={district}>
+                  {district}
+                </SelectOption>
+              ))}
+            </Select>
+            {isDevelopment && <JsonViewer json={districtFilter.expression} />}
+          </div>
 
-          <Select
-            noBorder={isMobile}
-            className={cx("w-full", { "col-span-1": !isMobile })}
-            buttonClassName={isMobile ? "px-3" : ""}
-            value={purposeFilter.activeKeys}
-            isMultiple
-            onChange={(value) => purposeFilter.setActiveOnly(value ?? [])}
-            onReset={() => purposeFilter.setActiveAll(false)}
-            renderValue={({ values }) => (
-              <SelectValueRenderer
-                values={values}
-                placeholder={t("filters.purpose.placeholder")}
-                multiplePlaceholder={`${t("filters.district.multiplePurposes")} (${values.length})`}
-              />
-            )}
-          >
-            {purposeFilter.keys.map((purpose) => (
-              <SelectOption key={purpose} value={purpose}>
-                {purpose}
-              </SelectOption>
-            ))}
-          </Select>
+          <div className={cx("w-full flex flex-col gap-2", { "col-span-1": !isMobile })}>
+            <Select
+              noBorder={isMobile}
+              buttonClassName={isMobile ? "px-3" : ""}
+              value={purposeFilter.activeKeys}
+              isMultiple
+              onChange={(value) => purposeFilter.setActiveOnly(value ?? [])}
+              onReset={() => purposeFilter.setActiveAll(false)}
+              renderValue={({ values }) => (
+                <SelectValueRenderer
+                  values={values}
+                  placeholder={t("filters.purpose.placeholder")}
+                  multiplePlaceholder={`${t("filters.purpose.multiplePurposes")} (${
+                    values.length
+                  })`}
+                />
+              )}
+            >
+              {purposeFilter.keys.map((purpose) => (
+                <SelectOption key={purpose} value={purpose}>
+                  {purpose}
+                </SelectOption>
+              ))}
+            </Select>
+            {isDevelopment && <JsonViewer json={purposeFilter.expression} />}
+          </div>
 
-          <Select
-            noBorder={isMobile}
-            className={cx("w-full", { "col-span-1": !isMobile })}
-            buttonClassName={isMobile ? "px-3" : ""}
-            value={occupancyFilter.activeKeys}
-            isMultiple
-            onChange={(value) => occupancyFilter.setActiveOnly(value ?? [])}
-            onReset={() => occupancyFilter.setActiveAll(false)}
-            renderValue={({ values }) => (
-              <SelectValueRenderer
-                values={values}
-                placeholder={t("filters.occupancy.placeholder")}
-                multiplePlaceholder={`${t("filters.occupancy.multipleKinds")} (${values.length})`}
-              />
-            )}
-          >
-            {occupancyFilter.keys.map((occupancy) => (
-              <SelectOption key={occupancy} value={occupancy}>
-                {occupancy}
-              </SelectOption>
-            ))}
-          </Select>
+          <div className={cx("w-full flex flex-col gap-2", { "col-span-1": !isMobile })}>
+            <Select
+              noBorder={isMobile}
+              buttonClassName={isMobile ? "px-3" : ""}
+              value={occupancyFilter.activeKeys}
+              isMultiple
+              onChange={(value) => occupancyFilter.setActiveOnly(value ?? [])}
+              onReset={() => occupancyFilter.setActiveAll(false)}
+              renderValue={({ values }) => (
+                <SelectValueRenderer
+                  values={values}
+                  placeholder={t("filters.occupancy.placeholder")}
+                  multiplePlaceholder={`${t("filters.occupancy.multipleOccupancies")} (${
+                    values.length
+                  })`}
+                />
+              )}
+            >
+              {occupancyFilter.keys.map((occupancy) => (
+                <SelectOption key={occupancy} value={occupancy}>
+                  {occupancy}
+                </SelectOption>
+              ))}
+            </Select>
+            {isDevelopment && <JsonViewer json={occupancyFilter.expression} />}
+          </div>
+        </div>
+
+        <div className="px-6 flex flex-col gap-4">
+          <Slider
+            label={t("filters.area.title")}
+            minValue={0}
+            maxValue={15_000}
+            unit={
+              <span>
+                m<sup className="text-xs font-bold">2</sup>
+              </span>
+            }
+            step={100}
+            onChangeEnd={(a) => Array.isArray(a) && onAreaChange(a as [number, number])}
+            defaultValue={[minArea, maxArea]}
+          />
+
+          <Slider
+            label={t("filters.price.title")}
+            minValue={0}
+            maxValue={100_000}
+            unit="€"
+            step={1000}
+            onChangeEnd={(p) => Array.isArray(p) && onPriceChange(p as [number, number])}
+            defaultValue={[minPrice, maxPrice]}
+          />
         </div>
       </div>
 

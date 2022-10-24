@@ -1,11 +1,12 @@
 import cx from "classnames";
-import { ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 
 export interface ITagProps {
   className?: string;
   onClick?: () => void;
   children: ReactNode;
   isSmall?: boolean;
+  style?: CSSProperties;
 }
 
 export const Tag = ({
@@ -13,6 +14,7 @@ export const Tag = ({
   onClick,
   children,
   isSmall = false,
+  style,
 }: ITagProps) => {
   return (
     <div
@@ -27,6 +29,7 @@ export const Tag = ({
         className
       )}
       onClick={onClick}
+      style={style}
     >
       {children}
     </div>

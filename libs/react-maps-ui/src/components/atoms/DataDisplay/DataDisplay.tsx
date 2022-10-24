@@ -5,7 +5,7 @@ export const DataDisplay = ({
   text,
 }: {
   label?: ReactNode | null;
-  text?: string | number | null;
+  text?: ReactNode;
 }) => {
   if (!text || (text === " " && !label)) {
     return null;

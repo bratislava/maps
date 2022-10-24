@@ -47,7 +47,7 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
       openPadding = {},
       avoidControls = true,
     },
-    ref
+    ref,
   ) => {
     const [isVisible, setVisible] = useState<boolean | undefined>();
 
@@ -63,21 +63,21 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
 
     const paddingTop = useMemo(
       () => (openPadding.top ? (isVisible ? openPadding.top : 0) : undefined),
-      [openPadding.top, isVisible]
+      [openPadding.top, isVisible],
     );
     const paddingRight = useMemo(
       () =>
         openPadding.right ? (isVisible ? openPadding.right : 0) : undefined,
-      [openPadding.right, isVisible]
+      [openPadding.right, isVisible],
     );
     const paddingBottom = useMemo(
       () =>
         openPadding.bottom ? (isVisible ? openPadding.bottom : 0) : undefined,
-      [openPadding.bottom, isVisible]
+      [openPadding.bottom, isVisible],
     );
     const paddingLeft = useMemo(
       () => (openPadding.left ? (isVisible ? openPadding.left : 0) : undefined),
-      [openPadding.left, isVisible]
+      [openPadding.left, isVisible],
     );
 
     const marginTop = useMemo(
@@ -87,7 +87,7 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
             ? openPadding.top
             : 0
           : undefined,
-      [openPadding.top, isVisible, avoidControls]
+      [openPadding.top, isVisible, avoidControls],
     );
     const marginRight = useMemo(
       () =>
@@ -96,7 +96,7 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
             ? openPadding.right
             : 0
           : undefined,
-      [openPadding.right, isVisible, avoidControls]
+      [openPadding.right, isVisible, avoidControls],
     );
     const marginBottom = useMemo(
       () =>
@@ -105,7 +105,7 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
             ? openPadding.bottom
             : 0
           : undefined,
-      [openPadding.bottom, isVisible, avoidControls]
+      [openPadding.bottom, isVisible, avoidControls],
     );
     const marginLeft = useMemo(
       () =>
@@ -114,7 +114,7 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
             ? openPadding.left
             : 0
           : undefined,
-      [openPadding.left, isVisible, avoidControls]
+      [openPadding.left, isVisible, avoidControls],
     );
 
     const { changeViewport } = useContext(mapboxContext);
@@ -155,26 +155,25 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
       }
     }, [margin, previousMargin, mapMethods]);
 
-    return bottomSheetOptions ? (
-      <BottomSheet
-        snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 88]}
-        defaultSnap={({ snapPoints }) => snapPoints[1]}
-        blocking={false}
-        // onDismiss={() => {
-        //   inputSetVisible ? inputSetVisible(false) : setVisible(false);
-        // }}
-        open={isVisible ?? false}
-        className={cx('relative z-30')}
-        expandOnContentDrag
-        header={bottomSheetOptions.header}
-        footer={bottomSheetOptions.footer}
-      >
-        {children}
-      </BottomSheet>
-    ) : (
+    return bottomSheetOptions ? // <BottomSheet
+    //   snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 88]}
+    //   defaultSnap={({ snapPoints }) => snapPoints[1]}
+    //   blocking={false}
+    //   // onDismiss={() => {
+    //   //   inputSetVisible ? inputSetVisible(false) : setVisible(false);
+    //   // }}
+    //   open={isVisible ?? false}
+    //   className={cx('relative z-30')}
+    //   expandOnContentDrag
+    //   header={bottomSheetOptions.header}
+    //   footer={bottomSheetOptions.footer}
+    // >
+    //   {children}
+    // </BottomSheet>
+    null : (
       <>{children}</>
     );
-  }
+  },
 );
 
 Slot.displayName = 'Slot';

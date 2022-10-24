@@ -20,6 +20,7 @@ export * from "./atoms/Select/SelectOption";
 export * from "./atoms/Sidebar/Sidebar";
 export * from "./atoms/JsonViewer/JsonViewer";
 export * from "./atoms/Tag/Tag";
+export * from "./atoms/Slider";
 export * from "./molecules/ActiveFilters/ActiveFilters";
 export * from "./molecules/Layers/Layers";
 // molecules

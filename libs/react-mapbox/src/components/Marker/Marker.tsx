@@ -1,5 +1,6 @@
-import { Feature, Point } from "geojson";
-import { Marker as MapboxMarker } from "mapbox-gl";
+import { AnimatePresence } from 'framer-motion';
+import { Feature, Point } from 'geojson';
+import { Marker as MapboxMarker } from 'mapbox-gl';
 import {
   MouseEvent,
   ReactNode,
@@ -8,10 +9,11 @@ import {
   useEffect,
   useMemo,
   useState,
-} from "react";
-import { createPortal } from "react-dom";
-import { filterContext } from "../Filter/Filter";
-import { mapboxContext } from "../Mapbox/Mapbox";
+} from 'react';
+import { createPortal } from 'react-dom';
+import { filterContext } from '../Filter/Filter';
+import { mapboxContext } from '../Mapbox/Mapbox';
+import { motion } from 'framer-motion';
 
 export interface IMarkerProps {
   children?: ReactNode;
@@ -39,7 +41,7 @@ export const Marker = ({
 
   const marker: MapboxMarker = useMemo(() => {
     return new MapboxMarker({
-      element: document.createElement("div"),
+      element: document.createElement('div'),
     }).setLngLat([0, 0]);
   }, []);
 
@@ -55,9 +57,9 @@ export const Marker = ({
 
   useEffect(() => {
     recalculateScale();
-    map?.on("zoom", recalculateScale);
+    map?.on('zoom', recalculateScale);
     return () => {
-      map?.off("zoom", recalculateScale);
+      map?.off('zoom', recalculateScale);
     };
   }, [map, recalculateScale, isRelativeToZoom]);
 
@@ -80,33 +82,38 @@ export const Marker = ({
       e.stopPropagation();
       onClick && onClick(e);
     },
-    [onClick]
+    [onClick],
   );
 
   const isVisible = useMemo(() => {
     if (ignoreFilters) return true;
 
     if (isFeatureVisible) {
-      console.log(isFeatureVisible(feature));
       return isFeatureVisible(feature);
     }
     return true;
   }, [feature, isFeatureVisible, ignoreFilters]);
 
   return createPortal(
-    isVisible ? (
-      <div
-        onMouseMove={(e) => e.stopPropagation()}
-        style={{
-          transform: `scale(${scale})`,
-          transformOrigin: "center",
-        }}
-        className={className}
-        onClick={clickHandler}
-      >
-        {children}
-      </div>
-    ) : null,
-    marker.getElement()
+    <AnimatePresence>
+      {isVisible ? (
+        <motion.div
+          onMouseMove={(e) => e.stopPropagation()}
+          style={{
+            transform: `scale(${scale})`,
+            transformOrigin: 'center',
+          }}
+          initial={{ scale: 0 }}
+          exit={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className={className}
+          onClick={clickHandler}
+        >
+          {children}
+        </motion.div>
+      ) : null}
+    </AnimatePresence>,
+
+    marker.getElement(),
   );
 };

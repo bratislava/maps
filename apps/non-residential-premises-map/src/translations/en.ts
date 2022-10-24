@@ -11,7 +11,7 @@ export default {
     purpose: {
       title: "Purpose",
       placeholder: "Purpose",
-      multiplePorposes: "",
+      multiplePurposes: "Selected",
     },
     occupancy: {
       title: "Occupancy",
@@ -23,25 +23,32 @@ export default {
       placeholder: "District",
       multipleDistricts: "Selected",
     },
+    area: {
+      title: "Area",
+    },
+    price: {
+      title: "Approximate price per year",
+    },
+  },
+  detail: {
+    title: "Premise detail",
+    locality: "Locality",
+    purpose: "Purpose",
+    lessee: "Lessee",
+    rentUntil: "Rent until",
+    approximateArea: "Approximate area",
+    approximateRentPricePerYear: "Approximate rent price per year",
+    description: "Description",
+    contract: "Contract",
+    free: "Free",
+    occupied: "Occupied",
   },
   // react-maps-ui
   activeFilters: "Active filters",
   resetFilters: "Reset filters",
-  errors: {
-    generic: "Error",
-    notLocatedInBratislava: "You are not located in Bratislava",
-    noGeolocationSupport: "Your device or browser does not support geolocation",
-  },
-  tooltips: {
-    darkLightMode: "Light/Dark Base",
-    satelliteMode: "Aerial",
-    scrollZoomBlockerCtrlMessage: "Use ctrl + scroll to zoom the map",
-    scrollZoomBlockerCmdMessage: "Use ⌘ + scroll to zoom the map",
-    touchPanBlockerMessage: "Use two fingers to move the map",
-  },
   informationModal: {
     title: "Map information",
-    description: "Map of sport grounds in Bratislava.",
+    description: "Map of non-residential premises in Bratislava.",
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },

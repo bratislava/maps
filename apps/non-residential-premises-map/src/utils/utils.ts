@@ -2,12 +2,15 @@ import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps";
 import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 import { featureCollection } from "@turf/helpers";
 import { FeatureCollection } from "geojson";
+import colors from "../utils/colors.json";
 
 export const processData = (rawData: FeatureCollection) => {
   const data: FeatureCollection = addDistrictPropertyToLayer(
     featureCollection(
       rawData.features.map((feature) => {
         const originalPropertiesKeys = Object.keys(feature.properties ?? {});
+        const occupancy = feature.properties?.["Obsadenosť"] === "obsadené" ? "occupied" : "free";
+        const color = occupancy === "occupied" ? colors.occupied : colors.free;
         return {
           ...feature,
           properties: {
@@ -17,11 +20,12 @@ export const processData = (rawData: FeatureCollection) => {
             ),
             purpose: feature.properties?.["Účel"],
             lessee: feature.properties?.["Nájomca"],
-            occupancy: feature.properties?.["Obsadenosť"] === "obsadené" ? "occupied" : "free",
+            occupancy,
             rentUntil: feature.properties?.["Doba_nájmu"],
             description: feature.properties?.["Poznámka"],
             approximateArea: feature.properties?.["Orientačná_výmera_v_m2"],
             approximateRentPricePerYear: feature.properties?.["Cena_rok"],
+            color,
           },
         };
       }),

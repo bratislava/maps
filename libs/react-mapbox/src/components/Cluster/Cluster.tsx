@@ -1,3 +1,4 @@
+import { AnimatePresence } from 'framer-motion';
 import { Feature, Point } from 'geojson';
 import {
   FC,

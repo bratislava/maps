@@ -19,31 +19,23 @@ import {
   ViewportController,
 } from "@bratislava/react-maps";
 
-import {
-  Cluster,
-  Filter,
-  Layer,
-  Marker,
-  useCombinedFilter,
-  useFilter,
-} from "@bratislava/react-mapbox";
+import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 
 // layer styles
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 
 // utils
 import { usePrevious } from "@bratislava/utils";
-import { FeatureCollection } from "geojson";
-import { MapboxGeoJSONFeature } from "mapbox-gl";
+import { Feature, FeatureCollection } from "geojson";
 import { processData } from "../utils/utils";
 import { Filters } from "./Filters";
-import { point } from "@turf/helpers";
 
-import ESRI_STYLE from "../layer-styles/esri";
 import Detail from "./Detail";
 import { IconButton } from "@bratislava/react-maps-ui";
 import { Funnel } from "@bratislava/react-maps-icons";
-import { Feature } from "@bratislava/utils/src/types";
+import { Marker } from "./Marker";
+
+const isDevelopment = !!import.meta.env.DEV;
 
 const GEOPORTAL_LAYER_URL =
   "https://geoportal.bratislava.sk/hsite/rest/services/majetok/N%C3%A1jom_nebytov%C3%BDch_priestorov_mesta_Bratislava/MapServer/4";
@@ -60,8 +52,6 @@ export const App = () => {
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
   const [uniquePurposes, setUniquePurposes] = useState<string[]>([]);
   const [uniqueOccupancies, setUniqueOccupancies] = useState<string[]>([]);
-
-  const [zoom, setZoom] = useState(0);
 
   useEffect(() => {
     document.title = t("tabTitle");
@@ -82,7 +72,7 @@ export const App = () => {
 
   const mapRef = useRef<MapHandle>(null);
 
-  const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
+  const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>([]);
   const [isMobile, setMobile] = useState<boolean | null>(null);
 
   const previousSidebarVisible = usePrevious(isSidebarVisible);
@@ -99,7 +89,7 @@ export const App = () => {
   });
 
   const occupancyFilter = useFilter({
-    property: "occupancySimple",
+    property: "occupancy",
     keys: uniqueOccupancies,
   });
 
@@ -116,15 +106,36 @@ export const App = () => {
       {
         filter: occupancyFilter,
         mapToActive: (activeOccupancies) => ({
-          title: t("filters.uccupancy.title"),
+          title: t("filters.occupancy.title"),
           items: activeOccupancies,
         }),
       },
     ],
   });
 
+  const [minArea, setMinArea] = useState(0);
+  const [maxArea, setMaxArea] = useState(15_000);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(100_000);
+
+  const areaFilterExpression = useMemo(() => {
+    const filter: any = [
+      "all",
+      [">=", "approximateArea", minArea],
+      ["<=", "approximateArea", maxArea],
+      [">=", "approximateRentPricePerYear", minPrice],
+      ["<=", "approximateRentPricePerYear", maxPrice],
+    ];
+
+    if (purposeFilter.expression.length) filter.push(purposeFilter.expression);
+    if (occupancyFilter.expression.length) filter.push(occupancyFilter.expression);
+
+    console.log(filter);
+    return filter;
+  }, [minArea, maxArea, minPrice, maxPrice, purposeFilter, occupancyFilter]);
+
   const closeDetail = useCallback(() => {
-    setSelectedFeature(null);
+    setSelectedFeatures([]);
   }, []);
 
   // close detailbox when sidebar is opened on mobile
@@ -154,27 +165,24 @@ export const App = () => {
   // move point to center when selected
   useEffect(() => {
     const MAP = mapRef.current;
-    if (MAP && selectedFeature) {
+    if (MAP && selectedFeatures.length) {
+      const firstFeature = selectedFeatures[0];
       setTimeout(() => {
-        if (selectedFeature.geometry.type === "Point") {
+        if (firstFeature.geometry.type === "Point") {
           mapRef.current?.changeViewport({
             center: {
-              lng: selectedFeature.geometry.coordinates[0],
-              lat: selectedFeature.geometry.coordinates[1],
+              lng: firstFeature.geometry.coordinates[0],
+              lat: firstFeature.geometry.coordinates[1],
             },
           });
         }
       }, 0);
     }
-  }, [selectedFeature]);
+  }, [selectedFeatures]);
 
   const viewportControllerSlots: SlotType = useMemo(() => {
     return isMobile ? ["compass", "zoom"] : ["geolocation", "compass", ["fullscreen", "zoom"]];
   }, [isMobile]);
-
-  const selectedFeatures = useMemo(() => {
-    return selectedFeature ? [selectedFeature] : [];
-  }, [selectedFeature]);
 
   const initialViewport = useMemo(
     () => ({
@@ -203,11 +211,7 @@ export const App = () => {
     [data],
   );
 
-  const areMarkersVisible = useMemo(() => {
-    return zoom < 15;
-  }, [zoom]);
-
-  const isDetailOpen = useMemo(() => !!selectedFeature, [selectedFeature]);
+  const isDetailOpen = useMemo(() => !!selectedFeatures.length, [selectedFeatures]);
 
   return isLoading ? null : (
     <Map
@@ -216,30 +220,14 @@ export const App = () => {
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={mapStyles}
       initialViewport={initialViewport}
-      isDevelopment={import.meta.env.DEV}
+      isDevelopment={isDevelopment}
       isOutsideLoading={isLoading}
       sources={sources}
-      onFeaturesClick={(features) => setSelectedFeature(features[0])}
-      selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
-      onViewportChangeDebounced={({ zoom }) => setZoom(zoom)}
       mapInformation={{
         title: t("informationModal.title"),
-        description: (
-          <Trans i18nKey="informationModal.description">
-            before
-            <a
-              className="underline text-secondary font-semibold"
-              href={t("informationModal.descriptionLink")}
-              target="_blank"
-              rel="noreferrer"
-            >
-              link
-            </a>
-            after
-          </Trans>
-        ),
+        description: t("informationModal.description"),
         partners: [
           {
             name: "bratislava",
@@ -267,26 +255,21 @@ export const App = () => {
         ),
       }}
     >
-      <Layer isVisible={!areMarkersVisible} source="ESRI_DATA" styles={ESRI_STYLE} />
-
-      <Filter expression={combinedFilter.expression}>
-        {areMarkersVisible && (
-          <Cluster features={data?.features ?? []} radius={28}>
-            {({ features, lng, lat, key }) => (
-              <Marker
-                key={key}
-                feature={point([lng, lat])}
-                onClick={() => {
-                  mapRef.current?.changeViewport({ center: { lat, lng }, zoom: 16 });
-                }}
-              >
-                <div className="w-8 cursor-pointer font-semibold h-8 bg-primary flex items-center justify-center rounded-full text-white">
-                  {features.length}
-                </div>
-              </Marker>
-            )}
-          </Cluster>
-        )}
+      <Filter expression={areaFilterExpression}>
+        <Cluster features={data?.features ?? []} radius={28}>
+          {({ features, lng, lat, key }) => (
+            <Marker
+              features={features}
+              lng={lng}
+              lat={lat}
+              key={key}
+              onClick={() => {
+                setSelectedFeatures(features);
+                mapRef.current?.changeViewport({ center: { lat, lng }, zoom: 16 });
+              }}
+            />
+          )}
+        </Cluster>
       </Filter>
 
       <Layer
@@ -295,22 +278,6 @@ export const App = () => {
         source="DISTRICTS_GEOJSON"
         styles={DISTRICTS_STYLE}
       />
-
-      {!!selectedFeatures?.length && selectedFeatures[0].geometry.type === "Point" && (
-        <Marker
-          feature={{
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: selectedFeatures[0].geometry.coordinates,
-            },
-            properties: {},
-          }}
-          isRelativeToZoom
-        >
-          <div className="w-4 h-4 bg-background-lightmode dark:bg-background-darkmode border-[2px] rounded-full border-primary" />
-        </Marker>
-      )}
 
       <Slot name="controls">
         <ThemeController
@@ -344,6 +311,18 @@ export const App = () => {
             districtFilter={districtFilter}
             occupancyFilter={occupancyFilter}
             isMobile={isMobile ?? false}
+            minArea={minArea}
+            maxArea={maxArea}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            onAreaChange={(a) => {
+              setMinArea(a[0]);
+              setMaxArea(a[1]);
+            }}
+            onPriceChange={(p) => {
+              setMinPrice(p[0]);
+              setMaxPrice(p[1]);
+            }}
           />
         </Slot>
       </Slot>

@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { X } from "@bratislava/react-maps-icons";
 import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 import cx from "classnames";
-import { DataDisplay, JsonViewer } from "@bratislava/react-maps-ui";
+import { DataDisplay, JsonViewer, Tag } from "@bratislava/react-maps-ui";
+import colors from "../utils/colors.json";
 
 export interface DetailProps {
   features: Feature[];
@@ -40,31 +41,47 @@ export const Detail = ({ features, onClose, isMobile }: DetailProps) => {
         <X />
       </button>
       <div className="flex flex-col space-y-4">
-        <DataDisplay label={t(`layers.esri.detail.purpose`)} text={feature?.properties?.purpose} />
-        <DataDisplay label={t(`layers.esri.detail.lessee`)} text={feature?.properties?.lessee} />
+        <div className="font-semibold">{t("detail.title")}</div>
+        <Tag
+          className="w-fit text-white"
+          style={{
+            background: feature?.properties?.occupancy === "free" ? colors.free : colors.occupied,
+          }}
+        >
+          {feature?.properties?.occupancy === "free" ? t("detail.free") : t("detail.occupied")}
+        </Tag>
+
+        <DataDisplay label={t(`detail.purpose`)} text={feature?.properties?.purpose} />
+        <DataDisplay label={t(`detail.lessee`)} text={feature?.properties?.lessee} />
+        <DataDisplay label={t(`detail.rentUntil`)} text={feature?.properties?.rentUntil} />
+        <DataDisplay label={t(`detail.description`)} text={feature?.properties?.description} />
         <DataDisplay
-          label={t(`layers.esri.detail.occupancy`)}
-          text={feature?.properties?.occupancy}
+          label={t(`detail.approximateArea`)}
+          text={
+            typeof feature?.properties?.approximateArea === "number" && (
+              <span>
+                {feature?.properties?.approximateArea.toFixed(2).replace(".", ",")} m
+                <sup className="text-xs font-bold">2</sup>
+              </span>
+            )
+          }
         />
         <DataDisplay
-          label={t(`layers.esri.detail.rentUntil`)}
-          text={feature?.properties?.rentUntil}
-        />
-        <DataDisplay
-          label={t(`layers.esri.detail.description`)}
-          text={feature?.properties?.description}
-        />
-        <DataDisplay
-          label={t(`layers.esri.detail.approximateArea`)}
-          text={feature?.properties?.approximateArea}
-        />
-        <DataDisplay
-          label={t(`layers.esri.detail.approximateRentPricePerYear`)}
-          text={feature?.properties?.approximateRentPricePerYear}
+          label={t(`detail.approximateRentPricePerYear`)}
+          text={
+            typeof feature?.properties?.approximateRentPricePerYear === "number" && (
+              <span>
+                {(Math.round(feature?.properties?.approximateRentPricePerYear / 10) * 10)
+                  .toFixed(2)
+                  .replace(".", ",")}{" "}
+                €
+              </span>
+            )
+          }
         />
       </div>
 
-      {feature && <JsonViewer json={feature.properties} />}
+      {feature && import.meta.env.DEV && <JsonViewer json={feature.properties} />}
     </div>
   );
 

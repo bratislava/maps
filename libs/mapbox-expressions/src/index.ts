@@ -3,10 +3,12 @@ import { Feature } from "geojson";
 import { all, AllExp } from "./decision/all";
 import { any, AnyExp } from "./decision/any";
 import { equals, EqualsExp } from "./decision/equals";
+import { gte, GteExp } from "./decision/gte";
+import { lte, LteExp } from "./decision/lte";
 import { get, GetExp } from "./lookup/get";
 import { InExp, inside } from "./lookup/in";
 
-export type Exp = AllExp | AnyExp | EqualsExp | GetExp | InExp;
+export type Exp = AllExp | AnyExp | EqualsExp | GetExp | InExp | GteExp | LteExp;
 
 type ExpKey = Exp[0];
 
@@ -33,6 +35,12 @@ export const evaluate = (exp: ExpOrValue, f: Feature) => {
 
       case "==":
         return equals(exp, f, evaluate);
+
+      case ">=":
+        return gte(exp, f, evaluate);
+
+      case "<=":
+        return lte(exp, f, evaluate);
     }
   }
 
