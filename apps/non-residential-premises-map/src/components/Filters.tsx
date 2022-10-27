@@ -1,4 +1,4 @@
-import { IFilterResult } from "@bratislava/react-mapbox";
+import { IFilterResult, JsonViewer } from "@bratislava/react-mapbox";
 import { SearchBar } from "@bratislava/react-maps";
 import { Funnel, X } from "@bratislava/react-maps-icons";
 import cx from "classnames";
@@ -6,7 +6,6 @@ import {
   ActiveFilters,
   Divider,
   IActiveFilter,
-  JsonViewer,
   Select,
   SelectOption,
   Sidebar,

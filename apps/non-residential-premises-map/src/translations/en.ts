@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export default {
   title: "Non-residential premises",
   tabTitle: "Non-residential premises - Magistrát mesta Bratislava",
@@ -5,6 +6,7 @@ export default {
   close: "Close",
   loading: "Loading",
   layersLabel: "Layers",
+  noImage: "No image",
   filters: {
     title: "Filtering",
     reset: "Reset",
@@ -32,6 +34,10 @@ export default {
   },
   detail: {
     title: "Premise detail",
+    premiseCount_zero: "No premises",
+    premiseCount_one: "{{count}} premise",
+    premiseCount_few: "{{count}} premises",
+    premiseCount_other: "{{count}} premises",
     locality: "Locality",
     purpose: "Purpose",
     lessee: "Lessee",

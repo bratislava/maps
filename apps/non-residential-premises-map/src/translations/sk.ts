@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export default {
   title: "Nebytové priestory",
   tabTitle: "Nebytové priestory - Magistrát mesta Bratislava",
@@ -5,6 +6,7 @@ export default {
   close: "Zavrieť",
   loading: "Načítavanie",
   layersLabel: "Vrstvy",
+  noImage: "Žiaden obrázok",
   filters: {
     title: "Filter",
     reset: "Zrušiť",
@@ -32,6 +34,10 @@ export default {
   },
   detail: {
     title: "Detail priestoru",
+    premiseCount_zero: "Žiadne priestory",
+    premiseCount_one: "{{count}} priestor",
+    premiseCount_few: "{{count}} priestory",
+    premiseCount_other: "{{count}} priestorov",
     locality: "Lokalita",
     purpose: "Účel priestoru",
     lessee: "Nájomca",

@@ -50,6 +50,7 @@ export const App = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
+  const [uniqueStreets, setUniqueStreets] = useState<string[]>([]);
   const [uniquePurposes, setUniquePurposes] = useState<string[]>([]);
   const [uniqueOccupancies, setUniqueOccupancies] = useState<string[]>([]);
 
@@ -59,9 +60,11 @@ export const App = () => {
 
   useEffect(() => {
     if (rawData) {
-      const { data, uniqueDistricts, uniquePurposes, uniqueOccupancies } = processData(rawData);
+      const { data, uniqueDistricts, uniquePurposes, uniqueOccupancies, uniqueStreets } =
+        processData(rawData);
       setLoading(false);
       setUniqueDistricts(uniqueDistricts);
+      setUniqueStreets(uniqueStreets);
       setUniquePurposes(uniquePurposes);
       setUniqueOccupancies(uniqueOccupancies);
       setData(data);
@@ -257,15 +260,24 @@ export const App = () => {
     >
       <Filter expression={areaFilterExpression}>
         <Cluster features={data?.features ?? []} radius={28}>
-          {({ features, lng, lat, key }) => (
+          {({ features, lng, lat, isCluster, key, clusterExpansionZoom }) => (
             <Marker
               features={features}
               lng={lng}
               lat={lat}
               key={key}
               onClick={() => {
-                setSelectedFeatures(features);
-                mapRef.current?.changeViewport({ center: { lat, lng }, zoom: 16 });
+                // When it's cluster and it's expandable
+                if (isCluster && clusterExpansionZoom && clusterExpansionZoom !== 31) {
+                  setSelectedFeatures([]);
+                  mapRef.current?.changeViewport({
+                    center: { lat, lng },
+                    zoom: clusterExpansionZoom,
+                  });
+                } else {
+                  setSelectedFeatures(features);
+                  mapRef.current?.changeViewport({ center: { lat, lng } });
+                }
               }}
             />
           )}

@@ -1,6 +1,6 @@
-// import { JsonViewer } from '@bratislava/react-maps-ui';
 import { useMemo } from 'react';
 import { Viewport } from '../../types';
+import { JsonViewer } from '../JsonViewer/JsonViewer';
 
 export interface IDevelopmentInfoProps {
   isDevelopment?: boolean;
@@ -31,7 +31,7 @@ export const DevelopmentInfo = ({
 
   return isDevelopment ? (
     <div style={{ width: '256px' }} className="fixed top-4 right-4">
-      {/* <JsonViewer json={prettierViewport} /> */}
+      <JsonViewer json={prettierViewport} />
     </div>
   ) : null;
 };

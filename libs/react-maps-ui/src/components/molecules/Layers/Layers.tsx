@@ -65,7 +65,7 @@ export const Layers = <L extends string>({
 
   return (
     <div className="flex flex-col w-full">
-      <Accordion>
+      <Accordion type="multiple">
         {groups.map(({ label, layers, icon }, index) => {
           return (
             <AccordionItem

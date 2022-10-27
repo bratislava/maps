@@ -11,6 +11,8 @@ export const processData = (rawData: FeatureCollection) => {
         const originalPropertiesKeys = Object.keys(feature.properties ?? {});
         const occupancy = feature.properties?.["Obsadenosť"] === "obsadené" ? "occupied" : "free";
         const color = occupancy === "occupied" ? colors.occupied : colors.free;
+        const locality = feature.properties?.["ulica"];
+        const street = locality.replaceAll(/[0-9]/g, "").trim().split(",")[0];
         return {
           ...feature,
           properties: {
@@ -18,15 +20,17 @@ export const processData = (rawData: FeatureCollection) => {
               (prev, key) => ({ ...prev, [`ORIGINAL_${key}`]: feature.properties?.[key] }),
               {},
             ),
-            locality: feature.properties?.["ulica"],
+            locality,
             purpose: feature.properties?.["Účel"],
             lessee: feature.properties?.["Nájomca"],
+            picture: feature.properties?.["picture"],
             occupancy,
             rentUntil: feature.properties?.["Doba_nájmu"],
             description: feature.properties?.["Poznámka"],
             approximateArea: feature.properties?.["Orientačná_výmera_v_m2"],
             approximateRentPricePerYear: feature.properties?.["Cena_rok"],
             color,
+            street,
           },
         };
       }),
@@ -35,6 +39,8 @@ export const processData = (rawData: FeatureCollection) => {
 
   const uniqueOccupancies = getUniqueValuesFromFeatures(data.features, "occupancy");
   const uniquePurposes = getUniqueValuesFromFeatures(data.features, "purpose");
+
+  const uniqueStreets = getUniqueValuesFromFeatures(data.features, "street");
 
   const uniqueDistricts: string[] = getUniqueValuesFromFeatures(data.features, "district").sort(
     (a, b) => DISTRICTS.findIndex((d) => d == a) - DISTRICTS.findIndex((d) => d == b) ?? 0,
@@ -45,5 +51,6 @@ export const processData = (rawData: FeatureCollection) => {
     uniqueDistricts,
     uniqueOccupancies,
     uniquePurposes,
+    uniqueStreets,
   };
 };

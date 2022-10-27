@@ -1,15 +1,20 @@
 import JSONPretty from "react-json-pretty";
 
 export interface IJsonViewerProps {
-  json: any;
+  json: unknown;
 }
 
 export const JsonViewer = ({ json }: IJsonViewerProps) => {
   return (
     <div>
       <JSONPretty
-        className="w-full overflow-hidden font-bold border-2 border-background-darkmode dark:border-gray-darkmode/20 rounded-lg"
         data={json}
+        style={{
+          width: "100%",
+          overflow: "hidden",
+          fontWeight: "bold",
+          borderRadius: "8px",
+        }}
         theme={{
           main: "line-height:1.3;color:#6ce1fc;background:#333333;overflow:auto;padding:1rem;",
           error:

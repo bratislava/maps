@@ -36,6 +36,8 @@ export interface IAccordionItemProps {
   isOpenable?: boolean;
   isActive?: boolean;
   paasDesign?: boolean;
+  headerIsTrigger?: boolean;
+  headerClassName?: string;
 }
 
 export const AccordionItem = ({
@@ -47,6 +49,8 @@ export const AccordionItem = ({
   isActive = false,
   isOpenable = true,
   paasDesign = false,
+  headerIsTrigger = false,
+  headerClassName,
 }: IAccordionItemProps) => {
   return (
     <Item
@@ -54,26 +58,57 @@ export const AccordionItem = ({
       className={cx("text-left w-full justify-between items-center", className)}
     >
       <Header className="flex flex-col">
-        <div
-          className={cx("flex w-full gap-4 items-center justify-between", {
-            "": paasDesign,
-          })}
-        >
-          <div>{title}</div>
-          <div
-            className={cx("flex gap-4 h-12 px-6", {
-              "bg-primary-soft text-foreground-lightmode":
-                paasDesign && isActive,
-            })}
-          >
-            {rightSlot}
-            {isOpenable && (
-              <Trigger className="p-1">
-                <AccordionChevron className="transition mr-[2px]" size="xs" />
-              </Trigger>
+        {headerIsTrigger ? (
+          <Trigger
+            className={cx(
+              "flex w-full gap-4 items-center justify-between",
+              {
+                "": paasDesign,
+              },
+              headerClassName
             )}
+          >
+            <div>{title}</div>
+            <div
+              className={cx("flex gap-4 h-12 px-6 items-center", {
+                "bg-primary-soft text-foreground-lightmode":
+                  paasDesign && isActive,
+              })}
+            >
+              {rightSlot}
+              {isOpenable && (
+                <div className="p-1">
+                  <AccordionChevron className="transition mr-[2px]" size="xs" />
+                </div>
+              )}
+            </div>
+          </Trigger>
+        ) : (
+          <div
+            className={cx(
+              "flex w-full gap-4 items-center justify-between",
+              {
+                "": paasDesign,
+              },
+              headerClassName
+            )}
+          >
+            <div>{title}</div>
+            <div
+              className={cx("flex gap-4 h-12 px-6", {
+                "bg-primary-soft text-foreground-lightmode":
+                  paasDesign && isActive,
+              })}
+            >
+              {rightSlot}
+              {isOpenable && (
+                <Trigger className="p-1">
+                  <AccordionChevron className="transition mr-[2px]" size="xs" />
+                </Trigger>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </Header>
       <AccordionContent className="overflow-hidden">
         <div>{children}</div>

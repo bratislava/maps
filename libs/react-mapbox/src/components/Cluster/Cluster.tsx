@@ -43,7 +43,7 @@ export const Cluster = ({
   );
 
   const supercluster = useMemo(() => {
-    const s = new Supercluster({ radius });
+    const s = new Supercluster({ radius, maxZoom: 30 });
     s.load(
       pointFeatures.filter((f) =>
         isFeatureVisible === undefined ? true : isFeatureVisible(f),

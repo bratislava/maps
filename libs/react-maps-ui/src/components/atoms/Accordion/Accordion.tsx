@@ -1,15 +1,19 @@
-import { Root } from "@radix-ui/react-accordion";
+import {
+  Root,
+  AccordionSingleProps,
+  AccordionMultipleProps,
+} from "@radix-ui/react-accordion";
 import cx from "classnames";
-import { ReactNode } from "react";
 
-export interface IAccordionProps {
-  children?: ReactNode;
-  className?: string;
-}
+export type IAccordionProps = AccordionSingleProps | AccordionMultipleProps;
 
-export const Accordion = ({ children, className }: IAccordionProps) => {
+export const Accordion = ({
+  children,
+  className,
+  ...rest
+}: IAccordionProps) => {
   return (
-    <Root type="multiple" className={cx("flex flex-col", className)}>
+    <Root className={cx("flex flex-col", className)} {...rest}>
       {children}
     </Root>
   );
