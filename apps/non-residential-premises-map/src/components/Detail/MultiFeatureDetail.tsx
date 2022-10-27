@@ -25,7 +25,7 @@ export const MultiFeatureDetail = ({ features, onClose }: IMultiFeatureDetailPro
   return (
     <div className="flex flex-col max-h-screen gap-5 overflow-auto">
       <IconButton
-        className="absolute right-3 top-5 flex items-center justify-center !shadow-none"
+        className="hidden absolute right-3 top-5 md:flex items-center justify-center !shadow-none !border-none"
         onClick={onClose}
       >
         <X />
@@ -43,7 +43,7 @@ export const MultiFeatureDetail = ({ features, onClose }: IMultiFeatureDetailPro
             key={index}
             value={`${index}`}
             title={<div className="font-semibold pl-6">{feature.properties?.lessee}</div>}
-            headerClassName="bg-gray-lightmode/10"
+            headerClassName="bg-gray-lightmode/10 dark:bg-gray-darkmode/10"
           >
             <DetailDataDisplay feature={feature} />
           </AccordionItem>

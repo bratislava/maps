@@ -11,9 +11,12 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { BottomSheet } from 'react-spring-bottom-sheet';
+import { useResizeDetector } from 'react-resize-detector';
 
 import { mapContext } from '../Map/Map';
+
+type VerticalPosition = 'top' | 'bottom';
+type HorizontalPosition = 'left' | 'right';
 
 export interface ISlotChildProps {
   isVisible: boolean | undefined;
@@ -25,41 +28,38 @@ export interface ISlotProps {
   children?: ReactNode;
   isVisible?: boolean;
   setVisible?: Dispatch<SetStateAction<boolean | undefined>>;
-  bottomSheetOptions?: {
-    header?: ReactNode;
-    footer?: ReactNode;
-  };
   openPadding?: {
     top?: number;
     right?: number;
     bottom?: number;
     left?: number;
   };
+  autoPadding?: boolean;
   avoidControls?: boolean;
+  verticalPosition?: VerticalPosition;
+  horizontalPosition?: HorizontalPosition;
 }
 
 export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
   (
     {
-      bottomSheetOptions,
       children,
-      isVisible: inputIsVisible,
+      isVisible,
       openPadding = {},
       avoidControls = true,
+      autoPadding = false,
+      verticalPosition,
+      horizontalPosition,
     },
-    ref,
+    forwardedRef,
   ) => {
-    const [isVisible, setVisible] = useState<boolean | undefined>();
-
     const [padding, setPadding] = useState({} as PartialPadding);
     const [margin, setMargin] = useState({} as PartialPadding);
 
     const previousPadding = usePrevious(padding);
     const previousMargin = usePrevious(margin);
 
-    useEffect(() => {
-      setVisible(inputIsVisible ?? true);
-    }, [inputIsVisible]);
+    const { width, height, ref } = useResizeDetector();
 
     const paddingTop = useMemo(
       () => (openPadding.top ? (isVisible ? openPadding.top : 0) : undefined),
@@ -155,24 +155,7 @@ export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
       }
     }, [margin, previousMargin, mapMethods]);
 
-    return bottomSheetOptions ? // <BottomSheet
-    //   snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 88]}
-    //   defaultSnap={({ snapPoints }) => snapPoints[1]}
-    //   blocking={false}
-    //   // onDismiss={() => {
-    //   //   inputSetVisible ? inputSetVisible(false) : setVisible(false);
-    //   // }}
-    //   open={isVisible ?? false}
-    //   className={cx('relative z-30')}
-    //   expandOnContentDrag
-    //   header={bottomSheetOptions.header}
-    //   footer={bottomSheetOptions.footer}
-    // >
-    //   {children}
-    // </BottomSheet>
-    null : (
-      <>{children}</>
-    );
+    return <div ref={ref}>{children}</div>;
   },
 );
 

@@ -12,10 +12,10 @@ export interface ISingleFeatureDetailProps {
 export const SingleFeatureDetail = ({ feature, onClose }: ISingleFeatureDetailProps) => {
   return (
     <div className="flex flex-col max-h-screen overflow-auto">
-      <Image src={feature?.properties?.picture} />
+      {feature?.properties?.picture && <Image src={feature?.properties?.picture} />}
 
       <IconButton
-        className="w-8 h-8 rounded-full absolute right-6 top-6 flex items-center justify-center"
+        className="hidden w-8 h-8 rounded-full absolute right-6 top-6 md:flex items-center justify-center"
         onClick={onClose}
       >
         <X size="sm" />

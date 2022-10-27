@@ -32,7 +32,7 @@ export const Location = ({
         />
         <path
           strokeWidth={strokeWidth}
-          fill="none"
+          fill={isActive ? "currentColor" : "none"}
           stroke="currentColor"
           strokeLinecap="round"
           d="M10,12.3c1.1,0,2.1-0.9,2.1-2.1S11.1,8.1,10,8.1c-1.1,0-2.1,0.9-2.1,2.1S8.9,12.3,10,12.3z"

@@ -47,8 +47,18 @@ export const Slider = (props: ISliderProps) => {
                 "": state.isDisabled,
               })}
             >
-              <Thumb index={0} state={state} trackRef={trackRef} />
-              <Thumb index={1} state={state} trackRef={trackRef} />
+              <Thumb
+                isActive={state.getThumbValue(0) !== minValue}
+                index={0}
+                state={state}
+                trackRef={trackRef}
+              />
+              <Thumb
+                isActive={state.getThumbValue(1) !== maxValue}
+                index={1}
+                state={state}
+                trackRef={trackRef}
+              />
             </div>
           </div>
         </div>

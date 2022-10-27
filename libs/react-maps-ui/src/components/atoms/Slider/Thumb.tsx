@@ -13,10 +13,11 @@ export interface IThumbProps {
   state: SliderState;
   trackRef: React.MutableRefObject<HTMLDivElement | null>;
   index: number;
+  isActive?: boolean;
 }
 
 export const Thumb = (props: IThumbProps) => {
-  const { state, trackRef, index } = props;
+  const { state, trackRef, index, isActive = false } = props;
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { thumbProps, inputProps, isDragging } = useSliderThumb(
     {
@@ -36,7 +37,7 @@ export const Thumb = (props: IThumbProps) => {
           {
             "outline outline-primary outline-2 outline-offset-2":
               isFocusVisible,
-            "bg-primary dark:bg-primary": isDragging,
+            "bg-primary dark:bg-primary": isDragging || isActive,
           }
         )}
       />

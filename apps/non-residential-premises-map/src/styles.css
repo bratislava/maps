@@ -23,3 +23,7 @@ body {
 [data-rsbs-footer] {
   padding: 0 !important;
 }
+
+[data-rsbs-header="true"] {
+  display: none;
+}

@@ -50,7 +50,7 @@ export const App = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
-  const [uniqueStreets, setUniqueStreets] = useState<string[]>([]);
+  const [, setUniqueStreets] = useState<string[]>([]);
   const [uniquePurposes, setUniquePurposes] = useState<string[]>([]);
   const [uniqueOccupancies, setUniqueOccupancies] = useState<string[]>([]);
 
@@ -116,18 +116,29 @@ export const App = () => {
     ],
   });
 
-  const [minArea, setMinArea] = useState(0);
-  const [maxArea, setMaxArea] = useState(15_000);
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(100_000);
+  const minAreaDefault = 0;
+  const [minArea, setMinArea] = useState(minAreaDefault);
+  const [minAreaDebounced, setMinAreaDebounced] = useState(minAreaDefault);
+
+  const maxAreaDefault = 15_000;
+  const [maxArea, setMaxArea] = useState(maxAreaDefault);
+  const [maxAreaDebounced, setMaxAreaDebounced] = useState(maxAreaDefault);
+
+  const minPriceDefault = 0;
+  const [minPrice, setMinPrice] = useState(minPriceDefault);
+  const [minPriceDebounced, setMinPriceDebounced] = useState(minPriceDefault);
+
+  const maxPriceDefault = 100_000;
+  const [maxPrice, setMaxPrice] = useState(maxPriceDefault);
+  const [maxPriceDebounced, setMaxPriceDebounced] = useState(maxPriceDefault);
 
   const areaFilterExpression = useMemo(() => {
     const filter: any = [
       "all",
-      [">=", "approximateArea", minArea],
-      ["<=", "approximateArea", maxArea],
-      [">=", "approximateRentPricePerYear", minPrice],
-      ["<=", "approximateRentPricePerYear", maxPrice],
+      [">=", "approximateArea", minAreaDebounced],
+      ["<=", "approximateArea", maxAreaDebounced],
+      [">=", "approximateRentPricePerYear", minPriceDebounced],
+      ["<=", "approximateRentPricePerYear", maxPriceDebounced],
     ];
 
     if (purposeFilter.expression.length) filter.push(purposeFilter.expression);
@@ -135,7 +146,14 @@ export const App = () => {
 
     console.log(filter);
     return filter;
-  }, [minArea, maxArea, minPrice, maxPrice, purposeFilter, occupancyFilter]);
+  }, [
+    minAreaDebounced,
+    maxAreaDebounced,
+    minPriceDebounced,
+    maxPriceDebounced,
+    purposeFilter,
+    occupancyFilter,
+  ]);
 
   const closeDetail = useCallback(() => {
     setSelectedFeatures([]);
@@ -213,6 +231,53 @@ export const App = () => {
     }),
     [data],
   );
+
+  const areFiltersDefault = useMemo(() => {
+    return (
+      occupancyFilter.areDefault &&
+      districtFilter.areDefault &&
+      purposeFilter.areDefault &&
+      minPriceDebounced === minPriceDefault &&
+      maxPriceDebounced === maxPriceDefault &&
+      minAreaDebounced === minAreaDefault &&
+      maxAreaDebounced === maxAreaDefault
+    );
+  }, [
+    maxAreaDebounced,
+    maxPriceDebounced,
+    minAreaDebounced,
+    minPriceDebounced,
+    districtFilter.areDefault,
+    occupancyFilter.areDefault,
+    purposeFilter.areDefault,
+  ]);
+
+  useEffect(() => {
+    closeDetail();
+  }, [
+    closeDetail,
+    maxAreaDebounced,
+    maxPriceDebounced,
+    minAreaDebounced,
+    minPriceDebounced,
+    districtFilter.keys,
+    occupancyFilter.keys,
+    purposeFilter.keys,
+  ]);
+
+  const handleResetFilters = useCallback(() => {
+    setMinArea(minAreaDefault);
+    setMaxArea(maxAreaDefault);
+    setMinPrice(minPriceDefault);
+    setMaxPrice(maxPriceDefault);
+    setMinAreaDebounced(minAreaDefault);
+    setMaxAreaDebounced(maxAreaDefault);
+    setMinPriceDebounced(minPriceDefault);
+    setMaxPriceDebounced(maxPriceDefault);
+    occupancyFilter.reset();
+    districtFilter.reset();
+    purposeFilter.reset();
+  }, [occupancyFilter, districtFilter, purposeFilter]);
 
   const isDetailOpen = useMemo(() => !!selectedFeatures.length, [selectedFeatures]);
 
@@ -316,9 +381,9 @@ export const App = () => {
           <Filters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
-            areFiltersDefault={combinedFilter.areDefault}
+            areFiltersDefault={areFiltersDefault}
             activeFilters={combinedFilter.active}
-            onResetFiltersClick={combinedFilter.reset}
+            onResetFiltersClick={handleResetFilters}
             purposeFilter={purposeFilter}
             districtFilter={districtFilter}
             occupancyFilter={occupancyFilter}
@@ -331,9 +396,17 @@ export const App = () => {
               setMinArea(a[0]);
               setMaxArea(a[1]);
             }}
+            onAreaChangeEnd={(a) => {
+              setMinAreaDebounced(a[0]);
+              setMaxAreaDebounced(a[1]);
+            }}
             onPriceChange={(p) => {
               setMinPrice(p[0]);
               setMaxPrice(p[1]);
+            }}
+            onPriceChangeEnd={(p) => {
+              setMinPriceDebounced(p[0]);
+              setMaxPriceDebounced(p[1]);
             }}
           />
         </Slot>
@@ -351,6 +424,7 @@ export const App = () => {
         <Slot
           name="mobile-detail"
           isVisible={isDetailOpen}
+          autoPadding
           openPadding={{
             bottom: window.innerHeight / 2, // w-96 or 24rem
           }}

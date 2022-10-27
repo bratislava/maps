@@ -1,10 +1,9 @@
-import { IFilterResult, JsonViewer } from "@bratislava/react-mapbox";
+import { IFilterResult } from "@bratislava/react-mapbox";
 import { SearchBar } from "@bratislava/react-maps";
 import { Funnel, X } from "@bratislava/react-maps-icons";
 import cx from "classnames";
 import {
   ActiveFilters,
-  Divider,
   IActiveFilter,
   Select,
   SelectOption,
@@ -13,8 +12,7 @@ import {
 } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { SelectValueRenderer } from "./SelectValueRenderer";
-
-const isDevelopment = !!import.meta.env.DEV;
+import { useMemo } from "react";
 
 export interface IFiltersProps {
   isVisible?: boolean;
@@ -32,7 +30,9 @@ export interface IFiltersProps {
   minPrice: number;
   maxPrice: number;
   onAreaChange: (minMax: [number, number]) => void;
+  onAreaChangeEnd: (minMax: [number, number]) => void;
   onPriceChange: (minMax: [number, number]) => void;
+  onPriceChangeEnd: (minMax: [number, number]) => void;
 }
 
 export const Filters = ({
@@ -50,9 +50,14 @@ export const Filters = ({
   minPrice,
   maxPrice,
   onAreaChange,
+  onAreaChangeEnd,
   onPriceChange,
+  onPriceChangeEnd,
 }: IFiltersProps) => {
   const { t, i18n } = useTranslation();
+
+  const priceSliderValue = useMemo(() => [minPrice, maxPrice], [minPrice, maxPrice]);
+  const areaSliderValue = useMemo(() => [minArea, maxArea], [minArea, maxArea]);
 
   return (
     <Sidebar
@@ -121,7 +126,6 @@ export const Filters = ({
                 </SelectOption>
               ))}
             </Select>
-            {isDevelopment && <JsonViewer json={districtFilter.expression} />}
           </div>
 
           <div className={cx("w-full flex flex-col gap-2", { "col-span-1": !isMobile })}>
@@ -148,7 +152,6 @@ export const Filters = ({
                 </SelectOption>
               ))}
             </Select>
-            {isDevelopment && <JsonViewer json={purposeFilter.expression} />}
           </div>
 
           <div className={cx("w-full flex flex-col gap-2", { "col-span-1": !isMobile })}>
@@ -175,7 +178,6 @@ export const Filters = ({
                 </SelectOption>
               ))}
             </Select>
-            {isDevelopment && <JsonViewer json={occupancyFilter.expression} />}
           </div>
         </div>
 
@@ -190,8 +192,9 @@ export const Filters = ({
               </span>
             }
             step={100}
-            onChangeEnd={(a) => Array.isArray(a) && onAreaChange(a as [number, number])}
-            defaultValue={[minArea, maxArea]}
+            onChange={(a) => Array.isArray(a) && onAreaChange(a as [number, number])}
+            onChangeEnd={(a) => Array.isArray(a) && onAreaChangeEnd(a as [number, number])}
+            value={areaSliderValue}
           />
 
           <Slider
@@ -200,38 +203,12 @@ export const Filters = ({
             maxValue={100_000}
             unit="€"
             step={1000}
-            onChangeEnd={(p) => Array.isArray(p) && onPriceChange(p as [number, number])}
-            defaultValue={[minPrice, maxPrice]}
+            onChange={(p) => Array.isArray(p) && onPriceChange(p as [number, number])}
+            onChangeEnd={(p) => Array.isArray(p) && onPriceChangeEnd(p as [number, number])}
+            value={priceSliderValue}
           />
         </div>
       </div>
-
-      {/* <TagFilter
-        title={t("filters.season.title")}
-        values={seasonFilter.values.map((season) => ({
-          key: season.key,
-          label: t(`filters.season.seasons.${season.key}`),
-          isActive: season.isActive,
-        }))}
-        onTagClick={(season) => {
-          if (seasonFilter.activeKeys.length == 4) {
-            seasonFilter.setActiveOnly(season);
-          } else if (
-            !(seasonFilter.activeKeys.length == 1 && seasonFilter.activeKeys[0] == season)
-          ) {
-            seasonFilter.toggleActive(season);
-          }
-        }}
-      /> */}
-
-      <Divider className="mx-6" />
-      <div className="flex flex-col gap-3">
-        <h2 className="font-semibold px-6 text-md">{t("layersLabel")}</h2>
-      </div>
-
-      {/* <pre className="p-2 h-72 bg-black text-white overflow-auto">
-        <code>{JSON.stringify(filters, null, 2)}</code>
-      </pre> */}
     </Sidebar>
   );
 };
