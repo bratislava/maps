@@ -125,7 +125,6 @@ export interface IMapMethods {
   // Slots
   mountOrUpdateSlot: (slotState: ISlotState) => void;
   unmountSlot: (slotState: ISlotState) => void;
-  isSlotMounted: (id: string) => boolean;
 }
 
 export type MapHandle = IMapMethods;
@@ -159,7 +158,6 @@ export const mapContext = createContext<IMapContext>({
     removeSearchMarker: () => void 0,
     mountOrUpdateSlot: () => void 0,
     unmountSlot: () => void 0,
-    isSlotMounted: () => false,
   },
 });
 
@@ -425,41 +423,29 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
       });
     };
 
-    const isSlotMounted = useCallback(
-      (id: string) => {
-        return !!slotStates.find((slotState) => slotState.id === id);
-      },
-      [slotStates],
-    );
+    const unmountSlot = useCallback((slotState: ISlotState) => {
+      setSlotStates((slotStates) => {
+        return slotStates.filter((s) => s.id !== slotState.id);
+      });
+    }, []);
 
-    const unmountSlot = useCallback(
-      (slotState: ISlotState) => {
-        if (isSlotMounted(slotState.id)) {
-          setSlotStates((slotStates) =>
-            slotStates.filter((s) => s.id !== slotState.id),
-          );
-        }
-      },
-      [isSlotMounted],
-    );
-
-    const mountOrUpdateSlot = useCallback(
-      (slotState: ISlotState) => {
+    const mountOrUpdateSlot = useCallback((slotState: ISlotState) => {
+      setSlotStates((slotStates) => {
         const foundSlotIndex = slotStates.findIndex(
           (s) => s.id === slotState.id,
         );
-        if (foundSlotIndex === -1) {
-          setSlotStates((slotStates) => [...slotStates, slotState]);
+
+        let newSlotStates = [];
+        if (foundSlotIndex >= 0) {
+          newSlotStates = [...slotStates];
+          newSlotStates[foundSlotIndex] = slotState;
         } else {
-          setSlotStates((slotStates) => {
-            const newSlotState = [...slotStates];
-            newSlotState[foundSlotIndex] = slotState;
-            return newSlotState;
-          });
+          newSlotStates = [...slotStates, slotState];
         }
-      },
-      [slotStates],
-    );
+
+        return newSlotStates;
+      });
+    }, []);
 
     const finalPadding = useMemo(() => {
       const top = Math.max(
@@ -497,11 +483,9 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
         removeSearchMarker,
         mountOrUpdateSlot,
         unmountSlot,
-        isSlotMounted,
       }),
       [
         geolocationChangeHandler,
-        isSlotMounted,
         mapState.isGeolocation,
         mountOrUpdateSlot,
         unmountSlot,

@@ -78,10 +78,8 @@ export const Slot = ({
 
   const leftPadding = useMemo(() => {
     if (isVisible && calculatedHidingEdge === 'left') {
-      console.log(width);
       return width;
     }
-    console.log(0);
     return 0;
   }, [isVisible, calculatedHidingEdge, width]);
 
@@ -134,7 +132,7 @@ export const Slot = ({
     return () => {
       unmountSlot(slotState);
     };
-  }, [id, mountOrUpdateSlot, slotState, unmountSlot]);
+  }, [mountOrUpdateSlot, slotState, unmountSlot]);
 
   const x = useMemo(() => {
     if (!debouncedVisible) {
