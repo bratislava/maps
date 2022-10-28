@@ -416,6 +416,10 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
       });
     }, []);
 
+    useEffect(() => {
+      console.log(slotStates);
+    }, [slotStates]);
+
     const mountOrUpdateSlot = useCallback((slotState: ISlotState) => {
       setSlotStates((slotStates) => {
         const foundSlotIndex = slotStates.findIndex(

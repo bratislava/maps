@@ -31,6 +31,12 @@ export interface ISlotProps {
   autoPadding?: boolean;
   className?: string;
   avoidMapboxControls?: boolean;
+  padding?: {
+    top?: number;
+    right?: number;
+    bottom?: number;
+    left?: number;
+  };
 }
 
 export const Slot = ({
@@ -42,6 +48,7 @@ export const Slot = ({
   autoPadding = false,
   className,
   avoidMapboxControls = false,
+  padding,
 }: ISlotProps) => {
   // Update of children when closing is delayed due animation
   const debouncedVisible = useDebounce(isVisible, 10);
@@ -92,7 +99,7 @@ export const Slot = ({
     return 0;
   }, [isVisible, calculatedHidingEdge, width]);
 
-  const padding: Padding = useMemo(
+  const finalPadding: Padding = useMemo(
     () =>
       autoPadding
         ? {
@@ -101,8 +108,23 @@ export const Slot = ({
             bottom: bottomPadding,
             left: leftPadding,
           }
-        : { top: 0, right: 0, bottom: 0, left: 0 },
-    [autoPadding, topPadding, rightPadding, bottomPadding, leftPadding],
+        : {
+            top: padding?.top ?? 0,
+            right: padding?.right ?? 0,
+            bottom: padding?.bottom ?? 0,
+            left: padding?.left ?? 0,
+          },
+    [
+      autoPadding,
+      topPadding,
+      rightPadding,
+      bottomPadding,
+      leftPadding,
+      padding?.top,
+      padding?.right,
+      padding?.bottom,
+      padding?.left,
+    ],
   );
 
   const slotState: ISlotState = useMemo(() => {
@@ -110,20 +132,20 @@ export const Slot = ({
       id,
       isVisible: debouncedVisible,
       padding: {
-        top: padding.top,
-        right: padding.right,
-        bottom: padding.bottom,
-        left: padding.left,
+        top: finalPadding.top,
+        right: finalPadding.right,
+        bottom: finalPadding.bottom,
+        left: finalPadding.left,
       },
       avoidMapboxControls,
     };
   }, [
     id,
     debouncedVisible,
-    padding.top,
-    padding.right,
-    padding.bottom,
-    padding.left,
+    finalPadding.top,
+    finalPadding.right,
+    finalPadding.bottom,
+    finalPadding.left,
     avoidMapboxControls,
   ]);
 

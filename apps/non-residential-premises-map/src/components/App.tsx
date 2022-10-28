@@ -381,7 +381,12 @@ export const App = () => {
           </IconButton>
         </Slot>
 
-        <Slot id="mobile-detail" isVisible={isDetailOpen} position="bottom" autoPadding>
+        <Slot
+          id="mobile-detail"
+          isVisible={isDetailOpen}
+          position="bottom"
+          padding={{ bottom: window.innerHeight / 2 }}
+        >
           <Detail isMobile features={selectedFeatures ?? []} onClose={closeDetail} />
         </Slot>
       </Layout>
