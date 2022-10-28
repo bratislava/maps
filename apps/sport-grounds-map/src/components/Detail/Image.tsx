@@ -21,8 +21,6 @@ export const Image = ({ src, alt }: IImageProps) => {
 
   const fullUrl = useMemo(() => `/static-pages/sport-grounds-map/${src}`, [src]);
 
-  console.log(import.meta);
-
   return (
     <div className="relative h-64 z-0">
       <div className="flex items-center justify-center absolute top-0 right-0 bottom-0 left-0 bg-gray-lightmode dark:bg-gray-darkmode bg-opacity-10 dark:bg-opacity-10">

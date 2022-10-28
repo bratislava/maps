@@ -373,8 +373,6 @@ export const App = () => {
               lat={lat}
               lng={lng}
               onClick={(feature) => {
-                console.log(features[0]);
-                console.log(selectedMarker);
                 if (clusterExpansionZoom) {
                   mapRef.current?.changeViewport({
                     zoom: clusterExpansionZoom,

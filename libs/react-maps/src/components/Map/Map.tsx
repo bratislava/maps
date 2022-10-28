@@ -1,3 +1,4 @@
+import '../../styles/mapbox-corrections.css';
 import { DISTRICTS_GEOJSON } from '@bratislava/geojson-data';
 import {
   LngLat,
@@ -7,6 +8,7 @@ import {
   MapIcon,
   Marker,
   mergeViewports,
+  Padding,
   PartialPadding,
   PartialViewport,
   Sources,
@@ -46,6 +48,12 @@ import { getFeatureDistrict } from '../../utils/districts';
 import { Slot } from '../Layout/Slot';
 import { IMapState, MapAction, MapActionKind, mapReducer } from './mapReducer';
 import { i18n as i18nType } from 'i18next';
+
+export interface ISlotState {
+  id: string;
+  isVisible: boolean;
+  padding: Padding;
+}
 
 export type IMapProps = {
   mapboxAccessToken: string;
@@ -114,6 +122,10 @@ export interface IMapMethods {
   changeMargin: (margin: PartialPadding) => void;
   addSearchMarker: (lngLat: LngLat) => void;
   removeSearchMarker: () => void;
+  // Slots
+  mountOrUpdateSlot: (slotState: ISlotState) => void;
+  unmountSlot: (slotState: ISlotState) => void;
+  isSlotMounted: (id: string) => boolean;
 }
 
 export type MapHandle = IMapMethods;
@@ -145,6 +157,9 @@ export const mapContext = createContext<IMapContext>({
     changeMargin: () => void 0,
     addSearchMarker: () => void 0,
     removeSearchMarker: () => void 0,
+    mountOrUpdateSlot: () => void 0,
+    unmountSlot: () => void 0,
+    isSlotMounted: () => false,
   },
 });
 
@@ -186,6 +201,8 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
 
     const [isDevInfoVisible, setDevInfoVisible] = useState(false);
 
+    const [slotStates, setSlotStates] = useState<ISlotState[]>([]);
+
     const initialViewport = useMemo(
       () =>
         mergeViewports(
@@ -222,58 +239,60 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
     const [isMobile, setMobile] = useState<boolean | null>(null);
     const [isLoading, setLoading] = useState(true);
 
-    const geolocationChangeHandler = useCallback((isGeolocation: boolean) => {
-      if (isGeolocation) {
-        // if browser supports geolocation
-        if ('geolocation' in navigator) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const geolocationMarkerLngLat = {
-                lng: position.coords.longitude,
-                lat: position.coords.latitude,
-              };
+    const geolocationChangeHandler = useCallback(
+      (isGeolocation: boolean) => {
+        if (isGeolocation) {
+          // if browser supports geolocation
+          if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const geolocationMarkerLngLat = {
+                  lng: position.coords.longitude,
+                  lat: position.coords.latitude,
+                };
 
-              const isInBratislava = !!getFeatureDistrict({
-                type: 'Feature',
-                geometry: {
-                  type: 'Point',
-                  coordinates: [
-                    geolocationMarkerLngLat.lng,
-                    geolocationMarkerLngLat.lat,
-                  ],
-                },
-                properties: {},
-              });
+                const isInBratislava = !!getFeatureDistrict({
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Point',
+                    coordinates: [
+                      geolocationMarkerLngLat.lng,
+                      geolocationMarkerLngLat.lat,
+                    ],
+                  },
+                  properties: {},
+                });
 
-              if (!isInBratislava) {
-                alert(t('errors.notLocatedInBratislava'));
-                return;
-              }
+                if (!isInBratislava) {
+                  alert(t('errors.notLocatedInBratislava'));
+                  return;
+                }
 
-              console.log('ADDING GEOLOCATION MARKER');
-              mapboxRef.current?.changeViewport({
-                center: geolocationMarkerLngLat,
-                zoom: 18,
-              });
+                mapboxRef.current?.changeViewport({
+                  center: geolocationMarkerLngLat,
+                  zoom: 18,
+                });
 
-              dispatchMapState({
-                type: MapActionKind.EnableGeolocation,
-                geolocationMarkerLngLat,
-              });
-            },
-            (error) => {
-              alert(`${t('errors.generic')}: ${error.message}`);
-            },
-          );
+                dispatchMapState({
+                  type: MapActionKind.EnableGeolocation,
+                  geolocationMarkerLngLat,
+                });
+              },
+              (error) => {
+                alert(`${t('errors.generic')}: ${error.message}`);
+              },
+            );
+          } else {
+            alert(t('errors.noGeolocationSupport'));
+          }
         } else {
-          alert(t('errors.noGeolocationSupport'));
+          dispatchMapState({
+            type: MapActionKind.DisableGeolocation,
+          });
         }
-      } else {
-        dispatchMapState({
-          type: MapActionKind.DisableGeolocation,
-        });
-      }
-    }, []);
+      },
+      [t],
+    );
 
     const [, setControlsMarginTop] = useState(0);
     const [controlsMarginRight, setControlsMarginRight] = useState(0);
@@ -406,6 +425,62 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
       });
     };
 
+    const isSlotMounted = useCallback(
+      (id: string) => {
+        return !!slotStates.find((slotState) => slotState.id === id);
+      },
+      [slotStates],
+    );
+
+    const unmountSlot = useCallback(
+      (slotState: ISlotState) => {
+        if (isSlotMounted(slotState.id)) {
+          setSlotStates((slotStates) =>
+            slotStates.filter((s) => s.id !== slotState.id),
+          );
+        }
+      },
+      [isSlotMounted],
+    );
+
+    const mountOrUpdateSlot = useCallback(
+      (slotState: ISlotState) => {
+        const foundSlotIndex = slotStates.findIndex(
+          (s) => s.id === slotState.id,
+        );
+        if (foundSlotIndex === -1) {
+          setSlotStates((slotStates) => [...slotStates, slotState]);
+        } else {
+          setSlotStates((slotStates) => {
+            const newSlotState = [...slotStates];
+            newSlotState[foundSlotIndex] = slotState;
+            return newSlotState;
+          });
+        }
+      },
+      [slotStates],
+    );
+
+    const finalPadding = useMemo(() => {
+      const top = Math.max(
+        ...slotStates.map((slotState) => slotState.padding.top),
+      );
+      const right = Math.max(
+        ...slotStates.map((slotState) => slotState.padding.right),
+      );
+      const bottom = Math.max(
+        ...slotStates.map((slotState) => slotState.padding.bottom),
+      );
+      const left = Math.max(
+        ...slotStates.map((slotState) => slotState.padding.left),
+      );
+      return { top, right, bottom, left };
+    }, [slotStates]);
+
+    useEffect(() => {
+      changeViewport({ padding: finalPadding });
+    }, [finalPadding]);
+
     const mapMethods = useMemo(
       () => ({
         changeViewport,
@@ -420,8 +495,17 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
           geolocationChangeHandler(!mapState.isGeolocation),
         addSearchMarker,
         removeSearchMarker,
+        mountOrUpdateSlot,
+        unmountSlot,
+        isSlotMounted,
       }),
-      [geolocationChangeHandler, mapState.isGeolocation],
+      [
+        geolocationChangeHandler,
+        isSlotMounted,
+        mapState.isGeolocation,
+        mountOrUpdateSlot,
+        unmountSlot,
+      ],
     );
 
     // EXPOSING METHODS FOR PARENT COMPONENT
@@ -550,6 +634,10 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
 
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
 
+    useEffect(() => {
+      console.log(slotStates);
+    }, [slotStates]);
+
     return (
       <I18nextProvider i18n={prevI18n}>
         <div className={cx('h-full w-full relative text-foreground-lightmode')}>
@@ -583,11 +671,11 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
                 locale={mapboxLocale}
               >
                 {/* information button */}
-                <Slot name="information-button">
+                <Slot id="information-button">
                   <IconButton
                     onClick={() => setInformationModalOpen(true)}
                     className={cx(
-                      'absolute left-4 top-4 w-8 h-8 sm:top-6 sm:left-auto sm:right-6 rounded-full',
+                      'fixed left-4 top-4 w-8 h-8 sm:top-6 sm:left-auto sm:right-6 rounded-full',
                       mapInformationButtonClassName,
                     )}
                   >

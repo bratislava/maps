@@ -55,7 +55,7 @@ export const Detail = ({ features, onClose, isMobile }: DetailProps) => {
   ) : !feature ? null : (
     <div
       className={cx(
-        "fixed top-0 right-0 w-96 rounded-bl-lg overflow-hidden bg-background-lightmode dark:bg-background-darkmode transition-all duration-500",
+        "w-96 rounded-bl-lg overflow-hidden bg-background-lightmode dark:bg-background-darkmode",
         {
           "translate-x-full": !feature,
           "shadow-lg": feature,

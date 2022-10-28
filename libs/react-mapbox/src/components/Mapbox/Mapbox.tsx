@@ -8,6 +8,7 @@ import {
   forwardRef,
   ReactNode,
   useCallback,
+  useEffect,
   useId,
   useImperativeHandle,
   useMemo,
@@ -22,6 +23,7 @@ import {
   ViewportActionKind,
   viewportReducer,
 } from './viewportReducer';
+import { useDebounce } from 'usehooks-ts';
 
 export type MapboxGesturesOptions = {
   disableBearing?: boolean;
@@ -159,15 +161,27 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       [inputInitialViewport],
     );
 
+    // Viewport where map is going
+    const [futureViewport, dispatchFutureViewport] = useReducer(
+      viewportReducer,
+      initialViewport,
+    );
+
+    // Current viewport
     const [viewport, dispatchViewport] = useReducer(
       viewportReducer,
       initialViewport,
     );
 
-    const [debouncedViewport, dispatchDebouncedViewport] = useReducer(
-      viewportReducer,
-      initialViewport,
-    );
+    // Debounced current viewport
+    const debouncedViewport = useDebounce(viewport, 100);
+
+    useEffect(() => {
+      dispatchFutureViewport({
+        type: ViewportActionKind.Change,
+        partialViewport: debouncedViewport,
+      });
+    }, [debouncedViewport]);
 
     const fitBounds = useCallback(
       (
@@ -184,27 +198,31 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       (partialViewport: PartialViewport, duration = 500) => {
         if (!map) return;
 
-        dispatchDebouncedViewport({
-          type: ViewportActionKind.Change,
-          partialViewport: partialViewport,
-        });
+        const newFutureViewport = mergeViewports(
+          futureViewport,
+          partialViewport,
+        );
 
-        const newViewport = mergeViewports(debouncedViewport, partialViewport);
-
-        if (JSON.stringify(debouncedViewport) !== JSON.stringify(newViewport)) {
+        if (
+          JSON.stringify(futureViewport) !== JSON.stringify(newFutureViewport)
+        ) {
+          dispatchFutureViewport({
+            type: ViewportActionKind.Change,
+            partialViewport: newFutureViewport,
+          });
           if (duration === 0) {
             map.jumpTo({
-              ...newViewport,
+              ...newFutureViewport,
             });
           } else {
             map.easeTo({
-              ...newViewport,
+              ...newFutureViewport,
               duration,
             });
           }
         }
       },
-      [map, debouncedViewport],
+      [map, futureViewport],
     );
 
     const [isLoading, setLoading] = useState(true);
@@ -414,11 +432,6 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       };
 
       dispatchViewport({
-        type: ViewportActionKind.Change,
-        partialViewport: viewport,
-      });
-
-      dispatchDebouncedViewport({
         type: ViewportActionKind.Change,
         partialViewport: viewport,
       });
@@ -797,7 +810,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         <mapboxContext.Provider value={mapContextValue}>
           <div id={mapContainerId} style={{ width: '100%', height: '100%' }} />
           {children}
-          {/* <DevelopmentInfo isDevelopment={isDevelopment} viewport={viewport} /> */}
+          <DevelopmentInfo isDevelopment={isDevelopment} viewport={viewport} />
         </mapboxContext.Provider>
       </>
     );

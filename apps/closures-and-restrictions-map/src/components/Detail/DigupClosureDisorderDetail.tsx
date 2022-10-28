@@ -87,7 +87,6 @@ export const DigupClosureDisorderDetail = ({ properties }: DigupClosureDisorderD
           <div>{t("permission")}</div>
           <div>
             {attachments.map((attachment, index) => {
-              console.log(attachment);
               const attachmentUrl = `${DIGUPS_URL}/${properties.objectId}/attachment/${attachment.id}`;
               return (
                 <a

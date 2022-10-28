@@ -133,6 +133,7 @@ export const App = () => {
   const [maxPriceDebounced, setMaxPriceDebounced] = useState(maxPriceDefault);
 
   const areaFilterExpression = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const filter: any = [
       "all",
       [">=", "approximateArea", minAreaDebounced],
@@ -143,8 +144,6 @@ export const App = () => {
 
     if (purposeFilter.expression.length) filter.push(purposeFilter.expression);
     if (occupancyFilter.expression.length) filter.push(occupancyFilter.expression);
-
-    console.log(filter);
     return filter;
   }, [
     minAreaDebounced,
@@ -356,93 +355,72 @@ export const App = () => {
         styles={DISTRICTS_STYLE}
       />
 
-      <Slot name="controls">
-        <ThemeController
-          className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
-            "translate-x-96": isSidebarVisible && !isMobile,
-          })}
-        />
-        <ViewportController
-          className="fixed right-4 bottom-[88px] sm:bottom-8"
-          slots={viewportControllerSlots}
-        />
-        <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
+      <Slot
+        id="controls"
+        position="bottom"
+        className="p-4 pb-9 flex flex-col gap-2 w-screen pointer-events-none"
+      >
+        <div className="flex justify-between items-end">
+          <ThemeController
+            className={cx("pointer-events-auto", {
+              "translate-x-96": isSidebarVisible && !isMobile,
+            })}
+          />
+          <ViewportController slots={viewportControllerSlots} />
+        </div>
+        <div className="pointer-events-auto shadow-lg rounded-lg sm:hidden">
           <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
         </div>
-
-        <Slot
-          openPadding={{
-            left: !isMobile ? 384 : 0, // w-96 or 24rem
-          }}
-          name="filters"
-          isVisible={isSidebarVisible}
-          setVisible={setSidebarVisible}
-        >
-          <Filters
-            isVisible={isSidebarVisible}
-            setVisible={setSidebarVisible}
-            areFiltersDefault={areFiltersDefault}
-            activeFilters={combinedFilter.active}
-            onResetFiltersClick={handleResetFilters}
-            purposeFilter={purposeFilter}
-            districtFilter={districtFilter}
-            occupancyFilter={occupancyFilter}
-            isMobile={isMobile ?? false}
-            minArea={minArea}
-            maxArea={maxArea}
-            minPrice={minPrice}
-            maxPrice={maxPrice}
-            onAreaChange={(a) => {
-              setMinArea(a[0]);
-              setMaxArea(a[1]);
-            }}
-            onAreaChangeEnd={(a) => {
-              setMinAreaDebounced(a[0]);
-              setMaxAreaDebounced(a[1]);
-            }}
-            onPriceChange={(p) => {
-              setMinPrice(p[0]);
-              setMaxPrice(p[1]);
-            }}
-            onPriceChangeEnd={(p) => {
-              setMinPriceDebounced(p[0]);
-              setMaxPriceDebounced(p[1]);
-            }}
-          />
-        </Slot>
       </Slot>
 
       <Layout isOnlyMobile>
-        <Slot name="mobile-header">
-          <div className="fixed top-4 right-4 z-10 sm:hidden">
-            <IconButton onClick={() => setSidebarVisible(true)}>
-              <Funnel size="md" />
-            </IconButton>
-          </div>
+        <Slot id="mobile-header" position="top-right">
+          <IconButton className="m-4" onClick={() => setSidebarVisible(true)}>
+            <Funnel size="md" />
+          </IconButton>
         </Slot>
 
-        <Slot
-          name="mobile-detail"
-          isVisible={isDetailOpen}
-          autoPadding
-          openPadding={{
-            bottom: window.innerHeight / 2, // w-96 or 24rem
-          }}
-          avoidControls={false}
-        >
+        <Slot id="mobile-detail" isVisible={isDetailOpen} position="bottom" autoPadding>
           <Detail isMobile features={selectedFeatures ?? []} onClose={closeDetail} />
         </Slot>
       </Layout>
 
-      <Layout isOnlyDesktop>
-        <Slot
-          name="desktop-detail"
-          isVisible={isDetailOpen}
-          openPadding={{
-            right: 384,
+      <Slot id="filters" isVisible={isSidebarVisible} position="top-left" autoPadding={!isMobile}>
+        <Filters
+          isVisible={isSidebarVisible}
+          setVisible={setSidebarVisible}
+          areFiltersDefault={areFiltersDefault}
+          activeFilters={combinedFilter.active}
+          onResetFiltersClick={handleResetFilters}
+          purposeFilter={purposeFilter}
+          districtFilter={districtFilter}
+          occupancyFilter={occupancyFilter}
+          isMobile={isMobile ?? false}
+          minArea={minArea}
+          maxArea={maxArea}
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+          onAreaChange={(a) => {
+            setMinArea(a[0]);
+            setMaxArea(a[1]);
           }}
-          avoidControls={false}
-        >
+          onAreaChangeEnd={(a) => {
+            setMinAreaDebounced(a[0]);
+            setMaxAreaDebounced(a[1]);
+          }}
+          onPriceChange={(p) => {
+            setMinPrice(p[0]);
+            setMaxPrice(p[1]);
+          }}
+          onPriceChangeEnd={(p) => {
+            setMinPriceDebounced(p[0]);
+            setMaxPriceDebounced(p[1]);
+          }}
+        />
+      </Slot>
+
+      <Layout isOnlyDesktop>
+        <Slot id="desktop-detail" isVisible={isDetailOpen} position="top-right" autoPadding>
           <Detail isMobile={false} features={selectedFeatures ?? []} onClose={closeDetail} />
         </Slot>
       </Layout>

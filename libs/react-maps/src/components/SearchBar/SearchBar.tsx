@@ -33,7 +33,6 @@ export function SearchBar({
   });
 
   const options = useMemo(() => {
-    console.log(results);
     return (
       results?.map((result) => {
         if (result.place_type.includes('poi')) {
@@ -46,7 +45,7 @@ export function SearchBar({
             label: (
               <div>
                 {result.text}
-                <span className="opacity-75 font-normal">
+                <span className="font-normal opacity-75">
                   {result.properties.address
                     ? `, ${result.properties.address}`
                     : ''}
@@ -79,7 +78,7 @@ export function SearchBar({
         zoom: 14.75,
       });
     },
-    [mapMethods]
+    [mapMethods],
   );
 
   const handleResetPress = useCallback(() => {
@@ -96,7 +95,7 @@ export function SearchBar({
       onOptionPress={handleOptionPress}
       placeholder={placeholder}
       rightSlot={
-        <div className="absolute right-[3px] gap-[4px] bottom-0 top-0 flex items-center">
+        <div className="absolute inset-y-0 right-[3px] flex items-center gap-[4px]">
           {searchQuery && searchQuery.length > 0 ? (
             <button className="p-3" onClick={handleResetPress}>
               <X size="sm" />
@@ -106,10 +105,10 @@ export function SearchBar({
               <MagnifyingGlass size="lg" />
             </div>
           )}
-          <div className="md:hidden h-8 bg-gray-lightmode dark:bg-gray-darkmode opacity-20 w-[2px]" />
+          <div className="bg-gray-lightmode dark:bg-gray-darkmode h-8 w-[2px] opacity-20 md:hidden" />
           <button
             onClick={mapMethods.toggleGeolocation}
-            className="md:hidden h-10 flex items-center justify-center p-2 translate-x-[1px]"
+            className="flex h-10 translate-x-[1px] items-center justify-center p-2 md:hidden"
           >
             <Location size="lg" isActive={mapState?.isGeolocation} />
           </button>

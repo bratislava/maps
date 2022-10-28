@@ -30,7 +30,7 @@ export const DevelopmentInfo = ({
   }, [viewport]);
 
   return isDevelopment ? (
-    <div style={{ width: '256px' }} className="fixed top-4 right-4">
+    <div style={{ width: '256px' }} className="fixed top-4 right-4 opacity-50">
       <JsonViewer json={prettierViewport} />
     </div>
   ) : null;

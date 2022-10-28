@@ -78,8 +78,6 @@ export const processData = ({
 }: ProcessDataOptions) => {
   let GLOBAL_ID = 0;
 
-  // console.log(getUniqueValuesFromFeatures(rawZonesData.features, "Kod_parkovacej_karty"));
-
   const zonesData: FeatureCollection<Polygon> = {
     type: "FeatureCollection",
     features: [

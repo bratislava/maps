@@ -23,17 +23,12 @@ export const Sidebar = ({
 }: ISidebarProps) => {
   return (
     <div
-      className={cx(
-        "fixed top-0 bottom-0 h-full transition-transform duration-500 z-50",
-        {
-          "left-0": position === "left",
-          "right-0": position === "right",
-          "-translate-x-full": !isVisible && position === "left",
-          "translate-x-full": !isVisible && position === "right",
-          "w-full": isMobile,
-          "w-96": !isMobile,
-        }
-      )}
+      className={cx("relative h-screen z-50", {
+        "left-0": position === "left",
+        "right-0": position === "right",
+        "w-screen": isMobile,
+        "w-96": !isMobile,
+      })}
     >
       <div
         className={cx(

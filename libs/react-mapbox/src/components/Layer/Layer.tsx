@@ -1,7 +1,7 @@
-import { useContext, useEffect } from "react";
-import { usePrevious } from "@bratislava/utils";
-import { log } from "../../utils/log";
-import { mapboxContext } from "../Mapbox/Mapbox";
+import { useContext, useEffect } from 'react';
+import { usePrevious } from '@bratislava/utils';
+import { log } from '../../utils/log';
+import { mapboxContext } from '../Mapbox/Mapbox';
 
 type Filter = string | null | boolean | Filter[];
 
@@ -31,7 +31,7 @@ export const Layer = ({
     layerPrefix,
   } = useContext(mapboxContext);
 
-  const layerIdStartsWith = "label";
+  const layerIdStartsWith = 'label';
 
   const previousLoading = usePrevious(isLoading);
   const previousVisible = usePrevious(isVisible);
@@ -48,11 +48,9 @@ export const Layer = ({
             .getStyle()
             .layers.find((layer) => layer.id.includes(layerIdStartsWith))?.id;
 
-          // console.log(map.getStyle().layers);
-
           const layers = map.getStyle().layers;
           const bottomLayer = layers.find((layer) =>
-            layer.id.startsWith(layerPrefix)
+            layer.id.startsWith(layerPrefix),
           );
           map.addLayer(
             {
@@ -60,11 +58,11 @@ export const Layer = ({
               ...style,
               id: getPrefixedLayer(style.id),
             },
-            style.type === "line" || style.type === "circle"
+            style.type === 'line' || style.type === 'circle'
               ? layerId
-              : style.type === "fill"
+              : style.type === 'fill'
               ? bottomLayer?.id
-              : undefined
+              : undefined,
           );
 
           if (!ignoreClick) {
@@ -78,16 +76,16 @@ export const Layer = ({
 
             map.setLayoutProperty(
               getPrefixedLayer(style.id),
-              "visibility",
-              "visible"
+              'visibility',
+              'visible',
             );
           } else {
             log(`SETTING LAYER ${getPrefixedLayer(style.id)} HIDDEN`);
 
             map.setLayoutProperty(
               getPrefixedLayer(style.id),
-              "visibility",
-              "none"
+              'visibility',
+              'none',
             );
           }
         }
@@ -103,7 +101,7 @@ export const Layer = ({
         if (resultFilters && resultFilters.length) {
           map.setFilter(
             getPrefixedLayer(style.id),
-            resultFilters.filter((filter) => filter)
+            resultFilters.filter((filter) => filter),
           );
         } else {
           map.setFilter(getPrefixedLayer(style.id), null);

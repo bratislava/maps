@@ -1,162 +1,192 @@
-import { mapboxContext, PartialPadding } from '@bratislava/react-mapbox';
-import { usePrevious } from '@bratislava/utils';
+import { Padding } from '@bratislava/react-mapbox';
+import { motion } from 'framer-motion';
 import cx from 'classnames';
 import {
-  Dispatch,
-  forwardRef,
   ReactNode,
-  SetStateAction,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from 'react';
+
+import { ISlotState, mapContext } from '../Map/Map';
+import { useDebounce } from 'usehooks-ts';
 import { useResizeDetector } from 'react-resize-detector';
 
-import { mapContext } from '../Map/Map';
-
 type VerticalPosition = 'top' | 'bottom';
-type HorizontalPosition = 'left' | 'right';
+type HorizontalPosition = 'right' | 'left';
 
-export interface ISlotChildProps {
-  isVisible: boolean | undefined;
-  setVisible: Dispatch<SetStateAction<boolean | undefined>>;
-}
+type Positon =
+  | VerticalPosition
+  | HorizontalPosition
+  | `${VerticalPosition}-${HorizontalPosition}`;
 
 export interface ISlotProps {
-  name: string;
+  id: string;
   children?: ReactNode;
   isVisible?: boolean;
-  setVisible?: Dispatch<SetStateAction<boolean | undefined>>;
-  openPadding?: {
-    top?: number;
-    right?: number;
-    bottom?: number;
-    left?: number;
-  };
+  position?: Positon;
+  hidingEdge?: VerticalPosition | HorizontalPosition;
   autoPadding?: boolean;
-  avoidControls?: boolean;
-  verticalPosition?: VerticalPosition;
-  horizontalPosition?: HorizontalPosition;
+  className?: string;
 }
 
-export const Slot = forwardRef<HTMLDivElement, ISlotProps>(
-  (
-    {
-      children,
-      isVisible,
-      openPadding = {},
-      avoidControls = true,
-      autoPadding = false,
-      verticalPosition,
-      horizontalPosition,
-    },
-    forwardedRef,
-  ) => {
-    const [padding, setPadding] = useState({} as PartialPadding);
-    const [margin, setMargin] = useState({} as PartialPadding);
+export const Slot = ({
+  id,
+  children,
+  isVisible = true,
+  position,
+  hidingEdge,
+  autoPadding = false,
+  className,
+}: ISlotProps) => {
+  // Update of children when closing is delayed due animation
+  const debouncedVisible = useDebounce(isVisible, 10);
+  const [displayedChildren, setDisplayedChildren] = useState(children);
 
-    const previousPadding = usePrevious(padding);
-    const previousMargin = usePrevious(margin);
+  const { ref, width = 0, height = 0 } = useResizeDetector();
 
-    const { width, height, ref } = useResizeDetector();
-
-    const paddingTop = useMemo(
-      () => (openPadding.top ? (isVisible ? openPadding.top : 0) : undefined),
-      [openPadding.top, isVisible],
-    );
-    const paddingRight = useMemo(
-      () =>
-        openPadding.right ? (isVisible ? openPadding.right : 0) : undefined,
-      [openPadding.right, isVisible],
-    );
-    const paddingBottom = useMemo(
-      () =>
-        openPadding.bottom ? (isVisible ? openPadding.bottom : 0) : undefined,
-      [openPadding.bottom, isVisible],
-    );
-    const paddingLeft = useMemo(
-      () => (openPadding.left ? (isVisible ? openPadding.left : 0) : undefined),
-      [openPadding.left, isVisible],
-    );
-
-    const marginTop = useMemo(
-      () =>
-        openPadding.top && avoidControls
-          ? isVisible
-            ? openPadding.top
-            : 0
-          : undefined,
-      [openPadding.top, isVisible, avoidControls],
-    );
-    const marginRight = useMemo(
-      () =>
-        openPadding.right && avoidControls
-          ? isVisible
-            ? openPadding.right
-            : 0
-          : undefined,
-      [openPadding.right, isVisible, avoidControls],
-    );
-    const marginBottom = useMemo(
-      () =>
-        openPadding.bottom && avoidControls
-          ? isVisible
-            ? openPadding.bottom
-            : 0
-          : undefined,
-      [openPadding.bottom, isVisible, avoidControls],
-    );
-    const marginLeft = useMemo(
-      () =>
-        openPadding.left && avoidControls
-          ? isVisible
-            ? openPadding.left
-            : 0
-          : undefined,
-      [openPadding.left, isVisible, avoidControls],
-    );
-
-    const { changeViewport } = useContext(mapboxContext);
-    const { methods: mapMethods } = useContext(mapContext);
-
-    useEffect(() => {
-      const padding = {} as PartialPadding;
-      if (paddingTop !== undefined) padding.top = paddingTop;
-      if (paddingRight !== undefined) padding.right = paddingRight;
-      if (paddingBottom !== undefined) padding.bottom = paddingBottom;
-      if (paddingLeft !== undefined) padding.left = paddingLeft;
-      setPadding(padding);
-    }, [paddingTop, paddingRight, paddingBottom, paddingLeft]);
-
-    useEffect(() => {
-      const margin = {} as PartialPadding;
-      if (marginTop !== undefined) margin.top = marginTop;
-      if (marginRight !== undefined) margin.right = marginRight;
-      if (marginBottom !== undefined) margin.bottom = marginBottom;
-      if (marginLeft !== undefined) margin.left = marginLeft;
-      setMargin(margin);
-    }, [marginTop, marginRight, marginBottom, marginLeft]);
-
-    useEffect(() => {
-      if (
-        padding &&
-        JSON.stringify(padding) !== JSON.stringify(previousPadding)
-      ) {
-        changeViewport({
-          padding,
-        });
+  const calculatedHidingEdge: VerticalPosition | HorizontalPosition | null =
+    useMemo(() => {
+      if (!position) {
+        return null;
       }
-    }, [padding, previousPadding, changeViewport]);
 
-    useEffect(() => {
-      if (JSON.stringify(margin) !== JSON.stringify(previousMargin)) {
-        mapMethods.changeMargin(margin);
+      if (hidingEdge) {
+        return hidingEdge;
       }
-    }, [margin, previousMargin, mapMethods]);
 
-    return <div ref={ref}>{children}</div>;
-  },
-);
+      if (position.includes('left')) return 'left';
+      if (position.includes('right')) return 'right';
+      return position as 'top' | 'bottom';
+    }, [hidingEdge, position]);
 
-Slot.displayName = 'Slot';
+  const topPadding = useMemo(() => {
+    if (isVisible && calculatedHidingEdge === 'top') {
+      return height;
+    }
+    return 0;
+  }, [isVisible, calculatedHidingEdge, height]);
+
+  const bottomPadding = useMemo(() => {
+    if (isVisible && calculatedHidingEdge === 'bottom') {
+      return height;
+    }
+    return 0;
+  }, [isVisible, calculatedHidingEdge, height]);
+
+  const leftPadding = useMemo(() => {
+    if (isVisible && calculatedHidingEdge === 'left') {
+      console.log(width);
+      return width;
+    }
+    console.log(0);
+    return 0;
+  }, [isVisible, calculatedHidingEdge, width]);
+
+  const rightPadding = useMemo(() => {
+    if (isVisible && calculatedHidingEdge === 'right') {
+      return width;
+    }
+    return 0;
+  }, [isVisible, calculatedHidingEdge, width]);
+
+  const padding: Padding = useMemo(
+    () =>
+      autoPadding
+        ? {
+            top: topPadding,
+            right: rightPadding,
+            bottom: bottomPadding,
+            left: leftPadding,
+          }
+        : { top: 0, right: 0, bottom: 0, left: 0 },
+    [autoPadding, topPadding, rightPadding, bottomPadding, leftPadding],
+  );
+
+  const slotState: ISlotState = useMemo(() => {
+    return {
+      id,
+      isVisible: debouncedVisible,
+      padding: {
+        top: padding.top,
+        right: padding.right,
+        bottom: padding.bottom,
+        left: padding.left,
+      },
+    };
+  }, [
+    id,
+    debouncedVisible,
+    padding.top,
+    padding.right,
+    padding.bottom,
+    padding.left,
+  ]);
+
+  const {
+    methods: { unmountSlot, mountOrUpdateSlot },
+  } = useContext(mapContext);
+
+  useEffect(() => {
+    mountOrUpdateSlot(slotState);
+    return () => {
+      unmountSlot(slotState);
+    };
+  }, [id, mountOrUpdateSlot, slotState, unmountSlot]);
+
+  const x = useMemo(() => {
+    if (!debouncedVisible) {
+      if (calculatedHidingEdge === 'left') return '-100%';
+      if (calculatedHidingEdge === 'right') return '100%';
+      return 0;
+    }
+    return 0;
+  }, [debouncedVisible, calculatedHidingEdge]);
+
+  const y = useMemo(() => {
+    if (!debouncedVisible) {
+      if (calculatedHidingEdge === 'top') return '-100%';
+      if (calculatedHidingEdge === 'bottom') return '100%';
+      return 0;
+    }
+    return 0;
+  }, [debouncedVisible, calculatedHidingEdge]);
+
+  // Update children after animation complete
+  const onAnimationComplete = useCallback(() => {
+    setDisplayedChildren(children);
+  }, [children]);
+
+  // Update children whenever Slot is visible
+  useEffect(() => {
+    if (isVisible === true) {
+      setDisplayedChildren(children);
+    }
+  }, [isVisible, children]);
+
+  return (
+    <motion.div
+      ref={ref}
+      animate={{
+        x,
+        y,
+      }}
+      transition={{ ease: 'easeInOut' }}
+      onAnimationComplete={onAnimationComplete}
+      className={cx(
+        'fixed',
+        {
+          'top-0': position?.includes('top'),
+          'bottom-0': position?.includes('bottom'),
+          'left-0': position?.includes('left'),
+          'right-0': position?.includes('right'),
+        },
+        className,
+      )}
+    >
+      {displayedChildren}
+    </motion.div>
+  );
+};
