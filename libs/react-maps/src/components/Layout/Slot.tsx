@@ -30,6 +30,7 @@ export interface ISlotProps {
   hidingEdge?: VerticalPosition | HorizontalPosition;
   autoPadding?: boolean;
   className?: string;
+  avoidMapboxControls?: boolean;
 }
 
 export const Slot = ({
@@ -40,6 +41,7 @@ export const Slot = ({
   hidingEdge,
   autoPadding = false,
   className,
+  avoidMapboxControls = false,
 }: ISlotProps) => {
   // Update of children when closing is delayed due animation
   const debouncedVisible = useDebounce(isVisible, 10);
@@ -113,6 +115,7 @@ export const Slot = ({
         bottom: padding.bottom,
         left: padding.left,
       },
+      avoidMapboxControls,
     };
   }, [
     id,
@@ -121,6 +124,7 @@ export const Slot = ({
     padding.right,
     padding.bottom,
     padding.left,
+    avoidMapboxControls,
   ]);
 
   const {
@@ -171,10 +175,10 @@ export const Slot = ({
         x,
         y,
       }}
-      transition={{ ease: 'easeInOut' }}
+      transition={{ ease: 'easeInOut', duration: 0.5 }}
       onAnimationComplete={onAnimationComplete}
       className={cx(
-        'fixed',
+        'fixed z-20',
         {
           'top-0': position?.includes('top'),
           'bottom-0': position?.includes('bottom'),

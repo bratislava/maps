@@ -363,7 +363,8 @@ export const App = () => {
         <div className="flex justify-between items-end">
           <ThemeController
             className={cx("pointer-events-auto", {
-              "translate-x-96": isSidebarVisible && !isMobile,
+              "translate-x-96 delay-75": isSidebarVisible && !isMobile,
+              "translate-x-0 delay-200": !(isSidebarVisible && !isMobile),
             })}
           />
           <ViewportController slots={viewportControllerSlots} />
@@ -385,7 +386,13 @@ export const App = () => {
         </Slot>
       </Layout>
 
-      <Slot id="filters" isVisible={isSidebarVisible} position="top-left" autoPadding={!isMobile}>
+      <Slot
+        id="filters"
+        isVisible={isSidebarVisible}
+        position="top-left"
+        autoPadding={!isMobile}
+        avoidMapboxControls={!isMobile}
+      >
         <Filters
           isVisible={isSidebarVisible}
           setVisible={setSidebarVisible}

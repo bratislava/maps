@@ -53,6 +53,7 @@ export interface ISlotState {
   id: string;
   isVisible: boolean;
   padding: Padding;
+  avoidMapboxControls: boolean;
 }
 
 export type IMapProps = {
@@ -119,7 +120,6 @@ export interface IMapMethods {
   turnOnGeolocation: () => void;
   turnOffGeolocation: () => void;
   toggleGeolocation: () => void;
-  changeMargin: (margin: PartialPadding) => void;
   addSearchMarker: (lngLat: LngLat) => void;
   removeSearchMarker: () => void;
   // Slots
@@ -153,7 +153,6 @@ export const mapContext = createContext<IMapContext>({
     turnOnGeolocation: () => void 0,
     turnOffGeolocation: () => void 0,
     toggleGeolocation: () => void 0,
-    changeMargin: () => void 0,
     addSearchMarker: () => void 0,
     removeSearchMarker: () => void 0,
     mountOrUpdateSlot: () => void 0,
@@ -292,11 +291,6 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
       [t],
     );
 
-    const [, setControlsMarginTop] = useState(0);
-    const [controlsMarginRight, setControlsMarginRight] = useState(0);
-    const [controlsMarginBottom, setControlsMarginBottom] = useState(0);
-    const [controlsMarginLeft, setControlsMarginLeft] = useState(0);
-
     const [isDisplayLandscapeModal, setDisplayLandscapeModal] = useState(false);
 
     const {
@@ -403,13 +397,6 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
       });
     };
 
-    const changeMargin = (margin: PartialPadding) => {
-      if (margin.top !== undefined) setControlsMarginTop(margin.top);
-      if (margin.right !== undefined) setControlsMarginRight(margin.right);
-      if (margin.bottom !== undefined) setControlsMarginBottom(margin.bottom);
-      if (margin.left !== undefined) setControlsMarginLeft(margin.left);
-    };
-
     const addSearchMarker = (lngLat: LngLat) => {
       dispatchMapState({
         type: MapActionKind.AddSearchMarker,
@@ -463,18 +450,41 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
       return { top, right, bottom, left };
     }, [slotStates]);
 
+    const finalMapboxControlsPadding = useMemo(() => {
+      const top = Math.max(
+        ...slotStates
+          .filter((slotState) => slotState.avoidMapboxControls)
+          .map((slotState) => slotState.padding.top),
+      );
+      const right = Math.max(
+        ...slotStates
+          .filter((slotState) => slotState.avoidMapboxControls)
+          .map((slotState) => slotState.padding.right),
+      );
+      const bottom = Math.max(
+        ...slotStates
+          .filter((slotState) => slotState.avoidMapboxControls)
+          .map((slotState) => slotState.padding.bottom),
+      );
+      const left = Math.max(
+        ...slotStates
+          .filter((slotState) => slotState.avoidMapboxControls)
+          .map((slotState) => slotState.padding.left),
+      );
+      return { top, right, bottom, left };
+    }, [slotStates]);
+
     useEffect(() => {
       changeViewport({ padding: finalPadding });
     }, [finalPadding]);
 
-    const mapMethods = useMemo(
+    const mapMethods: IMapMethods = useMemo(
       () => ({
         changeViewport,
         fitDistrict,
         fitBounds,
         fitFeature,
         moveToFeatures,
-        changeMargin,
         turnOnGeolocation: () => geolocationChangeHandler(true),
         turnOffGeolocation: () => geolocationChangeHandler(false),
         toggleGeolocation: () =>
@@ -520,10 +530,6 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
         },
         0,
       );
-      setControlsMarginTop(0);
-      setControlsMarginRight(0);
-      setControlsMarginBottom(0);
-      setControlsMarginLeft(0);
     }, [onMobileChange, isMobile]);
 
     useEffect(() => {
@@ -536,41 +542,32 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
 
     // CALCULATE MAP PADDING ON DETAIL AND FILTERS TOGGLING
     useEffect(() => {
-      // move the mapbox logo
       const mapboxLogoElement = document.querySelector(
         '.mapboxgl-ctrl-bottom-left',
       );
       const informationElement = document.querySelector(
-        '.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl',
+        '.mapboxgl-ctrl-bottom-right',
       );
       if (!mapboxLogoElement || !informationElement) return;
 
       const mapboxLogoStyle = `
-        transition: transform 500ms;
-        transform: translate(${controlsMarginLeft ?? 0 + 8}px, ${
-        -controlsMarginBottom - 2
-      }px);
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-        margin-left: 8px;
-        margin-bottom: -2px;
+        transition: transform 500ms ease-in-out;
+        transform: translate(${finalMapboxControlsPadding.left}px, -${finalMapboxControlsPadding.bottom}px);
+        bottom: 8px; left: 8px;
       `;
 
       const informationStyle = `
-        transition: transform 500ms;
-        transform: translate(-${controlsMarginRight + 16}px, ${
-        -controlsMarginBottom - 2
-      }px);
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-        margin: 0 !important;
-        margin-bottom: 4px !important;
+        transition: transform 500ms ease-in-out;
+        transform: translate(-${finalMapboxControlsPadding.right}px, -${finalMapboxControlsPadding.bottom}px);
+        bottom: 8px; right: 8px;
       `;
 
       mapboxLogoElement.setAttribute('style', mapboxLogoStyle);
       informationElement.setAttribute('style', informationStyle);
     }, [
-      controlsMarginBottom,
-      controlsMarginLeft,
-      controlsMarginRight,
+      finalMapboxControlsPadding.bottom,
+      finalMapboxControlsPadding.left,
+      finalMapboxControlsPadding.right,
       isMobile,
     ]);
 
