@@ -14,7 +14,6 @@ import {
   MapHandle,
   SearchBar,
   Slot,
-  SlotType,
   ThemeController,
   ViewportController,
 } from "@bratislava/react-maps";
@@ -31,9 +30,10 @@ import { processData } from "../utils/utils";
 import { Filters } from "./Filters";
 
 import Detail from "./Detail";
-import { IconButton } from "@bratislava/react-maps-ui";
+import { IconButton, Sidebar } from "@bratislava/react-maps-ui";
 import { Funnel } from "@bratislava/react-maps-icons";
 import { Marker } from "./Marker";
+import { Legend } from "./Legend";
 
 const isDevelopment = !!import.meta.env.DEV;
 
@@ -53,6 +53,8 @@ export const App = () => {
   const [, setUniqueStreets] = useState<string[]>([]);
   const [uniquePurposes, setUniquePurposes] = useState<string[]>([]);
   const [uniqueOccupancies, setUniqueOccupancies] = useState<string[]>([]);
+
+  const [isLegendVisible, setLegendVisible] = useState(false);
 
   useEffect(() => {
     document.title = t("tabTitle");
@@ -200,10 +202,6 @@ export const App = () => {
     }
   }, [selectedFeatures]);
 
-  const viewportControllerSlots: SlotType = useMemo(() => {
-    return isMobile ? ["compass", "zoom"] : ["geolocation", "compass", ["fullscreen", "zoom"]];
-  }, [isMobile]);
-
   const initialViewport = useMemo(
     () => ({
       zoom: 12.229005488986582,
@@ -221,14 +219,6 @@ export const App = () => {
       dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
     }),
     [],
-  );
-
-  const sources = useMemo(
-    () => ({
-      ESRI_DATA: data,
-      DISTRICTS_GEOJSON,
-    }),
-    [data],
   );
 
   const areFiltersDefault = useMemo(() => {
@@ -280,6 +270,28 @@ export const App = () => {
 
   const isDetailOpen = useMemo(() => !!selectedFeatures.length, [selectedFeatures]);
 
+  const legend = useMemo(() => {
+    return (
+      <Legend
+        items={[
+          {
+            title: t("legend.free"),
+            color: colors.free,
+          },
+          {
+            title: t("legend.occupied"),
+            color: colors.occupied,
+          },
+          {
+            title: t("legend.districtBorder"),
+            color: colors.disctrictBorder,
+            type: "line",
+          },
+        ]}
+      />
+    );
+  }, [t]);
+
   return isLoading ? null : (
     <Map
       loadingSpinnerColor={colors.primary}
@@ -289,7 +301,6 @@ export const App = () => {
       initialViewport={initialViewport}
       isDevelopment={isDevelopment}
       isOutsideLoading={isLoading}
-      sources={sources}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
       mapInformation={{
@@ -330,6 +341,7 @@ export const App = () => {
               lng={lng}
               lat={lat}
               key={key}
+              isSelected={!!selectedFeatures.find((sf) => sf.id === features[0].id)}
               onClick={() => {
                 // When it's cluster and it's expandable
                 if (isCluster && clusterExpansionZoom && clusterExpansionZoom !== 31) {
@@ -351,7 +363,7 @@ export const App = () => {
       <Layer
         ignoreClick
         filters={districtFilter.keepOnEmptyExpression}
-        source="DISTRICTS_GEOJSON"
+        geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
 
@@ -367,7 +379,13 @@ export const App = () => {
               "translate-x-0 delay-200": !(isSidebarVisible && !isMobile),
             })}
           />
-          <ViewportController slots={viewportControllerSlots} />
+          <ViewportController
+            slots={["legend", ["compass", "zoom"]]}
+            desktopSlots={["legend", "geolocation", "compass", ["fullscreen", "zoom"]]}
+            legend={legend}
+            isLegendOpen={isLegendVisible}
+            onLegendOpenChange={setLegendVisible}
+          />
         </div>
         <div className="pointer-events-auto shadow-lg rounded-lg sm:hidden">
           <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
@@ -388,6 +406,18 @@ export const App = () => {
           padding={{ bottom: window.innerHeight / 2 }}
         >
           <Detail isMobile features={selectedFeatures ?? []} onClose={closeDetail} />
+        </Slot>
+
+        <Slot id="mobile-legend" isVisible={isLegendVisible} position="top-right">
+          <Sidebar
+            title={t("title")}
+            isMobile
+            position="right"
+            closeText={t("close")}
+            onClose={() => setLegendVisible(false)}
+          >
+            <div className="p-6">{legend}</div>
+          </Sidebar>
         </Slot>
       </Layout>
 

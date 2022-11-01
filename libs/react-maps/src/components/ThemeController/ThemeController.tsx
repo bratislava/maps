@@ -93,6 +93,7 @@ const ThemeControllerWithoutTranslations = ({
               </button>
             )}
             panel={<div>{t('satelliteMode')}</div>}
+            allowedPlacements={['right']}
           />
           <div className="bg-gray-lightmode dark:bg-gray-darkmode mx-auto h-[2px] w-8 opacity-20" />
           <Popover

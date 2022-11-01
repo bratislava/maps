@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 
 export interface ISidebarProps {
   isVisible?: boolean;
-  setVisible?: (isVisible: boolean | undefined) => void;
+  onClose?: () => void;
   children?: ReactNode;
   title?: string;
   position: "left" | "right";
@@ -14,7 +14,7 @@ export interface ISidebarProps {
 
 export const Sidebar = ({
   isVisible,
-  setVisible = () => void 0,
+  onClose,
   children,
   title,
   position,
@@ -41,7 +41,7 @@ export const Sidebar = ({
         {isMobile ? (
           <div className="sticky top-0 bg-background-lightmode dark:bg-background-darkmode z-50">
             <button
-              onClick={() => setVisible(false)}
+              onClick={onClose}
               className="flex w-full items-center px-3 py-3 gap-2 bg-gray-lightmode dark:bg-gray-darkmode
         transition-all bg-opacity-0 dark:bg-opacity-0 hover:bg-opacity-10 hover:dark:bg-opacity-10 focus:bg-opacity-10 focues:dark:bg-opacity-10 active:bg-opacity-20 active:dark:bg-opacity-20"
             >
@@ -55,7 +55,7 @@ export const Sidebar = ({
           <div
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === "Enter" && setVisible(!isVisible)}
+            onKeyDown={(e) => e.key === "Enter" && onClose && onClose()}
             className={cx(
               "absolute bg-background-lightmode dark:bg-background-darkmode z-20 dark:border-r-2 dark:border-b-2 dark:border-gray-darkmode dark:border-opacity-20 py-8 transform hover:text-primary transition-all",
               {
@@ -63,9 +63,7 @@ export const Sidebar = ({
                 "right-0 translate-x-full rounded-br-lg": position === "left",
               }
             )}
-            onClick={() => {
-              setVisible(!isVisible);
-            }}
+            onClick={onClose}
           >
             <div
               className={cx(
@@ -122,7 +120,7 @@ export const Sidebar = ({
 
         {isMobile && (
           <button
-            onClick={() => setVisible(false)}
+            onClick={onClose}
             className="flex w-full sticky font-medium py-3 top-full gap-2 justify-center items-center bg-gray-lightmode dark:bg-gray-darkmode transition-all bg-opacity-10 dark:bg-opacity-10 hover:bg-opacity-20 hover:dark:bg-opacity-20 focus:bg-opacity-20 focus:dark:bg-opacity-20 active:bg-opacity-30 active:dark:bg-opacity-30 hover:underline"
           >
             <span>{closeText}</span>

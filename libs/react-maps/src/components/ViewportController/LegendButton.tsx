@@ -1,15 +1,45 @@
 import { List } from '@bratislava/react-maps-icons';
-import { IconButton } from '@bratislava/react-maps-ui';
-import { MouseEvent } from 'react';
+import { IconButton, Popover } from '@bratislava/react-maps-ui';
+import { ReactNode, useContext, useCallback } from 'react';
+import { mapContext } from '../Map/Map';
 
-export function LegendButton({
-  onLegendClick,
+export const LegendButton = ({
+  legend,
+  isLegendOpen,
+  onLegendOpenChange,
 }: {
-  onLegendClick: (e: MouseEvent) => void;
-}) {
-  return (
-    <IconButton onClick={onLegendClick}>
-      <List size="xl" />
-    </IconButton>
+  legend: ReactNode;
+  isLegendOpen: boolean;
+  onLegendOpenChange: (isVisible: boolean) => void;
+}) => {
+  const handleOpenChange = useCallback(
+    (isOpen: boolean) => {
+      onLegendOpenChange(isOpen);
+    },
+    [onLegendOpenChange],
   );
-}
+
+  const { isMobile } = useContext(mapContext);
+
+  if (isMobile) {
+    return (
+      <IconButton onClick={() => handleOpenChange(!isLegendOpen)}>
+        <List size="xl" />
+      </IconButton>
+    );
+  }
+
+  return (
+    <Popover
+      isOpen={isLegendOpen}
+      onOpenChange={handleOpenChange}
+      button={() => (
+        <IconButton onClick={() => handleOpenChange(!isLegendOpen)}>
+          <List size="xl" />
+        </IconButton>
+      )}
+      panel={legend}
+      allowedPlacements={['top']}
+    />
+  );
+};

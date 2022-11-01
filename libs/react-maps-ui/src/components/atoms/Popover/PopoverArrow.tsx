@@ -3,8 +3,8 @@ import cx from "classnames";
 import { forwardRef } from "react";
 interface IPopoverArrowProps {
   placement: Placement;
-  x: number;
-  y: number;
+  x: string;
+  y: string;
   isSmall?: boolean;
 }
 
@@ -13,20 +13,21 @@ export const PopoverArrow = forwardRef<HTMLDivElement, IPopoverArrowProps>(
     return (
       <div
         ref={ref}
-        className={cx("absolute z-10 w-20", {
+        className={cx("absolute z-10 w-20 ", {
           "scale-x-[0.3]": isSmall,
-          "-rotate-90 -translate-x-[50px]": placement === "right",
-          "rotate-90 right-0 translate-x-[50px]": placement === "left",
-          "-translate-y-[10px]": placement === "bottom",
+          "rotate-180 bottom-[2px]": placement === "top",
+          "top-[2px]": placement === "bottom",
+          "rotate-90 right-[2px] translate-x-[50%]": placement === "left",
+          "-rotate-90 left-[2px] -translate-x-[50%]": placement === "right",
         })}
         style={{
-          left: `${x}px`,
-          top: `${y}px`,
+          left: x,
+          top: y,
         }}
       >
-        <div className={cx("flex relative", {})}>
+        <div className={cx("flex relative")}>
           <svg
-            className="absolute w-20 max-w-full -z-10"
+            className="absolute w-20 bottom-0 max-w-full -z-10"
             width={100}
             height={10}
             x="0px"
@@ -43,7 +44,7 @@ export const PopoverArrow = forwardRef<HTMLDivElement, IPopoverArrowProps>(
             />
           </svg>
           <svg
-            className="absolute w-20 max-w-full -z-20"
+            className="absolute w-20 bottom-0 max-w-full -z-20"
             width={100}
             height={10}
             x="0px"

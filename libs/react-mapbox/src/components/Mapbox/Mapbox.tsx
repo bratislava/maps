@@ -271,16 +271,6 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     // LOADING SOURCES
     const loadSources = useCallback(() => {
       if (!map) return;
-      sources &&
-        Object.keys(sources).forEach((sourceKey) => {
-          if (!map.getSource(sourceKey)) {
-            map.addSource(sourceKey, {
-              type: 'geojson',
-              data: sources[sourceKey],
-              tolerance: 0,
-            });
-          }
-        });
 
       if (!map.getSource('satellite')) {
         map.addSource('satellite', {
@@ -672,6 +662,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         );
 
         map.on('style.load', () => {
+          console.log('load');
           loadSources();
           loadIcons();
           setStyleLoading(false);

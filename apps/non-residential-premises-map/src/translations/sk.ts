@@ -19,6 +19,10 @@ export default {
       title: "Obsadenosť",
       placeholder: "Obsadenosť",
       multipleOccupancies: "Zvolených",
+      types: {
+        free: "Voľné",
+        occupied: "Obsadené",
+      },
     },
     district: {
       title: "Mestská časť",
@@ -49,7 +53,12 @@ export default {
     free: "Voľné",
     occupied: "Obsadené",
   },
-  // for libraries
+  legend: {
+    title: "Legenda",
+    free: "Voľné",
+    occupied: "Obsadené",
+    districtBorder: "Hranica mestskej časti",
+  },
   activeFilters: "Aktívny filter",
   resetFilters: "Zrušiť filter",
   informationModal: {

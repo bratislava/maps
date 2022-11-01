@@ -416,10 +416,6 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
       });
     }, []);
 
-    useEffect(() => {
-      console.log(slotStates);
-    }, [slotStates]);
-
     const mountOrUpdateSlot = useCallback((slotState: ISlotState) => {
       setSlotStates((slotStates) => {
         const foundSlotIndex = slotStates.findIndex(
@@ -618,10 +614,6 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
     );
 
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
-
-    useEffect(() => {
-      console.log(slotStates);
-    }, [slotStates]);
 
     return (
       <I18nextProvider i18n={prevI18n}>

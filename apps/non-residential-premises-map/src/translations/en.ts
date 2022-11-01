@@ -19,6 +19,10 @@ export default {
       title: "Occupancy",
       placeholder: "Occupancy",
       multipleOccupancies: "Selected",
+      types: {
+        free: "Free",
+        occupied: "Occupied",
+      },
     },
     district: {
       title: "District",
@@ -49,7 +53,12 @@ export default {
     free: "Free",
     occupied: "Occupied",
   },
-  // react-maps-ui
+  legend: {
+    title: "Legend",
+    free: "Free",
+    occupied: "Occupied",
+    districtBorder: "Disctrict border",
+  },
   activeFilters: "Active filters",
   resetFilters: "Reset filters",
   informationModal: {

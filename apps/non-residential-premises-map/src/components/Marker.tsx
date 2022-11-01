@@ -8,12 +8,13 @@ import { motion } from "framer-motion";
 
 export interface IMarkerProps {
   features: Feature[];
+  isSelected: boolean;
   lng: number;
   lat: number;
   onClick: () => void;
 }
 
-export const Marker = ({ features, lng, lat, onClick }: IMarkerProps) => {
+export const Marker = ({ features, lng, lat, onClick, isSelected }: IMarkerProps) => {
   return (
     <MapMarker feature={point([lng, lat], features[0].properties)} onClick={onClick}>
       <div
@@ -22,7 +23,11 @@ export const Marker = ({ features, lng, lat, onClick }: IMarkerProps) => {
           "w-6 h-6": features.length === 1,
         })}
       >
-        <div className="absolute -z-10 w-full h-full">
+        <div
+          className={cx("absolute -z-10 w-full h-full rounded-full border-2 border-[transparent]", {
+            "!border-primary": isSelected,
+          })}
+        >
           <VictoryPie
             labels={[]}
             colorScale={[colors.occupied, colors.free]}
@@ -44,7 +49,7 @@ export const Marker = ({ features, lng, lat, onClick }: IMarkerProps) => {
           />
         </div>
         {features.length > 1 && (
-          <div className="text-white font-semibold w-full h-full flex items-center justify-center z-20">
+          <div className="text-white font-semibold text-[16px] w-full h-full flex items-center justify-center z-20">
             {features.length}
           </div>
         )}

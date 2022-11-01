@@ -1,9 +1,11 @@
+import colors from "../../../utils/colors.json";
+
 const styles = [
   {
     id: "districts-line",
     type: "line",
     paint: {
-      "line-color": "#000000",
+      "line-color": colors.disctrictBorder,
       "line-opacity": 0.4,
       "line-width": [
         "interpolate",

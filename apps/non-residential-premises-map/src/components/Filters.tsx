@@ -64,7 +64,7 @@ export const Filters = ({
       position={isMobile ? "right" : "left"}
       isMobile={isMobile}
       isVisible={isVisible}
-      setVisible={setVisible}
+      onClose={() => setVisible(false)}
       title={t("title")}
       closeText={t("close")}
     >
@@ -164,7 +164,9 @@ export const Filters = ({
               onReset={() => occupancyFilter.setActiveAll(false)}
               renderValue={({ values }) => (
                 <SelectValueRenderer
-                  values={values}
+                  values={values.map((value) =>
+                    t(`filters.occupancy.types.${value as "free" | "occupied"}`),
+                  )}
                   placeholder={t("filters.occupancy.placeholder")}
                   multiplePlaceholder={`${t("filters.occupancy.multipleOccupancies")} (${
                     values.length
@@ -174,7 +176,7 @@ export const Filters = ({
             >
               {occupancyFilter.keys.map((occupancy) => (
                 <SelectOption key={occupancy} value={occupancy}>
-                  {occupancy}
+                  {t(`filters.occupancy.types.${occupancy as "free" | "occupied"}`)}
                 </SelectOption>
               ))}
             </Select>

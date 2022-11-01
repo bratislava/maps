@@ -34,7 +34,7 @@ export const useEffectDebugger = (
         )
       : {};
 
-  if (Object.keys(changedDeps).length) {
+  if (Object.keys(changedDeps).length && import.meta.env.DEV) {
     console.log(name ?? "[use-effect-debugger]", changedDeps);
   }
 

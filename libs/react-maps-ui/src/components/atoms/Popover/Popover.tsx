@@ -11,10 +11,12 @@ import {
 } from "@floating-ui/react-dom-interactions";
 import cx from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import { FC, ReactNode, useRef, useState } from "react";
+import { FC, ReactNode, useRef, useState, useMemo } from "react";
 import { PopoverArrow } from "./PopoverArrow";
 
 export interface IPopoverProps {
+  isOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
   button: FC<{
     isOpen: boolean;
     open: () => void;
@@ -23,17 +25,27 @@ export interface IPopoverProps {
   }>;
   panel: ReactNode;
   isSmall?: boolean;
-  placement?: Placement;
+  allowedPlacements?: Placement[];
 }
 
 export const Popover = ({
   button: Button,
   panel,
   isSmall = false,
-  placement: placementInput = "right",
+  allowedPlacements,
+  isOpen: isOpenExternal,
+  onOpenChange,
 }: IPopoverProps) => {
   const arrowRef = useRef(null);
-  const [isOpen, setOpen] = useState(false);
+  const [isOpenInternal, setOpenInternal] = useState(false);
+
+  const isOpen = useMemo(() => {
+    return isOpenExternal ?? isOpenInternal;
+  }, [isOpenExternal, isOpenInternal]);
+
+  const setOpen = useMemo(() => {
+    return onOpenChange ?? setOpenInternal;
+  }, [onOpenChange]);
 
   const {
     x,
@@ -45,15 +57,14 @@ export const Popover = ({
     middlewareData,
     context,
   } = useFloating({
-    placement: placementInput,
     open: isOpen,
     onOpenChange: setOpen,
     strategy: "fixed",
     middleware: [
       offset(12),
-      arrow({ element: arrowRef }),
       shift(),
-      autoPlacement(),
+      autoPlacement({ allowedPlacements }),
+      arrow({ element: arrowRef }),
     ],
   });
 
@@ -76,7 +87,7 @@ export const Popover = ({
           isOpen={isOpen}
           open={() => setOpen(true)}
           close={() => setOpen(false)}
-          toggle={() => setOpen((o) => !o)}
+          toggle={() => setOpen(!isOpen)}
         />
       </div>
       <FloatingPortal>
@@ -84,28 +95,18 @@ export const Popover = ({
           {isOpen && (
             <motion.div
               {...getFloatingProps()}
-              className={cx(
-                "bg-background-lightmode z-50 w-fit dark:bg-background-darkmode border-2 border-background-lightmode dark:border-gray-darkmode/20 rounded-lg shadow-lg text-foreground-lightmode dark:text-foreground-darkmode",
-                {
-                  "p-8": !isSmall,
-                  "p-2": isSmall,
-                }
-              )}
+              className="z-50"
               ref={floating}
               initial={{
-                // scale: 0.8,
+                scale: 0.9,
                 opacity: 0,
               }}
               animate={{
-                originX: 0.5,
-                // placement === "right" ? 0 : placement === "left" ? 1 : 0.5,
-                originY: 0.5,
-                // placement === "bottom" ? 0 : placement === "top" ? 1 : 0.5,
-                // scale: isOpen ? 1 : 0.8,
+                scale: isOpen ? 1 : 0.9,
                 opacity: isOpen ? 1 : 0,
               }}
               exit={{
-                // scale: 0.8,
+                scale: 0.9,
                 opacity: 0,
               }}
               transition={{
@@ -114,18 +115,38 @@ export const Popover = ({
               }}
               style={{
                 position: strategy,
-                top: y ?? 0,
-                left: x ?? 0,
+                top: `${y ?? 0}px`,
+                left: `${x ?? 0}px`,
               }}
             >
-              {/* <PopoverArrow
-                ref={arrowRef}
-                placement={placement}
-                x={middlewareData.arrow?.x ?? 0}
-                y={middlewareData.arrow?.y ?? 0}
-                isSmall={isSmall}
-              /> */}
-              {panel}
+              <div className="relative">
+                <PopoverArrow
+                  ref={arrowRef}
+                  placement={placement}
+                  x={
+                    middlewareData.arrow?.x
+                      ? `${middlewareData.arrow?.x}px`
+                      : ""
+                  }
+                  y={
+                    middlewareData.arrow?.y
+                      ? `${middlewareData.arrow?.y}px`
+                      : ""
+                  }
+                  isSmall={isSmall}
+                />
+                <div
+                  className={cx(
+                    "bg-background-lightmode w-fit dark:bg-background-darkmode border-2 border-background-lightmode dark:border-gray-darkmode/20 rounded-lg shadow-lg text-foreground-lightmode dark:text-foreground-darkmode",
+                    {
+                      "p-6": !isSmall,
+                      "p-2": isSmall,
+                    }
+                  )}
+                >
+                  {panel}
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
