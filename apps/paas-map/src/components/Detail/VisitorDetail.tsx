@@ -67,7 +67,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
         <div className="font-light">
           {properties["Doplnkova_informacia_sk"]}{" "}
           <Popover
-            placement="bottom"
+            allowedPlacements={["bottom"]}
             button={({ toggle }) => (
               <span className="cursor-pointer transform" onClick={toggle}>
                 <Information className="inline-block text-primary translate-y-1" size="default" />
@@ -98,7 +98,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
         <div className="font-light">
           {properties["Doplnkova_informacia_en"]}{" "}
           <Popover
-            placement="bottom"
+            allowedPlacements={["bottom"]}
             button={({ toggle }) => (
               <span className="cursor-pointer transform" onClick={toggle}>
                 <Information

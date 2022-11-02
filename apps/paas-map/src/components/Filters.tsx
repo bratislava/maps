@@ -28,8 +28,9 @@ export const Filters = <LF extends string, MF extends string, ZF extends string>
     <Sidebar
       position={isMobile ? "right" : "left"}
       isMobile={isMobile}
-      isVisible={isVisible}
-      setVisible={setVisible}
+      isVisible={isVisible ?? false}
+      onClose={() => setVisible(false)}
+      onOpen={() => setVisible(true)}
       title={t("title")}
       closeText={t("close")}
     >

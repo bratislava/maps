@@ -412,9 +412,11 @@ export const App = () => {
           <Sidebar
             title={t("title")}
             isMobile
+            isVisible={isLegendVisible}
             position="right"
             closeText={t("close")}
             onClose={() => setLegendVisible(false)}
+            onOpen={() => setLegendVisible(true)}
           >
             <div className="p-6">{legend}</div>
           </Sidebar>

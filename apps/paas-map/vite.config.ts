@@ -5,6 +5,7 @@ import checker from "vite-plugin-checker";
 import svgr from "vite-plugin-svgr";
 import { VitePWA } from "vite-plugin-pwa";
 
+import { resolve } from "path";
 export default defineConfig({
   plugins: [
     react(),
@@ -42,6 +43,11 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
+      input: {
+        main: resolve(__dirname, "index.html"),
+        en: resolve(__dirname, "en.html"),
+        sk: resolve(__dirname, "sk.html"),
+      },
       output: {
         manualChunks: {
           "mapbox-gl": ["mapbox-gl"],

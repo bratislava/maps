@@ -5484,6 +5484,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-dom@^18.0.8":
+  version "18.0.8"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.8.tgz#d2606d855186cd42cc1b11e63a71c39525441685"
+  integrity sha512-C3GYO0HLaOkk9dDAz3Dl4sbe4AKUGTCfFIZsz3n/82dPNN8Du533HzKatDxeUYWu24wJgMP1xICqkWk1YOLOIw==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-i18next@^8.1.0":
   version "8.1.0"
   resolved "https://registry.npmjs.org/@types/react-i18next/-/react-i18next-8.1.0.tgz"
@@ -5504,6 +5511,15 @@
   version "17.0.48"
   resolved "https://registry.npmjs.org/@types/react/-/react-17.0.48.tgz"
   integrity sha512-zJ6IYlJ8cYYxiJfUaZOQee4lh99mFihBoqkOSEGV+dFi9leROW6+PgstzQ+w3gWTnUfskALtQPGHK6dYmPj+2A==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^18.0.24":
+  version "18.0.24"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.24.tgz#2f79ed5b27f08d05107aab45c17919754cc44c20"
+  integrity sha512-wRJWT6ouziGUy+9uX0aW4YOJxAY0bG6/AOk5AW5QSvZqI7dk6VBIbXvcVgIw/W5Jrl24f77df98GEKTJGOLx7Q==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -12146,14 +12162,6 @@ vite-plugin-pwa@^0.13.1:
     workbox-build "^6.5.4"
     workbox-window "^6.5.4"
 
-vite-plugin-svgr@2.2.2, vite-plugin-svgr@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/vite-plugin-svgr/-/vite-plugin-svgr-2.2.2.tgz#c5c9cb573bf455bb079550531847ddc5d2e122af"
-  integrity sha512-u8Ac27uZmDHTVGawpAhvLMJMuzbGeZGhe61TGeHoRQLxVhmQfIYCefa0iLbjC0ui1zFo6XZnS8EkzPITCYp85g==
-  dependencies:
-    "@rollup/pluginutils" "^5.0.0"
-    "@svgr/core" "^6.4.0"
-
 vite-plugin-svgr@^2.1.0:
   version "2.2.1"
   resolved "https://registry.npmjs.org/vite-plugin-svgr/-/vite-plugin-svgr-2.2.1.tgz"
@@ -12161,6 +12169,14 @@ vite-plugin-svgr@^2.1.0:
   dependencies:
     "@rollup/pluginutils" "^4.2.1"
     "@svgr/core" "^6.3.1"
+
+vite-plugin-svgr@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/vite-plugin-svgr/-/vite-plugin-svgr-2.2.2.tgz#c5c9cb573bf455bb079550531847ddc5d2e122af"
+  integrity sha512-u8Ac27uZmDHTVGawpAhvLMJMuzbGeZGhe61TGeHoRQLxVhmQfIYCefa0iLbjC0ui1zFo6XZnS8EkzPITCYp85g==
+  dependencies:
+    "@rollup/pluginutils" "^5.0.0"
+    "@svgr/core" "^6.4.0"
 
 vite-plugin-wasm@^3.1.0:
   version "3.1.0"

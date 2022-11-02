@@ -51,8 +51,9 @@ export const MobileFilters = <
       isMobile
       title={t("title")}
       position="right"
-      isVisible={isVisible}
-      setVisible={setVisible}
+      isVisible={isVisible ?? false}
+      onClose={() => setVisible(false)}
+      onOpen={() => setVisible(true)}
       closeText={t("close")}
     >
       <div>

@@ -7,7 +7,7 @@ import { FeatureCollection } from 'geojson';
 type Filter = string | null | boolean | Filter[];
 
 export interface ILayerProps {
-  geojson: FeatureCollection;
+  geojson: FeatureCollection | null;
   styles: any;
   isVisible?: boolean;
   filters?: Filter[];
@@ -44,7 +44,7 @@ export const Layer = ({
   useEffect(() => {
     if (map && !isLoading && !isStyleLoading) {
       styles.forEach((style: any) => {
-        if (!map) return;
+        if (!map || !geojson) return;
 
         const existingSource = map.getSource(id);
 

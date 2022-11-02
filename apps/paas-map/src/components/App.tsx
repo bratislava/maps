@@ -19,7 +19,7 @@ import {
   ViewportController,
 } from "@bratislava/react-maps";
 
-import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
+import { Cluster, Filter, Layer, useFilter } from "@bratislava/react-mapbox";
 
 // components
 import { Detail } from "./Detail";
@@ -403,12 +403,12 @@ export const App = () => {
         </Cluster>
       </Filter>
 
-      <Layer filters={zoneFilter.keepOnEmptyExpression} source="zones" styles={zoneStyles} />
+      <Layer filters={zoneFilter.keepOnEmptyExpression} geojson={zonesData} styles={zoneStyles} />
 
-      <Layer filters={layerFilter.keepOnEmptyExpression} source="udr" styles={udrStyles} />
-      <Layer filters={layerFilter.keepOnEmptyExpression} source="odp" styles={odpStyles} />
+      <Layer filters={layerFilter.keepOnEmptyExpression} geojson={udrData} styles={udrStyles} />
+      <Layer filters={layerFilter.keepOnEmptyExpression} geojson={odpData} styles={odpStyles} />
 
-      <Slot name="controls">
+      <Slot id="controls">
         <ThemeController
           className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
             "translate-x-96": isSidebarVisible && !isMobile,
@@ -426,7 +426,7 @@ export const App = () => {
       </Slot>
 
       <Layout isOnlyMobile>
-        <Slot name="mobile-header">
+        <Slot id="mobile-header">
           <MobileHeader
             onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
             onVisitorClick={setActiveOnlyVisitorLayers}
@@ -435,7 +435,7 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot name="mobile-filters" isVisible={isSidebarVisible} setVisible={setSidebarVisible}>
+        <Slot id="mobile-filters" isVisible={isSidebarVisible}>
           <Filters
             isMobile={true}
             isVisible={isSidebarVisible}
@@ -447,10 +447,10 @@ export const App = () => {
         </Slot>
 
         <Slot
-          name="mobile-detail"
-          openPadding={{ bottom: 200 }}
-          avoidControls={false}
+          id="mobile-detail"
           isVisible={isDetailOpen}
+          position="bottom"
+          padding={{ bottom: window.innerHeight / 2 }}
         >
           <Detail
             isOpen={isDetailOpen}
@@ -462,17 +462,16 @@ export const App = () => {
       </Layout>
 
       <Layout isOnlyDesktop>
-        <Slot name="desktop-search">
+        <Slot id="desktop-search">
           <DesktopSearch areFiltersOpen={isSidebarVisible ?? false} />
         </Slot>
 
         <Slot
-          name="desktop-filters"
+          id="desktop-filters"
           isVisible={isSidebarVisible}
-          setVisible={setSidebarVisible}
-          openPadding={{
-            left: 384, // w-96 or 24rem
-          }}
+          position="top-left"
+          autoPadding
+          avoidMapboxControls={!isMobile}
         >
           <Filters
             isMobile={false}
@@ -484,7 +483,7 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot name="desktop-detail" isVisible={isDetailOpen} avoidControls={false}>
+        <Slot id="desktop-detail" isVisible={isDetailOpen} position="top-right" autoPadding>
           <div
             ref={desktopDetailRef}
             className={cx(

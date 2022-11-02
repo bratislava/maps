@@ -3,8 +3,9 @@ import cx from "classnames";
 import { ReactNode } from "react";
 
 export interface ISidebarProps {
-  isVisible?: boolean;
-  onClose?: () => void;
+  isVisible: boolean;
+  onClose: () => void;
+  onOpen: () => void;
   children?: ReactNode;
   title?: string;
   position: "left" | "right";
@@ -15,6 +16,7 @@ export interface ISidebarProps {
 export const Sidebar = ({
   isVisible,
   onClose,
+  onOpen,
   children,
   title,
   position,
@@ -41,7 +43,7 @@ export const Sidebar = ({
         {isMobile ? (
           <div className="sticky top-0 bg-background-lightmode dark:bg-background-darkmode z-50">
             <button
-              onClick={onClose}
+              onClick={isVisible ? onClose : onOpen}
               className="flex w-full items-center px-3 py-3 gap-2 bg-gray-lightmode dark:bg-gray-darkmode
         transition-all bg-opacity-0 dark:bg-opacity-0 hover:bg-opacity-10 hover:dark:bg-opacity-10 focus:bg-opacity-10 focues:dark:bg-opacity-10 active:bg-opacity-20 active:dark:bg-opacity-20"
             >
@@ -63,7 +65,7 @@ export const Sidebar = ({
                 "right-0 translate-x-full rounded-br-lg": position === "left",
               }
             )}
-            onClick={onClose}
+            onClick={isVisible ? onClose : onOpen}
           >
             <div
               className={cx(
