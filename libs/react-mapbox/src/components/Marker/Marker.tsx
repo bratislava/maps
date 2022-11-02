@@ -97,20 +97,23 @@ export const Marker = ({
   return createPortal(
     <AnimatePresence>
       {isVisible ? (
-        <motion.div
-          onMouseMove={(e) => e.stopPropagation()}
+        <div
           style={{
-            transform: `scale(${scale})`,
             transformOrigin: 'center',
+            transform: `scale(${scale})`,
           }}
-          initial={{ scale: 0 }}
-          exit={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className={className}
-          onClick={clickHandler}
         >
-          {children}
-        </motion.div>
+          <motion.div
+            onMouseMove={(e) => e.stopPropagation()}
+            initial={{ scale: 0 }}
+            exit={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className={className}
+            onClick={clickHandler}
+          >
+            {children}
+          </motion.div>
+        </div>
       ) : null}
     </AnimatePresence>,
 
