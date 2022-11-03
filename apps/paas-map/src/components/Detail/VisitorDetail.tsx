@@ -54,8 +54,10 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
         }
       />
 
-      {properties["Informacia_RPK_sk"] && (
-        <Note className="bg-secondary-soft">
+      {(properties["Informacia_RPK_sk"] ||
+        properties["Informacia_NPK_sk"] ||
+        properties["Doplnkova_informacia_sk"]) && (
+        <Note className="flex flex-col gap-4">
           {properties["Informacia_RPK_sk"] && language === "sk" && (
             <div className="font-light">{properties["Informacia_RPK_sk"]}</div>
           )}
@@ -63,11 +65,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
           {properties["Informacia_RPK_en"] && language === "en" && (
             <div className="font-light">{properties["Informacia_RPK_en"]}</div>
           )}
-        </Note>
-      )}
 
-      {properties["Informacia_NPK_sk"] && (
-        <Note>
           {properties["Informacia_NPK_sk"] && language === "sk" && (
             <div className="font-light">{properties["Informacia_NPK_sk"]}</div>
           )}
@@ -75,11 +73,6 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
           {properties["Informacia_NPK_en"] && language === "en" && (
             <div className="font-light">{properties["Informacia_NPK_en"]}</div>
           )}
-        </Note>
-      )}
-
-      {properties["Doplnkova_informacia_sk"] && (
-        <Note>
           {properties["Doplnkova_informacia_sk"] && language === "sk" && (
             <div className="font-light">
               {properties["Doplnkova_informacia_sk"]}{" "}
