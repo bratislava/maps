@@ -9,6 +9,7 @@ export * from './components/Map/Map';
 export * from './components/SearchBar/SearchBar';
 export * from './components/ThemeController/ThemeController';
 export * from './components/ViewportController/ViewportController';
+export * from './components/SearchMarker/SearchMarker';
 
 // hooks
 export * from './hooks/useMapboxSearch';

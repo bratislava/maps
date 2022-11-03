@@ -9,7 +9,6 @@ import {
   Marker,
   mergeViewports,
   Padding,
-  PartialPadding,
   PartialViewport,
   Sources,
   Viewport,
@@ -21,7 +20,6 @@ import {
 } from '@bratislava/react-maps-icons';
 import { IconButton, LoadingSpinner, Modal } from '@bratislava/react-maps-ui';
 import bbox from '@turf/bbox';
-import { point } from '@turf/helpers';
 import cx from 'classnames';
 import { Feature } from 'geojson';
 import mapboxgl, { MapboxGeoJSONFeature } from 'mapbox-gl';
@@ -48,6 +46,7 @@ import { getFeatureDistrict } from '../../utils/districts';
 import { Slot } from '../Layout/Slot';
 import { IMapState, MapAction, MapActionKind, mapReducer } from './mapReducer';
 import { i18n as i18nType } from 'i18next';
+import { SearchMarker } from '../SearchMarker/SearchMarker';
 
 export interface ISlotState {
   id: string;
@@ -688,16 +687,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
 
                 {/* search marker */}
                 {mapState.searchMarkerLngLat && (
-                  <Marker
-                    feature={point([
-                      mapState.searchMarkerLngLat.lng,
-                      mapState.searchMarkerLngLat.lat,
-                    ])}
-                    isRelativeToZoom
-                    className="relative"
-                  >
-                    <div className="bg-primary h-4 w-4 rotate-45 rounded-full rounded-br-none p-1" />
-                  </Marker>
+                  <SearchMarker {...mapState.searchMarkerLngLat} />
                 )}
               </Mapbox>
             </div>

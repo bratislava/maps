@@ -23,6 +23,7 @@ export interface IMarkerProps {
   className?: string;
   onClick?: (e: MouseEvent<HTMLDivElement>) => void;
   ignoreFilters?: boolean;
+  origin?: 'top' | 'right' | 'bottom' | 'left' | 'center';
 }
 
 export const Marker = ({
@@ -33,6 +34,7 @@ export const Marker = ({
   className,
   onClick,
   ignoreFilters = false,
+  origin = 'center',
 }: IMarkerProps) => {
   const { isFeatureVisible } = useContext(filterContext);
   const { map } = useContext(mapboxContext);
@@ -99,17 +101,30 @@ export const Marker = ({
       {isVisible ? (
         <div
           style={{
-            transformOrigin: 'center',
+            transformOrigin: origin,
             transform: `scale(${scale})`,
+            background: 'red',
+            width: 0,
+            height: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
           }}
+          className={className}
         >
           <motion.div
             onMouseMove={(e) => e.stopPropagation()}
             initial={{ scale: 0 }}
             exit={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className={className}
+            animate={{
+              scale: 1,
+            }}
             onClick={clickHandler}
+            style={{
+              position: 'absolute',
+              [origin]: 0,
+            }}
           >
             {children}
           </motion.div>
