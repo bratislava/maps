@@ -15,7 +15,10 @@ module.exports = {
           DEFAULT: "#71CA55",
           soft: "#d1f0c7",
         },
-        secondary: "#15254B",
+        secondary: {
+          DEFAULT: "#15254B",
+          soft: "#cad1e3",
+        },
       },
     },
   },

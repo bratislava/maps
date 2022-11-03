@@ -284,25 +284,9 @@ export const App = () => {
     [],
   );
 
-  const mapStyles = useMemo(
-    () => ({
-      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-    }),
-    [],
-  );
-
-  const sources = useMemo(
-    () => ({
-      udr: udrData,
-      odp: odpData,
-      zones: zonesData,
-    }),
-    [udrData, odpData, zonesData],
-  );
-
   const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
-    mapRef.current?.moveToFeatures(features);
+    console.log(features);
+    // mapRef.current?.moveToFeatures(features);
     setSelectedFeature(features[0] ?? null);
     setSelectedMarker(null);
   }, []);
@@ -329,9 +313,11 @@ export const App = () => {
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       loadingSpinnerColor="#71CA55"
-      mapStyles={mapStyles}
+      mapStyles={{
+        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+      }}
       initialViewport={initialViewport}
-      sources={sources}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
       onMobileChange={setMobile}

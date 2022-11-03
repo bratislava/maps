@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { Note } from "@bratislava/react-maps-ui";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -57,15 +58,20 @@ export const ParkingLotDetail = ({ properties }: ParkingLotDetailProps) => {
       <Row label={t("mhd")} text={properties["Verejna_doprava"]} />
       <Row label={t("mhdDistance")} text={properties["Vzdialenost"]} />
       <Row label={t("toCentre")} text={properties["Dojazdova_doba"]} />
+
       {properties["Informacia_RPK_sk"] && (
-        <div className="font-light text-[14px]">
-          {language === "sk" ? properties["Informacia_RPK_sk"] : properties["Informacia_RPK_en"]}
-        </div>
+        <Note className="bg-secondary-soft">
+          <div className="font-light text-[14px]">
+            {language === "sk" ? properties["Informacia_RPK_sk"] : properties["Informacia_RPK_en"]}
+          </div>
+        </Note>
       )}
-      {properties["Informacia_RPK_sk"] && (
-        <div className="font-light text-[14px]">
-          {language === "sk" ? properties["Informacia_NPK_sk"] : properties["Informacia_NPK_en"]}
-        </div>
+      {properties["Informacia_NPK_sk"] && (
+        <Note>
+          <div className="font-light text-[14px]">
+            {language === "sk" ? properties["Informacia_NPK_sk"] : properties["Informacia_NPK_en"]}
+          </div>
+        </Note>
       )}
       {properties.Navigacia && (
         <div>

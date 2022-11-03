@@ -4,7 +4,6 @@ import mapboxgl, { MapboxGeoJSONFeature } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {
   createContext,
-  createElement,
   forwardRef,
   ReactNode,
   useCallback,
@@ -13,7 +12,6 @@ import {
   useImperativeHandle,
   useMemo,
   useReducer,
-  useRef,
   useState,
 } from 'react';
 import { MapIcon, PartialViewport, Sources, Viewport } from '../../types';
@@ -32,7 +30,6 @@ export type MapboxGesturesOptions = {
 
 export type MapboxProps = {
   mapboxAccessToken: string;
-  sources?: Sources;
   isDarkmode?: boolean;
   isSatellite?: boolean;
   icons?: {
@@ -97,7 +94,6 @@ export type MapboxHandle = {
 export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
   (
     {
-      sources,
       icons,
       isDarkmode = false,
       isSatellite = false,
@@ -281,7 +277,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           ],
         });
       }
-    }, [sources, map]);
+    }, [map]);
 
     // LOADING ICONS
     const loadIcons = useCallback(() => {
@@ -325,13 +321,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           const filteredFeatures = features.reduce(
             (filteredFeatures, feature) => {
               if (
-                // if source of the feature exists in sources
-                ((sources &&
-                  Object.keys(sources).find(
-                    (sourceKey) => sourceKey === feature.source,
-                  )) ||
-                  // or layer id starts with prefix (custom layers from mapbox)
-                  feature.layer.id.startsWith(layerPrefix)) &&
+                // if layer id starts with prefix (custom layers from mapbox)
+                feature.layer.id.startsWith(layerPrefix) &&
                 // if feature from that source is not included already
                 !filteredFeatures.find(
                   (filteredFeaturs) =>
@@ -357,26 +348,35 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           if (foundSymbolFeature) {
             onFeaturesClick && onFeaturesClick([foundSymbolFeature]);
           } else {
-            /*
-              Geometry objects in queried features in Mapbox are based on zoom level,
-              so it is not precise enough.
-              This will replace the queried geometry object with the source one.
-            */
-            const fixedFeatures = filteredFeatures.map((f) => ({
-              ...f,
-              geometry:
-                sources &&
-                sources[f.source].features.find((sf: Feature) => sf.id === f.id)
-                  .geometry,
-            }));
+            // /*
+            //   Geometry objects in queried features in Mapbox are based on zoom level,
+            //   so it is not precise enough.
+            //   This will replace the queried geometry object with the source one.
+            // */
+            // const fixedFeatures = filteredFeatures.map((f) => {
+            //   console.log(f.source);
+            //   const source = map.getSource(f.source);
+            //   if(source.type === 'geojson'){
+            //     source.
+            //   }
+            //   console.log(source);
+            //   return {
+            //     ...f,
+            //     geometry:
+            //       sources &&
+            //       sources[f.source].features.find(
+            //         (sf: Feature) => sf.id === f.id,
+            //       ).geometry,
+            //   };
+            // });
 
-            fixedFeatures.length &&
+            filteredFeatures.length &&
               onFeaturesClick &&
-              onFeaturesClick(fixedFeatures);
+              onFeaturesClick(filteredFeatures);
           }
         }
       },
-      [layerPrefix, onFeaturesClick, sources, clickableLayerIds, onClick, map],
+      [layerPrefix, onFeaturesClick, clickableLayerIds, onClick, map],
     );
 
     // MAP MOVE HANDLER

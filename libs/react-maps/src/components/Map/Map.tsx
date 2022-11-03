@@ -10,7 +10,6 @@ import {
   mergeViewports,
   Padding,
   PartialViewport,
-  Sources,
   Viewport,
 } from '@bratislava/react-mapbox';
 import {
@@ -57,7 +56,6 @@ export interface ISlotState {
 
 export type IMapProps = {
   mapboxAccessToken: string;
-  sources?: Sources;
   isDevelopment?: boolean;
   icons?: {
     [index: string]: string | MapIcon;
@@ -163,7 +161,6 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
   (
     {
       mapboxAccessToken,
-      sources,
       icons,
       mapStyles,
       children,
@@ -631,7 +628,6 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
                 layerPrefix={layerPrefix}
                 mapStyles={mapStyles}
                 mapboxAccessToken={mapboxAccessToken}
-                sources={sources}
                 icons={icons}
                 onFeaturesClick={onFeaturesClick}
                 selectedFeatures={selectedFeatures}

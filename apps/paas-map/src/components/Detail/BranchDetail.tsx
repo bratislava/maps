@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { Note } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Row } from "./Row";
@@ -38,14 +39,18 @@ export const BranchDetail = ({ properties }: BranchDetailProps) => {
         }
       />
       <Row label={t("place")} text={properties["Miesto"]} />
-      <Row
-        label={t("additionalInformation")}
-        text={
-          language === "sk"
-            ? properties["Spresnujuce_informacie_sk"]
-            : properties["Spresnujuce_informacie_en"]
-        }
-      />
+      {properties["Spresnujuce_informacie_sk"] && (
+        <Note>
+          <Row
+            label={t("additionalInformation")}
+            text={
+              language === "sk"
+                ? properties["Spresnujuce_informacie_sk"]
+                : properties["Spresnujuce_informacie_en"]
+            }
+          />
+        </Note>
+      )}
     </div>
   );
 };

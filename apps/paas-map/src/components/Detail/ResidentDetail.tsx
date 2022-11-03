@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { Note } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { ButtonLink } from "../ButtonLink";
@@ -30,12 +31,15 @@ export const ResidentDetail = ({ properties }: ResidentDetailProps) => {
       {properties.Status === "planned" && <div className="font-semibold">{t("planned")}</div>}
       <Row label={t("cardValidity")} text={properties["Kod_parkovacej_zony"]} />
 
-      {properties["Informacia_RPK_sk"] && language === "sk" && (
-        <div className="font-light">{properties["Informacia_RPK_sk"]}</div>
-      )}
-
-      {properties["Informacia_RPK_en"] && language === "en" && (
-        <div className="font-light">{properties["Informacia_RPK_en"]}</div>
+      {properties["Informacia_RPK_sk"] && (
+        <Note className="flex flex-col gap-4 !bg-secondary-soft">
+          {properties["Informacia_RPK_sk"] && language === "sk" && (
+            <div className="font-light">{properties["Informacia_RPK_sk"]}</div>
+          )}
+          {properties["Informacia_RPK_en"] && language === "en" && (
+            <div className="font-light">{properties["Informacia_RPK_en"]}</div>
+          )}
+        </Note>
       )}
 
       <div className="relative">
