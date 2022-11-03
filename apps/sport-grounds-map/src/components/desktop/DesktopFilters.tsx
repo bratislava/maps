@@ -42,8 +42,9 @@ export const DesktopFilters = ({
     <Sidebar
       position="left"
       isMobile={false}
-      isVisible={isVisible}
-      setVisible={setVisible}
+      isVisible={isVisible ?? false}
+      onClose={() => setVisible(false)}
+      onOpen={() => setVisible(true)}
       title={t("title")}
       closeText={t("close")}
     >

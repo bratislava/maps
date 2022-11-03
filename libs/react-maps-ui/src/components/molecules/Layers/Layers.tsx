@@ -78,6 +78,7 @@ export const Layers = <L extends string>({
                 "border-background-lightmode dark:border-background-darkmode":
                   !isAnyLayerActive(layers),
               })}
+              headerClassName="pl-5 py-1"
               key={index}
               title={
                 <div className="flex gap-4 items-center">

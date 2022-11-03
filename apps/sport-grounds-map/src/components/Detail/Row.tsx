@@ -1,9 +1,19 @@
-export const Row = ({ label, text }: { label: string; text: string }) => {
+import { motion } from "framer-motion";
+
+export const Row = ({
+  label,
+  text,
+  className,
+}: {
+  label: string;
+  text: string;
+  className?: string;
+}) => {
   if (!text || (text === " " && !label)) {
     return null;
   } else {
     return (
-      <div>
+      <motion.div className={className} layoutId={label}>
         <div className="font-light text-[14px]">{label}</div>
         {text.startsWith("http") ? (
           <a href={text} className="underline font-semibold" target="_blank" rel="noreferrer">
@@ -16,7 +26,7 @@ export const Row = ({ label, text }: { label: string; text: string }) => {
         ) : (
           <div className="font-semibold">{text}</div>
         )}
-      </div>
+      </motion.div>
     );
   }
 };

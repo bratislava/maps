@@ -39,15 +39,15 @@ export const MultipleMarker = ({
   );
 
   return (
-    <MapMarker
-      className={cx(
-        "relative transform active:scale-75 transition-transform cursor-pointer w-14 h-14 rounded-full text-white flex items-center justify-center shadow-lg",
-        { "bg-white text-primary z-50": isSelected, "bg-primary text-white": !isSelected },
-      )}
-      ignoreFilters
-      onClick={onClickHandler}
-      feature={correctedFeature}
-    >
+    <MapMarker ignoreFilters onClick={onClickHandler} feature={correctedFeature}>
+      <div
+        className={cx(
+          "relative transform active:scale-75 transition-transform cursor-pointer w-14 h-14 rounded-full text-white flex items-center justify-center shadow-lg",
+          { "bg-white text-primary z-50": isSelected, "bg-primary text-white": !isSelected },
+        )}
+      >
+        <Icon size={64} icon={features[0].properties?.icon ?? ""} />
+      </div>
       <div
         className={cx(
           "absolute top-0 -right-1 rounded-full min-w-[24px] px-2 h-6 text font-bold flex items-center shadow-lg",
@@ -56,7 +56,6 @@ export const MultipleMarker = ({
       >
         {features.length}
       </div>
-      <Icon size={64} icon={features[0].properties?.icon ?? ""} />
     </MapMarker>
   );
 };

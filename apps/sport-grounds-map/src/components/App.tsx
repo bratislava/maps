@@ -72,7 +72,6 @@ export const App = () => {
 
   const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
-  const [isGeolocation, setGeolocation] = useState(false);
 
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
@@ -96,7 +95,6 @@ export const App = () => {
 
   const sportGroundFilter = useFilter({
     property: "kind",
-    keepOnEmpty: true,
     keys: useMemo(
       () => [
         "zimný štadión",
@@ -137,11 +135,10 @@ export const App = () => {
 
   const layerFilter = useFilter({
     property: "layer",
-    keepOnEmpty: true,
     keys: useMemo(() => ["sportGrounds", "cvicko", "swimmingPools"], []),
     defaultValues: useMemo(
       () => ({
-        sportGrounds: true,
+        sportGrounds: false,
         cvicko: true,
         swimmingPools: true,
       }),
@@ -292,16 +289,7 @@ export const App = () => {
       isOutsideLoading={isLoading}
       sources={sources}
       onMobileChange={setMobile}
-      onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
-      scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
-      scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
-      touchPanBlockerMessage={t("tooltips.touchPanBlockerMessage")}
-      errors={{
-        generic: t("errors.generic"),
-        notLocatedInBratislava: t("errors.notLocatedInBratislava"),
-        noGeolocationSupport: t("errors.noGeolocationSupport"),
-      }}
       mapInformation={{
         title: t("informationModal.title"),
         description: (
@@ -343,12 +331,12 @@ export const App = () => {
       <Layer
         ignoreClick
         filters={districtFilter.expression.length ? districtFilter.expression : undefined}
-        source="DISTRICTS_GEOJSON"
+        geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
 
       <Filter expression={combinedFilter.expression}>
-        <Cluster features={data?.features ?? []} radius={100}>
+        <Cluster features={data?.features ?? []} radius={48}>
           {({ features, lng, lat, key, clusterExpansionZoom }) =>
             features.length === 1 ? (
               <Marker
@@ -379,10 +367,8 @@ export const App = () => {
         </Cluster>
       </Filter>
 
-      <Slot name="controls">
+      <Slot id="controls">
         <ThemeController
-          darkLightModeTooltip={t("tooltips.darkLightMode")}
-          satelliteModeTooltip={t("tooltips.satelliteMode")}
           className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
             "translate-x-96": isSidebarVisible && !isMobile,
           })}
@@ -399,18 +385,13 @@ export const App = () => {
       </Slot>
 
       <Layout isOnlyMobile>
-        <Slot name="mobile-header">
+        <Slot id="mobile-header">
           <MobileHeader
             onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
           />
         </Slot>
 
-        <Slot
-          name="mobile-filter"
-          isVisible={isSidebarVisible}
-          setVisible={setSidebarVisible}
-          avoidControls={false}
-        >
+        <Slot id="mobile-filter" isVisible={isSidebarVisible} position="top-right">
           <MobileFilters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
@@ -425,18 +406,17 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot name="mobile-detail" isVisible={true}>
+        <Slot id="mobile-detail" isVisible={true}>
           <Detail isMobile feature={selectedFeature} onClose={closeDetail} />
         </Slot>
       </Layout>
       <Layout isOnlyDesktop>
         <Slot
-          name="desktop-filters"
+          id="desktop-filters"
           isVisible={isSidebarVisible}
-          setVisible={setSidebarVisible}
-          openPadding={{
-            left: 384, // w-96 or 24rem
-          }}
+          position="top-left"
+          autoPadding
+          avoidMapboxControls
         >
           <DesktopFilters
             isVisible={isSidebarVisible}
@@ -451,18 +431,10 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot
-          name="desktop-detail"
-          isVisible={isDetailOpen}
-          openPadding={{
-            right: 384,
-          }}
-          avoidControls={window.innerHeight <= (desktopDetailHeight ?? 0) + 200 ? true : false}
-        >
+        <Slot id="desktop-detail" isVisible={isDetailOpen} position="top-right" autoPadding>
           <div
             ref={desktopDetailRef}
-            className={cx("fixed top-0 right-0 w-96 bg-background transition-all duration-500", {
-              "translate-x-full": !isDetailOpen,
+            className={cx("w-96", {
               "shadow-lg": isDetailOpen,
             })}
           >
