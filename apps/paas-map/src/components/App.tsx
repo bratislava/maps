@@ -486,13 +486,9 @@ export const App = () => {
         <Slot id="desktop-detail" isVisible={isDetailOpen} position="top-right" autoPadding>
           <div
             ref={desktopDetailRef}
-            className={cx(
-              "fixed top-0 right-0 w-96 bg-background-lightmode transition-all duration-500",
-              {
-                "translate-x-full": !isDetailOpen,
-                "shadow-lg": isDetailOpen,
-              },
-            )}
+            className={cx("w-96", {
+              "shadow-lg": isDetailOpen,
+            })}
           >
             <Detail
               isOpen={isDetailOpen}
