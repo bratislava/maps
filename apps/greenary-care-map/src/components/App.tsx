@@ -13,7 +13,6 @@ import {
   MapHandle,
   SearchBar,
   Slot,
-  SlotType,
   ThemeController,
   ViewportController,
 } from "@bratislava/react-maps";
@@ -51,10 +50,6 @@ export const App = () => {
       types: string[];
     }[]
   >([]);
-
-  useEffect(() => {
-    document.title = t("tabTitle");
-  }, [t]);
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);

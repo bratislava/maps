@@ -1,6 +1,5 @@
 export default {
   title: "Starostlivosť o dreviny",
-  tabTitle: "Mapa starostlivosti o dreviny",
   search: "Hľadať",
   close: "Zavrieť",
   loading: "Načítavanie",
