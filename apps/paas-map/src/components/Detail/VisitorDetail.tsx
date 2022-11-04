@@ -57,7 +57,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
       {(properties["Informacia_RPK_sk"] ||
         properties["Informacia_NPK_sk"] ||
         properties["Doplnkova_informacia_sk"]) && (
-        <Note className="flex flex-col gap-4">
+        <Note className="flex flex-col gap-4 bg-primary/20 dark:bg-primary/20">
           {properties["Informacia_RPK_sk"] && language === "sk" && (
             <div className="font-light">{properties["Informacia_RPK_sk"]}</div>
           )}

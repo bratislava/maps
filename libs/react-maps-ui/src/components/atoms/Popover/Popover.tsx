@@ -95,7 +95,7 @@ export const Popover = ({
           {isOpen && (
             <motion.div
               {...getFloatingProps()}
-              className="z-50"
+              className="z-40"
               ref={floating}
               initial={{
                 scale: 0.9,

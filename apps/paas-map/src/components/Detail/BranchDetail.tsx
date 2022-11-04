@@ -40,7 +40,7 @@ export const BranchDetail = ({ properties }: BranchDetailProps) => {
       />
       <Row label={t("place")} text={properties["Miesto"]} />
       {properties["Spresnujuce_informacie_sk"] && (
-        <Note>
+        <Note className="bg-primary/20 dark:bg-primary/20">
           <Row
             label={t("additionalInformation")}
             text={

@@ -38,8 +38,10 @@ export const processData = (rawData: FeatureCollection) => {
   );
 
   const uniqueOccupancies = getUniqueValuesFromFeatures(data.features, "occupancy");
-  const uniquePurposes = getUniqueValuesFromFeatures(data.features, "purpose");
-
+  const uniquePurposes = getUniqueValuesFromFeatures(data.features, "purpose")
+    .sort()
+    .filter((p) => p !== "iné")
+    .concat(["iné"]);
   const uniqueStreets = getUniqueValuesFromFeatures(data.features, "street");
 
   const uniqueDistricts: string[] = getUniqueValuesFromFeatures(data.features, "district").sort(

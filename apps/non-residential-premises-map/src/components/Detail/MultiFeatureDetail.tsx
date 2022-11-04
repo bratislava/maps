@@ -25,7 +25,10 @@ export const MultiFeatureDetail = ({ features, onClose }: IMultiFeatureDetailPro
   }, [features]);
 
   const uniquePurposes = useMemo(() => {
-    return getUniqueValuesFromFeatures(features, "purpose");
+    return getUniqueValuesFromFeatures(features, "purpose")
+      .sort()
+      .filter((p) => p !== "iné")
+      .concat(["iné"]);
   }, [features]);
 
   const clusteredFeatures = useMemo(() => {

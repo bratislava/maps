@@ -5,7 +5,7 @@ import cx from "classnames";
 import { ReactNode } from "react";
 
 const AccordionChevron = styled(Chevron, {
-  "[data-state=open] &": { transform: "rotate(180deg)" },
+  "[data-state=closed] &": { transform: "rotate(180deg)" },
 });
 
 const openKeyframes = keyframes({

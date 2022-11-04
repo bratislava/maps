@@ -63,8 +63,9 @@ export const Filters = ({
     <Sidebar
       position={isMobile ? "right" : "left"}
       isMobile={isMobile}
-      isVisible={isVisible}
+      isVisible={isVisible ?? false}
       onClose={() => setVisible(false)}
+      onOpen={() => setVisible(true)}
       title={t("title")}
       closeText={t("close")}
     >

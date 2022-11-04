@@ -34,6 +34,8 @@ import { IconButton, Sidebar } from "@bratislava/react-maps-ui";
 import { Funnel } from "@bratislava/react-maps-icons";
 import { Marker } from "./Marker";
 import { Legend } from "./Legend";
+import { useResizeDetector } from "react-resize-detector";
+import { useWindowSize } from "usehooks-ts";
 
 const isDevelopment = !!import.meta.env.DEV;
 
@@ -254,6 +256,16 @@ export const App = () => {
     purposeFilter.keys,
   ]);
 
+  // Open legend on desktop by default
+  useEffect(() => {
+    if (!isMobile && previousMobile) {
+      setLegendVisible(true);
+    }
+    if (data?.features && isMobile) {
+      mapRef.current?.fitFeature(data.features, { padding: 16 });
+    }
+  }, [data?.features, isMobile, previousMobile]);
+
   const handleResetFilters = useCallback(() => {
     setMinArea(minAreaDefault);
     setMaxArea(maxAreaDefault);
@@ -291,6 +303,15 @@ export const App = () => {
       />
     );
   }, [t]);
+
+  const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
+  const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
+
+  const { height: windowHeight } = useWindowSize();
+
+  const shouldBeViewportControlsMoved = useMemo(() => {
+    return windowHeight < viewportControlsHeight + detailHeight + 40;
+  }, [windowHeight, detailHeight, viewportControlsHeight]);
 
   return isLoading ? null : (
     <Map
@@ -379,13 +400,19 @@ export const App = () => {
               "translate-x-0 delay-200": !(isSidebarVisible && !isMobile),
             })}
           />
-          <ViewportController
-            slots={["legend", ["compass", "zoom"]]}
-            desktopSlots={["legend", "geolocation", "compass", ["fullscreen", "zoom"]]}
-            legend={legend}
-            isLegendOpen={isLegendVisible}
-            onLegendOpenChange={setLegendVisible}
-          />
+          <div ref={viewportControlsRef}>
+            <ViewportController
+              className={cx({
+                "-translate-x-96": shouldBeViewportControlsMoved,
+                "translate-x-0": !shouldBeViewportControlsMoved,
+              })}
+              slots={["legend", ["compass", "zoom"]]}
+              desktopSlots={["legend", "geolocation", "compass", ["fullscreen", "zoom"]]}
+              legend={legend}
+              isLegendOpen={isLegendVisible}
+              onLegendOpenChange={setLegendVisible}
+            />
+          </div>
         </div>
         <div className="pointer-events-auto shadow-lg rounded-lg sm:hidden">
           <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
@@ -464,8 +491,16 @@ export const App = () => {
       </Slot>
 
       <Layout isOnlyDesktop>
-        <Slot id="desktop-detail" isVisible={isDetailOpen} position="top-right" autoPadding>
-          <Detail isMobile={false} features={selectedFeatures ?? []} onClose={closeDetail} />
+        <Slot
+          id="desktop-detail"
+          isVisible={isDetailOpen}
+          position="top-right"
+          autoPadding
+          avoidMapboxControls={shouldBeViewportControlsMoved}
+        >
+          <div ref={detailRef}>
+            <Detail isMobile={false} features={selectedFeatures ?? []} onClose={closeDetail} />
+          </div>
         </Slot>
       </Layout>
     </Map>

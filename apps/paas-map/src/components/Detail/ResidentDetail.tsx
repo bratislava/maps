@@ -32,7 +32,7 @@ export const ResidentDetail = ({ properties }: ResidentDetailProps) => {
       <Row label={t("cardValidity")} text={properties["Kod_parkovacej_zony"]} />
 
       {properties["Informacia_RPK_sk"] && (
-        <Note className="flex flex-col gap-4 !bg-secondary-soft">
+        <Note className="flex flex-col gap-4 !bg-[#2859CC]/20 dark:!bg-[#2859CC]/20">
           {properties["Informacia_RPK_sk"] && language === "sk" && (
             <div className="font-light">{properties["Informacia_RPK_sk"]}</div>
           )}

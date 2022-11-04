@@ -10,7 +10,7 @@ export const Note = ({ children, className }: INoteProps) => {
   return (
     <div
       className={cx(
-        "p-6 rounded-xl bg-primary-soft text-foreground-lightmode font-light text-[16px]",
+        "p-6 rounded-xl bg-primary/20 dark:bg-primary/20 font-light text-[16px]",
         className
       )}
     >

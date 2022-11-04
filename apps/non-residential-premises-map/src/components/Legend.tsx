@@ -29,7 +29,7 @@ export const Legend = ({ items }: ILegendProps) => {
                   backgroundColor: color,
                 }}
               />
-              <div className="text-[14px]">{title}</div>
+              <div>{title}</div>
             </div>
           );
         })}
