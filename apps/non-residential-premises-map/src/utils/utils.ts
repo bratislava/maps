@@ -37,7 +37,7 @@ export const processData = (rawData: FeatureCollection) => {
     ),
   );
 
-  const uniqueOccupancies = getUniqueValuesFromFeatures(data.features, "occupancy");
+  const uniqueOccupancies = ["free", "occupied"];
   const uniquePurposes = getUniqueValuesFromFeatures(data.features, "purpose")
     .sort()
     .filter((p) => p !== "iné")
