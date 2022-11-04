@@ -77,7 +77,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
             <div className="font-light">
               {properties["Doplnkova_informacia_sk"]}{" "}
               <Popover
-                allowedPlacements={["bottom"]}
+                allowedPlacements={["bottom", "top", "left"]}
                 button={({ toggle }) => (
                   <span className="cursor-pointer transform" onClick={toggle}>
                     <Information
@@ -110,7 +110,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
             <div className="font-light">
               {properties["Doplnkova_informacia_en"]}{" "}
               <Popover
-                allowedPlacements={["bottom"]}
+                allowedPlacements={["bottom", "top", "left"]}
                 button={({ toggle }) => (
                   <span className="cursor-pointer transform" onClick={toggle}>
                     <Information
