@@ -42,7 +42,7 @@ export const useMapboxSearch = ({
       Geocoding({
         accessToken: mapboxAccessToken,
       }),
-    [mapboxAccessToken]
+    [mapboxAccessToken],
   );
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);

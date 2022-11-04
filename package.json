@@ -3,8 +3,16 @@
   "private": true,
   "license": "EUPL-1.2",
   "workspaces": [
-    "libs/*",
-    "apps/*"
+    "apps/*",
+    "libs/*"
   ],
-  "dependencies": {}
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "dev": "turbo run dev"
+  },
+  "devDependencies": {
+    "turbo": "^1.6.3"
+  }
 }

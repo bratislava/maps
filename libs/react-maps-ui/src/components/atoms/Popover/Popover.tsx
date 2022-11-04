@@ -73,7 +73,7 @@ export const Popover = ({
   const { getReferenceProps, getFloatingProps } = useInteractions([
     useDismiss(context, {
       escapeKey: true,
-      outsidePointerDown: true,
+      outsidePressEvent: "click",
       ancestorScroll: true,
     }),
   ]);

@@ -1,5 +1,5 @@
 
-import { FeatureCollection, Point, Polygon } from '@turf/turf';
+import { FeatureCollection, Point, Polygon } from '@turf/helpers';
 import addresses from "./addresses.json";
 import districts from "./districts.json";
 
