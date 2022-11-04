@@ -17,6 +17,8 @@ module.exports = {
           DEFAULT: colors.primary,
           soft: colors.primarySoft,
         },
+        free: colors.free,
+        occupied: colors.occupied,
       },
     },
   },
