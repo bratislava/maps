@@ -4,6 +4,8 @@ import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 import cx from "classnames";
 import { SingleFeatureDetail } from "./SingleFeatureDetail";
 import { MultiFeatureDetail } from "./MultiFeatureDetail";
+import { useResizeDetector } from "react-resize-detector";
+import { useWindowSize } from "usehooks-ts";
 export interface DetailProps {
   features: Feature[];
   onClose: () => void;
@@ -40,6 +42,13 @@ export const Detail = ({ features, onClose, isMobile }: DetailProps) => {
     return null;
   }, [features, onClose]);
 
+  const { ref: detailRef, height: detailHeight = 0 } = useResizeDetector();
+  const { height: windowHeight } = useWindowSize();
+
+  const shouldBeBottomLeftCornerRounded = useMemo(() => {
+    return windowHeight !== detailHeight;
+  }, [windowHeight, detailHeight]);
+
   return isMobile ? (
     <BottomSheet
       ref={sheetRef}
@@ -54,13 +63,12 @@ export const Detail = ({ features, onClose, isMobile }: DetailProps) => {
     </BottomSheet>
   ) : !feature ? null : (
     <div
-      className={cx(
-        "w-96 rounded-bl-lg overflow-hidden bg-background-lightmode dark:bg-background-darkmode",
-        {
-          "translate-x-full": !feature,
-          "shadow-lg": feature,
-        },
-      )}
+      ref={detailRef}
+      className={cx("w-96 overflow-hidden bg-background-lightmode dark:bg-background-darkmode", {
+        "translate-x-full": !feature,
+        "shadow-lg": feature,
+        "rounded-bl-lg": shouldBeBottomLeftCornerRounded,
+      })}
     >
       {detail}
     </div>
