@@ -8,13 +8,13 @@ export interface ILegendProps {
 export const Legend = ({ mapCircleColors }: ILegendProps) => {
   const { t } = useTranslation();
   return (
-    <div className="py-4">
+    <div className="p-6 md:p-0">
       {Object.keys(mapCircleColors).map((type) => {
         const color = (
           Array.isArray(mapCircleColors[type]) ? mapCircleColors[type][0] : mapCircleColors[type]
         ) as string;
         return (
-          <div key={type} className="flex gap-2 items-center px-6 py-2">
+          <div key={type} className="flex gap-2 items-center py-2">
             <div
               className={cx({
                 "w-4 h-4 rounded-full": type !== "districtBorder",

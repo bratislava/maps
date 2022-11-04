@@ -17,7 +17,7 @@ import {
   ThemeController,
   ViewportController,
 } from "@bratislava/react-maps";
-import { DropdownArrow, Sidebar, useClickOutside } from "@bratislava/react-maps-ui";
+import { Sidebar } from "@bratislava/react-maps-ui";
 import { useArcgis } from "@bratislava/react-use-arcgis";
 
 // components
@@ -67,7 +67,7 @@ export const App = () => {
   const [uniqueTypes, setUniqueTypes] = useState<string[]>([]);
 
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
-  const [isLegendVisible, setLegendVisible] = useState<boolean | undefined>(undefined);
+  const [isLegendVisible, setLegendVisible] = useState(false);
 
   const tooltips = {
     trimming:
@@ -255,16 +255,6 @@ export const App = () => {
   const { height: desktopDetailHeight, ref: desktopDetailRef } =
     useResizeDetector<HTMLDivElement>();
 
-  const legendRef = useClickOutside<HTMLDivElement | null>(() => {
-    setLegendVisible(false);
-  });
-
-  const viewportControllerSlots: SlotType = useMemo(() => {
-    return isMobile
-      ? ["legend", "compass", "zoom"]
-      : ["legend", "geolocation", "compass", ["fullscreen", "zoom"]];
-  }, [isMobile]);
-
   const initialViewport = useMemo(
     () => ({
       zoom: 12.229005488986582,
@@ -378,19 +368,37 @@ export const App = () => {
         </Marker>
       )}
 
-      <Slot id="mobile-controls">
-        <ThemeController
-          className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
-            "translate-x-96": isSidebarVisible && !isMobile,
-          })}
-        />
-        <ViewportController
-          className="fixed right-4 bottom-[88px] sm:bottom-8"
-          slots={viewportControllerSlots}
-          isLegendOpen={isLegendVisible}
-          onLegendOpenChange={setLegendVisible}
-        />
-        <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
+      <Slot
+        id="controls"
+        position="bottom"
+        className="p-4 pb-9 flex flex-col gap-2 w-screen pointer-events-none"
+      >
+        <div className="flex justify-between items-end">
+          <ThemeController
+            className={cx("pointer-events-auto", {
+              "translate-x-96 delay-75": isSidebarVisible && !isMobile,
+              "translate-x-0 delay-200": !(isSidebarVisible && !isMobile),
+            })}
+          />
+          <div
+          // ref={viewportControlsRef}
+          >
+            <ViewportController
+              className={cx({
+                // "-translate-x-96": shouldBeViewportControlsMoved,
+                // "translate-x-0": !shouldBeViewportControlsMoved,
+              })}
+              slots={["legend", ["compass", "zoom"]]}
+              desktopSlots={["legend", "geolocation", "compass", ["fullscreen", "zoom"]]}
+              legend={
+                <Legend mapCircleColors={{ ...mapCircleColors, districtBorder: "#E29F45" }} />
+              }
+              isLegendOpen={isLegendVisible}
+              onLegendOpenChange={setLegendVisible}
+            />
+          </div>
+        </div>
+        <div className="pointer-events-auto shadow-lg rounded-lg sm:hidden">
           <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
         </div>
       </Slot>
@@ -402,7 +410,7 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot id="mobile-filter" isVisible={isSidebarVisible}>
+        <Slot id="mobile-filter" isVisible={isSidebarVisible} position="top-left">
           <MobileFilters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
@@ -420,11 +428,16 @@ export const App = () => {
 
         <Slot id="mobile-detail" isVisible={isDetailOpen} position="bottom">
           <div className="h-full bg-background-lightmode dark:bg-background-darkmode text-foreground-lightmode dark:text-foreground-darkmode">
-            <Detail arcgisServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
+            <Detail
+              isMobile
+              arcgisServerUrl={URL}
+              features={selectedFeatures ?? []}
+              onClose={closeDetail}
+            />
           </div>
         </Slot>
 
-        <Slot id="mobile-legend" isVisible={isLegendVisible}>
+        <Slot id="mobile-legend" isVisible={isLegendVisible} position="top-right">
           <Sidebar
             title={t("title")}
             isVisible={isLegendVisible ?? false}
@@ -477,22 +490,12 @@ export const App = () => {
               },
             )}
           >
-            <Detail arcgisServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
-          </div>
-        </Slot>
-        <Slot id="desktop-legend" isVisible={isLegendVisible}>
-          <div
-            ref={legendRef}
-            className={cx(
-              "absolute z-50 bottom-[92px] right-[73px] bg-background-lightmode dark:bg-background-darkmode border-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20  transform shadow-lg rounded-lg",
-              {
-                "scale-0": !isLegendVisible,
-              },
-            )}
-          >
-            <h3 className="px-6 pt-6 text-md font-semibold">Legenda</h3>
-            <Legend mapCircleColors={{ ...mapCircleColors, districtBorder: "#E29F45" }} />
-            <DropdownArrow isBottom />
+            <Detail
+              isMobile={false}
+              arcgisServerUrl={URL}
+              features={selectedFeatures ?? []}
+              onClose={closeDetail}
+            />
           </div>
         </Slot>
       </Layout>

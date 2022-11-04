@@ -84,7 +84,7 @@ export const Layers = <T extends string>({
                         </div>
                       )}
                       panel={
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-2 max-w-sm">
                           <div className="text-md font-semibold">{label}</div>
                           <div className="">{typeTooltips[types[0]]}</div>
                         </div>
@@ -138,7 +138,7 @@ export const Layers = <T extends string>({
                                 </div>
                               )}
                               panel={
-                                <div className="flex flex-col gap-2">
+                                <div className="flex flex-col gap-2 max-w-sm">
                                   <div className="text-md font-semibold">
                                     {t(`categories.${type}`)}
                                   </div>

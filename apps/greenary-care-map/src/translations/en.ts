@@ -1,6 +1,5 @@
 export default {
   title: "Greenery care",
-  tabTitle: "Greenery care map",
   search: "Search",
   close: "Close",
   loading: "Loading",
