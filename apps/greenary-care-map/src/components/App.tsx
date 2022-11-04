@@ -1,8 +1,9 @@
 import cx from "classnames";
-import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useResizeDetector } from "react-resize-detector";
 import "../styles.css";
+import { useWindowSize } from "usehooks-ts";
 
 // maps
 import { Layer, Marker, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
@@ -229,11 +230,6 @@ export const App = () => {
 
   const isDetailOpen = useMemo(() => !!selectedFeature, [selectedFeature]);
 
-  const onLegendClick = useCallback((e: MouseEvent) => {
-    setLegendVisible((isLegendVisible) => !isLegendVisible);
-    e.stopPropagation();
-  }, []);
-
   // fit to district
   useEffect(() => {
     mapRef.current?.fitDistrict(districtFilter.activeKeys);
@@ -288,14 +284,6 @@ export const App = () => {
     [],
   );
 
-  const sources = useMemo(
-    () => ({
-      ESRI_DATA: data,
-      DISTRICTS_GEOJSON,
-    }),
-    [data],
-  );
-
   const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
     mapRef.current?.moveToFeatures(features);
     setSelectedFeature(features[0] ?? null);
@@ -304,6 +292,8 @@ export const App = () => {
   const selectedFeatures = useMemo(() => {
     return selectedFeature ? [selectedFeature] : [];
   }, [selectedFeature]);
+
+  const { height: windowHeight } = useWindowSize();
 
   return isLoading ? null : (
     <Map
@@ -314,7 +304,6 @@ export const App = () => {
       initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
-      sources={sources}
       onMapClick={closeDetail}
       selectedFeatures={selectedFeatures}
       onFeaturesClick={onFeaturesClick}
@@ -362,11 +351,11 @@ export const App = () => {
         ),
       }}
     >
-      <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
+      <Layer filters={combinedFilter.expression} isVisible geojson={data} styles={ESRI_STYLE} />
       <Layer
         ignoreClick
         filters={districtFilter.expression}
-        source="DISTRICTS_GEOJSON"
+        geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
 
@@ -389,7 +378,7 @@ export const App = () => {
         </Marker>
       )}
 
-      <Slot name="mobile-controls">
+      <Slot id="mobile-controls">
         <ThemeController
           className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
             "translate-x-96": isSidebarVisible && !isMobile,
@@ -398,7 +387,8 @@ export const App = () => {
         <ViewportController
           className="fixed right-4 bottom-[88px] sm:bottom-8"
           slots={viewportControllerSlots}
-          onLegendClick={onLegendClick}
+          isLegendOpen={isLegendVisible}
+          onLegendOpenChange={setLegendVisible}
         />
         <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
           <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
@@ -406,18 +396,13 @@ export const App = () => {
       </Slot>
 
       <Layout isOnlyMobile>
-        <Slot name="mobile-header">
+        <Slot id="mobile-header">
           <MobileHeader
             onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
           />
         </Slot>
 
-        <Slot
-          name="mobile-filter"
-          isVisible={isSidebarVisible}
-          setVisible={setSidebarVisible}
-          avoidControls={false}
-        >
+        <Slot id="mobile-filter" isVisible={isSidebarVisible}>
           <MobileFilters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
@@ -433,30 +418,18 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot
-          name="mobile-detail"
-          isVisible={isDetailOpen}
-          bottomSheetOptions={{}}
-          openPadding={{
-            bottom: window.innerHeight / 2, // w-96 or 24rem
-          }}
-          avoidControls={false}
-        >
+        <Slot id="mobile-detail" isVisible={isDetailOpen} position="bottom">
           <div className="h-full bg-background-lightmode dark:bg-background-darkmode text-foreground-lightmode dark:text-foreground-darkmode">
             <Detail arcgisServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
           </div>
         </Slot>
 
-        <Slot
-          name="mobile-legend"
-          isVisible={isLegendVisible}
-          setVisible={setLegendVisible}
-          avoidControls={false}
-        >
+        <Slot id="mobile-legend" isVisible={isLegendVisible}>
           <Sidebar
             title={t("title")}
-            isVisible={isLegendVisible}
-            setVisible={setLegendVisible}
+            isVisible={isLegendVisible ?? false}
+            onClose={() => setLegendVisible(false)}
+            onOpen={() => setLegendVisible(true)}
             position="right"
             closeText={t("close")}
           >
@@ -467,12 +440,11 @@ export const App = () => {
 
       <Layout isOnlyDesktop>
         <Slot
-          name="desktop-filters"
+          id="desktop-filters"
           isVisible={isSidebarVisible}
-          setVisible={setSidebarVisible}
-          openPadding={{
-            left: 384, // w-96 or 24rem
-          }}
+          position="top-left"
+          autoPadding
+          avoidMapboxControls
         >
           <DesktopFilters
             isVisible={isSidebarVisible}
@@ -489,12 +461,11 @@ export const App = () => {
         </Slot>
 
         <Slot
-          name="desktop-detail"
+          id="desktop-detail"
           isVisible={isDetailOpen}
-          openPadding={{
-            right: 384,
-          }}
-          avoidControls={window.innerHeight <= (desktopDetailHeight ?? 0) + 200 ? true : false}
+          position="top-right"
+          autoPadding
+          avoidMapboxControls={windowHeight <= (desktopDetailHeight ?? 0) + 200 ? true : false}
         >
           <div
             ref={desktopDetailRef}
@@ -509,7 +480,7 @@ export const App = () => {
             <Detail arcgisServerUrl={URL} features={selectedFeatures ?? []} onClose={closeDetail} />
           </div>
         </Slot>
-        <Slot name="desktop-legend" isVisible={isLegendVisible} avoidControls={false}>
+        <Slot id="desktop-legend" isVisible={isLegendVisible}>
           <div
             ref={legendRef}
             className={cx(

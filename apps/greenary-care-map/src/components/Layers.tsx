@@ -47,7 +47,7 @@ export const Layers = <T extends string>({
 
   return (
     <div className="flex flex-col w-full">
-      <Accordion>
+      <Accordion type="multiple">
         {typeCategories.map(({ label, types }, index) => {
           return (
             <AccordionItem
