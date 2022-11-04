@@ -75,7 +75,7 @@ export function SearchBar({
         lat: option.feature.geometry.coordinates[1],
       });
       mapMethods.moveToFeatures(point(option.feature.geometry.coordinates), {
-        zoom: 14.75,
+        zoom: 16,
       });
     },
     [mapMethods],
