@@ -1,6 +1,6 @@
 import { List } from '@bratislava/react-maps-icons';
 import { IconButton, Popover } from '@bratislava/react-maps-ui';
-import { ReactNode, useContext, useCallback } from 'react';
+import { ReactNode, useContext, useCallback, useMemo } from 'react';
 import { mapContext } from '../Map/Map';
 
 export const LegendButton = ({
@@ -21,23 +21,24 @@ export const LegendButton = ({
 
   const { isMobile } = useContext(mapContext);
 
-  if (isMobile) {
-    return (
+  const button = useMemo(
+    () => (
       <IconButton onClick={() => handleOpenChange(!isLegendOpen)}>
         <List size="xl" />
       </IconButton>
-    );
+    ),
+    [handleOpenChange, isLegendOpen],
+  );
+
+  if (isMobile) {
+    return button;
   }
 
   return (
     <Popover
       isOpen={isLegendOpen}
       onOpenChange={handleOpenChange}
-      button={() => (
-        <IconButton onClick={() => handleOpenChange(!isLegendOpen)}>
-          <List size="xl" />
-        </IconButton>
-      )}
+      button={button}
       panel={legend}
       allowedPlacements={['top']}
     />

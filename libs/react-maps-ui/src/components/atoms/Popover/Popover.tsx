@@ -17,12 +17,14 @@ import { PopoverArrow } from "./PopoverArrow";
 export interface IPopoverProps {
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
-  button: FC<{
-    isOpen: boolean;
-    open: () => void;
-    close: () => void;
-    toggle: () => void;
-  }>;
+  button:
+    | FC<{
+        isOpen: boolean;
+        open: () => void;
+        close: () => void;
+        toggle: () => void;
+      }>
+    | ReactNode;
   panel: ReactNode;
   isSmall?: boolean;
   allowedPlacements?: Placement[];
@@ -83,12 +85,16 @@ export const Popover = ({
         ref={reference}
         {...getReferenceProps()}
       >
-        <Button
-          isOpen={isOpen}
-          open={() => setOpen(true)}
-          close={() => setOpen(false)}
-          toggle={() => setOpen(!isOpen)}
-        />
+        {typeof Button === "function" ? (
+          <Button
+            isOpen={isOpen}
+            open={() => setOpen(true)}
+            close={() => setOpen(false)}
+            toggle={() => setOpen(!isOpen)}
+          />
+        ) : (
+          Button
+        )}
       </div>
       <FloatingPortal>
         <AnimatePresence>

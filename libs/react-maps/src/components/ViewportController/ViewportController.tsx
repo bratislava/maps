@@ -1,13 +1,5 @@
-import { Popover } from '@bratislava/react-maps-ui';
 import cx from 'classnames';
-import {
-  forwardRef,
-  Fragment,
-  ReactNode,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { forwardRef, Fragment, ReactNode, useContext, useMemo } from 'react';
 import { mapContext } from '../Map/Map';
 
 import { CompassButton } from './CompassButton';
