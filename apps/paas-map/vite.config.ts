@@ -4,8 +4,8 @@ import { defineConfig } from "vite";
 import checker from "vite-plugin-checker";
 import svgr from "vite-plugin-svgr";
 import { VitePWA } from "vite-plugin-pwa";
-
 import { resolve } from "path";
+
 export default defineConfig({
   plugins: [
     react(),
@@ -20,7 +20,7 @@ export default defineConfig({
         name: "PAAS - Zone map",
         short_name: "PAAS - Zone map",
         theme_color: "#71ca55",
-        start_url: "/static-pages/paas-map-dev/index.html?lang=sk",
+        start_url: "/static-pages/paas-map/index.html?lang=sk",
         background_color: "#ffffff",
         display: "fullscreen",
         icons: [
