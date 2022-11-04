@@ -1,7 +1,7 @@
 import { Marker as MapMarker } from "@bratislava/react-mapbox";
 import { Feature } from "geojson";
 import { point } from "@turf/helpers";
-import { MultiFeatureMarker } from "./MultiFeatureMarker copy";
+import { MultiFeatureMarker } from "./MultiFeatureMarker";
 import { SingleFeatureMarker } from "./SingleFeatureMarker";
 
 export interface IMarkerProps {
