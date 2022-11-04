@@ -3,6 +3,7 @@ import { IconButton } from "@bratislava/react-maps-ui";
 import { Feature } from "geojson";
 import { Image } from "../Image";
 import { DetailDataDisplay } from "./DetailDataDisplay";
+import cx from "classnames";
 
 export interface ISingleFeatureDetailProps {
   feature: Feature;
@@ -15,7 +16,10 @@ export const SingleFeatureDetail = ({ feature, onClose }: ISingleFeatureDetailPr
       {feature?.properties?.picture && <Image src={feature?.properties?.picture} />}
 
       <IconButton
-        className="hidden w-8 h-8 rounded-full absolute right-6 top-6 md:flex items-center justify-center"
+        className={cx(
+          "hidden w-8 h-8 rounded-full absolute right-6 top-6 md:flex items-center justify-center",
+          { "!shadow-none": !feature?.properties?.picture },
+        )}
         onClick={onClose}
       >
         <X size="sm" />
