@@ -8,22 +8,15 @@
     "lint:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx,json}'",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc.yml"
   },
-  "dependencies": {
-    "eslint-config-airbnb-typescript": "^17.0.0",
-    "eslint-plugin-jest": "^27.1.1",
-    "framer-motion": "^6.5.1",
-    "mapbox-gl": "^2.9.2",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "usehooks-ts": "^2.9.1"
-  },
   "peerDependencies": {
     "framer-motion": "^6.5.1",
     "mapbox-gl": "^2.9.2",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/react": "^18.0.24",
+    "@types/react-dom": "^18.0.8",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
     "eslint": "^8.25.0",
@@ -59,6 +52,8 @@
     "eslint-plugin-testing-library": "^5.7.2",
     "eslint-plugin-unicorn": "^44.0.2",
     "prettier": "^2.7.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "typescript": "^4.8.4"
   }
 }

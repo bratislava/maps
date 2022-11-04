@@ -5,8 +5,8 @@
   "license": "MIT",
   "peerDependencies": {
     "i18next": "^21.8.4",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-i18next": "^11.16.9"
   },
   "devDependencies": {
@@ -18,8 +18,8 @@
     "@radix-ui/react-select": "^0.1.1",
     "@radix-ui/react-tooltip": "^0.1.7",
     "@stitches/react": "^1.2.8",
-    "@types/react": "^18.0.21",
-    "@types/react-dom": "^18.0.6",
+    "@types/react": "^18.0.24",
+    "@types/react-dom": "^18.0.8",
     "@types/react-i18next": "^8.1.0",
     "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.26.0",
@@ -48,15 +48,5 @@
   "scripts": {
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
-  },
-  "resolutions": {
-    "webpack": "^5"
-  },
-  "dependencies": {
-    "@floating-ui/react-dom-interactions": "^0.9.2",
-    "@reach/combobox": "^0.17.0",
-    "downshift": "^6.1.11",
-    "react": "17.0.2",
-    "react-json-pretty": "^2.2.0"
   }
 }

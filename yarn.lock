@@ -10396,6 +10396,14 @@ react-i18next@^11.17.2:
     "@babel/runtime" "^7.14.5"
     html-parse-stringify "^3.0.1"
 
+react-i18next@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-12.0.0.tgz#634015a2c035779c5736ae4c2e5c34c1659753b1"
+  integrity sha512-/O7N6aIEAl1FaWZBNvhdIo9itvF/MO/nRKr9pYqRc9LhuC1u21SlfwpiYQqvaeNSEW3g3qUXLREOWMt+gxrWbg==
+  dependencies:
+    "@babel/runtime" "^7.14.5"
+    html-parse-stringify "^3.0.1"
+
 react-intl@^6.1.2:
   version "6.1.2"
   resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-6.1.2.tgz#31ef6f0f2ed6e51910d4c1e7e27fb43fe7895b57"
@@ -10481,7 +10489,7 @@ react-resize-detector@^7.0.0:
 
 react-resize-detector@^7.1.2:
   version "7.1.2"
-  resolved "https://registry.npmjs.org/react-resize-detector/-/react-resize-detector-7.1.2.tgz"
+  resolved "https://registry.yarnpkg.com/react-resize-detector/-/react-resize-detector-7.1.2.tgz#8ef975dd8c3d56f9a5160ac382ef7136dcd2d86c"
   integrity sha512-zXnPJ2m8+6oq9Nn8zsep/orts9vQv3elrpA+R8XTcW7DVVUJ9vwDwMXaBtykAYjMnkCIaOoK9vObyR7ZgFNlOw==
   dependencies:
     lodash "^4.17.21"
