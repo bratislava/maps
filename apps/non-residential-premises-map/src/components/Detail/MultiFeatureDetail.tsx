@@ -33,10 +33,12 @@ export const MultiFeatureDetail = ({ features, onClose }: IMultiFeatureDetailPro
 
   const clusteredFeatures = useMemo(() => {
     return [
-      ...uniquePurposes.map((purpose) => ({
-        title: purpose,
-        features: features.filter((f) => f.properties?.purpose === purpose),
-      })),
+      ...uniquePurposes
+        .map((purpose) => ({
+          title: purpose,
+          features: features.filter((f) => f.properties?.purpose === purpose),
+        }))
+        .filter((p) => p.features.length),
     ];
   }, [features, uniquePurposes]);
 
