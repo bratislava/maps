@@ -6,9 +6,6 @@
   "scripts": {
     "test": "jest"
   },
-  "dependencies": {
-    "@types/geojson": "^7946.0.8"
-  },
   "devDependencies": {
     "@types/jest": "^28.1.4",
     "jest": "^28.1.2",

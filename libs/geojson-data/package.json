@@ -2,8 +2,5 @@
   "name": "@bratislava/geojson-data",
   "version": "1.0.0",
   "main": "src/index.ts",
-  "license": "MIT",
-  "peerDependencies": {
-    "@turf/turf": "^6.5.0"
-  }
+  "license": "MIT"
 }
