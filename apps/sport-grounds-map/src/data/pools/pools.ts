@@ -28,7 +28,7 @@ export const rawDataPools: FeatureCollection = {
         email: "zlatepiesky@starz.sk",
         website: "http://www.starz.sk/areal-zdravia-zlate-piesky/os-1013/p1=1058",
         buyOnline: "https://kupaliska.bratislava.sk/",
-        photo: "images/swimming-pools/Zlaté piesky.jpg",
+        photo: "./images/swimming-pools/Zlaté piesky.jpg",
         navigate:
           "https://www.google.com/maps/place/Zlat%C3%A9+piesky/@48.1848198,17.1837828,16z/data=!3m1!4b1!4m5!3m4!1s0x476c8f05d4090821:0x328d56dce651a42a!8m2!3d48.184452!4d17.1884402?shorturl=1",
       },
@@ -48,7 +48,7 @@ export const rawDataPools: FeatureCollection = {
         email: "info@starz.sk",
         website: "http://www.starz.sk/letne-kupaliska/d-7046/p1=1120",
         buyOnline: "https://kupaliska.bratislava.sk/",
-        photo: "images/swimming-pools/Rosnička.jpg",
+        photo: "./images/swimming-pools/Rosnička.jpg",
         navigate:
           "https://www.google.com/maps/place/Letn%C3%A9+k%C3%BApalisko+Rosni%C4%8Dka/@48.1733548,17.0479631,17z/data=!3m1!4b1!4m5!3m4!1s0x476c8c80f22dcd15:0xb12ef1453e1ab06d!8m2!3d48.1733512!4d17.0501518?shorturl=1",
       },
@@ -68,7 +68,7 @@ export const rawDataPools: FeatureCollection = {
         email: "info@starz.sk",
         website: "http://www.starz.sk/letne-kupaliska/d-7046/p1=1120",
         buyOnline: "https://kupaliska.bratislava.sk/",
-        photo: "images/swimming-pools/Lamač.jpg",
+        photo: "./images/swimming-pools/Lamač.jpg",
         navigate:
           "https://www.google.com/maps/place/Letn%C3%A9+K%C3%BApalisko+Lama%C4%8D/@48.1874315,17.0483838,17z/data=!3m1!4b1!4m5!3m4!1s0x410903f14f4d4113:0x67fbeec37186e3dd!8m2!3d48.1874279!4d17.0505725?shorturl=1",
       },
@@ -88,7 +88,7 @@ export const rawDataPools: FeatureCollection = {
         email: "info@starz.sk",
         website: "http://www.starz.sk/letne-kupaliska/d-7046/p1=1120",
         buyOnline: "https://kupaliska.bratislava.sk/",
-        photo: "images/swimming-pools/Tehelné pole.jpg",
+        photo: "./images/swimming-pools/Tehelné pole.jpg",
         navigate:
           "https://www.google.com/maps/place/Letn%C3%A9+k%C3%BApalisko+Teheln%C3%A9+pole/@48.1607454,17.1334205,17z/data=!3m1!4b1!4m5!3m4!1s0x476c8eca5b80b56f:0xfa9def0952b940b5!8m2!3d48.1607418!4d17.1356092?shorturl=1",
       },
@@ -108,7 +108,7 @@ export const rawDataPools: FeatureCollection = {
         email: "info@starz.sk",
         website: "http://www.starz.sk/letne-kupaliska/d-7046/p1=1120",
         buyOnline: "https://kupaliska.bratislava.sk/",
-        photo: "images/swimming-pools/Delfín.jpg",
+        photo: "./images/swimming-pools/Delfín.jpg",
         navigate:
           "https://www.google.com/maps/place/Summer+swimming+pool+Dolphin/@48.1499605,17.1424938,17z/data=!3m1!4b1!4m5!3m4!1s0x476c892e406fed35:0xf66c12ea41821456!8m2!3d48.1499635!4d17.1425054",
       },
@@ -128,7 +128,7 @@ export const rawDataPools: FeatureCollection = {
         email: "info@starz.sk",
         website: "http://www.starz.sk/letne-kupaliska/d-7046/p1=1120",
         buyOnline: "https://kupaliska.bratislava.sk/",
-        photo: "images/swimming-pools/Krasňany.jpg",
+        photo: "./images/swimming-pools/Krasňany.jpg",
         navigate:
           "https://www.google.com/maps/place/Letn%C3%A9+k%C3%BApalisko+Kras%C5%88any/@48.2015195,17.1429292,17z/data=!3m1!4b1!4m5!3m4!1s0x476c8e635d9cb737:0xcccaaaa862814529!8m2!3d48.2015159!4d17.1451179?shorturl=1",
       },
@@ -148,7 +148,7 @@ export const rawDataPools: FeatureCollection = {
         email: "info@starz.sk",
         website: "http://www.starz.sk/letne-kupaliska/d-7046/p1=1120",
         buyOnline: "https://kupaliska.bratislava.sk/",
-        photo: "images/swimming-pools/Rača.jpg",
+        photo: "./images/swimming-pools/Rača.jpg",
         navigate:
           "https://www.google.com/maps/place/Letn%C3%A9+k%C3%BApalisko+Ra%C4%8Da/@48.2137432,17.1443323,17z/data=!3m1!4b1!4m5!3m4!1s0x476c8e73a8c8e047:0xcc090a74919ba14a!8m2!3d48.2137396!4d17.146521?shorturl=1",
       },
