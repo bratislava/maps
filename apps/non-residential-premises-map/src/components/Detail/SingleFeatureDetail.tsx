@@ -1,26 +1,34 @@
 import { useState } from "react";
 import { X } from "@bratislava/react-maps-icons";
-import { IconButton, ImageLightBox } from "@bratislava/react-maps-ui";
+import { AnimateHeight, DataDisplay, IconButton, ImageLightBox } from "@bratislava/react-maps-ui";
 import { Feature } from "geojson";
 import { Image } from "../Image";
 import { DetailDataDisplay } from "./DetailDataDisplay";
 import cx from "classnames";
+import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 export interface ISingleFeatureDetailProps {
   feature: Feature;
   onClose: () => void;
+  isExpanded: boolean;
 }
 
-export const SingleFeatureDetail = ({ feature, onClose }: ISingleFeatureDetailProps) => {
+export const SingleFeatureDetail = ({
+  feature,
+  onClose,
+  isExpanded,
+}: ISingleFeatureDetailProps) => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const { t } = useTranslation("translation", { keyPrefix: "detail" });
 
   return (
-    <div className="flex flex-col max-h-screen overflow-auto">
-      {feature?.properties?.picture && (
+    <motion.div layout className="flex flex-col max-h-screen overflow-auto">
+      <AnimateHeight isVisible={feature?.properties?.picture && isExpanded}>
         <>
-          <button onClick={() => setModalOpen(true)}>
+          <motion.button layout onClick={() => setModalOpen(true)}>
             <Image object="cover" src={feature?.properties?.picture} />
-          </button>
+          </motion.button>
           <ImageLightBox
             onClose={() => setModalOpen(false)}
             isOpen={isModalOpen}
@@ -28,7 +36,7 @@ export const SingleFeatureDetail = ({ feature, onClose }: ISingleFeatureDetailPr
             initialImageIndex={0}
           />
         </>
-      )}
+      </AnimateHeight>
 
       <IconButton
         className={cx(
@@ -40,7 +48,15 @@ export const SingleFeatureDetail = ({ feature, onClose }: ISingleFeatureDetailPr
         <X size="sm" />
       </IconButton>
 
-      <DetailDataDisplay feature={feature} />
-    </div>
+      <AnimateHeight isVisible={!isExpanded}>
+        <div className="py-4 px-6">
+          <DataDisplay label={t("lessee")} text={feature.properties?.lessee} />
+        </div>
+      </AnimateHeight>
+
+      <AnimateHeight isVisible={isExpanded}>
+        <DetailDataDisplay feature={feature} />
+      </AnimateHeight>
+    </motion.div>
   );
 };

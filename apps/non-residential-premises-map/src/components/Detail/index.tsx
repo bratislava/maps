@@ -1,5 +1,5 @@
 import { Feature } from "geojson";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 import cx from "classnames";
 import { SingleFeatureDetail } from "./SingleFeatureDetail";
@@ -16,6 +16,11 @@ export const Detail = ({ features, onClose, isMobile }: DetailProps) => {
   const sheetRef = useRef<BottomSheetRef>(null);
 
   const [feature, setFeature] = useState<Feature | null>(null);
+  const [currentSnap, setCurrentSnap] = useState(0);
+
+  const onSnapChange = useCallback(() => {
+    requestAnimationFrame(() => setCurrentSnap(sheetRef.current?.height === 84 ? 1 : 0));
+  }, []);
 
   useEffect(() => {
     setFeature(null);
@@ -34,13 +39,19 @@ export const Detail = ({ features, onClose, isMobile }: DetailProps) => {
 
   const detail = useMemo(() => {
     if (features.length === 1) {
-      return <SingleFeatureDetail feature={features[0]} onClose={onClose} />;
+      return (
+        <SingleFeatureDetail
+          isExpanded={currentSnap === 0}
+          feature={features[0]}
+          onClose={onClose}
+        />
+      );
     }
     if (features.length > 1) {
       return <MultiFeatureDetail features={features} onClose={onClose} />;
     }
     return null;
-  }, [features, onClose]);
+  }, [currentSnap, features, onClose]);
 
   const { ref: detailRef, height: detailHeight = 0 } = useResizeDetector();
   const { height: windowHeight } = useWindowSize();
@@ -52,12 +63,13 @@ export const Detail = ({ features, onClose, isMobile }: DetailProps) => {
   return isMobile ? (
     <BottomSheet
       ref={sheetRef}
-      snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 80]}
+      snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 84]}
       defaultSnap={({ snapPoints }) => snapPoints[1]}
       expandOnContentDrag
       blocking={false}
       className="relative z-30"
       open={!!feature}
+      onSpringStart={onSnapChange}
     >
       {detail}
     </BottomSheet>
