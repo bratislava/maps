@@ -1,11 +1,86 @@
 import { X } from "@bratislava/react-maps-icons";
-import { Accordion, AccordionItem, Divider, IconButton } from "@bratislava/react-maps-ui";
+import {
+  Accordion,
+  AccordionItem,
+  Divider,
+  IconButton,
+  ImageLightBox,
+} from "@bratislava/react-maps-ui";
 import { Feature } from "geojson";
 import { useEffect, useMemo, useState, Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { DetailDataDisplay } from "./DetailDataDisplay";
 import cx from "classnames";
 import { getUniqueValuesFromFeatures } from "@bratislava/utils";
+import { Image } from "../Image";
+import { t } from "i18next";
+
+const CustomAccordionItem = ({
+  key,
+  value,
+  feature,
+  isLastFromCluster,
+}: {
+  key: number;
+  value: string;
+  feature: Feature;
+  isLastFromCluster: boolean;
+}) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const { t } = useTranslation("translation", { keyPrefix: "detail" });
+  return (
+    <AccordionItem
+      headerIsTrigger
+      key={key}
+      value={value}
+      title={<div className="font-semibold pl-6">{feature.properties?.lessee}</div>}
+      headerClassName={cx("text-left border-l-[4px]", {
+        "border-[#E46054]": feature.properties?.occupancy === "occupied",
+        "border-[#0F6D95]": feature.properties?.occupancy === "free",
+      })}
+    >
+      <div
+        className={cx("border-l-[4px]", {
+          "border-[#E46054]": feature.properties?.occupancy === "occupied",
+          "border-[#0F6D95]": feature.properties?.occupancy === "free",
+          "pb-3": isLastFromCluster,
+        })}
+      >
+        {feature?.properties?.picture && (
+          <>
+            <button
+              className="flex items-center mx-6 gap-2 font-semibold underline py-2"
+              onClick={() => setModalOpen(true)}
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 16V2C18 0.895 17.105 0 16 0H2C0.895 0 0 0.895 0 2V16C0 17.105 0.895 18 2 18H16C17.105 18 18 17.105 18 16ZM5.5 10.5L8 13.505L11.5 9L16 15H2L5.5 10.5Z"
+                  fill="black"
+                />
+              </svg>
+              <span>{t("premisePhotos")}</span>
+            </button>
+            <ImageLightBox
+              onClose={() => setModalOpen(false)}
+              isOpen={isModalOpen}
+              images={[feature?.properties?.picture]}
+              initialImageIndex={0}
+            />
+          </>
+        )}
+
+        <DetailDataDisplay className="!pt-2" feature={feature} />
+        {isLastFromCluster && <Divider className="mx-6" />}
+      </div>
+    </AccordionItem>
+  );
+};
 
 export interface IMultiFeatureDetailProps {
   features: Feature[];
@@ -66,27 +141,12 @@ export const MultiFeatureDetail = ({ features, onClose }: IMultiFeatureDetailPro
               </span>
             </div>
             {cluster.features.map((feature, j) => (
-              <AccordionItem
-                headerIsTrigger
+              <CustomAccordionItem
                 key={j}
+                feature={feature}
                 value={`${i}-${j}`}
-                title={<div className="font-semibold pl-6">{feature.properties?.lessee}</div>}
-                headerClassName={cx("text-left border-l-[4px]", {
-                  "border-[#E46054]": feature.properties?.occupancy === "occupied",
-                  "border-[#0F6D95]": feature.properties?.occupancy === "free",
-                })}
-              >
-                <div
-                  className={cx("border-l-[4px]", {
-                    "border-[#E46054]": feature.properties?.occupancy === "occupied",
-                    "border-[#0F6D95]": feature.properties?.occupancy === "free",
-                    "pb-3": j !== cluster.features.length - 1,
-                  })}
-                >
-                  <DetailDataDisplay className="!pt-2" feature={feature} />
-                  {j !== cluster.features.length - 1 && <Divider className="mx-6" />}
-                </div>
-              </AccordionItem>
+                isLastFromCluster={j !== cluster.features.length - 1}
+              />
             ))}
           </Fragment>
         ))}

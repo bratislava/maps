@@ -52,6 +52,7 @@ export default {
     contract: "Contract",
     free: "Free",
     occupied: "Occupied",
+    premisePhotos: "Premise photos",
   },
   legend: {
     title: "Legend",

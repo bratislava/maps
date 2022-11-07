@@ -16,22 +16,19 @@ export const SingleFeatureDetail = ({ feature, onClose }: ISingleFeatureDetailPr
 
   return (
     <div className="flex flex-col max-h-screen overflow-auto">
-      <button onClick={() => setModalOpen(true)}>
-        {feature?.properties?.picture && (
-          <Image object="cover" src={feature?.properties?.picture} />
-        )}
-      </button>
-
-      <ImageLightBox
-        onClose={() => setModalOpen(false)}
-        isOpen={isModalOpen}
-        images={[
-          feature?.properties?.picture,
-          feature?.properties?.picture,
-          feature?.properties?.picture,
-        ]}
-        initialImageIndex={0}
-      />
+      {feature?.properties?.picture && (
+        <>
+          <button onClick={() => setModalOpen(true)}>
+            <Image object="cover" src={feature?.properties?.picture} />
+          </button>
+          <ImageLightBox
+            onClose={() => setModalOpen(false)}
+            isOpen={isModalOpen}
+            images={[feature?.properties?.picture]}
+            initialImageIndex={0}
+          />
+        </>
+      )}
 
       <IconButton
         className={cx(

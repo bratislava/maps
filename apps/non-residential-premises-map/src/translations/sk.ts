@@ -52,6 +52,7 @@ export default {
     contract: "Zmluva",
     free: "Voľné",
     occupied: "Obsadené",
+    premisePhotos: "Fotografie priestoru",
   },
   legend: {
     title: "Legenda",
