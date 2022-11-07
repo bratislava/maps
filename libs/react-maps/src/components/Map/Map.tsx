@@ -706,7 +706,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
           </div>
 
           <Modal
-            className="max-w-xs"
+            overlayClassName="max-w-xs"
             isOpen={isDisplayLandscapeModal}
             closeButtonIcon={
               <ArrowCounterclockwise size="lg" className="text-white" />
@@ -729,7 +729,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
           </Modal>
 
           <Modal
-            className="max-w-xl !p-0"
+            overlayClassName="max-w-xl !p-0"
             isOpen={isInformationModalOpen}
             closeButtonInCorner
             onClose={() => setInformationModalOpen(false)}

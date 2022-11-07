@@ -23,5 +23,7 @@ export * from "./atoms/Tag/Tag";
 export * from "./atoms/Slider";
 export * from "./molecules/ActiveFilters/ActiveFilters";
 export * from "./molecules/Layers/Layers";
+export * from "./molecules/Swiper/Swiper";
+export * from "./molecules/ImageLightBox/ImageLightBox";
 // molecules
 export * from "./molecules/TagFilter/TagFilter";

@@ -9,9 +9,11 @@ export interface IModalProps {
   title?: string | ReactNode;
   description?: string | ReactNode;
   children?: ReactNode;
-  className?: string;
   closeButtonIcon?: ReactNode;
   closeButtonInCorner?: boolean;
+  noOverlayStyles?: boolean;
+  underlayClassName?: string;
+  overlayClassName?: string;
 }
 
 export const Modal = ({
@@ -20,9 +22,11 @@ export const Modal = ({
   title,
   description,
   children,
-  className,
   closeButtonIcon,
   closeButtonInCorner = false,
+  noOverlayStyles = false,
+  underlayClassName,
+  overlayClassName,
 }: IModalProps) => {
   return (
     <Transition show={isOpen} as={Fragment}>
@@ -51,11 +55,20 @@ export const Modal = ({
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          <div className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center p-8 z-50">
+          <div
+            className={cx(
+              "fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center p-8 z-50",
+              underlayClassName
+            )}
+          >
             <Dialog.Panel
               className={cx(
-                "relative bg-background-lightmode dark:bg-background-darkmode rounded-xl flex flex-col p-8 gap-4",
-                className
+                "relative",
+                {
+                  "bg-background-lightmode dark:bg-background-darkmode rounded-xl flex flex-col p-8 gap-4":
+                    !noOverlayStyles,
+                },
+                overlayClassName
               )}
             >
               {title && (
@@ -70,21 +83,23 @@ export const Modal = ({
                 </Dialog.Description>
               )}
 
-              <div>{children}</div>
+              {children}
 
-              <div
-                className={cx("w-full flex absolute", {
-                  "-top-6 -right-6 justify-end": closeButtonInCorner,
-                  "left-0 -bottom-6 justify-center": !closeButtonInCorner,
-                })}
-              >
-                <button
-                  className="w-12 outline-none h-12 bg-primary rounded-full flex items-center justify-center"
-                  onClick={() => onClose && onClose()}
+              {!noOverlayStyles && (
+                <div
+                  className={cx("w-full flex absolute", {
+                    "-top-6 -right-6 justify-end": closeButtonInCorner,
+                    "left-0 -bottom-6 justify-center": !closeButtonInCorner,
+                  })}
                 >
-                  {closeButtonIcon ?? <X className="text-white" />}
-                </button>
-              </div>
+                  <button
+                    className="w-12 outline-none h-12 bg-primary rounded-full flex items-center justify-center"
+                    onClick={() => onClose && onClose()}
+                  >
+                    {closeButtonIcon ?? <X className="text-white" />}
+                  </button>
+                </div>
+              )}
             </Dialog.Panel>
           </div>
         </Transition.Child>
