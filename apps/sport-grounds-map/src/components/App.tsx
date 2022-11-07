@@ -271,14 +271,6 @@ export const App = () => {
     [],
   );
 
-  const sources = useMemo(
-    () => ({
-      SPORT_GROUNDS_DATA: data,
-      DISTRICTS_GEOJSON,
-    }),
-    [data],
-  );
-
   return isLoading ? null : (
     <Map
       ref={mapRef}
@@ -287,7 +279,6 @@ export const App = () => {
       initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
-      sources={sources}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
       mapInformation={{
@@ -330,7 +321,7 @@ export const App = () => {
     >
       <Layer
         ignoreClick
-        filters={districtFilter.expression.length ? districtFilter.expression : undefined}
+        filters={districtFilter.keepOnEmptyExpression}
         geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
