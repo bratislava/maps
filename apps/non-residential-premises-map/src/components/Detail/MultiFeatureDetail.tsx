@@ -45,7 +45,7 @@ export const MultiFeatureDetail = ({ features, onClose }: IMultiFeatureDetailPro
   return (
     <div className="flex flex-col max-h-screen gap-5 overflow-auto pb-2">
       <IconButton
-        className="hidden absolute right-3 top-5 md:flex items-center justify-center !shadow-none !border-none"
+        className="hidden !bg-[transparent] absolute right-3 top-5 md:flex items-center justify-center !shadow-none !border-none"
         onClick={onClose}
       >
         <X />
