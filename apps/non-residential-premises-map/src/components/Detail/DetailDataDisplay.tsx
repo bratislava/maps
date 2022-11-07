@@ -2,15 +2,17 @@ import { DataDisplay, Tag } from "@bratislava/react-maps-ui";
 import { Feature } from "geojson";
 import { useTranslation } from "react-i18next";
 import colors from "../../utils/colors.json";
+import cx from "classnames";
 
 export interface IDetailDataDisplayProps {
   feature: Feature;
+  className?: string;
 }
 
-export const DetailDataDisplay = ({ feature }: IDetailDataDisplayProps) => {
+export const DetailDataDisplay = ({ feature, className }: IDetailDataDisplayProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "detail" });
   return (
-    <div className="flex flex-col space-y-4 p-6">
+    <div className={cx("flex flex-col space-y-4 p-6", className)}>
       <Tag
         className="w-fit text-white"
         style={{

@@ -1,5 +1,5 @@
 import { X } from "@bratislava/react-maps-icons";
-import { Accordion, AccordionItem, IconButton } from "@bratislava/react-maps-ui";
+import { Accordion, AccordionItem, Divider, IconButton } from "@bratislava/react-maps-ui";
 import { Feature } from "geojson";
 import { useEffect, useMemo, useState, Fragment } from "react";
 import { useTranslation } from "react-i18next";
@@ -80,9 +80,11 @@ export const MultiFeatureDetail = ({ features, onClose }: IMultiFeatureDetailPro
                   className={cx("border-l-[4px]", {
                     "border-[#E46054]": feature.properties?.occupancy === "occupied",
                     "border-[#0F6D95]": feature.properties?.occupancy === "free",
+                    "pb-3": j !== cluster.features.length - 1,
                   })}
                 >
-                  <DetailDataDisplay feature={feature} />
+                  <DetailDataDisplay className="!pt-2" feature={feature} />
+                  {j !== cluster.features.length - 1 && <Divider className="mx-6" />}
                 </div>
               </AccordionItem>
             ))}
