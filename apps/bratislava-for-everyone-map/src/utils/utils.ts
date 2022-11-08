@@ -1,5 +1,5 @@
 import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps";
-import { featureCollection } from "@turf/turf";
+import { featureCollection } from "@turf/helpers";
 import { FeatureCollection } from "geojson";
 
 export const processData = () => {

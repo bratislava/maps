@@ -5,15 +5,18 @@ import "../styles.css";
 
 // maps
 import {
-  DISTRICTS_GEOJSON,
   Layout,
   Map,
   MapHandle,
+  SearchBar,
   Slot,
   SlotType,
   ThemeController,
   ViewportController,
 } from "@bratislava/react-maps";
+
+import { useResizeDetector } from "react-resize-detector";
+import { useWindowSize } from "usehooks-ts";
 
 import { Layer, Marker, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 
@@ -28,10 +31,10 @@ import { processData } from "../utils/utils";
 import { DesktopFilters } from "./desktop/DesktopFilters";
 import { MobileFilters } from "./mobile/MobileFilters";
 import { MobileHeader } from "./mobile/MobileHeader";
-import { MobileSearch } from "./mobile/MobileSearch";
+import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 
 export const App = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
@@ -148,10 +151,6 @@ export const App = () => {
     }
   }, [selectedFeature]);
 
-  const viewportControllerSlots: SlotType = useMemo(() => {
-    return isMobile ? ["compass", "zoom"] : ["geolocation", "compass", ["fullscreen", "zoom"]];
-  }, [isMobile]);
-
   const selectedFeatures = useMemo(() => {
     return selectedFeature ? [selectedFeature] : [];
   }, [selectedFeature]);
@@ -167,45 +166,32 @@ export const App = () => {
     [],
   );
 
-  const mapStyles = useMemo(
-    () => ({
-      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-    }),
-    [],
-  );
+  const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
+  const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
 
-  const sources = useMemo(
-    () => ({
-      ESRI_DATA: data,
-      DISTRICTS_GEOJSON,
-    }),
-    [data],
-  );
+  const { height: windowHeight } = useWindowSize();
+
+  const shouldBeViewportControlsMoved = useMemo(() => {
+    return windowHeight < viewportControlsHeight + detailHeight + 40;
+  }, [windowHeight, detailHeight, viewportControlsHeight]);
 
   return isLoading ? null : (
     <Map
       loadingSpinnerColor="#F1B830"
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
-      mapStyles={mapStyles}
+      mapStyles={{
+        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+      }}
       initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
-      sources={sources}
       onFeaturesClick={(features) => setSelectedFeature(features[0])}
       selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
-      scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
-      scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
-      touchPanBlockerMessage={t("tooltips.touchPanBlockerMessage")}
-      errors={{
-        generic: t("errors.generic"),
-        notLocatedInBratislava: t("errors.notLocatedInBratislava"),
-        noGeolocationSupport: t("errors.noGeolocationSupport"),
-      }}
       mapInformation={{
         title: t("informationModal.title"),
         description: (
@@ -248,7 +234,7 @@ export const App = () => {
       <Layer
         ignoreClick
         filters={districtFilter.expression}
-        source="DISTRICTS_GEOJSON"
+        geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
 
@@ -271,29 +257,42 @@ export const App = () => {
         </Marker>
       )}
 
-      <Slot name="controls">
-        <ThemeController
-          darkLightModeTooltip={t("tooltips.darkLightMode")}
-          satelliteModeTooltip={t("tooltips.satelliteMode")}
-          className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
-            "translate-x-96": isSidebarVisible && !isMobile,
-          })}
-        />
-        <ViewportController
-          className="fixed right-4 bottom-[88px] sm:bottom-8"
-          slots={viewportControllerSlots}
-        />
-        <MobileSearch mapRef={mapRef} isGeolocation={isGeolocation} />
+      <Slot
+        id="controls"
+        position="bottom"
+        className="p-4 pb-9 flex flex-col gap-2 w-screen pointer-events-none"
+      >
+        <div className="flex justify-between items-end">
+          <ThemeController
+            className={cx("pointer-events-auto", {
+              "translate-x-96 delay-75": isSidebarVisible && !isMobile,
+              "translate-x-0 delay-200": !(isSidebarVisible && !isMobile),
+            })}
+          />
+          <div ref={viewportControlsRef}>
+            <ViewportController
+              className={cx({
+                "-translate-x-96": shouldBeViewportControlsMoved,
+                "translate-x-0": !shouldBeViewportControlsMoved,
+              })}
+              slots={[["compass", "zoom"]]}
+              desktopSlots={["geolocation", "compass", ["fullscreen", "zoom"]]}
+            />
+          </div>
+        </div>
+        <div className="pointer-events-auto shadow-lg rounded-lg sm:hidden">
+          <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
+        </div>
       </Slot>
 
       <Layout isOnlyMobile>
-        <Slot name="mobile-header">
+        <Slot id="mobile-header">
           <MobileHeader
             onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
           />
         </Slot>
 
-        <Slot name="mobile-filter" isVisible={isSidebarVisible} setVisible={setSidebarVisible}>
+        <Slot id="mobile-filter" isVisible={isSidebarVisible}>
           <MobileFilters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
@@ -307,21 +306,18 @@ export const App = () => {
 
       <Layout isOnlyDesktop>
         <Slot
-          name="desktop-filters"
+          id="desktop-filters"
           isVisible={isSidebarVisible}
-          setVisible={setSidebarVisible}
-          openPadding={{
-            left: 384, // w-96 or 24rem
-          }}
+          position="top-left"
+          autoPadding
+          avoidMapboxControls
         >
           <DesktopFilters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
             areFiltersDefault={combinedFilter.areDefault}
             onResetFiltersClick={combinedFilter.reset}
-            mapRef={mapRef}
             districtFilter={districtFilter}
-            isGeolocation={isGeolocation}
             filters={combinedFilter.expression}
           />
         </Slot>
