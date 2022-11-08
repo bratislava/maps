@@ -6,6 +6,7 @@ export default {
   loading: "Loading",
   layersLabel: "Layers",
   noImage: "Image is missing...",
+  legend: "Legend",
   filters: {
     title: "Filtering",
     reset: "Reset",
@@ -33,6 +34,7 @@ export default {
         "running-track": "running track",
         gym: "gym",
         water: "water",
+        cvicko: "cvičko",
       },
     },
   },
@@ -87,18 +89,6 @@ export default {
   // react-maps-ui
   activeFilters: "Active filters",
   resetFilters: "Reset filters",
-  errors: {
-    generic: "Error",
-    notLocatedInBratislava: "You are not located in Bratislava",
-    noGeolocationSupport: "Your device or browser does not support geolocation",
-  },
-  tooltips: {
-    darkLightMode: "Light/Dark Base",
-    satelliteMode: "Aerial",
-    scrollZoomBlockerCtrlMessage: "Use ctrl + scroll to zoom the map",
-    scrollZoomBlockerCmdMessage: "Use ⌘ + scroll to zoom the map",
-    touchPanBlockerMessage: "Use two fingers to move the map",
-  },
   informationModal: {
     title: "Map information",
     description: "Map of sport grounds in Bratislava.",

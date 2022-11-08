@@ -2,6 +2,7 @@ import { X } from "@bratislava/react-maps-icons";
 import { Dialog, Transition } from "@headlessui/react";
 import cx from "classnames";
 import { Fragment, ReactNode } from "react";
+import IconButton from "../IconButton/IconButton";
 
 export interface IModalProps {
   isOpen?: boolean;
@@ -92,12 +93,12 @@ export const Modal = ({
                     "left-0 -bottom-6 justify-center": !closeButtonInCorner,
                   })}
                 >
-                  <button
-                    className="w-12 outline-none h-12 bg-primary rounded-full flex items-center justify-center"
+                  <IconButton
+                    className="w-12 outline-none h-12 !bg-primary !border-primary rounded-full flex items-center justify-center"
                     onClick={() => onClose && onClose()}
                   >
                     {closeButtonIcon ?? <X className="text-white" />}
-                  </button>
+                  </IconButton>
                 </div>
               )}
             </Dialog.Panel>

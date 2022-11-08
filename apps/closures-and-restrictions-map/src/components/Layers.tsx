@@ -41,7 +41,7 @@ export const Layers = ({ filter, layers, tooltips, isMobile }: ILayerProps) => {
 
   return (
     <div className="flex flex-col w-full">
-      <Accordion>
+      <Accordion type="multiple">
         {layers.map(({ label, icon, subLayers }, index) => {
           return (
             <AccordionItem
@@ -162,7 +162,7 @@ export const Layers = ({ filter, layers, tooltips, isMobile }: ILayerProps) => {
       </Accordion>
 
       <Modal
-        className="max-w-lg"
+        overlayClassName="max-w-lg"
         isOpen={isTooltipModalOpen}
         title={capitalizeFirstLetter(currentTooltipType ?? "")}
         description={tooltips && capitalizeFirstLetter(tooltips[currentTooltipType ?? ""] ?? "")}

@@ -6,6 +6,7 @@ export default {
   loading: "Načítavanie",
   layersLabel: "Vrstvy",
   noImage: "Chýbajúci obrázok...",
+  legend: "Legenda",
   filters: {
     title: "Filter",
     active: "Aktívny filter",
@@ -34,6 +35,7 @@ export default {
         "running-track": "bežecká dráha",
         gym: "posilňovňa",
         water: "voda",
+        cvicko: "cvičko",
       },
     },
   },
@@ -89,18 +91,6 @@ export default {
   // for libraries
   activeFilters: "Aktívny filter",
   resetFilters: "Zrušiť filter",
-  errors: {
-    generic: "Chyba",
-    notLocatedInBratislava: "Nenachádzate sa v Bratislave",
-    noGeolocationSupport: "Vaše zariadenie alebo prehliadač nepodporuje geolokáciu",
-  },
-  tooltips: {
-    darkLightMode: "Svetlý/Tmavý podklad",
-    satelliteMode: "Letecký podklad",
-    scrollZoomBlockerCtrlMessage: "Použite ctrl + koliesko myši pre priblíženie",
-    scrollZoomBlockerCmdMessage: "Použite ⌘ + koliesko myši pre priblíženie",
-    touchPanBlockerMessage: "Použite dva prsty pre pohyb na mape",
-  },
   informationModal: {
     title: "Informácie o mape",
     description: "Mapa športovísk v Bratislave.",

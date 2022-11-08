@@ -1,6 +1,6 @@
 import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps";
 import { getUniqueValuesFromFeatures } from "@bratislava/utils";
-import { featureCollection } from "@turf/turf";
+import { featureCollection } from "@turf/helpers";
 import { Feature, FeatureCollection } from "geojson";
 
 export interface IProcessDataProps {

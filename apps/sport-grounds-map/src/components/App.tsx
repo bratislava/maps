@@ -12,7 +12,6 @@ import {
   Map,
   ThemeController,
   ViewportController,
-  SlotType,
   SearchBar,
 } from "@bratislava/react-maps";
 
@@ -40,6 +39,8 @@ import { MultipleMarker } from "./MultipleMarker";
 import { ILayerGroup } from "@bratislava/react-maps-ui/src/components/molecules/Layers/Layers";
 import { Icon, IIconProps } from "./Icon";
 import { usePrevious } from "@bratislava/utils";
+import { Modal, Sidebar } from "@bratislava/react-maps-ui";
+import { Legend } from "./Legend";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -55,6 +56,7 @@ export const App = () => {
   const [uniqueTypes, setUniqueTypes] = useState<string[]>([]);
 
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
+  const [isLegendOpen, setLegendOpen] = useState(false);
 
   useEffect(() => {
     const { data, uniqueDistricts, uniqueTypes } = processData(
@@ -248,10 +250,6 @@ export const App = () => {
     [layerFilter, layerToIconMappingObject, t],
   );
 
-  const viewportControllerSlots: SlotType = useMemo(() => {
-    return isMobile ? ["compass", "zoom"] : ["geolocation", "compass", ["fullscreen", "zoom"]];
-  }, [isMobile]);
-
   const initialViewport = useMemo(
     () => ({
       zoom: 12.229005488986582,
@@ -263,19 +261,14 @@ export const App = () => {
     [],
   );
 
-  const mapStyles = useMemo(
-    () => ({
-      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-    }),
-    [],
-  );
-
   return isLoading ? null : (
     <Map
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
-      mapStyles={mapStyles}
+      mapStyles={{
+        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+      }}
       initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
@@ -368,7 +361,10 @@ export const App = () => {
           className={cx("fixed right-4 bottom-[88px] sm:bottom-8", {
             "-translate-x-96": window.innerHeight <= (desktopDetailHeight ?? 0) + 200,
           })}
-          slots={viewportControllerSlots}
+          slots={["legend", "compass", "zoom"]}
+          desktopSlots={["legend", "geolocation", "compass", ["fullscreen", "zoom"]]}
+          onLegendOpenChange={setLegendOpen}
+          isLegendOpen={isLegendOpen}
         />
         <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
           <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
@@ -399,6 +395,22 @@ export const App = () => {
 
         <Slot id="mobile-detail" isVisible={true}>
           <Detail isMobile feature={selectedFeature} onClose={closeDetail} />
+        </Slot>
+
+        <Slot id="mobile-legend" isVisible={isLegendOpen} position="top-right">
+          <Sidebar
+            title={t("title")}
+            isMobile
+            isVisible={isLegendOpen}
+            position="right"
+            closeText={t("close")}
+            onClose={() => setLegendOpen(false)}
+            onOpen={() => setLegendOpen(true)}
+          >
+            <div className="px-6 py-2">
+              <Legend />
+            </div>
+          </Sidebar>
         </Slot>
       </Layout>
       <Layout isOnlyDesktop>
@@ -431,6 +443,12 @@ export const App = () => {
           >
             <Detail isMobile={false} feature={selectedFeature} onClose={closeDetail} />
           </div>
+        </Slot>
+
+        <Slot id="desktop-legend">
+          <Modal closeButtonInCorner isOpen={isLegendOpen} onClose={() => setLegendOpen(false)}>
+            <Legend />
+          </Modal>
         </Slot>
       </Layout>
     </Map>

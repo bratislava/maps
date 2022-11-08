@@ -30,7 +30,7 @@ export const LegendButton = ({
     [handleOpenChange, isLegendOpen],
   );
 
-  if (isMobile) {
+  if (isMobile || !legend) {
     return button;
   }
 

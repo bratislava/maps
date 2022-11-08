@@ -13,7 +13,7 @@ import { ReactComponent as TableTennisIcon } from "../assets/icons/table-tennis.
 import { ReactComponent as TennisIcon } from "../assets/icons/tennis.svg";
 import { ReactComponent as WaterIcon } from "../assets/icons/water.svg";
 
-const icons = [
+export const icons = [
   {
     name: "basketball",
     component: BasketballIcon,
@@ -21,10 +21,6 @@ const icons = [
   {
     name: "cvicko",
     component: CvickoIcon,
-  },
-  {
-    name: "other",
-    component: OtherIcon,
   },
   {
     name: "fitness",
@@ -61,6 +57,10 @@ const icons = [
   {
     name: "water",
     component: WaterIcon,
+  },
+  {
+    name: "other",
+    component: OtherIcon,
   },
 ] as const;
 

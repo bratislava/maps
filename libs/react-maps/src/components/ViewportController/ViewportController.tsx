@@ -54,7 +54,7 @@ export const ViewportController = forwardRef<
     ref,
   ) => {
     const legendButton = useMemo(() => {
-      if (isLegendOpen !== undefined && legend && onLegendOpenChange) {
+      if (isLegendOpen !== undefined && onLegendOpenChange) {
         return (
           <LegendButton
             legend={legend}

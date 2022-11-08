@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { Note } from "@bratislava/react-maps-ui";
 import { useArcgisAttachments } from "@bratislava/react-use-arcgis";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -104,20 +105,20 @@ export const DigupClosureDisorderDetail = ({ properties }: DigupClosureDisorderD
         </div>
       )}
 
-      <div className="flex gap-4">
+      <Note className="flex flex-col gap-3">
         <div className="flex-shrink-0">
           <HintIcon />
         </div>
         <div className="flex-1">{t("problemHint")}</div>
-      </div>
-      <a
-        href={t("reportProblemLink")}
-        target="_blank"
-        className="underline font-semibold"
-        rel="noreferrer"
-      >
-        {t("reportProblem")}
-      </a>
+        <a
+          href={t("reportProblemLink")}
+          target="_blank"
+          className="underline font-semibold"
+          rel="noreferrer"
+        >
+          {t("reportProblem")}
+        </a>
+      </Note>
     </div>
   );
 };

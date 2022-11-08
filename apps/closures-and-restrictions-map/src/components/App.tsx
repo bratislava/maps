@@ -2,14 +2,16 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import "../styles.css";
+import { useResizeDetector } from "react-resize-detector";
+import { useWindowSize } from "usehooks-ts";
 
 // maps
 import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 import {
-  DISTRICTS_GEOJSON,
   Layout,
   Map,
   MapHandle,
+  SearchBar,
   Slot,
   SlotType,
   ThemeController,
@@ -40,10 +42,10 @@ import Detail from "./Detail";
 import { Filters } from "./Filters";
 import { ILayerCategory } from "./Layers";
 import { MobileHeader } from "./mobile/MobileHeader";
-import { MobileSearch } from "./mobile/MobileSearch";
 
 import { Icon } from "./Icon";
 import { Marker } from "./Marker";
+import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 
 const REPAIRS_POINTS_URLS = [REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL];
 
@@ -54,7 +56,7 @@ const REPAIRS_POLYGONS_URLS = [
 ];
 
 export const App = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     document.title = t("tabTitle");
@@ -185,14 +187,6 @@ export const App = () => {
     [],
   );
 
-  const sources = useMemo(
-    () => ({
-      REPAIRS_POLYGONS_DATA: repairsPolygonsData,
-      DISTRICTS_GEOJSON,
-    }),
-    [repairsPolygonsData],
-  );
-
   const selectedFeatures = useMemo(() => {
     return selectedFeature ? [selectedFeature] : [];
   }, [selectedFeature]);
@@ -202,10 +196,6 @@ export const App = () => {
     setSelectedFeature(features[0] ?? null);
     setSelectedMarker(null);
   }, []);
-
-  const viewportControllerSlots: SlotType = useMemo(() => {
-    return isMobile ? ["compass", "zoom"] : ["geolocation", "compass", ["fullscreen", "zoom"]];
-  }, [isMobile]);
 
   const districtFilter = useFilter({
     property: "district",
@@ -303,6 +293,15 @@ export const App = () => {
 
   const [layerCategories, setLayerCategories] = useState<ILayerCategory[]>([]);
 
+  const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
+  const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
+
+  const { height: windowHeight } = useWindowSize();
+
+  const shouldBeViewportControlsMoved = useMemo(() => {
+    return windowHeight < viewportControlsHeight + detailHeight + 40;
+  }, [windowHeight, detailHeight, viewportControlsHeight]);
+
   return isLoading ? null : (
     <Map
       loadingSpinnerColor="#0F6D95"
@@ -310,21 +309,12 @@ export const App = () => {
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={mapStyles}
-      sources={sources}
       isOutsideLoading={isLoading}
       onFeaturesClick={onFeaturesClick}
       selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
       onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
-      scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
-      scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
-      touchPanBlockerMessage={t("tooltips.touchPanBlockerMessage")}
-      errors={{
-        generic: t("errors.generic"),
-        notLocatedInBratislava: t("errors.notLocatedInBratislava"),
-        noGeolocationSupport: t("errors.noGeolocationSupport"),
-      }}
       mapInformation={{
         title: t("informationModal.title"),
         description: (
@@ -398,33 +388,46 @@ export const App = () => {
       </Filter>
       <Layer
         filters={combinedFilterWithoutStatus.expression}
-        source="REPAIRS_POLYGONS_DATA"
+        geojson={repairsPolygonsData}
         styles={REPAIRS_POLYGONS_STYLE}
       />
       <Layer
         filters={districtFilter.expression}
         ignoreClick
-        source="DISTRICTS_GEOJSON"
+        geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
 
-      <Slot name="controls">
-        <ThemeController
-          darkLightModeTooltip={t("tooltips.darkLightMode")}
-          satelliteModeTooltip={t("tooltips.satelliteMode")}
-          className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
-            "translate-x-96": isSidebarVisible && !isMobile,
-          })}
-        />
-        <ViewportController
-          className="fixed right-4 bottom-[88px] sm:bottom-8"
-          slots={viewportControllerSlots}
-        />
-        <MobileSearch mapRef={mapRef} isGeolocation={isGeolocation} />
+      <Slot
+        id="controls"
+        position="bottom"
+        className="p-4 pb-9 flex flex-col gap-2 w-screen pointer-events-none"
+      >
+        <div className="flex justify-between items-end">
+          <ThemeController
+            className={cx("pointer-events-auto", {
+              "translate-x-96 delay-75": isSidebarVisible && !isMobile,
+              "translate-x-0 delay-200": !(isSidebarVisible && !isMobile),
+            })}
+          />
+          <div ref={viewportControlsRef}>
+            <ViewportController
+              className={cx({
+                "-translate-x-96": shouldBeViewportControlsMoved,
+                "translate-x-0": !shouldBeViewportControlsMoved,
+              })}
+              slots={[["compass", "zoom"]]}
+              desktopSlots={["geolocation", "compass", ["fullscreen", "zoom"]]}
+            />
+          </div>
+        </div>
+        <div className="pointer-events-auto shadow-lg rounded-lg sm:hidden">
+          <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
+        </div>
       </Slot>
 
       <Layout isOnlyMobile>
-        <Slot name="mobile-header">
+        <Slot id="mobile-header">
           <MobileHeader
             onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
           />
@@ -448,6 +451,7 @@ export const App = () => {
       />
 
       <Detail
+        ref={detailRef}
         feature={selectedFeature ?? selectedMarker}
         isMobile={isMobile ?? false}
         onClose={closeDetail}
