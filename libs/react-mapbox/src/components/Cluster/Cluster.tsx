@@ -110,9 +110,9 @@ export const Cluster = ({
 
   useEffect(() => {
     recalculate();
-    map?.on('moveend', recalculate);
+    map?.on('move', recalculate);
     return () => {
-      map?.off('moveend', recalculate);
+      map?.off('move', recalculate);
     };
   }, [map, recalculate]);
 
