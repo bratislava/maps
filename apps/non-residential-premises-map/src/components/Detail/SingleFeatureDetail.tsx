@@ -26,7 +26,7 @@ export const SingleFeatureDetail = ({
     <motion.div layout className="flex flex-col max-h-screen overflow-auto">
       <AnimateHeight isVisible={feature?.properties?.picture && isExpanded}>
         <>
-          <motion.button layout onClick={() => setModalOpen(true)}>
+          <motion.button className="w-full" layout onClick={() => setModalOpen(true)}>
             <Image object="cover" src={feature?.properties?.picture} />
           </motion.button>
           <ImageLightBox
