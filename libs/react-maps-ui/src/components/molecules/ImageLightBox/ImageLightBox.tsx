@@ -1,5 +1,6 @@
-import { Chevron } from "@bratislava/react-maps-icons";
+import { Chevron, X } from "@bratislava/react-maps-icons";
 import { useEffect, useRef } from "react";
+import cx from "classnames";
 
 import IconButton from "../../atoms/IconButton/IconButton";
 import { Modal, IModalProps } from "../../atoms/Modal/Modal";
@@ -13,7 +14,7 @@ export type ImageLightBoxProps = {
 export const ImageLightBox = (props: ImageLightBoxProps) => {
   const { images, initialImageIndex, ...rest } = props;
 
-  const { isOpen } = rest;
+  const { isOpen, onClose } = rest;
 
   const sliderRef = useRef<HTMLDivElement | null>(null);
 
@@ -30,6 +31,12 @@ export const ImageLightBox = (props: ImageLightBoxProps) => {
       overlayClassName="w-full h-full pointer-events-none"
       {...rest}
     >
+      <IconButton
+        className={cx("absolute right-6 top-6 items-center justify-center")}
+        onClick={onClose}
+      >
+        <X size="sm" />
+      </IconButton>
       <Swiper
         ref={sliderRef}
         allowKeyboardNavigation={images.length > 1}
@@ -41,15 +48,10 @@ export const ImageLightBox = (props: ImageLightBoxProps) => {
           >
             <img
               draggable="false"
-              className="pointer-events-auto h-auto max-h-[86vh] w-full select-none object-contain rounded-xl"
+              className="pointer-events-auto h-auto max-h-[80vh] w-full select-none object-contain"
               src={image}
               alt={image}
             />
-            {/* {attributes?.caption !== attributes?.name && (
-              <div className="mt-4 rounded-2xl bg-white px-2.5 py-0.5">
-                {attributes?.caption}
-              </div>
-            )} */}
           </div>
         ))}
         pagination={({ goToPrevious, goToNext, count, activeIndex }) => (
