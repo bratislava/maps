@@ -158,11 +158,6 @@ export const App = () => {
     }
   }, [isMobile, previousMobile]);
 
-  // const isDetailOpen = useMemo(
-  //   () => !!(selectedFeature ?? selectedMarker),
-  //   [selectedFeature, selectedMarker],
-  // );
-
   const closeDetail = useCallback(() => {
     setSelectedFeature(null);
     setSelectedMarker(null);
@@ -439,6 +434,36 @@ export const App = () => {
             onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
           />
         </Slot>
+
+        <Slot
+          id="mobile-detail"
+          isVisible={!!(selectedFeature ?? selectedMarker)}
+          position="bottom"
+        >
+          <Detail
+            ref={detailRef}
+            feature={selectedFeature ?? selectedMarker}
+            isMobile={true}
+            onClose={closeDetail}
+          />
+        </Slot>
+      </Layout>
+
+      <Layout isOnlyDesktop>
+        <Slot
+          id="desktop-detail"
+          autoPadding
+          isVisible={!!(selectedFeature ?? selectedMarker)}
+          avoidMapboxControls
+          position="top-right"
+        >
+          <Detail
+            ref={detailRef}
+            feature={selectedFeature ?? selectedMarker}
+            isMobile={false}
+            onClose={closeDetail}
+          />
+        </Slot>
       </Layout>
 
       <Filters
@@ -455,13 +480,6 @@ export const App = () => {
         layerCategories={layerCategories}
         statusFilter={statusFilter as IFilterResult<string>}
         typeFilter={typeFilter}
-      />
-
-      <Detail
-        ref={detailRef}
-        feature={selectedFeature ?? selectedMarker}
-        isMobile={isMobile ?? false}
-        onClose={closeDetail}
       />
     </Map>
   );

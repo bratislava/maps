@@ -26,7 +26,9 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
   ({ feature, isMobile, onClose }, forwardedRef) => {
     const { originalProperties, ...processedProperties } = feature?.properties ?? {};
 
-    const detail = !feature ? null : (
+    if (!feature) return null;
+
+    const detail = (
       <>
         <div className="p-8 text-foreground-lightmode dark:text-foreground-darkmode max-h-screen overflow-auto">
           {feature ? (
@@ -62,41 +64,33 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
     );
 
     return isMobile ? (
-      <Slot isVisible={!!feature} id="desktop-detail">
-        <BottomSheet
-          snapPoints={({ maxHeight }) => [(maxHeight / 5) * 3]}
-          blocking={false}
-          className="relative z-30"
-          open={!!feature}
-          draggable={false}
-        >
-          {detail}
-        </BottomSheet>
-      </Slot>
-    ) : (
-      <Slot
-        id="desktop-detail"
-        autoPadding
-        isVisible={!!feature}
-        avoidMapboxControls
-        position="top-right"
+      <BottomSheet
+        snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 80]}
+        defaultSnap={({ snapPoints }) => snapPoints[1]}
+        blocking={false}
+        // onSpringStart={onSnapChange}
+        className="relative z-30"
+        open={true}
+        expandOnContentDrag
       >
-        <div
-          ref={forwardedRef}
-          className={cx(
-            "w-96 overflow-auto max-h-full bg-background-lightmode dark:bg-background-darkmode transition-all duration-500",
-            {
-              "translate-x-full": !feature,
-              "shadow-lg": !!feature,
-            },
-          )}
-        >
-          <button onClick={onClose} className="absolute top-8 right-6 z-10 hover:text-primary">
-            <X size="default" />
-          </button>
-          {detail}
-        </div>
-      </Slot>
+        {detail}
+      </BottomSheet>
+    ) : (
+      <div
+        ref={forwardedRef}
+        className={cx(
+          "w-96 overflow-auto max-h-full bg-background-lightmode dark:bg-background-darkmode transition-all duration-500",
+          {
+            "translate-x-full": !feature,
+            "shadow-lg": !!feature,
+          },
+        )}
+      >
+        <button onClick={onClose} className="absolute top-8 right-6 z-10 hover:text-primary">
+          <X size="default" />
+        </button>
+        {detail}
+      </div>
     );
   },
 );
