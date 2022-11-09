@@ -399,7 +399,7 @@ export const App = () => {
         styles={REPAIRS_POLYGONS_STYLE}
       />
       <Layer
-        filters={districtFilter.expression}
+        filters={districtFilter.keepOnEmptyExpression}
         ignoreClick
         geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
