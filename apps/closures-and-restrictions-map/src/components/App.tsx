@@ -6,7 +6,14 @@ import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
 
 // maps
-import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
+import {
+  Cluster,
+  Filter,
+  IFilterResult,
+  Layer,
+  useCombinedFilter,
+  useFilter,
+} from "@bratislava/react-mapbox";
 import {
   Layout,
   Map,
@@ -446,7 +453,7 @@ export const App = () => {
         onResetFiltersClick={combinedFilter.reset}
         layerFilter={layerfilter}
         layerCategories={layerCategories}
-        statusFilter={statusFilter}
+        statusFilter={statusFilter as IFilterResult<string>}
         typeFilter={typeFilter}
       />
 

@@ -26,7 +26,7 @@ export interface IFiltersProps {
   districtFilter: IFilterResult<string>;
   layerFilter: IFilterResult<string>;
   typeFilter: IFilterResult<string>;
-  statusFilter: IFilterResult<"planned" | "active" | "done">;
+  statusFilter: IFilterResult<string>;
   layerCategories: ILayerCategory[];
   isGeolocation: boolean;
   mapRef: RefObject<MapHandle>;
@@ -135,17 +135,34 @@ export const Filters = ({
 
         <TagFilter
           title={t("filters.status.title")}
-          values={statusFilter.values.map((status) => ({
-            key: status.key,
-            label: t(`filters.status.${status.key}`),
-            isActive: status.isActive,
-          }))}
+          values={statusFilter.values
+            .map((status) => ({
+              key: status.key,
+              label: t(`filters.status.${status.key}`),
+              isActive: status.isActive,
+            }))
+            // This another tag button is for testing purposes only, // TODO: remove it
+            .concat([
+              {
+                key: "all",
+                label: "všetky",
+                isActive: statusFilter.activeKeys.length === 3,
+              },
+            ])}
           onTagClick={(status) => {
-            if (statusFilter.activeKeys.length == 4) {
+            if (status === "all") {
+              if (statusFilter.activeKeys.length !== 3) {
+                statusFilter.setActiveAll(true);
+              }
+              return;
+            }
+
+            if (statusFilter.activeKeys.length === 3) {
               statusFilter.setActiveOnly(status);
-            } else if (
-              !(statusFilter.activeKeys.length == 1 && statusFilter.activeKeys[0] == status)
-            ) {
+              return;
+            }
+
+            if (!(statusFilter.activeKeys.length === 1 && statusFilter.activeKeys[0] === status)) {
               statusFilter.toggleActive(status);
             }
           }}
