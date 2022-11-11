@@ -1,6 +1,6 @@
 import { X } from "@bratislava/react-maps-icons";
 import { useEffect, useRef, useState } from "react";
-import { useDateRangePicker } from "react-aria";
+import { I18nProvider, useDateRangePicker } from "react-aria";
 import {
   DateRangePickerStateOptions,
   useDateRangePickerState,
@@ -10,6 +10,7 @@ import { DateField } from "./DateField";
 import { Popover } from "./Popover";
 import { DateValue } from "@react-types/calendar";
 import { RangeCalendar } from "./RangeCalendar";
+import { useTranslation } from "react-i18next";
 
 export type DateRangePickerProps = {
   onResetClick?: () => void;
@@ -18,6 +19,7 @@ export type DateRangePickerProps = {
 const DateRangePicker = (props: DateRangePickerProps) => {
   const state = useDateRangePickerState(props);
   const ref = useRef<HTMLDivElement | null>(null);
+  const { i18n } = useTranslation();
   const {
     groupProps,
     startFieldProps,
@@ -89,12 +91,10 @@ const DateRangePicker = (props: DateRangePickerProps) => {
         </div>
       }
       panel={
-        <div
-          {...dialogProps}
-          // isOpen={state.isOpen}
-          // onClose={() => state.setOpen(false)}
-        >
-          <RangeCalendar {...calendarProps} />
+        <div {...dialogProps}>
+          <I18nProvider locale={i18n.language}>
+            <RangeCalendar {...calendarProps} />
+          </I18nProvider>
         </div>
       }
     />
