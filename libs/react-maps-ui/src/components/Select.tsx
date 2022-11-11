@@ -2,7 +2,7 @@ import { Chevron, X } from "@bratislava/react-maps-icons";
 import { Listbox, Transition } from "@headlessui/react";
 import cx from "classnames";
 import { FC, MouseEventHandler, ReactElement, useCallback } from "react";
-import { DropdownArrow } from "../Dropdown/DropdownArrow";
+import { DropdownArrow } from "./DropdownArrow";
 import { ISelectOptionProps } from "./SelectOption";
 interface ISelectProps {
   className?: string;

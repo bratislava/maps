@@ -1,8 +1,9 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
-import { MapHandle, SearchBar, Slot } from "@bratislava/react-maps";
+import { SearchBar, Slot } from "@bratislava/react-maps";
 import { Funnel } from "@bratislava/react-maps-icons";
 import {
   ActiveFilters,
+  DateRangePickerFixed,
   Divider,
   IActiveFilter,
   Select,
@@ -11,10 +12,10 @@ import {
   TagFilter,
 } from "@bratislava/react-maps-ui";
 import cx from "classnames";
-import { RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import { ILayerCategory, Layers } from "./Layers";
 import { SelectValueRenderer } from "./SelectValueRenderer";
+import { DateValue } from "@react-types/calendar";
 
 export interface IFiltersProps {
   isVisible?: boolean;
@@ -28,8 +29,11 @@ export interface IFiltersProps {
   typeFilter: IFilterResult<string>;
   statusFilter: IFilterResult<string>;
   layerCategories: ILayerCategory[];
-  isGeolocation: boolean;
-  mapRef: RefObject<MapHandle>;
+
+  dateStart?: DateValue;
+  dateEnd?: DateValue;
+  onDateStartChange: (date?: DateValue) => void;
+  onDateEndChange: (date?: DateValue) => void;
 }
 
 export const Filters = ({
@@ -44,6 +48,11 @@ export const Filters = ({
   isMobile,
   statusFilter,
   typeFilter,
+
+  dateStart,
+  dateEnd,
+  onDateStartChange,
+  onDateEndChange,
 }: IFiltersProps) => {
   const { t, i18n } = useTranslation();
 
@@ -167,6 +176,22 @@ export const Filters = ({
             }
           }}
         />
+
+        <div className="mx-6 flex flex-col gap-2">
+          <div>Dátum</div>
+          <DateRangePickerFixed
+            label="Date range"
+            value={dateStart && dateEnd ? { start: dateStart, end: dateEnd } : undefined}
+            onChange={(e) => {
+              onDateStartChange(e.start);
+              onDateEndChange(e.end);
+            }}
+            onResetClick={() => {
+              onDateStartChange(undefined);
+              onDateEndChange(undefined);
+            }}
+          />
+        </div>
       </div>
 
       <Divider className="mx-6" />
@@ -178,7 +203,7 @@ export const Filters = ({
   );
 
   return isMobile ? (
-    <Slot id="mobile-filters" isVisible={isVisible}>
+    <Slot id="mobile-filters" isVisible={isVisible} position="top-right">
       <Sidebar
         position="right"
         isMobile

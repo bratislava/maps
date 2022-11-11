@@ -28,6 +28,7 @@ export interface IPopoverProps {
   panel: ReactNode;
   isSmall?: boolean;
   allowedPlacements?: Placement[];
+  className?: string;
 }
 
 export const Popover = ({
@@ -37,6 +38,7 @@ export const Popover = ({
   allowedPlacements,
   isOpen: isOpenExternal,
   onOpenChange,
+  className,
 }: IPopoverProps) => {
   const arrowRef = useRef(null);
   const [isOpenInternal, setOpenInternal] = useState(false);
@@ -81,7 +83,7 @@ export const Popover = ({
   return (
     <>
       <div
-        className="inline-block w-fit"
+        className={cx("inline-block w-fit", className)}
         ref={reference}
         {...getReferenceProps()}
       >

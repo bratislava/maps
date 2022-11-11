@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { Tag } from "../../atoms/Tag/Tag";
+import { Tag } from "./Tag";
 
 interface IValue<T extends string> {
   key: T;

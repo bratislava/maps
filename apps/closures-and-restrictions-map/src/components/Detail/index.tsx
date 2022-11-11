@@ -42,24 +42,23 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
               <RepairPointDetail properties={processedProperties as RepairPointDetailProperties} />
             ) : null
           ) : null}
+          <pre className="p-2 bg-black rounded-lg text-white overflow-auto">
+            <div className="font-semibold">Processed properties</div>
+            <code>{JSON.stringify(processedProperties, null, 2)}</code>
+          </pre>
+          <pre className="p-2 bg-black rounded-lg text-white overflow-auto">
+            <div className="font-semibold">Original properties</div>
+            <code>
+              {JSON.stringify(
+                typeof originalProperties === "string"
+                  ? JSON.parse(originalProperties)
+                  : originalProperties,
+                null,
+                2,
+              )}
+            </code>
+          </pre>
         </div>
-
-        {/* <pre className="p-2 m-2 bg-black rounded-lg text-white overflow-auto">
-          <div className="font-semibold">Processed properties</div>
-          <code>{JSON.stringify(processedProperties, null, 2)}</code>
-        </pre>
-        <pre className="p-2 m-2 bg-black rounded-lg text-white overflow-auto">
-          <div className="font-semibold">Original properties</div>
-          <code>
-            {JSON.stringify(
-              typeof originalProperties === "string"
-                ? JSON.parse(originalProperties)
-                : originalProperties,
-              null,
-              2,
-            )}
-          </code>
-        </pre> */}
       </>
     );
 

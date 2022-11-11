@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { ReactComponent as SpecialDivider } from "../../../assets/special-divider.svg";
+import { ReactComponent as SpecialDivider } from "../assets/special-divider.svg";
 
 export interface IDividerProps {
   className?: string;

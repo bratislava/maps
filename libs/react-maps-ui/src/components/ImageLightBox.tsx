@@ -2,9 +2,9 @@ import { Chevron, X } from "@bratislava/react-maps-icons";
 import { useEffect, useRef } from "react";
 import cx from "classnames";
 
-import IconButton from "../../atoms/IconButton/IconButton";
-import { Modal, IModalProps } from "../../atoms/Modal/Modal";
-import { Swiper } from "../Swiper/Swiper";
+import IconButton from "./IconButton";
+import { Modal, IModalProps } from "./Modal";
+import { Swiper } from "./Swiper";
 
 export type ImageLightBoxProps = {
   images: string[];

@@ -1,6 +1,6 @@
 import { Location, MagnifyingGlass } from "@bratislava/react-maps-icons";
 import cx from "classnames";
-import { Input } from "../Input/Input";
+import { Input } from "./Input";
 
 interface ISearchBarProps
   extends React.DetailedHTMLProps<

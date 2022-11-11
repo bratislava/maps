@@ -2,7 +2,7 @@ import { X } from "@bratislava/react-maps-icons";
 import { Dialog, Transition } from "@headlessui/react";
 import cx from "classnames";
 import { Fragment, ReactNode } from "react";
-import IconButton from "../IconButton/IconButton";
+import IconButton from "./IconButton";
 
 export interface IModalProps {
   isOpen?: boolean;

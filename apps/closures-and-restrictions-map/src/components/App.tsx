@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 import "../styles.css";
 import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
+import { DateValue } from "@react-types/calendar";
 
 // maps
 import {
@@ -20,7 +21,6 @@ import {
   MapHandle,
   SearchBar,
   Slot,
-  SlotType,
   ThemeController,
   ViewportController,
 } from "@bratislava/react-maps";
@@ -74,7 +74,6 @@ export const App = () => {
   const [markersData, setMarkersData] = useState<FeatureCollection | null>(null);
 
   const [repairsPolygonsData, setRepairsPolygonsData] = useState<FeatureCollection | null>(null);
-  const [isGeolocation, setGeolocation] = useState(false);
 
   const { data: rawDisordersData } = useArcgis(DISORDERS_URL);
   const { data: rawDigupsAndClosuresData } = useArcgis(DIGUPS_URL);
@@ -237,6 +236,44 @@ export const App = () => {
     ),
   });
 
+  // Date filter
+  const [dateStart, setDateStart] = useState<DateValue>();
+  const [dateEnd, setDateEnd] = useState<DateValue>();
+
+  const dateStartString = useMemo(() => {
+    return dateStart?.toString() ?? null;
+  }, [dateStart]);
+
+  const dateEndString = useMemo(() => {
+    return dateEnd?.toString() ?? null;
+  }, [dateEnd]);
+
+  const dateFilerExpression = useMemo(() => {
+    if (!dateStart || !dateEnd) return null;
+
+    const startTimestamp = dateStart.toDate("Europe/Bratislava").getTime();
+    const endTimestamp = dateEnd.toDate("Europe/Bratislava").getTime();
+
+    return [
+      "any",
+      ["all", ["<=", "startTimestamp", startTimestamp], [">=", "endTimestamp", startTimestamp]],
+      ["all", ["<=", "startTimestamp", endTimestamp], [">=", "endTimestamp", endTimestamp]],
+    ];
+  }, [dateStart, dateEnd]);
+
+  // useEffect(() => {
+  //   if (dateFilerExpression !== null) {
+  //     statusFilter.setActiveAll(true);
+  //   }
+  // }, [dateFilerExpression, statusFilter]);
+
+  // useEffect(() => {
+  //   if (statusFilter.activeKeys.length !== 3) {
+  //     setDateStart(undefined);
+  //     setDateEnd(undefined);
+  //   }
+  // }, [statusFilter.activeKeys]);
+
   const combinedFilter = useCombinedFilter({
     combiner: "all",
     filters: [
@@ -315,7 +352,6 @@ export const App = () => {
       onFeaturesClick={onFeaturesClick}
       selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
-      onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
       mapInformation={{
         title: t("informationModal.title"),
@@ -355,7 +391,9 @@ export const App = () => {
         ),
       }}
     >
-      <Filter expression={combinedFilter.expression}>
+      {/* <Filter expression={combinedFilter.expression}> */}
+      <Filter expression={dateFilerExpression}>
+        {/* <Filter> */}
         <Cluster features={markersData?.features ?? []} radius={64}>
           {({ features, lng, lat, key, clusterExpansionZoom }) => (
             <Marker
@@ -467,8 +505,6 @@ export const App = () => {
       </Layout>
 
       <Filters
-        mapRef={mapRef}
-        isGeolocation={isGeolocation}
         isMobile={isMobile ?? false}
         isVisible={isSidebarVisible}
         setVisible={(isVisible) => setSidebarVisible(isVisible ?? false)}
@@ -480,6 +516,10 @@ export const App = () => {
         layerCategories={layerCategories}
         statusFilter={statusFilter as IFilterResult<string>}
         typeFilter={typeFilter}
+        dateStart={dateStart}
+        dateEnd={dateEnd}
+        onDateStartChange={setDateStart}
+        onDateEndChange={setDateEnd}
       />
     </Map>
   );
