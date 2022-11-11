@@ -4,6 +4,7 @@ export default {
   search: "Search",
   filters: {
     title: "Filtering",
+    reset: "Reset",
     district: {
       title: "District",
       placeholder: "District",

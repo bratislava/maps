@@ -12,13 +12,11 @@ import {
 import { createCalendar } from "@internationalized/date";
 import { DateValue } from "@react-types/datepicker";
 import cx from "classnames";
-import { useTranslation } from "react-i18next";
 
 export const DateField = (props: AriaDateFieldProps<DateValue>) => {
-  const { i18n } = useTranslation();
   const state = useDateFieldState({
     ...props,
-    locale: i18n.language,
+    locale: "sk",
     createCalendar,
   });
 

@@ -14,10 +14,9 @@ import { useTranslation } from "react-i18next";
 export type RangeCalendarProps = AriaRangeCalendarProps<DateValue>;
 
 export const RangeCalendar = (props: RangeCalendarProps) => {
-  const { i18n } = useTranslation();
   const state = useRangeCalendarState({
     ...props,
-    locale: i18n.language,
+    locale: "sk",
     createCalendar,
   });
 

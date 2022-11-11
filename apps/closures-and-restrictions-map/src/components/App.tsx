@@ -240,15 +240,7 @@ export const App = () => {
   const [dateStart, setDateStart] = useState<DateValue>();
   const [dateEnd, setDateEnd] = useState<DateValue>();
 
-  const dateStartString = useMemo(() => {
-    return dateStart?.toString() ?? null;
-  }, [dateStart]);
-
-  const dateEndString = useMemo(() => {
-    return dateEnd?.toString() ?? null;
-  }, [dateEnd]);
-
-  const dateFilerExpression = useMemo(() => {
+  const dateFilterExpression = useMemo(() => {
     if (!dateStart || !dateEnd) return null;
 
     const startTimestamp = dateStart.toDate("Europe/Bratislava").getTime();
@@ -261,18 +253,24 @@ export const App = () => {
     ];
   }, [dateStart, dateEnd]);
 
-  // useEffect(() => {
-  //   if (dateFilerExpression !== null) {
-  //     statusFilter.setActiveAll(true);
-  //   }
-  // }, [dateFilerExpression, statusFilter]);
+  const previousDateFilterExpression = usePrevious(dateFilterExpression);
 
-  // useEffect(() => {
-  //   if (statusFilter.activeKeys.length !== 3) {
-  //     setDateStart(undefined);
-  //     setDateEnd(undefined);
-  //   }
-  // }, [statusFilter.activeKeys]);
+  useEffect(() => {
+    // When dateFilter is set, then set active all keys from statusFilter
+    if (dateFilterExpression !== null && previousDateFilterExpression === null) {
+      if (statusFilter.activeKeys.length !== statusFilter.keys.length) {
+        statusFilter.setActiveAll(true);
+      }
+    }
+  }, [dateFilterExpression, previousDateFilterExpression, statusFilter]);
+
+  useEffect(() => {
+    // When statusFilter changes, disable dateFilter
+    if (statusFilter.activeKeys.length !== statusFilter.keys.length) {
+      setDateStart(undefined);
+      setDateEnd(undefined);
+    }
+  }, [statusFilter.activeKeys.length, statusFilter.keys.length]);
 
   const combinedFilter = useCombinedFilter({
     combiner: "all",
@@ -308,6 +306,13 @@ export const App = () => {
       },
     ],
   });
+
+  const finalCombinedFilter = useMemo(() => {
+    if (dateFilterExpression) {
+      return [...combinedFilter.expression, dateFilterExpression];
+    }
+    return combinedFilter.expression;
+  }, [combinedFilter.expression, dateFilterExpression]);
 
   const combinedFilterWithoutStatus = useCombinedFilter({
     combiner: "all",
@@ -391,9 +396,7 @@ export const App = () => {
         ),
       }}
     >
-      {/* <Filter expression={combinedFilter.expression}> */}
-      <Filter expression={dateFilerExpression}>
-        {/* <Filter> */}
+      <Filter expression={finalCombinedFilter}>
         <Cluster features={markersData?.features ?? []} radius={64}>
           {({ features, lng, lat, key, clusterExpansionZoom }) => (
             <Marker
@@ -509,9 +512,13 @@ export const App = () => {
         isVisible={isSidebarVisible}
         setVisible={(isVisible) => setSidebarVisible(isVisible ?? false)}
         districtFilter={districtFilter}
-        areFiltersDefault={combinedFilter.areDefault}
+        areFiltersDefault={combinedFilter.areDefault && dateFilterExpression === null}
         activeFilters={combinedFilter.active}
-        onResetFiltersClick={combinedFilter.reset}
+        onResetFiltersClick={() => {
+          combinedFilter.reset();
+          setDateStart(undefined);
+          setDateEnd(undefined);
+        }}
         layerFilter={layerfilter}
         layerCategories={layerCategories}
         statusFilter={statusFilter as IFilterResult<string>}

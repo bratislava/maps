@@ -4,6 +4,7 @@ export default {
   search: "Hľadať",
   filters: {
     title: "Filter",
+    reset: "Zrušiť",
     district: {
       title: "Mestská časť",
       placeholder: "Mestská časť",

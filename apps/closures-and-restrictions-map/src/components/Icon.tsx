@@ -40,7 +40,7 @@ export const Icon = ({ icon, size = 24, isWhite = false, count, shadow = true }:
       className={cx(
         "relative transform active:scale-75 transition-transform cursor-pointer w-fit h-fit rounded-full text-white flex items-center justify-center",
         {
-          "bg-white text-primary z-50": isWhite,
+          "bg-white !text-primary z-50": isWhite,
           "bg-primary text-secondary": !isWhite,
           "shadow-lg": shadow,
         },

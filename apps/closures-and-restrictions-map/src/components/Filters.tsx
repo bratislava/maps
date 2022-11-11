@@ -1,6 +1,6 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
 import { SearchBar, Slot } from "@bratislava/react-maps";
-import { Funnel } from "@bratislava/react-maps-icons";
+import { Funnel, X } from "@bratislava/react-maps-icons";
 import {
   ActiveFilters,
   DateRangePickerFixed,
@@ -77,13 +77,20 @@ export const Filters = ({
       )}
 
       <div className="flex flex-col gap-2">
-        <div className="flex px-6 items-center">
-          {isMobile && (
-            <div className="-ml-2">
-              <Funnel />
-            </div>
+        <div className="flex justify-between px-6 items-center">
+          <div className="flex gap-2 items-center">
+            {isMobile && <Funnel />}
+            <h2 className="font-semibold text-md py-1">{t("filters.title")}</h2>
+          </div>
+          {!areFiltersDefault && (
+            <button
+              onClick={onResetFiltersClick}
+              className="flex gap-2 items-center hover:underline"
+            >
+              <span className="font-semibold">{t("filters.reset")}</span>
+              <X className="text-primary" />
+            </button>
           )}
-          <h2 className="font-bold text-md py-1">{t("filters.title")}</h2>
         </div>
 
         <div

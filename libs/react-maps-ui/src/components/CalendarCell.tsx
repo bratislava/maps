@@ -1,10 +1,9 @@
 import { useRef } from "react";
 import { useCalendarCell, AriaCalendarCellProps } from "@react-aria/calendar";
-import { useLocale } from "@react-aria/i18n";
 import { isSameDay, getDayOfWeek } from "@internationalized/date";
 import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
-import { CalendarState, RangeCalendarState } from "react-stately";
+import { RangeCalendarState } from "react-stately";
 import cx from "classnames";
 
 export type CalendarCell = {
@@ -36,8 +35,7 @@ export const CalendarCell = ({ state, date }: CalendarCell) => {
   // the first day of each week, and the start date of the selection.
   // We add rounded corners on the right for the last day of the month,
   // the last day of each week, and the end date of the selection.
-  const { locale } = useLocale();
-  const dayOfWeek = getDayOfWeek(date, locale);
+  const dayOfWeek = getDayOfWeek(date, "sk");
   const isRoundedLeft =
     isSelected && (isSelectionStart || dayOfWeek === 0 || date.day === 1);
   const isRoundedRight =
