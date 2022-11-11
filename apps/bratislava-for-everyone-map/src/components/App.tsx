@@ -10,7 +10,6 @@ import {
   MapHandle,
   SearchBar,
   Slot,
-  SlotType,
   ThemeController,
   ViewportController,
 } from "@bratislava/react-maps";
@@ -25,13 +24,14 @@ import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 
 // utils
 import { usePrevious } from "@bratislava/utils";
-import { FeatureCollection } from "geojson";
 import { MapboxGeoJSONFeature } from "mapbox-gl";
 import { processData } from "../utils/utils";
 import { DesktopFilters } from "./desktop/DesktopFilters";
 import { MobileFilters } from "./mobile/MobileFilters";
 import { MobileHeader } from "./mobile/MobileHeader";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
+import { FeatureCollection } from "geojson";
+import styles from "../layer-styles/data";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -39,17 +39,15 @@ export const App = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
-  const [uniqueOccupancies, setUniqueOccupancies] = useState<string[]>([]);
 
   useEffect(() => {
     document.title = t("tabTitle");
   }, [t]);
 
   useEffect(() => {
-    const { data, uniqueDistricts, uniqueOccupancies } = processData();
+    const { data, uniqueDistricts } = processData();
     setLoading(false);
     setUniqueDistricts(uniqueDistricts);
-    setUniqueOccupancies(uniqueOccupancies);
     setData(data);
   }, []);
 
@@ -59,7 +57,6 @@ export const App = () => {
 
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
-  const [isGeolocation, setGeolocation] = useState(false);
 
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
@@ -72,11 +69,6 @@ export const App = () => {
   const districtFilter = useFilter({
     property: "district",
     keys: uniqueDistricts,
-  });
-
-  const occupancyFilter = useFilter({
-    property: "occupancySimple",
-    keys: uniqueOccupancies,
   });
 
   const combinedFilter = useCombinedFilter({
@@ -94,13 +86,6 @@ export const App = () => {
         mapToActive: (activeDistricts) => ({
           title: t("filters.district.title"),
           items: activeDistricts,
-        }),
-      },
-      {
-        filter: occupancyFilter,
-        mapToActive: (activeOccupancies) => ({
-          title: t("filters.uccupancy.title"),
-          items: activeOccupancies,
         }),
       },
     ],
@@ -190,7 +175,6 @@ export const App = () => {
       onFeaturesClick={(features) => setSelectedFeature(features[0])}
       selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
-      onGeolocationChange={setGeolocation}
       onMapClick={closeDetail}
       mapInformation={{
         title: t("informationModal.title"),
@@ -233,12 +217,14 @@ export const App = () => {
       {/* <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} /> */}
       <Layer
         ignoreClick
-        filters={districtFilter.expression}
+        filters={districtFilter.keepOnEmptyExpression}
         geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
 
-      {!!selectedFeatures?.length && selectedFeatures[0].geometry.type === "Point" && (
+      <Layer geojson={data} styles={styles} />
+
+      {/* {!!selectedFeatures?.length && selectedFeatures[0].geometry.type === "Point" && (
         <Marker
           feature={{
             type: "Feature",
@@ -255,7 +241,7 @@ export const App = () => {
             style={{ borderColor: selectedFeatures[0].properties?.["color"] }}
           ></div>
         </Marker>
-      )}
+      )} */}
 
       <Slot
         id="controls"
