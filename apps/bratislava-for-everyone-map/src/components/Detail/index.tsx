@@ -52,13 +52,10 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
     ) : (
       <div
         ref={forwardedRef}
-        className={cx(
-          "w-96 overflow-auto max-h-screen bg-background-lightmode dark:bg-background-darkmode",
-          {
-            "shadow-lg": feature,
-            "rounded-bl-lg": shouldBeBottomLeftCornerRounded,
-          },
-        )}
+        className={cx("w-96 bg-background-lightmode dark:bg-background-darkmode", {
+          "shadow-lg": feature,
+          "rounded-bl-lg": shouldBeBottomLeftCornerRounded,
+        })}
       >
         {detail}
       </div>
