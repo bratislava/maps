@@ -32,28 +32,29 @@ export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
       </button>
       <Modal
         closeButtonInCorner
-        overlayClassName="!p-6"
+        overlayClassName="!p-6 w-full max-w-xl"
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
       >
-        <div className="flex flex-col lg:flex-row gap-4">
-          {["first", "second", "third"].map((number) => (
-            <div key={number} className="flex gap-4">
-              <IconButton
-                onClick={() => window.open(`tel:${t(`helpPhoneLinks.${number}.phone`)}`, "_self")}
-                className="!bg-primary !border-primary text-foreground-lightmode !rounded-full shrink-0"
-              >
-                <HelpPhoneLinksIcon width={32} height={32} />
-              </IconButton>
-              <div className="flex flex-1 flex-col shrink font-medium w-52">
-                <a href={`tel:${t(`helpPhoneLinks.${number}.phone`)}`} className="py-2">
-                  {t(`helpPhoneLinks.${number}.phone`)}
-                </a>
-                <div>{t(`helpPhoneLinks.${number}.title`)}</div>
-                <Accordion type="multiple" className="font-semibold">
+        <div className="flex flex-col gap-4">
+          <Accordion type="single" collapsible className="font-semibold">
+            {["first", "second", "third"].map((number) => (
+              <div key={number} className="flex gap-4">
+                <IconButton
+                  onClick={() => window.open(`tel:${t(`helpPhoneLinks.${number}.phone`)}`, "_self")}
+                  className="!bg-primary !border-primary text-foreground-lightmode !rounded-full shrink-0"
+                >
+                  <HelpPhoneLinksIcon width={32} height={32} />
+                </IconButton>
+                <div className="flex flex-1 flex-col shrink font-medium">
+                  <a href={`tel:${t(`helpPhoneLinks.${number}.phone`)}`} className="py-2">
+                    {t(`helpPhoneLinks.${number}.phone`)}
+                  </a>
+                  <div>{t(`helpPhoneLinks.${number}.title`)}</div>
                   <AccordionItem
+                    className="w-full"
                     headerIsTrigger
-                    value="1"
+                    value={number}
                     title={<div className="underline">{t("helpPhoneLinks.labels.showMore")}</div>}
                   >
                     <div className="flex flex-col gap-3">
@@ -75,10 +76,10 @@ export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
                       />
                     </div>
                   </AccordionItem>
-                </Accordion>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </Accordion>
         </div>
       </Modal>
     </>

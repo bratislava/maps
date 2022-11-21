@@ -58,50 +58,56 @@ export const Modal = ({
         >
           <div
             className={cx(
-              "fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center p-8 z-50",
+              "fixed top-0 left-0 right-0 bottom-0 items-center z-50",
               underlayClassName
             )}
           >
-            <div className="relative">
-              <Dialog.Panel
-                className={cx(
-                  "relative",
-                  {
-                    "bg-background-lightmode dark:bg-background-darkmode rounded-xl flex flex-col p-8 gap-4 max-h-[calc(100vh-64px)] overflow-auto":
-                      !noOverlayStyles,
-                  },
-                  overlayClassName
-                )}
-              >
-                {title && (
-                  <Dialog.Title className="text-md font-semibold">
-                    {title}
-                  </Dialog.Title>
-                )}
-
-                {description && (
-                  <Dialog.Description className="">
-                    {description}
-                  </Dialog.Description>
-                )}
-
-                {children}
-              </Dialog.Panel>
-              {!noOverlayStyles && (
-                <div
-                  className={cx("w-full flex absolute", {
-                    "-top-6 -right-6 justify-end": closeButtonInCorner,
-                    "left-0 -bottom-6 justify-center": !closeButtonInCorner,
-                  })}
-                >
-                  <IconButton
-                    className="w-12 outline-none h-12 !bg-primary !border-primary !rounded-full flex items-center justify-center"
-                    onClick={() => onClose && onClose()}
+            <div className="w-full h-full overflow-auto">
+              <div className="flex items-center">
+                <div className="w-full min-h-screen flex items-center justify-center p-8">
+                  <Dialog.Panel
+                    className={cx(
+                      "relative",
+                      {
+                        "bg-background-lightmode dark:bg-background-darkmode rounded-xl flex flex-col p-8 gap-4":
+                          !noOverlayStyles,
+                      },
+                      overlayClassName
+                    )}
                   >
-                    {closeButtonIcon ?? <X className="text-white" />}
-                  </IconButton>
+                    {title && (
+                      <Dialog.Title className="text-md font-semibold">
+                        {title}
+                      </Dialog.Title>
+                    )}
+
+                    {description && (
+                      <Dialog.Description className="">
+                        {description}
+                      </Dialog.Description>
+                    )}
+
+                    {children}
+
+                    {!noOverlayStyles && (
+                      <div
+                        className={cx("w-full flex absolute", {
+                          "-top-6 -right-6 justify-end": closeButtonInCorner,
+                          "left-0 -bottom-6 justify-center":
+                            !closeButtonInCorner,
+                        })}
+                      >
+                        <IconButton
+                          className="w-12 outline-none h-12 !bg-primary !border-primary !rounded-full flex items-center justify-center"
+                          onClick={() => onClose && onClose()}
+                        >
+                          {closeButtonIcon ?? <X className="text-white" />}
+                        </IconButton>
+                      </div>
+                    )}
+                  </Dialog.Panel>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </Transition.Child>
