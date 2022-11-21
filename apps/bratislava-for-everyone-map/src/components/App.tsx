@@ -17,28 +17,31 @@ import {
 import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
 
-import { Layer, Marker, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
+import { Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 
 // layer styles
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 
 // utils
 import { usePrevious } from "@bratislava/utils";
-import { MapboxGeoJSONFeature } from "mapbox-gl";
 import { processData } from "../utils/utils";
-import { DesktopFilters } from "./desktop/DesktopFilters";
-import { MobileFilters } from "./mobile/MobileFilters";
-import { MobileHeader } from "./mobile/MobileHeader";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
-import { FeatureCollection } from "geojson";
-import styles from "../layer-styles/data";
+import { FeatureCollection, Point, Feature } from "geojson";
+import { IconButton } from "@bratislava/react-maps-ui";
+import { Funnel } from "@bratislava/react-maps-icons";
+import { Filters } from "./Filters";
+import Detail from "./Detail";
+import { ModalTrigger } from "./ModalTrigger";
+import { Marker } from "./Marker";
+import { colors } from "../utils/colors";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
 
   const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState<FeatureCollection | null>(null);
+  const [data, setData] = useState<FeatureCollection<Point> | null>(null);
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
+  const [uniqueLayers, setUniqueLayers] = useState<string[]>([]);
 
   useEffect(() => {
     document.title = t("tabTitle");
@@ -48,6 +51,7 @@ export const App = () => {
     const { data, uniqueDistricts } = processData();
     setLoading(false);
     setUniqueDistricts(uniqueDistricts);
+    setUniqueLayers(Object.keys(colors));
     setData(data);
   }, []);
 
@@ -55,32 +59,50 @@ export const App = () => {
 
   const mapRef = useRef<MapHandle>(null);
 
-  const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
+  const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
+
+  useEffect(() => {
+    console.log("selectedMarker", selectedMarker);
+  }, [selectedMarker]);
+
   const [isMobile, setMobile] = useState<boolean | null>(null);
 
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
-
-  const purposeFilter = useFilter({
-    property: "purpose",
-    keys: useMemo(() => [] as string[], []),
-  });
 
   const districtFilter = useFilter({
     property: "district",
     keys: uniqueDistricts,
   });
 
+  const layerFilter = useFilter({
+    property: "subLayerName",
+    keys: uniqueLayers,
+    defaultValues: useMemo(
+      () => uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {}),
+      [uniqueLayers],
+    ),
+  });
+
+  const layerFilterFixedExpression = useMemo(() => {
+    const result: any[] = ["any"];
+    if (layerFilter.isAnyKeyActive(["counseling"])) result.push(["==", "isCounseling", true]);
+    if (layerFilter.isAnyKeyActive(["hygiene"])) result.push(["==", "isHygiene", true]);
+    if (layerFilter.isAnyKeyActive(["overnight"])) result.push(["==", "isOvernight", true]);
+    if (layerFilter.isAnyKeyActive(["meals"])) result.push(["==", "isMeals", true]);
+    if (layerFilter.isAnyKeyActive(["medicalTreatment"]))
+      result.push(["==", "isMedicalTreatment", true]);
+    if (layerFilter.isAnyKeyActive(["culture"])) result.push(["==", "isCulture", true]);
+    return result;
+  }, [layerFilter]);
+
+  useEffect(() => {
+    console.log(layerFilterFixedExpression);
+  }, [layerFilterFixedExpression]);
+
   const combinedFilter = useCombinedFilter({
     combiner: "all",
     filters: [
-      {
-        filter: purposeFilter,
-        mapToActive: (activePurposes) => ({
-          title: t("filters.purpose.title"),
-          items: activePurposes,
-        }),
-      },
       {
         filter: districtFilter,
         mapToActive: (activeDistricts) => ({
@@ -92,7 +114,7 @@ export const App = () => {
   });
 
   const closeDetail = useCallback(() => {
-    setSelectedFeature(null);
+    setSelectedMarker(null);
   }, []);
 
   // close detailbox when sidebar is opened on mobile
@@ -122,23 +144,12 @@ export const App = () => {
   // move point to center when selected
   useEffect(() => {
     const MAP = mapRef.current;
-    if (MAP && selectedFeature) {
+    if (MAP && selectedMarker) {
       setTimeout(() => {
-        if (selectedFeature.geometry.type === "Point") {
-          mapRef.current?.changeViewport({
-            center: {
-              lng: selectedFeature.geometry.coordinates[0],
-              lat: selectedFeature.geometry.coordinates[1],
-            },
-          });
-        }
+        mapRef.current?.moveToFeatures(selectedMarker);
       }, 0);
     }
-  }, [selectedFeature]);
-
-  const selectedFeatures = useMemo(() => {
-    return selectedFeature ? [selectedFeature] : [];
-  }, [selectedFeature]);
+  }, [selectedMarker]);
 
   const initialViewport = useMemo(
     () => ({
@@ -172,26 +183,11 @@ export const App = () => {
       initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
-      onFeaturesClick={(features) => setSelectedFeature(features[0])}
-      selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
       mapInformation={{
         title: t("informationModal.title"),
-        description: (
-          <Trans i18nKey="informationModal.description">
-            before
-            <a
-              className="underline text-secondary font-semibold"
-              href={t("informationModal.descriptionLink")}
-              target="_blank"
-              rel="noreferrer"
-            >
-              link
-            </a>
-            after
-          </Trans>
-        ),
+        description: t("informationModal.description"),
         partners: [
           {
             name: "bratislava",
@@ -214,7 +210,6 @@ export const App = () => {
         ),
       }}
     >
-      {/* <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} /> */}
       <Layer
         ignoreClick
         filters={districtFilter.keepOnEmptyExpression}
@@ -222,26 +217,16 @@ export const App = () => {
         styles={DISTRICTS_STYLE}
       />
 
-      <Layer geojson={data} styles={styles} />
-
-      {/* {!!selectedFeatures?.length && selectedFeatures[0].geometry.type === "Point" && (
-        <Marker
-          feature={{
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: selectedFeatures[0].geometry.coordinates,
-            },
-            properties: {},
-          }}
-          isRelativeToZoom
-        >
-          <div
-            className="w-4 h-4 bg-background-lightmode dark:bg-background-darkmode border-[2px] rounded-full"
-            style={{ borderColor: selectedFeatures[0].properties?.["color"] }}
-          ></div>
-        </Marker>
-      )} */}
+      <Filter expression={layerFilterFixedExpression}>
+        {data?.features.map((feature, index) => (
+          <Marker
+            key={index}
+            feature={feature}
+            onClick={() => setSelectedMarker(feature)}
+            isSelected={selectedMarker?.id === feature.id}
+          />
+        ))}
+      </Filter>
 
       <Slot
         id="controls"
@@ -255,12 +240,15 @@ export const App = () => {
               "translate-x-0 delay-200": !(isSidebarVisible && !isMobile),
             })}
           />
-          <div ref={viewportControlsRef}>
+          <div
+            className={cx("flex items-end gap-2 transition-transform", {
+              "-translate-x-96": shouldBeViewportControlsMoved,
+              "translate-x-0": !shouldBeViewportControlsMoved,
+            })}
+            ref={viewportControlsRef}
+          >
+            <ModalTrigger className="pointer-events-auto hidden sm:flex" />
             <ViewportController
-              className={cx({
-                "-translate-x-96": shouldBeViewportControlsMoved,
-                "translate-x-0": !shouldBeViewportControlsMoved,
-              })}
               slots={[["compass", "zoom"]]}
               desktopSlots={["geolocation", "compass", ["fullscreen", "zoom"]]}
             />
@@ -272,21 +260,37 @@ export const App = () => {
       </Slot>
 
       <Layout isOnlyMobile>
-        <Slot id="mobile-header">
-          <MobileHeader
-            onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
-          />
+        <Slot id="mobile-header" position="top-right">
+          <div className="p-4 flex gap-4">
+            <ModalTrigger />
+            <IconButton
+              className="shrink-0"
+              onClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
+            >
+              <Funnel size="md" />
+            </IconButton>
+          </div>
         </Slot>
 
-        <Slot id="mobile-filter" isVisible={isSidebarVisible}>
-          <MobileFilters
+        <Slot id="mobile-filter" isVisible={isSidebarVisible} position="top-left">
+          <Filters
+            isMobile
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
             areFiltersDefault={combinedFilter.areDefault}
             activeFilters={combinedFilter.active}
             onResetFiltersClick={combinedFilter.reset}
             districtFilter={districtFilter}
+            layerFilter={layerFilter}
           />
+        </Slot>
+
+        <Slot
+          id="mobile-detail"
+          position="bottom"
+          padding={{ bottom: window.innerHeight / 2 - 48 }}
+        >
+          <Detail isMobile feature={selectedMarker} onClose={() => setSelectedMarker(null)} />
         </Slot>
       </Layout>
 
@@ -298,13 +302,22 @@ export const App = () => {
           autoPadding
           avoidMapboxControls
         >
-          <DesktopFilters
+          <Filters
+            isMobile={false}
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
             areFiltersDefault={combinedFilter.areDefault}
             onResetFiltersClick={combinedFilter.reset}
             districtFilter={districtFilter}
-            filters={combinedFilter.expression}
+            activeFilters={combinedFilter.active}
+            layerFilter={layerFilter}
+          />
+        </Slot>
+        <Slot id="desktop-detail" position="top-right" autoPadding>
+          <Detail
+            isMobile={false}
+            feature={selectedMarker}
+            onClose={() => setSelectedMarker(null)}
           />
         </Slot>
       </Layout>

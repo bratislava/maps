@@ -1,47 +1,71 @@
-import { FilterExpression, IFilterResult } from "@bratislava/react-mapbox";
-import { MapHandle, SearchBar } from "@bratislava/react-maps";
+import { IFilterResult } from "@bratislava/react-mapbox";
+import { SearchBar } from "@bratislava/react-maps";
 import { X } from "@bratislava/react-maps-icons";
-import { Divider, Select, SelectOption, Sidebar } from "@bratislava/react-maps-ui";
-import { RefObject, useCallback, useState } from "react";
+import {
+  ActiveFilters,
+  Divider,
+  IActiveFilter,
+  Select,
+  SelectOption,
+  Sidebar,
+} from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
-import { SelectValueRenderer } from "../SelectValueRenderer";
+import { Layers } from "./Layers";
+import { SelectValueRenderer } from "./SelectValueRenderer";
 
-export interface IDesktopFiltersProps {
+export interface IFiltersProps {
+  isMobile: boolean;
   isVisible?: boolean;
   setVisible: (isVisible: boolean | undefined) => void;
   areFiltersDefault: boolean;
   onResetFiltersClick: () => void;
   districtFilter: IFilterResult<string>;
-  filters: FilterExpression;
+  layerFilter: IFilterResult<string>;
+  activeFilters: IActiveFilter[];
 }
 
-export const DesktopFilters = ({
+export const Filters = ({
+  isMobile,
   isVisible,
   setVisible,
   areFiltersDefault,
   onResetFiltersClick,
+  activeFilters,
   districtFilter,
-}: IDesktopFiltersProps) => {
+  layerFilter,
+}: IFiltersProps) => {
   const { t, i18n } = useTranslation();
 
   return (
     <Sidebar
       position="left"
-      isMobile={false}
+      isMobile={isMobile}
       isVisible={isVisible ?? false}
       onOpen={() => setVisible(true)}
       onClose={() => setVisible(false)}
       title={t("title")}
       closeText={t("close")}
     >
-      <div className="mx-6 relative">
-        <SearchBar language={i18n.language} placeholder={t("search")} direction="bottom" />
-      </div>
+      {isMobile && (
+        <ActiveFilters
+          areFiltersDefault={areFiltersDefault}
+          activeFilters={activeFilters}
+          onResetClick={onResetFiltersClick}
+          title={t("activeFilters")}
+          resetFiltersButtonText={t("resetFilters")}
+        />
+      )}
+
+      {!isMobile && (
+        <div className="mx-6 relative">
+          <SearchBar language={i18n.language} placeholder={t("search")} direction="bottom" />
+        </div>
+      )}
 
       <div className="flex flex-col gap-2">
         <div className="flex justify-between px-6 items-center">
           <h2 className="font-semibold text-md py-1">{t("filters.title")}</h2>
-          {!areFiltersDefault && (
+          {!areFiltersDefault && !isMobile && (
             <button
               onClick={onResetFiltersClick}
               className="flex gap-2 items-center hover:underline"
@@ -52,11 +76,13 @@ export const DesktopFilters = ({
           )}
         </div>
 
-        <div className="w-full grid grid-cols-3 gap-4 px-6">
+        <div className="w-full flex flex-col md:px-6">
           <Select
             className="w-full col-span-3"
+            buttonClassName="px-3 md:px-0"
             value={districtFilter.activeKeys}
             isMultiple
+            noBorder={isMobile}
             onChange={(value) => districtFilter.setActiveOnly(value ?? [])}
             onReset={() => districtFilter.setActiveAll(false)}
             renderValue={({ values }) => (
@@ -78,32 +104,19 @@ export const DesktopFilters = ({
         </div>
       </div>
 
-      {/* <TagFilter
-        title={t("filters.season.title")}
-        values={seasonFilter.values.map((season) => ({
-          key: season.key,
-          label: t(`filters.season.seasons.${season.key}`),
-          isActive: season.isActive,
-        }))}
-        onTagClick={(season) => {
-          if (seasonFilter.activeKeys.length == 4) {
-            seasonFilter.setActiveOnly(season);
-          } else if (
-            !(seasonFilter.activeKeys.length == 1 && seasonFilter.activeKeys[0] == season)
-          ) {
-            seasonFilter.toggleActive(season);
-          }
-        }}
-      /> */}
-
       <Divider className="mx-6" />
       <div className="flex flex-col gap-3">
         <h2 className="font-semibold px-6 text-md">{t("layersLabel")}</h2>
-      </div>
 
-      {/* <pre className="p-2 h-72 bg-black text-white overflow-auto">
-        <code>{JSON.stringify(filters, null, 2)}</code>
-      </pre> */}
+        <Layers
+          isMobile={isMobile}
+          filter={layerFilter}
+          layers={layerFilter.keys.map((key) => ({
+            label: key,
+            subLayers: [key],
+          }))}
+        />
+      </div>
     </Sidebar>
   );
 };

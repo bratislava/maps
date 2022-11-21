@@ -14,27 +14,75 @@ export default {
       multipleDistricts: "Selected",
     },
   },
+  detail: {
+    services: "Services",
+    address: "Address",
+    district: "District",
+    name: "Name",
+    openingHours: "Opening hours",
+    phone: "Phone",
+    priceAndCapacity: "Price and capacity",
+    provider: "Provider",
+    route: "How to get there?",
+    web: "Web",
+    email: "E-mail",
+    navigate: "Navigate",
+  },
+
+  layers: {
+    counseling: "social and legal advice",
+    hygiene: "hygiene and clothing",
+    overnight: "accommodation and shelters",
+    meals: "meals",
+    medicalTreatment: "medical treatment",
+    culture: "culture",
+  },
+
+  helpPhoneLinks: {
+    labels: {
+      showMore: "More information",
+      description: "Description",
+      operation: "Operation",
+      operator: "Operator",
+      price: "Price",
+    },
+    first: {
+      title: "National hotline for women experiencing violence",
+      operator: "Ministry of Labour, Social Affairs and Family",
+      phone: "0800 212 212",
+      description:
+        "Socio-legal and psychological counseling in dealing with domestic violence, mediation of safe accommodation, also via email: linkaprezeny@ivpr.gov.sk",
+      operation: "nonstop",
+      price: "toll-free",
+    },
+    second: {
+      title: "SOS line to help homeless people Vagus",
+      operator: "OZ Vagus",
+      phone: "0949 655 555",
+      description:
+        "Social counseling in the field, basic treatment, food, transportation to the dormitory, or the calling of medical help or the police, and connection to other social services.",
+      operation:
+        "Monday to Saturday from 9:00 a.m. to 12:00 p.m. and in case of evening service from 5:00 p.m. to 9:00 p.m. Outside of the set time, you can leave a link with your contact details and information on where the homeless person is.",
+      price: "",
+    },
+    thrid: {
+      title: "Helpline for victims of human trafficking",
+      operator: "Slovak Catholic charity",
+      phone: "0800 800 818",
+      description:
+        "Providing assistance and information in the first contact with persons who may have been put in a risk situation related to human trafficking.",
+      operation:
+        "Monday to Friday from 8:00 a.m. to 8:00 p.m. Outside of business hours, it is possible to leave a message via the answering machine.",
+      price: "toll-free",
+    },
+  },
+
   // react-maps-ui
   activeFilters: "Active filters",
   resetFilters: "Reset filters",
-  errors: {
-    generic: "Error",
-    notLocatedInBratislava: "You are not located in Bratislava",
-    noGeolocationSupport: "Your device or browser does not support geolocation",
-  },
-  tooltips: {
-    darkLightMode: "Light/Dark Base",
-    satelliteMode: "Aerial",
-    scrollZoomBlockerCtrlMessage: "Use ctrl + scroll to zoom the map",
-    scrollZoomBlockerCmdMessage: "Use ⌘ + scroll to zoom the map",
-    touchPanBlockerMessage: "Use two fingers to move the map",
-  },
   informationModal: {
     title: "Map information",
-    description:
-      "Map of tree planting carried out by the City of Bratislava. You can find more information about planting and caring for trees on the pages <1>maintenance and creation of greenery</1>, which is the responsibility of the Department of Urban Greenery.",
-    descriptionLink:
-      "https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene",
+    description: "Bratislava for everyone",
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },

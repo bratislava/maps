@@ -647,7 +647,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
                   <IconButton
                     onClick={() => setInformationModalOpen(true)}
                     className={cx(
-                      'fixed left-4 top-4 w-8 h-8 sm:top-6 sm:left-auto sm:right-6 rounded-full',
+                      'fixed left-4 top-4 w-8 h-8 sm:top-6 sm:left-auto sm:right-6 !rounded-full',
                       mapInformationButtonClassName,
                     )}
                   >

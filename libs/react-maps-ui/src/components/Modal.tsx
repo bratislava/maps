@@ -62,30 +62,31 @@ export const Modal = ({
               underlayClassName
             )}
           >
-            <Dialog.Panel
-              className={cx(
-                "relative",
-                {
-                  "bg-background-lightmode dark:bg-background-darkmode rounded-xl flex flex-col p-8 gap-4":
-                    !noOverlayStyles,
-                },
-                overlayClassName
-              )}
-            >
-              {title && (
-                <Dialog.Title className="text-md font-semibold">
-                  {title}
-                </Dialog.Title>
-              )}
+            <div className="relative">
+              <Dialog.Panel
+                className={cx(
+                  "relative",
+                  {
+                    "bg-background-lightmode dark:bg-background-darkmode rounded-xl flex flex-col p-8 gap-4 max-h-[calc(100vh-64px)] overflow-auto":
+                      !noOverlayStyles,
+                  },
+                  overlayClassName
+                )}
+              >
+                {title && (
+                  <Dialog.Title className="text-md font-semibold">
+                    {title}
+                  </Dialog.Title>
+                )}
 
-              {description && (
-                <Dialog.Description className="">
-                  {description}
-                </Dialog.Description>
-              )}
+                {description && (
+                  <Dialog.Description className="">
+                    {description}
+                  </Dialog.Description>
+                )}
 
-              {children}
-
+                {children}
+              </Dialog.Panel>
               {!noOverlayStyles && (
                 <div
                   className={cx("w-full flex absolute", {
@@ -94,14 +95,14 @@ export const Modal = ({
                   })}
                 >
                   <IconButton
-                    className="w-12 outline-none h-12 !bg-primary !border-primary rounded-full flex items-center justify-center"
+                    className="w-12 outline-none h-12 !bg-primary !border-primary !rounded-full flex items-center justify-center"
                     onClick={() => onClose && onClose()}
                   >
                     {closeButtonIcon ?? <X className="text-white" />}
                   </IconButton>
                 </div>
               )}
-            </Dialog.Panel>
+            </div>
           </div>
         </Transition.Child>
       </Dialog>

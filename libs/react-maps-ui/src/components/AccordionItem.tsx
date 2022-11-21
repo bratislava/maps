@@ -2,7 +2,7 @@ import { Chevron } from "@bratislava/react-maps-icons";
 import { Content, Header, Item, Trigger } from "@radix-ui/react-accordion";
 import { keyframes, styled } from "@stitches/react";
 import cx from "classnames";
-import { ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 
 const AccordionChevron = styled(Chevron, {
   "[data-state=closed] &": { transform: "rotate(180deg)" },
@@ -38,6 +38,7 @@ export interface IAccordionItemProps {
   paasDesign?: boolean;
   headerIsTrigger?: boolean;
   headerClassName?: string;
+  style?: CSSProperties;
 }
 
 export const AccordionItem = ({
@@ -51,11 +52,13 @@ export const AccordionItem = ({
   paasDesign = false,
   headerIsTrigger = false,
   headerClassName,
+  style,
 }: IAccordionItemProps) => {
   return (
     <Item
       value={value}
       className={cx("text-left w-full justify-between items-center", className)}
+      style={style}
     >
       <Header className="flex flex-col">
         {headerIsTrigger ? (
