@@ -27,7 +27,7 @@ export const DetailDataDisplay = ({ feature, className }: IDetailDataDisplayProp
 
   return (
     <div className={cx("flex flex-col space-y-4 p-6", className)}>
-      <div className="font-semibold pt-1">{feature?.properties?.name}</div>
+      <div className="font-semibold pt-1 pr-12">{feature?.properties?.name}</div>
 
       {isSomeService && (
         <div className="flex flex-col gap-2">

@@ -31,6 +31,7 @@ export interface ISlotProps {
   autoPadding?: boolean;
   className?: string;
   avoidMapboxControls?: boolean;
+  persistChildrenWhenClosing?: boolean;
   padding?: {
     top?: number;
     right?: number;
@@ -49,10 +50,11 @@ export const Slot = ({
   className,
   avoidMapboxControls = false,
   padding,
+  persistChildrenWhenClosing = true,
 }: ISlotProps) => {
   // Update of children when closing is delayed due animation
   const debouncedVisible = useDebounce(isVisible, 10);
-  const [displayedChildren, setDisplayedChildren] = useState(children);
+  const [persistedChildren, setPersistedChildren] = useState(children);
 
   const { ref, width = 0, height = 0 } = useResizeDetector();
 
@@ -180,13 +182,13 @@ export const Slot = ({
 
   // Update children after animation complete
   const onAnimationComplete = useCallback(() => {
-    setDisplayedChildren(children);
+    setPersistedChildren(children);
   }, [children]);
 
   // Update children whenever Slot is visible
   useEffect(() => {
     if (isVisible === true) {
-      setDisplayedChildren(children);
+      setPersistedChildren(children);
     }
   }, [isVisible, children]);
 
@@ -210,7 +212,7 @@ export const Slot = ({
         className,
       )}
     >
-      {displayedChildren}
+      {persistChildrenWhenClosing ? persistedChildren : children}
     </motion.div>
   );
 };

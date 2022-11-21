@@ -547,13 +547,13 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
       if (!mapboxLogoElement || !informationElement) return;
 
       const mapboxLogoStyle = `
-        transition: transform 500ms ease-in-out;
+        transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
         transform: translate(${finalMapboxControlsPadding.left}px, -${finalMapboxControlsPadding.bottom}px);
         bottom: 8px; left: 8px;
       `;
 
       const informationStyle = `
-        transition: transform 500ms ease-in-out;
+        transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
         transform: translate(-${finalMapboxControlsPadding.right}px, -${finalMapboxControlsPadding.bottom}px);
         bottom: 8px; right: 8px;
       `;

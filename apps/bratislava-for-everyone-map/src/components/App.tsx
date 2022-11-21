@@ -96,10 +96,6 @@ export const App = () => {
     return result;
   }, [layerFilter]);
 
-  useEffect(() => {
-    console.log(layerFilterFixedExpression);
-  }, [layerFilterFixedExpression]);
-
   const combinedFilter = useCombinedFilter({
     combiner: "all",
     filters: [
@@ -168,8 +164,12 @@ export const App = () => {
   const { height: windowHeight } = useWindowSize();
 
   const shouldBeViewportControlsMoved = useMemo(() => {
-    return windowHeight < viewportControlsHeight + detailHeight + 40;
-  }, [windowHeight, detailHeight, viewportControlsHeight]);
+    return windowHeight < viewportControlsHeight + detailHeight + 40 && !!selectedMarker;
+  }, [windowHeight, detailHeight, viewportControlsHeight, selectedMarker]);
+
+  const shouldBeBottomLeftCornerRounded = useMemo(() => {
+    return windowHeight !== detailHeight;
+  }, [windowHeight, detailHeight]);
 
   return isLoading ? null : (
     <Map
@@ -236,16 +236,16 @@ export const App = () => {
         <div className="flex justify-between items-end">
           <ThemeController
             className={cx("pointer-events-auto", {
-              "translate-x-96 delay-75": isSidebarVisible && !isMobile,
-              "translate-x-0 delay-200": !(isSidebarVisible && !isMobile),
+              "translate-x-96": isSidebarVisible && !isMobile,
+              "translate-x-0": !(isSidebarVisible && !isMobile),
             })}
           />
           <div
-            className={cx("flex items-end gap-2 transition-transform", {
+            ref={viewportControlsRef}
+            className={cx("flex items-end gap-2 transition-transform duration-500", {
               "-translate-x-96": shouldBeViewportControlsMoved,
               "translate-x-0": !shouldBeViewportControlsMoved,
             })}
-            ref={viewportControlsRef}
           >
             <ModalTrigger className="pointer-events-auto hidden sm:flex" />
             <ViewportController
@@ -290,7 +290,12 @@ export const App = () => {
           position="bottom"
           padding={{ bottom: window.innerHeight / 2 - 48 }}
         >
-          <Detail isMobile feature={selectedMarker} onClose={() => setSelectedMarker(null)} />
+          <Detail
+            shouldBeBottomLeftCornerRounded={shouldBeBottomLeftCornerRounded}
+            isMobile
+            feature={selectedMarker}
+            onClose={() => setSelectedMarker(null)}
+          />
         </Slot>
       </Layout>
 
@@ -313,8 +318,17 @@ export const App = () => {
             layerFilter={layerFilter}
           />
         </Slot>
-        <Slot id="desktop-detail" position="top-right" autoPadding>
+        <Slot
+          isVisible={!!selectedMarker}
+          id="desktop-detail"
+          position="top-right"
+          autoPadding
+          avoidMapboxControls={shouldBeViewportControlsMoved}
+          persistChildrenWhenClosing
+        >
           <Detail
+            ref={detailRef}
+            shouldBeBottomLeftCornerRounded={shouldBeBottomLeftCornerRounded}
             isMobile={false}
             feature={selectedMarker}
             onClose={() => setSelectedMarker(null)}
