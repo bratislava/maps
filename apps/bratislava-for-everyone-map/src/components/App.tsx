@@ -31,7 +31,7 @@ import { IconButton } from "@bratislava/react-maps-ui";
 import { Funnel } from "@bratislava/react-maps-icons";
 import { Filters } from "./Filters";
 import Detail from "./Detail";
-import { ModalTrigger } from "./ModalTrigger";
+import { PhoneLinksModal } from "./PhoneLinksModal";
 import { Marker } from "./Marker";
 import { colors } from "../utils/colors";
 
@@ -247,7 +247,7 @@ export const App = () => {
               "translate-x-0": !shouldBeViewportControlsMoved,
             })}
           >
-            <ModalTrigger className="pointer-events-auto hidden sm:flex" />
+            <PhoneLinksModal className="pointer-events-auto hidden sm:flex" />
             <ViewportController
               slots={[["compass", "zoom"]]}
               desktopSlots={["geolocation", "compass", ["fullscreen", "zoom"]]}
@@ -262,7 +262,7 @@ export const App = () => {
       <Layout isOnlyMobile>
         <Slot id="mobile-header" position="top-right">
           <div className="p-4 flex gap-4">
-            <ModalTrigger />
+            <PhoneLinksModal />
             <IconButton
               className="shrink-0"
               onClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}

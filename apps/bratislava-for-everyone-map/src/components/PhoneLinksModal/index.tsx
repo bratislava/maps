@@ -10,11 +10,11 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-export interface IModalTrigger {
+export interface IPhoneLinksModal {
   className?: string;
 }
 
-export const ModalTrigger = ({ className }: IModalTrigger) => {
+export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const { t } = useTranslation();
 
