@@ -1,6 +1,12 @@
 import { DISTRICTS_GEOJSON } from '@bratislava/geojson-data';
 import booleanIntersects from '@turf/boolean-intersects';
-import { Feature, FeatureCollection } from 'geojson';
+import { featureCollection } from '@turf/helpers';
+import {
+  Feature,
+  FeatureCollection,
+  Geometry,
+  GeoJsonProperties,
+} from 'geojson';
 
 export const DISTRICTS = [
   'Staré Mesto',
@@ -24,18 +30,22 @@ export const DISTRICTS = [
 
 type District = typeof DISTRICTS[number];
 
-export const addDistrictPropertyToLayer = (
-  featureCollection: FeatureCollection,
-) => ({
-  ...featureCollection,
-  features: featureCollection.features.map((feature: Feature) => ({
-    ...feature,
-    properties: {
-      ...feature.properties,
-      district: getFeatureDistrict(feature),
-    },
-  })),
-});
+export const addDistrictPropertyToLayer = <
+  G extends Geometry,
+  P extends GeoJsonProperties,
+>(
+  collection: FeatureCollection<G, P>,
+) => {
+  return featureCollection(
+    collection.features.map((feature: Feature) => ({
+      ...feature,
+      properties: {
+        ...feature.properties,
+        district: getFeatureDistrict(feature),
+      },
+    })),
+  ) as FeatureCollection<G, P & { district: District }>;
+};
 
 export const getFeatureDistrict = (feature: Feature): District | null => {
   const districtFeatures = DISTRICTS_GEOJSON.features;
