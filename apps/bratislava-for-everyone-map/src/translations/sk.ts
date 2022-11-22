@@ -4,6 +4,13 @@ export default {
   search: "Hľadať",
   close: "Zavrieť",
   loading: "Načítavanie",
+  legend: {
+    title: "Legenda",
+    point: "Bod",
+    districtBorder: "Hranica mestskej časti",
+    drinkingFountain: "Pytná fontánka",
+    orientationPoint: "Orientačný bod",
+  },
   layersLabel: "Vrstvy",
   filters: {
     title: "Filter",
@@ -30,7 +37,7 @@ export default {
       navigate: "Navigovať",
     },
     drinkingFountain: {
-      locality: "Lokalita",
+      location: "Lokalita",
     },
   },
 

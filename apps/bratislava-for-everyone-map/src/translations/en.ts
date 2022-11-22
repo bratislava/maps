@@ -4,6 +4,13 @@ export default {
   search: "Search",
   close: "Close",
   loading: "Loading",
+  legend: {
+    title: "Legend",
+    point: "Point",
+    districtBorder: "District border",
+    drinkingFountain: "Drinking fountain",
+    orientationPoint: "Orientation point",
+  },
   layersLabel: "Layers",
   filters: {
     title: "Filtering",
@@ -30,7 +37,7 @@ export default {
       navigate: "Navigate",
     },
     drinkingFountain: {
-      locality: "Locality",
+      location: "Location",
     },
   },
 

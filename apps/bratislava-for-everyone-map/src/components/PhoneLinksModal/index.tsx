@@ -4,6 +4,7 @@ import {
   Accordion,
   AccordionItem,
   DataDisplay,
+  Divider,
   IconButton,
   Modal,
 } from "@bratislava/react-maps-ui";
@@ -75,6 +76,7 @@ export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
                         text={t(`helpPhoneLinks.${number}.price`)}
                       />
                     </div>
+                    {number !== "third" && <Divider className="my-4 mr-6" />}
                   </AccordionItem>
                 </div>
               </div>

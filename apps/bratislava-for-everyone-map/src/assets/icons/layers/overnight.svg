@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 38.33 31.27">
+    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4.99,11.82H31.35c2.61,0,4.74,2.12,4.74,4.74v8.9H.25v-8.9c0-2.61,2.12-4.74,4.74-4.74Z"/>
+    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7.83,.25H28.5c1.57,0,2.84,1.27,2.84,2.84V11.82H4.99V3.09C4.99,1.52,6.26,.25,7.83,.25Z"/>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1=".25" y1="21.48" x2="36.08" y2="21.48"/>
+    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M11.48,8.56h4.8c1.04,0,1.88,.84,1.88,1.88v1.38H9.6v-1.38c0-1.04,.84-1.88,1.88-1.88Z"/>
+    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20.05,8.56h4.8c1.04,0,1.88,.84,1.88,1.88v1.38h-8.57v-1.38c0-1.04,.84-1.88,1.88-1.88Z"/>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="4.99" y1="25.46" x2="4.99" y2="29.02"/>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x1="31.34" y1="25.46" x2="31.34" y2="29.02"/>
+</svg>

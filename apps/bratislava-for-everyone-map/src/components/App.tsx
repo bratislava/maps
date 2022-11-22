@@ -27,7 +27,7 @@ import { usePrevious } from "@bratislava/utils";
 import { processData } from "../utils/utils";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { FeatureCollection, Point, Feature } from "geojson";
-import { IconButton } from "@bratislava/react-maps-ui";
+import { IconButton, Modal, Sidebar } from "@bratislava/react-maps-ui";
 import { Funnel } from "@bratislava/react-maps-icons";
 import { Filters } from "./Filters";
 import Detail from "./Detail";
@@ -37,6 +37,9 @@ import { colors } from "../utils/colors";
 import { drinkingFountainsData } from "../data/drinking-fountains";
 import { point } from "@turf/helpers";
 import { DrinkingFountainMarker } from "./DrinkingFountainMarker";
+import { Legend } from "./Legend";
+import { BuildingMarker, icons } from "./BuildingMarker";
+import { buildingsData } from "../data/buildings";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -112,6 +115,12 @@ export const App = () => {
     ],
   });
 
+  const fullFilterExpression = useMemo(() => {
+    const e = ["all", layerFilterFixedExpression];
+    if (districtFilter.expression.length > 1) e.push(districtFilter.expression);
+    return e;
+  }, [districtFilter.expression, layerFilterFixedExpression]);
+
   const closeDetail = useCallback(() => {
     setSelectedMarker(null);
   }, []);
@@ -174,6 +183,8 @@ export const App = () => {
     return windowHeight !== detailHeight;
   }, [windowHeight, detailHeight]);
 
+  const [isLegendOpen, setLegendOpen] = useState(false);
+
   return isLoading ? null : (
     <Map
       loadingSpinnerColor="#F1B830"
@@ -220,35 +231,41 @@ export const App = () => {
         styles={DISTRICTS_STYLE}
       />
 
-      <Cluster features={drinkingFountainsData.features} radius={24}>
-        {({ features, lng, lat, key, clusterExpansionZoom }) =>
-          features.length === 1 ? (
-            <DrinkingFountainMarker
-              isSelected={!!(selectedMarker && features[0].id === selectedMarker.id)}
-              key={key}
-              feature={features[0]}
-              onClick={() => setSelectedMarker(features[0])}
-            />
-          ) : (
-            <DrinkingFountainMarker
-              key={key}
-              feature={point([lng, lat], features[0].properties)}
-              count={features.length}
-              onClick={() =>
-                mapRef.current?.changeViewport({
-                  zoom: clusterExpansionZoom ?? 0,
-                  center: {
-                    lat,
-                    lng,
-                  },
-                })
-              }
-            />
-          )
-        }
-      </Cluster>
+      {buildingsData.features.map((feature, index) => [
+        <BuildingMarker key={index} feature={feature} icon={feature.properties.icon} />,
+      ])}
 
-      <Filter expression={layerFilterFixedExpression}>
+      <Filter expression={districtFilter.expression}>
+        <Cluster features={drinkingFountainsData.features} radius={24}>
+          {({ features, lng, lat, key, clusterExpansionZoom }) =>
+            features.length === 1 ? (
+              <DrinkingFountainMarker
+                isSelected={!!(selectedMarker && features[0].id === selectedMarker.id)}
+                key={key}
+                feature={features[0]}
+                onClick={() => setSelectedMarker(features[0])}
+              />
+            ) : (
+              <DrinkingFountainMarker
+                key={key}
+                feature={point([lng, lat], features[0].properties)}
+                count={features.length}
+                onClick={() =>
+                  mapRef.current?.changeViewport({
+                    zoom: clusterExpansionZoom ?? 0,
+                    center: {
+                      lat,
+                      lng,
+                    },
+                  })
+                }
+              />
+            )
+          }
+        </Cluster>
+      </Filter>
+
+      <Filter expression={fullFilterExpression}>
         {data?.features.map((feature, index) => (
           <Marker
             key={index}
@@ -280,8 +297,10 @@ export const App = () => {
           >
             <PhoneLinksModal className="pointer-events-auto hidden sm:flex" />
             <ViewportController
-              slots={[["compass", "zoom"]]}
-              desktopSlots={["geolocation", "compass", ["fullscreen", "zoom"]]}
+              slots={["legend", ["compass", "zoom"]]}
+              desktopSlots={["legend", "geolocation", "compass", ["fullscreen", "zoom"]]}
+              isLegendOpen={isLegendOpen}
+              onLegendOpenChange={setLegendOpen}
             />
           </div>
         </div>
@@ -328,6 +347,22 @@ export const App = () => {
             onClose={() => setSelectedMarker(null)}
           />
         </Slot>
+
+        <Slot isVisible={isLegendOpen} id="mobile-legend" position="top-right">
+          <Sidebar
+            position="right"
+            title={t("legend.title")}
+            isVisible={isLegendOpen}
+            isMobile
+            onOpen={() => setLegendOpen(true)}
+            onClose={() => setLegendOpen(false)}
+            closeText={t("close")}
+          >
+            <div className="p-6">
+              <Legend />
+            </div>
+          </Sidebar>
+        </Slot>
       </Layout>
 
       <Layout isOnlyDesktop>
@@ -349,6 +384,7 @@ export const App = () => {
             layerFilter={layerFilter}
           />
         </Slot>
+
         <Slot
           isVisible={!!selectedMarker}
           id="desktop-detail"
@@ -364,6 +400,17 @@ export const App = () => {
             feature={selectedMarker}
             onClose={() => setSelectedMarker(null)}
           />
+        </Slot>
+
+        <Slot id="desktop-legend">
+          <Modal
+            closeButtonInCorner
+            title={t("legend.title")}
+            isOpen={isLegendOpen}
+            onClose={() => setLegendOpen(false)}
+          >
+            <Legend />
+          </Modal>
         </Slot>
       </Layout>
     </Map>

@@ -40,7 +40,7 @@ export interface IMainDetailProps {
 }
 
 export const MainDetail = ({ properties, className, isExpanded }: IMainDetailProps) => {
-  const { t: detailT } = useTranslation("translation", { keyPrefix: "detail" });
+  const { t: detailT } = useTranslation("translation", { keyPrefix: "detail.main" });
   const { t: layersT } = useTranslation("translation", { keyPrefix: "layers" });
 
   const isSomeService = useMemo(() => {

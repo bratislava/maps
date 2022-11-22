@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { Feature, Point } from "geojson";
 import { MouseEvent, useCallback } from "react";
 
-import { ReactComponent as MarkerActiveIcon } from "../assets/marker-active.svg";
-import { ReactComponent as MarkerInactiveIcon } from "../assets/marker-inactive.svg";
+import { ReactComponent as MarkerInactiveIcon } from "../assets/icons/fountains/marker.svg";
+import { ReactComponent as MarkerActiveIcon } from "../assets/icons/fountains/marker-alt.svg";
 
 export interface IDrinkingFountainMarkerProps {
   feature: Feature<Point>;
@@ -40,7 +40,7 @@ export const DrinkingFountainMarker = ({
         )}
       >
         {count && (
-          <div className="absolute text-white -top-[36px] -right-[14px] text-[10px] font-bold z-10 w-3 h-3 bg-[#024760] rounded-full flex items-center justify-center dark:bg-white dark:text-[#024760]">
+          <div className="absolute text-white -top-[10px] -right-[14px] text-[10px] font-bold z-10 w-3 h-3 bg-[#024760] rounded-full flex items-center justify-center dark:bg-white dark:text-[#024760]">
             {count}
           </div>
         )}

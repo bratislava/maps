@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 27.56 39.72">
+    <rect fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x=".25" y="13.06" width="22.58" height="24.41" rx="3.02" ry="3.02"/>
+    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7.15,7.91H15.93c.83,0,1.51,.68,1.51,1.51v3.64H5.64v-3.64c0-.83,.68-1.51,1.51-1.51Z"/>
+    <rect fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" x="10.04" y="3.25" width="3" height="4.66"/>
+    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M25.31,6.81h-3c0-1.96-1.6-3.56-3.56-3.56H5.64V.25h13.1c3.62,0,6.56,2.94,6.56,6.56Z"/>
+    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16.32,23.45h-2.78v-2.78c0-1.1-.9-2-2-2s-2,.9-2,2v2.78h-2.78c-1.1,0-2,.9-2,2s.9,2,2,2h2.78v2.78c0,1.1,.9,2,2,2s2-.9,2-2v-2.78h2.78c1.1,0,2-.9,2-2s-.9-2-2-2Z"/>
+</svg>

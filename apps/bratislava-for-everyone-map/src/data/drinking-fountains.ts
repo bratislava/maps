@@ -1,6 +1,6 @@
-import { FeatureCollection, Point } from "geojson";
+import { addDistrictPropertyToLayer } from "@bratislava/react-maps";
 
-export const drinkingFountainsData: FeatureCollection<Point> = {
+export const drinkingFountainsData = addDistrictPropertyToLayer({
   type: "FeatureCollection",
   features: [
     {
@@ -246,4 +246,4 @@ export const drinkingFountainsData: FeatureCollection<Point> = {
       },
     },
   ],
-};
+});
