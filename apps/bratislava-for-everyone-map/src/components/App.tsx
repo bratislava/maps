@@ -17,7 +17,7 @@ import {
 import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
 
-import { Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
+import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 
 // layer styles
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
@@ -34,6 +34,9 @@ import Detail from "./Detail";
 import { PhoneLinksModal } from "./PhoneLinksModal";
 import { Marker } from "./Marker";
 import { colors } from "../utils/colors";
+import { drinkingFountainsData } from "../data/drinking-fountains";
+import { point } from "@turf/helpers";
+import { DrinkingFountainMarker } from "./DrinkingFountainMarker";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -216,6 +219,34 @@ export const App = () => {
         geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
+
+      <Cluster features={drinkingFountainsData.features} radius={24}>
+        {({ features, lng, lat, key, clusterExpansionZoom }) =>
+          features.length === 1 ? (
+            <DrinkingFountainMarker
+              isSelected={!!(selectedMarker && features[0].id === selectedMarker.id)}
+              key={key}
+              feature={features[0]}
+              onClick={() => setSelectedMarker(features[0])}
+            />
+          ) : (
+            <DrinkingFountainMarker
+              key={key}
+              feature={point([lng, lat], features[0].properties)}
+              count={features.length}
+              onClick={() =>
+                mapRef.current?.changeViewport({
+                  zoom: clusterExpansionZoom ?? 0,
+                  center: {
+                    lat,
+                    lng,
+                  },
+                })
+              }
+            />
+          )
+        }
+      </Cluster>
 
       <Filter expression={layerFilterFixedExpression}>
         {data?.features.map((feature, index) => (

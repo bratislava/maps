@@ -48,7 +48,7 @@ export const Marker = ({ feature, onClick, isSelected }: IMarkerProps) => {
 
   return (
     <MapMarker onClick={onClick} feature={feature}>
-      <div className="relative cursor-pointer w-6 h-6 rounded-full">
+      <div className="relative cursor-pointer w-8 h-8 rounded-full">
         <div
           className={cx(
             "w-[calc(100%-2px)] h-[calc(100%-2px)] m-[1px] absolute -z-20 rounded-full bg-[#333333]",
