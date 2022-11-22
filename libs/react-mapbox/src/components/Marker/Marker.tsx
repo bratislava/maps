@@ -51,7 +51,7 @@ export const Marker = ({
     if (isRelativeToZoom) {
       const zoom = map?.getZoom() ?? 0;
       const scalePercent = 1 + (zoom - baseZoom) * 0.25;
-      setScale(scalePercent);
+      setScale(Math.max(scalePercent, 0));
     } else {
       setScale(1);
     }
