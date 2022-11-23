@@ -61,5 +61,16 @@ export const buildingsData: FeatureCollection<Point, { icon: BuildingIcon }> =
           icon: "new-marketplace",
         },
       },
+      {
+        id: "b-6",
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [17.1139979049425, 48.154063269336945],
+        },
+        properties: {
+          icon: "broadcast",
+        },
+      },
     ],
   });
