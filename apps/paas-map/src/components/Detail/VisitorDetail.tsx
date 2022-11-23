@@ -93,7 +93,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
                         before
                         <a
                           className="underline text-secondary font-semibold dark:text-primary"
-                          href={t("additionalInfoLink")}
+                          href={t("additionalInfoUrl")}
                           target="_blank"
                           rel="noreferrer"
                         >

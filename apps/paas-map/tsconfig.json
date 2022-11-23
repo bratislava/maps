@@ -16,12 +16,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src",
-    "src/custom.d.ts",
-    "../../libs/ui/src/components/atoms/Accordion/Accordion.tsx",
-    "../../libs/ui/src/components/molecules/ActiveFilters/MobileActiveFilters.tsx",
-    "../../libs/react-maps-ui/src/components/molecules/Layers/Layers.tsx"
-  ],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

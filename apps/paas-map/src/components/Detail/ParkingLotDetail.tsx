@@ -25,7 +25,7 @@ export const parkingLotPropertiesSchema = z.object({
   Verejna_doprava: z.string().nullable(),
   Vzdialenost: z.string().nullable(),
   Dojazdova_doba: z.string().nullable(),
-  icon: z.string(),
+  icon: z.enum(["garage", "p-plus-r", "parking-lot"]),
 });
 
 export type ParkingLotProperties = z.infer<typeof parkingLotPropertiesSchema>;

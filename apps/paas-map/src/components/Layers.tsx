@@ -443,7 +443,7 @@ export const Layers = <LF extends string, MF extends string>({
       </Accordion.Root>
 
       <Modal
-        className="max-w-lg"
+        overlayClassName="max-w-lg"
         isOpen={isTooltipModalOpen}
         title={tooltipTitle}
         description={tooltipDescription}
