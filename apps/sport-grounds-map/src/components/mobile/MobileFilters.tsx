@@ -39,7 +39,7 @@ export const MobileFilters = ({
   layerGroups,
   layerFilter,
 }: IMobileFiltersProps) => {
-  const { t } = useTranslation();
+  const { t }: { t: (key: string) => string } = useTranslation();
 
   return (
     <Sidebar

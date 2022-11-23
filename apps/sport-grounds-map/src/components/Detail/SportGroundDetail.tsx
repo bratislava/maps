@@ -1,4 +1,3 @@
-import React from "react";
 import { Feature, Point } from "geojson";
 import { useTranslation } from "react-i18next";
 import { Icon } from "../Icon";
@@ -13,7 +12,7 @@ export interface SportGroundDetailProps {
 }
 
 export const SportGroundDetail = ({ feature, onClose, isExpanded }: SportGroundDetailProps) => {
-  const { t } = useTranslation();
+  const { t }: { t: (key: string) => string } = useTranslation();
 
   if (!feature) return null;
 

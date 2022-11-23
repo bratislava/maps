@@ -14,7 +14,7 @@ export interface SwimmingPoolDetailProps {
 
 export const SwimmingPoolDetail = ({ feature, onClose, isExpanded }: SwimmingPoolDetailProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "layers.swimmingPools.detail" });
-  const { t: mainT } = useTranslation();
+  const { t: mainT }: { t: (key: string) => string } = useTranslation();
 
   if (!feature) return null;
 

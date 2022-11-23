@@ -14,7 +14,7 @@ export interface CvickoDetailProps {
 
 export const CvickoDetail = ({ feature, onClose, isExpanded }: CvickoDetailProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "layers.cvicko.detail" });
-  const { t: mainT } = useTranslation();
+  const { t: mainT }: { t: (key: string) => string } = useTranslation();
 
   if (!feature) return null;
 

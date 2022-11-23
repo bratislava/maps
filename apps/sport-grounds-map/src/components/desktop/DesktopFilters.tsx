@@ -36,7 +36,7 @@ export const DesktopFilters = ({
   tagFilter,
   layerGroups,
 }: IDesktopFiltersProps) => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
 
   return (
     <Sidebar

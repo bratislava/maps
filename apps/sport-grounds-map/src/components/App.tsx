@@ -36,10 +36,9 @@ import RAW_DATA_SPORT_GROUNDS_ALT_FEATURES from "../data/sport-grounds/sport-gro
 import DISTRICTS_STYLE from "../data/districts/districts";
 import { Marker } from "./Marker";
 import { MultipleMarker } from "./MultipleMarker";
-import { ILayerGroup } from "@bratislava/react-maps-ui/src/components/molecules/Layers/Layers";
 import { Icon, IIconProps } from "./Icon";
 import { usePrevious } from "@bratislava/utils";
-import { Modal, Sidebar } from "@bratislava/react-maps-ui";
+import { ILayerGroup, Modal, Sidebar } from "@bratislava/react-maps-ui";
 import { Legend } from "./Legend";
 
 export const App = () => {
@@ -187,7 +186,7 @@ export const App = () => {
         filter: layerFilter,
         onlyInExpression: true,
         mapToActive: (activeLayers) => ({
-          title: t("filters.layer.title"),
+          title: "Layers",
           items: activeLayers,
         }),
       },
@@ -276,20 +275,7 @@ export const App = () => {
       onMapClick={closeDetail}
       mapInformation={{
         title: t("informationModal.title"),
-        description: (
-          <Trans i18nKey="informationModal.description">
-            before
-            <a
-              className="underline text-secondary font-semibold"
-              href={t("informationModal.descriptionLink")}
-              target="_blank"
-              rel="noreferrer"
-            >
-              link
-            </a>
-            after
-          </Trans>
-        ),
+        description: t("informationModal.description"),
         partners: [
           {
             name: "bratislava",
