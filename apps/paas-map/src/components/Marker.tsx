@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Feature, Point } from "geojson";
 import { MouseEvent, useCallback, useMemo } from "react";
 import { Icon } from "./Icon";
+import { ReactComponent as WarningIcon } from "../assets/icons/warning.svg";
 
 export interface IMarkerProps {
   features: Feature<Point>[];
@@ -44,13 +45,19 @@ export const Marker = ({ features, lat, lng, onClick, isSelected }: IMarkerProps
       onClick={onClickHandler}
       feature={feature}
     >
-      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
+      <motion.div className="relative" initial={{ scale: 0 }} animate={{ scale: 1 }}>
         <Icon
           isWhite={isSelected}
           count={features.length > 1 ? features.length : undefined}
           size={48}
           icon={feature.properties?.icon ?? ""}
         />
+
+        {feature?.properties?.["Nazov_sk"] === "P+R Jasovská" && (
+          <div className="absolute z-50 -top-1 -right-1 text-[#D83728] bg-white rounded-full">
+            <WarningIcon />
+          </div>
+        )}
       </motion.div>
     </MapMarker>
   ) : null;

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Row } from "./Row";
+import { ReactComponent as WarningIcon } from "../../assets/icons/warning.svg";
 
 export const parkingLotPropertiesSchema = z.object({
   Nazov_sk: z.string(),
@@ -51,7 +52,15 @@ export const ParkingLotDetail = ({ properties }: ParkingLotDetailProps) => {
         label={t("name")}
         text={language === "sk" ? properties["Nazov_sk"] : properties["Nazov_en"]}
       />
-      <Row label={t("operatingTime")} text={properties["Prevadzkova_doba"]} />
+
+      {properties["Prevadzkova_doba"] && properties["Nazov_sk"] === "P+R Jasovská" ? (
+        <Note className="bg-[#D83728]/20 dark:bg-[#D83728]/20 flex flex-col gap-2">
+          <WarningIcon />
+          <div>{properties["Prevadzkova_doba"]}</div>
+        </Note>
+      ) : (
+        <Row label={t("operatingTime")} text={properties["Prevadzkova_doba"]} />
+      )}
 
       <Row label={t("address")} text={properties["Adresa"]} />
       <Row label={t("count")} text={properties["Pocet_parkovacich_miest"]} />
