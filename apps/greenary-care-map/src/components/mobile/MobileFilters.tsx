@@ -45,7 +45,7 @@ export const MobileFilters = ({
   typeCategories,
   typeTooltips,
 }: IMobileFiltersProps) => {
-  const { t } = useTranslation();
+  const { t }: { t: (key: string) => string } = useTranslation();
 
   return (
     <Sidebar

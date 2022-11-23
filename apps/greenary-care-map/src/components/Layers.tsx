@@ -43,7 +43,7 @@ export const Layers = <T extends string>({
   const {
     t,
     i18n: { language },
-  } = useTranslation();
+  }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
 
   return (
     <div className="flex flex-col w-full">
@@ -161,7 +161,7 @@ export const Layers = <T extends string>({
       </Accordion>
 
       <Modal
-        className="max-w-lg"
+        overlayClassName="max-w-lg"
         isOpen={isTooltipModalOpen}
         title={t(`categories.${currentTooltipType ?? ""}`)}
         description={typeTooltips[currentTooltipType ?? ""] ?? ""}

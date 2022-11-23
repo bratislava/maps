@@ -183,7 +183,11 @@ export const App = () => {
         filter: seasonFilter,
         mapToActive: (activeSeasons) => ({
           title: t("filters.season.title"),
-          items: activeSeasons.map((activeSeason) => t(`filters.season.seasons.${activeSeason}`)),
+          items: activeSeasons.map((activeSeason) =>
+            t(
+              `filters.season.seasons.${activeSeason as "spring" | "summer" | "autumn" | "winter"}`,
+            ),
+          ),
         }),
       },
       {

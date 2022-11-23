@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState, useEffect } from "react";
-import { Feature, Point } from "geojson";
+import { useRef, useState, useEffect } from "react";
+import { Feature } from "geojson";
 import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 import { useTranslation } from "react-i18next";
 import { useArcgisAttachments } from "@bratislava/react-use-arcgis";
@@ -14,7 +14,8 @@ export interface DetailProps {
 }
 
 export const Detail = ({ features, onClose, isMobile, arcgisServerUrl }: DetailProps) => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
+
   const sheetRef = useRef<BottomSheetRef>(null);
 
   const [feature, setFeature] = useState<Feature | null>(null);

@@ -27,6 +27,9 @@ export default {
         winter: "winter",
       },
     },
+    type: {
+      title: "Type",
+    },
   },
   layers: {
     esri: {

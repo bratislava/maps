@@ -6,7 +6,7 @@ export interface ILegendProps {
 }
 
 export const Legend = ({ mapCircleColors }: ILegendProps) => {
-  const { t } = useTranslation();
+  const { t }: { t: (key: string) => string } = useTranslation();
   return (
     <div className="p-6 md:p-0">
       {Object.keys(mapCircleColors).map((type) => {

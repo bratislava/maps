@@ -27,6 +27,9 @@ export default {
         winter: "zima",
       },
     },
+    type: {
+      title: "Typ",
+    },
   },
   layers: {
     esri: {
