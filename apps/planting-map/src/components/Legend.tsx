@@ -18,7 +18,7 @@ interface ILegendItem {
 }
 
 export const Legend = () => {
-  const { t } = useTranslation();
+  const { t }: { t: (key: string) => string } = useTranslation();
 
   const specificColors: ILegendItem[] = useMemo(
     () => [

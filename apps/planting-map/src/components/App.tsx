@@ -1,9 +1,9 @@
 import cx from "classnames";
-import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useResizeDetector } from "react-resize-detector";
 import "../styles.css";
-import { point } from "@turf/turf";
+import { point } from "@turf/helpers";
 
 // maps
 import {
@@ -12,12 +12,11 @@ import {
   MapHandle,
   SearchBar,
   Slot,
-  SlotType,
   ThemeController,
   ViewportController,
 } from "@bratislava/react-maps";
 
-import { DISTRICTS_GEOJSON, ADDRESSES_GEOJSON } from "@bratislava/geojson-data";
+import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 
 import { Layer, Marker, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 import { useArcgis } from "@bratislava/react-use-arcgis";
@@ -119,7 +118,6 @@ export const App = () => {
 
   const layerFilter = useFilter({
     property: "layer",
-    keepOnEmpty: true,
     keys: uniqueLayers,
     defaultValues: useMemo(
       () => uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {}),
@@ -160,7 +158,7 @@ export const App = () => {
         onlyInExpression: true,
         filter: layerFilter,
         mapToActive: (activeLayers) => ({
-          title: t("filters.layer.title"),
+          title: "Layers",
           items: activeLayers,
         }),
       },
@@ -192,11 +190,6 @@ export const App = () => {
 
   const isDetailOpen = useMemo(() => !!selectedFeature, [selectedFeature]);
 
-  const onLegendClick = useCallback((e: MouseEvent) => {
-    setLegendVisible((isLegendVisible) => !isLegendVisible);
-    e.stopPropagation();
-  }, []);
-
   // fit to district
   useEffect(() => {
     mapRef.current?.fitDistrict(districtFilter.activeKeys);
@@ -222,12 +215,6 @@ export const App = () => {
   const { height: desktopDetailHeight, ref: desktopDetailRef } =
     useResizeDetector<HTMLDivElement>();
 
-  const viewportControllerSlots: SlotType = useMemo(() => {
-    return isMobile
-      ? ["legend", "compass", "zoom"]
-      : ["legend", "geolocation", "compass", ["fullscreen", "zoom"]];
-  }, [isMobile]);
-
   const selectedFeatures = useMemo(() => {
     return selectedFeature ? [selectedFeature] : [];
   }, [selectedFeature]);
@@ -243,33 +230,18 @@ export const App = () => {
     [],
   );
 
-  const mapStyles = useMemo(
-    () => ({
-      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-    }),
-    [],
-  );
-
-  const sources = useMemo(
-    () => ({
-      ESRI_DATA: data,
-      DISTRICTS_GEOJSON,
-      ADDRESSES_GEOJSON,
-    }),
-    [data],
-  );
-
   return isLoading ? null : (
     <Map
       loadingSpinnerColor="#237c36"
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
-      mapStyles={mapStyles}
+      mapStyles={{
+        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+      }}
       initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
-      sources={sources}
       onFeaturesClick={(features) => setSelectedFeature(features[0])}
       selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
@@ -317,11 +289,11 @@ export const App = () => {
         ),
       }}
     >
-      <Layer filters={combinedFilter.expression} isVisible source="ESRI_DATA" styles={ESRI_STYLE} />
+      <Layer filters={combinedFilter.expression} geojson={data} styles={ESRI_STYLE} />
       <Layer
         ignoreClick
         filters={districtFilter.expression}
-        source="DISTRICTS_GEOJSON"
+        geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
 
@@ -334,7 +306,7 @@ export const App = () => {
         </Marker>
       )}
 
-      <Slot name="controls">
+      <Slot id="controls">
         <ThemeController
           className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
             "translate-x-96": isSidebarVisible && !isMobile,
@@ -342,8 +314,10 @@ export const App = () => {
         />
         <ViewportController
           className="fixed right-4 bottom-[88px] sm:bottom-8"
-          slots={viewportControllerSlots}
-          onLegendClick={onLegendClick}
+          onLegendOpenChange={setLegendVisible}
+          isLegendOpen={isLegendVisible}
+          slots={["legend", "compass", "zoom"]}
+          desktopSlots={["legend", "geolocation", "compass", ["fullscreen", "zoom"]]}
         />
 
         <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
@@ -352,13 +326,13 @@ export const App = () => {
       </Slot>
 
       <Layout isOnlyMobile>
-        <Slot name="mobile-header">
+        <Slot id="mobile-header">
           <MobileHeader
             onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
           />
         </Slot>
 
-        <Slot name="mobile-filter" isVisible={isSidebarVisible} setVisible={setSidebarVisible}>
+        <Slot id="mobile-filter" isVisible={isSidebarVisible} position="top-right">
           <MobileFilters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
@@ -375,26 +349,21 @@ export const App = () => {
         </Slot>
 
         <Slot
-          name="mobile-detail"
+          id="mobile-detail"
           isVisible={isDetailOpen}
-          openPadding={{
+          padding={{
             bottom: window.innerHeight / 2, // w-96 or 24rem
           }}
-          avoidControls={false}
         >
           <Detail isMobile features={selectedFeatures ?? []} onClose={closeDetail} />
         </Slot>
 
-        <Slot
-          name="mobile-legend"
-          isVisible={isLegendVisible}
-          setVisible={setLegendVisible}
-          avoidControls={false}
-        >
+        <Slot id="mobile-legend" isVisible={isLegendVisible} position="top-right">
           <Sidebar
             title={t("title")}
-            isVisible={isLegendVisible}
-            setVisible={setLegendVisible}
+            isVisible={isLegendVisible ?? false}
+            onOpen={() => setLegendVisible(true)}
+            onClose={() => setLegendVisible(false)}
             position="right"
             closeText={t("close")}
           >
@@ -404,14 +373,7 @@ export const App = () => {
       </Layout>
 
       <Layout isOnlyDesktop>
-        <Slot
-          name="desktop-filters"
-          isVisible={isSidebarVisible}
-          setVisible={setSidebarVisible}
-          openPadding={{
-            left: 384, // w-96 or 24rem
-          }}
-        >
+        <Slot id="desktop-filters" isVisible={isSidebarVisible} position="top-left" autoPadding>
           <DesktopFilters
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
@@ -428,12 +390,13 @@ export const App = () => {
         </Slot>
 
         <Slot
-          name="desktop-detail"
+          id="desktop-detail"
           isVisible={isDetailOpen}
-          openPadding={{
-            right: 384,
-          }}
-          avoidControls={window.innerHeight <= (desktopDetailHeight ?? 0) + 200 ? true : false}
+          position="top-right"
+          autoPadding
+          avoidMapboxControls={
+            window.innerHeight <= (desktopDetailHeight ?? 0) + 200 ? true : false
+          }
         >
           <div
             ref={desktopDetailRef}
@@ -448,7 +411,7 @@ export const App = () => {
             <Detail isMobile={false} features={selectedFeatures ?? []} onClose={closeDetail} />
           </div>
         </Slot>
-        <Slot name="desktop-legend">
+        <Slot id="desktop-legend">
           <Modal
             closeButtonInCorner
             title={t("legend.title")}
