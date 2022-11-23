@@ -1,12 +1,8 @@
-import 'react-i18next';
+import 'i18next';
 import enTranslation from './translations/en';
 
-declare module 'react-i18next' {
-  // and extend them!
+declare module 'i18next' {
   interface CustomTypeOptions {
-    // custom namespace type if you changed it
-    defaultNS: 'translation';
-    // custom resources type
     resources: {
       maps: typeof enTranslation;
     };

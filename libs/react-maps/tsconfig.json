@@ -17,5 +17,5 @@
     "resolveJsonModule": true,
     "baseUrl": "."
   },
-  "include": ["src/index.ts", "src/react-i18next.d.ts"]
+  "include": ["src"]
 }
