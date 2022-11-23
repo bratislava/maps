@@ -25,7 +25,7 @@ export interface ILayerProps {
 export const Layers = ({ filter, layers, tooltips, isMobile }: ILayerProps) => {
   const [currentTooltipType, setCurrentTooltipType] = useState<string | null>(null);
   const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
-  const { t } = useTranslation();
+  const { t }: { t: (key: string) => string } = useTranslation();
 
   const openTooltipModal = useCallback(
     (type: string) => {

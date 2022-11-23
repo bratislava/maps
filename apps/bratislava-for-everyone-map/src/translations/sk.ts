@@ -58,7 +58,7 @@ export default {
       operator: "Prevádzkovateľ",
       price: "Cena",
     },
-    first: {
+    womenViolence: {
       title: "Národná linka pre ženy zažívajúce násilie",
       operator: "Ministerstvo práce,sociálnych vecí a rodiny",
       phone: "0800 212 212",
@@ -67,7 +67,7 @@ export default {
       operation: "nonstop",
       price: "bezplatná",
     },
-    second: {
+    homelessPeople: {
       title: "SOS linka na pomoc ľuďom bez domova Vagus",
       operator: "OZ Vagus",
       phone: "0949 655 555",
@@ -77,7 +77,7 @@ export default {
         "pondelok až sobota od 9:00 do 12:00 a v prípade večernej služby od 17:00 do 21:00. Mimo stanovenej doby môžete zanechať odkaz so svojimi kontaktnými údajmi a informáciami, kde sa človek bez domova nachádza.",
       price: "",
     },
-    third: {
+    humanTrafficking: {
       title: "Linka na pomoc obetiam obchodovania s ľuďmi",
       operator: "Slovenská katolícka charita",
       phone: "0800 800 818",

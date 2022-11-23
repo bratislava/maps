@@ -39,48 +39,50 @@ export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
       >
         <div className="flex flex-col gap-4">
           <Accordion type="single" collapsible className="font-semibold">
-            {["first", "second", "third"].map((number) => (
-              <div key={number} className="flex gap-4">
-                <IconButton
-                  onClick={() => window.open(`tel:${t(`helpPhoneLinks.${number}.phone`)}`, "_self")}
-                  className="!bg-primary !border-primary text-foreground-lightmode !rounded-full shrink-0"
-                >
-                  <HelpPhoneLinksIcon width={32} height={32} />
-                </IconButton>
-                <div className="flex flex-1 flex-col shrink font-medium">
-                  <a href={`tel:${t(`helpPhoneLinks.${number}.phone`)}`} className="py-2">
-                    {t(`helpPhoneLinks.${number}.phone`)}
-                  </a>
-                  <div>{t(`helpPhoneLinks.${number}.title`)}</div>
-                  <AccordionItem
-                    className="w-full"
-                    headerIsTrigger
-                    value={number}
-                    title={<div className="underline">{t("helpPhoneLinks.labels.showMore")}</div>}
+            {(["womenViolence", "homelessPeople", "humanTrafficking"] as const).map(
+              (type, index) => (
+                <div key={type} className="flex gap-4">
+                  <IconButton
+                    onClick={() => window.open(`tel:${t(`helpPhoneLinks.${type}.phone`)}`, "_self")}
+                    className="!bg-primary !border-primary text-foreground-lightmode !rounded-full shrink-0"
                   >
-                    <div className="flex flex-col gap-3">
-                      <DataDisplay
-                        label={t("helpPhoneLinks.labels.description")}
-                        text={t(`helpPhoneLinks.${number}.description`)}
-                      />
-                      <DataDisplay
-                        label={t("helpPhoneLinks.labels.operator")}
-                        text={t(`helpPhoneLinks.${number}.operator`)}
-                      />
-                      <DataDisplay
-                        label={t("helpPhoneLinks.labels.operation")}
-                        text={t(`helpPhoneLinks.${number}.operation`)}
-                      />
-                      <DataDisplay
-                        label={t("helpPhoneLinks.labels.price")}
-                        text={t(`helpPhoneLinks.${number}.price`)}
-                      />
-                    </div>
-                    {number !== "third" && <Divider className="my-4 mr-6" />}
-                  </AccordionItem>
+                    <HelpPhoneLinksIcon width={32} height={32} />
+                  </IconButton>
+                  <div className="flex flex-1 flex-col shrink font-medium">
+                    <a href={`tel:${t(`helpPhoneLinks.${type}.phone`)}`} className="py-2">
+                      {t(`helpPhoneLinks.${type}.phone`)}
+                    </a>
+                    <div>{t(`helpPhoneLinks.${type}.title`)}</div>
+                    <AccordionItem
+                      className="w-full"
+                      headerIsTrigger
+                      value={type}
+                      title={<div className="underline">{t("helpPhoneLinks.labels.showMore")}</div>}
+                    >
+                      <div className="flex flex-col gap-3">
+                        <DataDisplay
+                          label={t("helpPhoneLinks.labels.description")}
+                          text={t(`helpPhoneLinks.${type}.description`)}
+                        />
+                        <DataDisplay
+                          label={t("helpPhoneLinks.labels.operator")}
+                          text={t(`helpPhoneLinks.${type}.operator`)}
+                        />
+                        <DataDisplay
+                          label={t("helpPhoneLinks.labels.operation")}
+                          text={t(`helpPhoneLinks.${type}.operation`)}
+                        />
+                        <DataDisplay
+                          label={t("helpPhoneLinks.labels.price")}
+                          text={t(`helpPhoneLinks.${type}.price`)}
+                        />
+                      </div>
+                      {index !== 2 && <Divider className="my-4 mr-6" />}
+                    </AccordionItem>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ),
+            )}
           </Accordion>
         </div>
       </Modal>

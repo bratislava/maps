@@ -58,7 +58,7 @@ export default {
       operator: "Operator",
       price: "Price",
     },
-    first: {
+    womenViolence: {
       title: "National hotline for women experiencing violence",
       operator: "Ministry of Labour, Social Affairs and Family",
       phone: "0800 212 212",
@@ -67,7 +67,7 @@ export default {
       operation: "nonstop",
       price: "toll-free",
     },
-    second: {
+    homelessPeople: {
       title: "SOS line to help homeless people Vagus",
       operator: "OZ Vagus",
       phone: "0949 655 555",
@@ -77,7 +77,7 @@ export default {
         "Monday to Saturday from 9:00 a.m. to 12:00 p.m. and in case of evening service from 5:00 p.m. to 9:00 p.m. Outside of the set time, you can leave a link with your contact details and information on where the homeless person is.",
       price: "",
     },
-    thrid: {
+    humanTrafficking: {
       title: "Helpline for victims of human trafficking",
       operator: "Slovak Catholic charity",
       phone: "0800 800 818",
