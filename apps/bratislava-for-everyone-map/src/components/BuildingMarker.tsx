@@ -21,14 +21,13 @@ const iconMapWidth = {
   slavin: 64,
   michalska: 32,
   "main-station": 96,
-  "new-marketplace": 192,
+  "new-marketplace": 128,
   broadcast: 96,
 } as const;
 
 export type BuildingIcon = keyof typeof iconMapComponent;
 
 export const icons = Object.keys(iconMapComponent) as BuildingIcon[];
-
 export interface IBuildingMarkerProps {
   feature: Feature<Point>;
   icon: BuildingIcon;
@@ -38,7 +37,7 @@ export const BuildingMarker = ({ icon, feature }: IBuildingMarkerProps) => {
   const Icon = iconMapComponent[icon];
   const width = iconMapWidth[icon];
   return (
-    <Marker origin="bottom" baseZoom={15} isRelativeToZoom feature={feature}>
+    <Marker zIndex={0} origin="bottom" baseZoom={15} isRelativeToZoom feature={feature}>
       <Icon width={width} />
     </Marker>
   );

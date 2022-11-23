@@ -24,6 +24,7 @@ export interface IMarkerProps {
   onClick?: (e: MouseEvent<HTMLDivElement>) => void;
   ignoreFilters?: boolean;
   origin?: 'top' | 'right' | 'bottom' | 'left' | 'center';
+  zIndex?: number;
 }
 
 export const Marker = ({
@@ -35,6 +36,7 @@ export const Marker = ({
   onClick,
   ignoreFilters = false,
   origin = 'center',
+  zIndex = 0,
 }: IMarkerProps) => {
   const { isFeatureVisible } = useContext(filterContext);
   const { map } = useContext(mapboxContext);
@@ -73,11 +75,13 @@ export const Marker = ({
     if (!map) return;
 
     marker.addTo(map);
+    const element = marker.getElement();
+    element.setAttribute('style', `${element.style}; z-index: ${zIndex};`);
 
     return () => {
       marker.remove();
     };
-  }, [map, marker]);
+  }, [map, marker, zIndex]);
 
   const clickHandler = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
@@ -97,40 +101,38 @@ export const Marker = ({
   }, [feature, isFeatureVisible, ignoreFilters]);
 
   return createPortal(
-    <AnimatePresence>
-      {isVisible ? (
-        <div
-          style={{
-            transformOrigin: origin,
-            transform: `scale(${scale})`,
-            background: 'red',
-            width: 0,
-            height: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative',
+    isVisible ? (
+      <div
+        style={{
+          transformOrigin: origin,
+          transform: `scale(${scale})`,
+          background: 'red',
+          width: 0,
+          height: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+        }}
+        className={className}
+      >
+        <motion.div
+          onMouseMove={(e) => e.stopPropagation()}
+          initial={{ scale: 0 }}
+          exit={{ scale: 0 }}
+          animate={{
+            scale: 1,
           }}
-          className={className}
+          onClick={clickHandler}
+          style={{
+            position: 'absolute',
+            [origin]: 0,
+          }}
         >
-          <motion.div
-            onMouseMove={(e) => e.stopPropagation()}
-            initial={{ scale: 0 }}
-            exit={{ scale: 0 }}
-            animate={{
-              scale: 1,
-            }}
-            onClick={clickHandler}
-            style={{
-              position: 'absolute',
-              [origin]: 0,
-            }}
-          >
-            {children}
-          </motion.div>
-        </div>
-      ) : null}
-    </AnimatePresence>,
+          {children}
+        </motion.div>
+      </div>
+    ) : null,
 
     marker.getElement(),
   );
