@@ -1,17 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../styles.css";
-import { length, LineString as TurfLineString, lineString } from "@turf/turf";
+import { LineString as TurfLineString, lineString } from "@turf/helpers";
+import length from "@turf/length";
 import cx from "classnames";
+import { useWindowSize } from "usehooks-ts";
 
 // maps
-import {
-  Slot,
-  MapHandle,
-  Map,
-  ThemeController,
-  ViewportController,
-  SlotType,
-} from "@bratislava/react-maps";
+import { Slot, MapHandle, Map, ThemeController, ViewportController } from "@bratislava/react-maps";
 
 import { AnimationChangeEvent, LineString } from "@bratislava/react-mapbox";
 
@@ -55,10 +50,6 @@ import { useQuery } from "../utils/useQuery";
 import { useResizeDetector } from "react-resize-detector";
 
 export const App = () => {
-  const { height: detailHeight, ref: detailRef } = useResizeDetector();
-
-  const { height: containerHeight, ref: containerRef } = useResizeDetector<HTMLDivElement>();
-
   const mapRef = useRef<MapHandle>(null);
 
   const { t } = useTranslation();
@@ -80,10 +71,6 @@ export const App = () => {
   const closeDetail = useCallback(() => {
     setSelectedFeature(null);
   }, []);
-
-  const viewportControllerSlots: SlotType = useMemo(() => {
-    return isMobile ? ["zoom"] : [["fullscreen", "zoom"]];
-  }, [isMobile]);
 
   // set selected feature based on query
   useEffect(() => {
@@ -111,10 +98,6 @@ export const App = () => {
   }, [selectedFeature]);
 
   const [animatedLineDuration, setAnimatedLineDuration] = useState(0);
-
-  const avoidViewportControls = useMemo(() => {
-    return !isMobile && !!selectedFeature && (containerHeight ?? 0) <= (detailHeight ?? 0) + 200;
-  }, [containerHeight, isMobile, selectedFeature, detailHeight]);
 
   const [isAnimating, setAnimating] = useState<boolean>(false);
   const [animatedLineStyles, setAnimatedLineStyles] = useState<any>([]);
@@ -201,22 +184,30 @@ export const App = () => {
     [],
   );
 
-  const mapStyles = useMemo(
-    () => ({
-      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-    }),
-    [],
-  );
+  const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
+  const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
+
+  const { height: windowHeight } = useWindowSize();
+
+  const shouldBeViewportControlsMoved = useMemo(() => {
+    return windowHeight < viewportControlsHeight + detailHeight + 40 && !!selectedFeature;
+  }, [windowHeight, detailHeight, viewportControlsHeight, selectedFeature]);
+
+  const shouldBeBottomLeftCornerRounded = useMemo(() => {
+    return windowHeight !== detailHeight;
+  }, [windowHeight, detailHeight]);
 
   return isLoading ? null : (
-    <div ref={containerRef} className="h-full w-full">
+    <div className="h-full w-full">
       <Map
         interactive={!isAnimating}
         loadingSpinnerColor="#00D4DF"
         ref={mapRef}
         mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
-        mapStyles={mapStyles}
+        mapStyles={{
+          light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+          dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+        }}
         initialViewport={ininialViewport}
         isDevelopment={import.meta.env.DEV}
         isOutsideLoading={isLoading}
@@ -225,14 +216,6 @@ export const App = () => {
         onMapClick={closeDetail}
         disableBearing
         disablePitch
-        scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
-        scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
-        touchPanBlockerMessage={t("tooltips.touchPanBlockerMessage")}
-        errors={{
-          generic: t("errors.generic"),
-          notLocatedInBratislava: t("errors.notLocatedInBratislava"),
-          noGeolocationSupport: t("errors.noGeolocationSupport"),
-        }}
         mapInformation={{
           title: t("informationModal.title"),
           description: t("informationModal.description"),
@@ -378,7 +361,11 @@ export const App = () => {
           </>
         )}
 
-        <Slot name="controls">
+        <Slot
+          id="controls"
+          position="bottom"
+          className="p-4 pb-9 flex justify-between items-end w-screen pointer-events-none"
+        >
           {isAnimating ? (
             <IconButton
               onClick={() => stopAnimation()}
@@ -388,29 +375,27 @@ export const App = () => {
             </IconButton>
           ) : (
             <>
-              <ThemeController
-                darkLightModeTooltip={t("tooltips.darkLightMode")}
-                satelliteModeTooltip={t("tooltips.satelliteMode")}
-                className="fixed left-4 bottom-8 sm:transform"
-              />
-              <ViewportController
-                className={cx("fixed right-4 bottom-8 sm:transform", {
-                  "-translate-x-96": avoidViewportControls,
+              <ThemeController className="pointer-events-auto" />
+              <div
+                ref={viewportControlsRef}
+                className={cx("flex items-end gap-2 transition-transform duration-500", {
+                  "-translate-x-96": shouldBeViewportControlsMoved,
+                  "translate-x-0": !shouldBeViewportControlsMoved,
                 })}
-                slots={viewportControllerSlots}
-              />
+              >
+                <ViewportController slots={["zoom"]} desktopSlots={[["fullscreen", "zoom"]]} />
+              </div>
             </>
           )}
         </Slot>
 
         <Slot
-          openPadding={{
-            right: !isMobile ? 384 : 0,
-            bottom: isMobile ? ((containerHeight ?? 0) / 5) * 3 : 0,
-          }}
-          avoidControls={avoidViewportControls ? true : false}
+          id="desktop-detail"
+          position="top-right"
+          // padding={{ bottom: isMobile ? ((containerHeight ?? 0) / 5) * 3 : 0 }}
+          autoPadding={!isMobile}
+          avoidMapboxControls={shouldBeViewportControlsMoved ? true : false}
           isVisible={!!selectedFeature}
-          name="desktop-detail"
         >
           <Detail
             ref={detailRef}

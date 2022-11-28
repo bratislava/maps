@@ -108,13 +108,10 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
     ) : (
       <div
         ref={ref}
-        className={cx(
-          "fixed top-0 right-0 w-96 overflow-auto max-h-full bg-background transition-all duration-500",
-          {
-            "translate-x-full": !inputFeature,
-            "shadow-lg": !!inputFeature,
-          },
-        )}
+        className={cx("w-96 overflow-auto max-h-full bg-background transition-all duration-500", {
+          "translate-x-full": !inputFeature,
+          "shadow-lg": !!inputFeature,
+        })}
       >
         {detail}
       </div>

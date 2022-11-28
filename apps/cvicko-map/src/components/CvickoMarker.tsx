@@ -10,10 +10,14 @@ import { ReactComponent as CvickoNabreziecon } from "../assets/icons/cvicko-nabr
 
 import { ReactComponent as OtherCvickoIcon } from "../assets/icons/cvicko-other.svg";
 import { useTranslation } from "react-i18next";
-import { FC, SVGProps, useMemo, useState } from "react";
+import { FC, FunctionComponent, SVGProps, useMemo, useState } from "react";
 
 const cvickoIdToIconComponentObject: {
-  [cvickoId: string]: FC<SVGProps<SVGSVGElement>>;
+  [cvickoId: string]: FunctionComponent<
+    SVGProps<SVGSVGElement> & {
+      title?: string | undefined;
+    }
+  >;
 } = {
   apollo: CvickoApolloIcon,
   lanfranconi: CvickoLanfranconiIcon,

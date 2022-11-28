@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ReactComponent as PlayIcon } from "../assets/icons/play.svg";
 
 import { useTranslation } from "react-i18next";
-import { point } from "@turf/turf";
+import { point } from "@turf/helpers";
 
 export interface IRunningTrackButtonMarkerProps {
   lat: number;
