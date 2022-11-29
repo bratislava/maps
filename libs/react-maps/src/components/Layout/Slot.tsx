@@ -10,9 +10,10 @@ import {
   useState,
 } from 'react';
 
-import { ISlotState, mapContext } from '../Map/Map';
+import { mapContext } from '../Map/Map';
 import { useDebounce } from 'usehooks-ts';
 import { useResizeDetector } from 'react-resize-detector';
+import { SlotState } from '../Map/types';
 
 type VerticalPosition = 'top' | 'bottom';
 type HorizontalPosition = 'right' | 'left';
@@ -129,7 +130,7 @@ export const Slot = ({
     ],
   );
 
-  const slotState: ISlotState = useMemo(() => {
+  const slotState: SlotState = useMemo(() => {
     return {
       id,
       isVisible: debouncedVisible,

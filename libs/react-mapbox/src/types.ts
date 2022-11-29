@@ -1,10 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Source = any;
-
-export interface Sources {
-  [key: string]: Source;
-}
-
 export type LngLat = {
   lng: number;
   lat: number;
@@ -36,9 +29,3 @@ export type PartialViewport = Partial<{
   pitch: number;
   padding: PartialPadding;
 }>;
-
-export interface MapIcon {
-  path: string;
-  width: number;
-  height: number;
-}

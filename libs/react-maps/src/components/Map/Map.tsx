@@ -3,12 +3,9 @@ import { DISTRICTS_GEOJSON } from '@bratislava/geojson-data';
 import {
   LngLat,
   Mapbox,
-  MapboxGesturesOptions,
   MapboxHandle,
-  MapIcon,
   Marker,
   mergeViewports,
-  Padding,
   PartialViewport,
   Viewport,
 } from '@bratislava/react-mapbox';
@@ -17,18 +14,17 @@ import {
   Feedback,
   InformationAlt,
 } from '@bratislava/react-maps-icons';
-import { IconButton, LoadingSpinner, Modal } from '@bratislava/react-maps-ui';
+import { IconButton, Modal } from '@bratislava/react-maps-ui';
 import bbox from '@turf/bbox';
 import cx from 'classnames';
 import { Feature } from 'geojson';
-import mapboxgl, { MapboxGeoJSONFeature } from 'mapbox-gl';
+import { FitBoundsOptions, LngLatBoundsLike } from 'mapbox-gl';
 import Mousetrap from 'mousetrap';
 import {
   createContext,
   Dispatch,
   forwardRef,
   MutableRefObject,
-  ReactNode,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -44,87 +40,11 @@ import i18n from '../../utils/i18n';
 import { getFeatureDistrict } from '../../utils/districts';
 import { Slot } from '../Layout/Slot';
 import { IMapState, MapAction, MapActionKind, mapReducer } from './mapReducer';
-import { i18n as i18nType } from 'i18next';
 import { SearchMarker } from '../SearchMarker/SearchMarker';
+import { defaultInitialViewport } from '@bratislava/react-mapbox/src/utils/constants';
+import { MapMethods, MapProps, SlotState } from './types';
 
-export interface ISlotState {
-  id: string;
-  isVisible: boolean;
-  padding: Padding;
-  avoidMapboxControls: boolean;
-}
-
-export type IMapProps = {
-  mapboxAccessToken: string;
-  isDevelopment?: boolean;
-  icons?: {
-    [index: string]: string | MapIcon;
-  };
-  mapStyles: {
-    light?: string;
-    dark?: string;
-  };
-  isOutsideLoading?: boolean;
-  children?: ReactNode;
-  layerPrefix?: string;
-  initialViewport?: PartialViewport;
-  onSelectedFeaturesChange?: (features: Feature[]) => void;
-  onMobileChange?: (isMobile: boolean) => void;
-  onGeolocationChange?: (isGeolocation: boolean) => void;
-  onMapClick?: (event: mapboxgl.MapMouseEvent & mapboxgl.EventData) => void;
-  loadingSpinnerColor?: string;
-  selectedFeatures?: MapboxGeoJSONFeature[];
-  onFeaturesClick?: (features: MapboxGeoJSONFeature[]) => void;
-  maxBounds?: [[number, number], [number, number]];
-  cooperativeGestures?: boolean;
-  interactive?: boolean;
-  mapInformationButtonClassName?: string;
-  onViewportChange?: (viewport: Viewport) => void;
-  onViewportChangeDebounced?: (viewport: Viewport) => void;
-  mapInformation: {
-    title: string;
-    description: ReactNode;
-    partners: {
-      name: string;
-      link: string;
-      image: string;
-      height?: number;
-      width?: number;
-    }[];
-    footer: ReactNode;
-  };
-  prevI18n: i18nType;
-} & MapboxGesturesOptions;
-
-export interface IMapMethods {
-  changeViewport: (
-    wantedViewport: PartialViewport,
-    duration?: number,
-  ) => void | undefined;
-  fitDistrict: (district: string | string[]) => void;
-  fitBounds: (
-    bounds: mapboxgl.LngLatBoundsLike,
-    options?: mapboxgl.FitBoundsOptions,
-  ) => void;
-  fitFeature: (
-    features: Feature | Feature[],
-    options?: { padding?: number },
-  ) => void;
-  moveToFeatures: (
-    features: Feature | Feature[],
-    options?: { zoom?: number },
-  ) => void;
-  turnOnGeolocation: () => void;
-  turnOffGeolocation: () => void;
-  toggleGeolocation: () => void;
-  addSearchMarker: (lngLat: LngLat) => void;
-  removeSearchMarker: () => void;
-  // Slots
-  mountOrUpdateSlot: (slotState: ISlotState) => void;
-  unmountSlot: (slotState: ISlotState) => void;
-}
-
-export type MapHandle = IMapMethods;
+export type MapHandle = MapMethods;
 
 export interface IMapContext {
   mapboxAccessToken: string;
@@ -132,7 +52,7 @@ export interface IMapContext {
   dispatchMapState: Dispatch<MapAction> | null;
   containerRef: MutableRefObject<HTMLDivElement | null> | null;
   isMobile: boolean | null;
-  methods: IMapMethods;
+  methods: MapMethods;
 }
 
 export const mapContext = createContext<IMapContext>({
@@ -157,20 +77,18 @@ export const mapContext = createContext<IMapContext>({
   },
 });
 
-const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
+const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
   (
     {
       mapboxAccessToken,
-      icons,
       mapStyles,
       children,
       layerPrefix = 'BRATISLAVA',
       isDevelopment = false,
-      initialViewport: inputInitialViewport,
+      initialViewport,
       selectedFeatures,
       onMobileChange,
       onGeolocationChange,
-      loadingSpinnerColor,
       onMapClick,
       onFeaturesClick,
       disablePitch,
@@ -194,43 +112,19 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
 
     const [isDevInfoVisible, setDevInfoVisible] = useState(false);
 
-    const [slotStates, setSlotStates] = useState<ISlotState[]>([]);
-
-    const initialViewport = useMemo(
-      () =>
-        mergeViewports(
-          {
-            center: {
-              lat: 0,
-              lng: 0,
-            },
-            zoom: 0,
-            pitch: 0,
-            bearing: 0,
-            padding: {
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-            },
-          },
-          inputInitialViewport ?? {},
-        ),
-      [inputInitialViewport],
-    );
+    const [slotStates, setSlotStates] = useState<SlotState[]>([]);
 
     const [mapState, dispatchMapState] = useReducer(mapReducer, {
       isDarkmode: false,
       isSatellite: false,
       isFullscreen: false,
-      viewport: initialViewport,
+      viewport: mergeViewports(defaultInitialViewport, initialViewport ?? {}),
       isGeolocation: false,
       geolocationMarkerLngLat: null,
       searchMarkerLngLat: null,
     });
 
     const [isMobile, setMobile] = useState<boolean | null>(null);
-    const [isLoading, setLoading] = useState(true);
 
     const geolocationChangeHandler = useCallback(
       (isGeolocation: boolean) => {
@@ -341,8 +235,8 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
     };
 
     const fitBounds = (
-      bounds: mapboxgl.LngLatBoundsLike,
-      options?: mapboxgl.FitBoundsOptions,
+      bounds: LngLatBoundsLike,
+      options?: FitBoundsOptions,
     ) => {
       if (!mapboxRef.current) return;
       const MAP = mapboxRef.current;
@@ -406,13 +300,13 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
       });
     };
 
-    const unmountSlot = useCallback((slotState: ISlotState) => {
+    const unmountSlot = useCallback((slotState: SlotState) => {
       setSlotStates((slotStates) => {
         return slotStates.filter((s) => s.id !== slotState.id);
       });
     }, []);
 
-    const mountOrUpdateSlot = useCallback((slotState: ISlotState) => {
+    const mountOrUpdateSlot = useCallback((slotState: SlotState) => {
       setSlotStates((slotStates) => {
         const foundSlotIndex = slotStates.findIndex(
           (s) => s.id === slotState.id,
@@ -474,7 +368,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
       changeViewport({ padding: finalPadding });
     }, [finalPadding]);
 
-    const mapMethods: IMapMethods = useMemo(
+    const mapMethods: MapMethods = useMemo(
       () => ({
         changeViewport,
         fitDistrict,
@@ -531,10 +425,6 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
     useEffect(() => {
       onGeolocationChange && onGeolocationChange(mapState.isGeolocation);
     }, [onGeolocationChange, mapState.isGeolocation]);
-
-    const onLoad = useCallback(() => {
-      setLoading(false);
-    }, []);
 
     // CALCULATE MAP PADDING ON DETAIL AND FILTERS TOGGLING
     useEffect(() => {
@@ -628,10 +518,8 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
                 layerPrefix={layerPrefix}
                 mapStyles={mapStyles}
                 mapboxAccessToken={mapboxAccessToken}
-                icons={icons}
                 onFeaturesClick={onFeaturesClick}
                 selectedFeatures={selectedFeatures}
-                onLoad={onLoad}
                 onClick={onMapClick}
                 onViewportChange={handleViewportChange}
                 onViewportChangeDebounced={onViewportChangeDebounced}
@@ -688,22 +576,6 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
               </Mapbox>
             </div>
           </mapContext.Provider>
-          <div
-            className={cx(
-              'fixed select-none dark:text-foreground-darkmode z-50 top-0 right-0 bottom-0 left-0 bg-background-lightmode dark:bg-background-darkmode flex items-center justify-center text-primary transition-all delay-1000 duration-1000',
-              {
-                'visible opacity-100': isLoading,
-                'invisible opacity-0': !isLoading,
-              },
-            )}
-          >
-            <LoadingSpinner
-              color={loadingSpinnerColor ?? '#5158D8'}
-              size={100}
-              thickness={200}
-              speed={200}
-            />
-          </div>
 
           <Modal
             overlayClassName="max-w-xs"
@@ -774,7 +646,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, IMapProps>(
 
 MapWithoutTranslations.displayName = 'MapWithoutTranslations';
 
-export const Map = forwardRef<MapHandle, Omit<IMapProps, 'prevI18n'>>(
+export const Map = forwardRef<MapHandle, Omit<MapProps, 'prevI18n'>>(
   (props, forwardedRef) => {
     const { i18n: prevI18n } = useTranslation();
 

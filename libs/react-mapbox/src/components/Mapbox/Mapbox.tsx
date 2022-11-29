@@ -1,5 +1,4 @@
 import { useEffectDebugger, usePrevious } from '@bratislava/utils';
-import { Feature } from 'geojson';
 import mapboxgl, { MapboxGeoJSONFeature } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {
@@ -14,7 +13,7 @@ import {
   useReducer,
   useState,
 } from 'react';
-import { MapIcon, PartialViewport, Sources, Viewport } from '../../types';
+import { PartialViewport, Viewport } from '../../types';
 import { DevelopmentInfo } from '../DevelopmentInfo/DevelopmentInfo';
 import {
   mergeViewports,
@@ -22,6 +21,10 @@ import {
   viewportReducer,
 } from './viewportReducer';
 import { useDebounce } from 'usehooks-ts';
+import {
+  defaultInitialViewport,
+  defaultSatelliteSource,
+} from '../../utils/constants';
 
 export type MapboxGesturesOptions = {
   disableBearing?: boolean;
@@ -32,9 +35,6 @@ export type MapboxProps = {
   mapboxAccessToken: string;
   isDarkmode?: boolean;
   isSatellite?: boolean;
-  icons?: {
-    [index: string]: string | MapIcon;
-  };
   mapStyles?: {
     [key: string]: string;
   };
@@ -94,7 +94,6 @@ export type MapboxHandle = {
 export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
   (
     {
-      icons,
       isDarkmode = false,
       isSatellite = false,
       selectedFeatures,
@@ -134,27 +133,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       [setClickableLayerIds],
     );
 
-    const initialViewport = useMemo(
-      () =>
-        mergeViewports(
-          {
-            center: {
-              lat: 48.148598,
-              lng: 17.107748,
-            },
-            zoom: 12,
-            pitch: 0,
-            bearing: 0,
-            padding: {
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-            },
-          },
-          inputInitialViewport ?? {},
-        ),
-      [inputInitialViewport],
+    const [initialViewport] = useState(
+      mergeViewports(defaultInitialViewport, inputInitialViewport ?? {}),
     );
 
     // Viewport where map is going
@@ -269,39 +249,9 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       if (!map) return;
 
       if (!map.getSource('satellite')) {
-        map.addSource('satellite', {
-          type: 'raster',
-          tileSize: 256,
-          tiles: [
-            'https://geoportal.bratislava.sk/hsite/rest/services/Hosted/Ortofoto_2021_WGS/MapServer/tile/{z}/{y}/{x}',
-          ],
-        });
+        map.addSource('satellite', defaultSatelliteSource);
       }
     }, [map]);
-
-    // LOADING ICONS
-    const loadIcons = useCallback(() => {
-      if (!map) return;
-      icons &&
-        Object.keys(icons).forEach(async (key) => {
-          const icon = icons[key];
-          if (typeof icon === 'string') {
-            map.loadImage(icon, (error, image) => {
-              if (!image) return;
-              if (error) throw error;
-              if (!map.hasImage(key)) {
-                map.addImage(key, image);
-              }
-            });
-          } else {
-            const image = new Image(icon.width, icon.height);
-            image.src = icon.path;
-            if (!map.hasImage(key)) {
-              image.onload = () => map.addImage(key, image);
-            }
-          }
-        });
-    }, [icons, map]);
 
     // MAP CLICK HANDLER
     const onMapClick = useCallback(
@@ -505,13 +455,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
             containerElement.removeChild(containerElement.firstChild);
           }
 
-          const {
-            center: { lng: initialLng, lat: initialLat },
-            zoom,
-            pitch,
-            bearing,
-          } = initialViewport;
-
+          // Take the first style as initial or fallback to mapbox streets v11
           const initialStyle =
             typeof mapStyles === 'object'
               ? mapStyles[Object.keys(mapStyles)[0]]
@@ -523,26 +467,44 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
             style: initialStyle,
             // maxZoom: 20,
             // minZoom: 10.75,
-            locale,
-            zoom,
-            maxBounds,
             cooperativeGestures,
-            pitch,
-            bearing,
-            center: [initialLng, initialLat],
+            locale,
+            maxBounds,
+            zoom: initialViewport.zoom,
+            pitch: initialViewport.pitch,
+            bearing: initialViewport.bearing,
+            center: [initialViewport.center.lng, initialViewport.center.lat],
           });
 
           newMap.on('load', () => {
             newMap.resize();
             newMap.getCanvas().style.cursor = 'default';
-            setTimeout(() => setLoading(false), 1000);
+            setTimeout(() => setLoading(false), 0);
           });
 
           return newMap;
         });
       },
-      [cooperativeGestures, initialViewport, mapContainerId],
-      ['cooperativeGestures', 'initialViewport', 'mapContainerId'],
+      [
+        cooperativeGestures,
+        initialViewport.bearing,
+        initialViewport.center.lng,
+        initialViewport.center.lat,
+        initialViewport.padding,
+        initialViewport.pitch,
+        initialViewport.zoom,
+        mapContainerId,
+      ],
+      [
+        'cooperativeGestures',
+        'initialViewport.bearing',
+        'initialViewport.center.lng',
+        'initialViewport.center.lat',
+        'initialViewport.padding',
+        'initialViewport.pitch',
+        'initialViewport.zoom',
+        'mapContainerId',
+      ],
       'CREATE MAP',
     );
 
@@ -663,9 +625,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         );
 
         map.on('style.load', () => {
-          console.log('load');
           loadSources();
-          loadIcons();
           setStyleLoading(false);
         });
       },
@@ -675,7 +635,6 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         mapStyles?.dark,
         mapStyles?.light,
         loadSources,
-        loadIcons,
         map,
       ],
       [
@@ -684,7 +643,6 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         'darkStyle',
         'lightStyle',
         'loadSources',
-        'loadIcons',
         'map',
       ],
       'SET STYLE',
