@@ -534,6 +534,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
 
           newMap.on('load', () => {
             newMap.resize();
+            newMap.getCanvas().style.cursor = 'default';
             setTimeout(() => setLoading(false), 1000);
           });
 
