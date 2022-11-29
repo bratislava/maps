@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../styles.css";
 
 // maps
@@ -8,8 +8,8 @@ import {
   Layout,
   Map,
   MapHandle,
+  SearchBar,
   Slot,
-  SlotType,
   ThemeController,
   ViewportController,
 } from "@bratislava/react-maps";
@@ -28,7 +28,7 @@ import { Legend } from "./Legend";
 import { Marker } from "./Marker";
 
 export const App = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     document.title = t("title");
@@ -63,26 +63,7 @@ export const App = () => {
     });
   }, []);
 
-  const onLegendClick = useCallback((e: MouseEvent) => {
-    setLegendVisible((isLegendVisible) => !isLegendVisible);
-    e.stopPropagation();
-  }, []);
-
   const [isMobile, setMobile] = useState<boolean | null>(null);
-
-  const viewportControllerSlots: SlotType = useMemo(() => {
-    return isMobile
-      ? ["legend", "compass", ["geolocation", "zoom"]]
-      : ["legend", "geolocation", "compass", ["fullscreen", "zoom"]];
-  }, [isMobile]);
-
-  const mapStyles = useMemo(
-    () => ({
-      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-    }),
-    [],
-  );
 
   const initialViewport = useMemo(
     () => ({
@@ -99,21 +80,16 @@ export const App = () => {
     <Map
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
-      mapStyles={mapStyles}
+      mapStyles={{
+        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+      }}
       initialViewport={initialViewport}
       loadingSpinnerColor="#2BACE2"
       isDevelopment={import.meta.env.DEV}
       isOutsideLoading={isLoading}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
-      scrollZoomBlockerCtrlMessage={t("tooltips.scrollZoomBlockerCtrlMessage")}
-      scrollZoomBlockerCmdMessage={t("tooltips.scrollZoomBlockerCmdMessage")}
-      touchPanBlockerMessage={t("tooltips.touchPanBlockerMessage")}
-      errors={{
-        generic: t("errors.generic"),
-        notLocatedInBratislava: t("errors.notLocatedInBratislava"),
-        noGeolocationSupport: t("errors.noGeolocationSupport"),
-      }}
       mapInformationButtonClassName="!top-20 sm:!top-6"
       mapInformation={{
         title: t("informationModal.title"),
@@ -199,46 +175,57 @@ export const App = () => {
         }
       </Cluster>
 
-      <Slot name="header">
-        <div className="fixed h-12 items-center border-2 border-background-lightmode dark:border-gray-darkmode/20 left-4 right-4 top-4 sm:right-auto bg-background-lightmode dark:bg-background-darkmode shadow-lg rounded-lg px-4 flex gap-4">
-          <span className="text-primary">
-            <BALogo />
-          </span>
-          <span className="font-semibold flex-1 text-center">{t("title")}</span>
+      <Slot id="header" position="top-left">
+        <div className="w-screen sm:w-fit pointer-events-none p-4">
+          <div className="h-12 items-center border-2 border-background-lightmode dark:border-gray-darkmode/20 w-full bg-background-lightmode dark:bg-background-darkmode shadow-lg rounded-lg px-4 flex gap-4">
+            <span className="text-primary">
+              <BALogo />
+            </span>
+            <span className="font-semibold flex-1 text-center">{t("title")}</span>
+          </div>
         </div>
       </Slot>
 
-      <Slot name="controls">
-        <ThemeController
-          darkLightModeTooltip={t("tooltips.darkLightMode")}
-          satelliteModeTooltip={t("tooltips.satelliteMode")}
-          className={cx("fixed left-4 bottom-8 transform sm:transform-none", {
-            "-translate-y-[92px]": isDetailOpen,
+      <Slot
+        id="controls"
+        position="bottom"
+        className={cx("p-4 pb-9  w-screen pointer-events-none")}
+      >
+        <div
+          className={cx("flex flex-col gap-2 transition-transform duration-500 delay-500", {
+            "-translate-y-[72px] !delay-[0]": isDetailOpen && isMobile,
           })}
-        />
-        <ViewportController
-          className={cx("fixed right-4 bottom-8 transform sm:transform-none", {
-            "-translate-y-[92px]": isDetailOpen,
-          })}
-          onLegendClick={onLegendClick}
-          slots={viewportControllerSlots}
-        />
+        >
+          <div className="flex justify-between items-end">
+            <ThemeController className="pointer-events-auto" />
+            <ViewportController
+              slots={["legend", ["compass", "zoom"]]}
+              desktopSlots={["legend", "geolocation", "compass", ["fullscreen", "zoom"]]}
+              isLegendOpen={isLegendVisible ?? false}
+              onLegendOpenChange={setLegendVisible}
+            />
+          </div>
+          <div className="pointer-events-auto shadow-lg rounded-lg sm:hidden">
+            <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
+          </div>
+        </div>
       </Slot>
 
       <Layout isOnlyMobile>
-        <Slot openPadding={{ bottom: 88 }} name="mobile-detail" isVisible={isDetailOpen ?? false}>
+        <Slot
+          id="mobile-detail"
+          padding={{ bottom: 88 }}
+          position="bottom"
+          isVisible={isDetailOpen ?? false}
+        >
           <Detail isMobile feature={selectedFeature} onClose={closeDetail} />
         </Slot>
-        <Slot
-          name="mobile-legend"
-          isVisible={isLegendVisible}
-          setVisible={setLegendVisible}
-          avoidControls={false}
-        >
+        <Slot position="top-right" id="mobile-legend" isVisible={isLegendVisible}>
           <Sidebar
             title={t("legend.backToMap")}
-            isVisible={isLegendVisible}
-            setVisible={setLegendVisible}
+            isVisible={isLegendVisible ?? false}
+            onOpen={() => setLegendVisible(true)}
+            onClose={() => setLegendVisible(false)}
             position="right"
             closeText={t("close")}
           >
@@ -247,9 +234,9 @@ export const App = () => {
         </Slot>
       </Layout>
       <Layout isOnlyDesktop>
-        <Slot name="desktop-detail" isVisible={isDetailOpen}>
+        <Slot id="desktop-detail" position="top-right" isVisible={isDetailOpen}>
           <div
-            className={cx("fixed top-0 right-0 w-96 bg-background transition-all duration-500", {
+            className={cx("w-96 bg-background transition-all duration-500", {
               "translate-x-full": !isDetailOpen,
               "shadow-lg": isDetailOpen,
             })}
@@ -257,7 +244,7 @@ export const App = () => {
             <Detail isMobile={false} feature={selectedFeature} onClose={closeDetail} />
           </div>
         </Slot>
-        <Slot name="desktop-legend">
+        <Slot id="desktop-legend">
           <Modal
             closeButtonInCorner
             title={t("legend.title")}
