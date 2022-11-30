@@ -19,7 +19,7 @@ import {
   ViewportController,
 } from "@bratislava/react-maps";
 
-import { Cluster, Filter, Layer, useFilter } from "@bratislava/react-mapbox";
+import { Cluster, Filter, IFilterResult, Layer, useFilter } from "@bratislava/react-mapbox";
 
 // components
 import { Detail } from "./Detail";
@@ -319,7 +319,6 @@ export const App = () => {
       }}
       initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
-      isOutsideLoading={isLoading}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
       selectedFeatures={selectedFeatures}
@@ -421,14 +420,13 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot id="mobile-filters" isVisible={isSidebarVisible}>
+        <Slot position="top-right" id="mobile-filters" isVisible={isSidebarVisible}>
           <Filters
             isMobile={true}
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
-            layerFilter={layerFilter}
-            markerFilter={markerFilter}
-            zoneFilter={zoneFilter}
+            layerFilter={layerFilter as IFilterResult<string>}
+            markerFilter={markerFilter as IFilterResult<string>}
           />
         </Slot>
 
@@ -463,9 +461,8 @@ export const App = () => {
             isMobile={false}
             isVisible={isSidebarVisible}
             setVisible={setSidebarVisible}
-            layerFilter={layerFilter}
-            markerFilter={markerFilter}
-            zoneFilter={zoneFilter}
+            layerFilter={layerFilter as IFilterResult<string>}
+            markerFilter={markerFilter as IFilterResult<string>}
           />
         </Slot>
 
