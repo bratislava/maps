@@ -1,8 +1,20 @@
-import { useContext, useEffect, useId } from 'react';
+import {
+  FC,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from 'react';
 import { usePrevious } from '@bratislava/utils';
 import { log } from '../../utils/log';
 import { mapboxContext } from '../Mapbox/Mapbox';
-import { FeatureCollection } from 'geojson';
+import { FeatureCollection, Feature, Geometry } from 'geojson';
+import { MapMouseEvent, Popup } from 'mapbox-gl';
+import { createPortal } from 'react-dom';
+import { feature, point } from '@turf/helpers';
 
 type Filter = string | null | boolean | Filter[];
 
@@ -13,6 +25,7 @@ export interface ILayerProps {
   filters?: Filter[];
   ignoreFilters?: boolean;
   ignoreClick?: boolean;
+  hoverPopup?: FC<{ feature: Feature }> | ReactNode;
 }
 
 export const Layer = ({
@@ -22,6 +35,7 @@ export const Layer = ({
   filters = [],
   ignoreFilters = false,
   ignoreClick = false,
+  hoverPopup,
 }: ILayerProps) => {
   const {
     map,
@@ -35,11 +49,114 @@ export const Layer = ({
   const layerIdStartsWith = 'label';
 
   const previousLoading = usePrevious(isLoading);
+  const previousStyleLoading = usePrevious(isStyleLoading);
   const previousVisible = usePrevious(isVisible);
   const previousIgnoreFilters = usePrevious(ignoreFilters);
   const previousFilters = usePrevious(filters);
 
   const id = useId();
+
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [renderedPopupContent, setRenderedPopupContent] =
+    useState<ReactNode>(null);
+
+  const popupElement = useMemo(() => {
+    return document.createElement('div');
+  }, []);
+
+  const popup: Popup = useMemo(() => {
+    return new Popup({
+      closeButton: false,
+      closeOnClick: false,
+    })
+      .setLngLat([0, 0])
+      .setDOMContent(popupElement);
+  }, [popupElement]);
+
+  useEffect(() => {
+    if (!map) return;
+
+    if (isPopupVisible) {
+      popup.addTo(map);
+      popupElement.setAttribute(
+        'style',
+        `${popupElement.style}; z-index: 100; pointer-events: none;`,
+      );
+    }
+
+    return () => {
+      if (isPopupVisible) {
+        popup.remove();
+      }
+    };
+  }, [map, popup, popupElement, isPopupVisible]);
+
+  const renderPopupContent = useCallback(
+    (
+      e: MapMouseEvent & {
+        features?: mapboxgl.MapboxGeoJSONFeature[];
+      },
+    ) => {
+      setRenderedPopupContent(
+        typeof hoverPopup === 'function'
+          ? hoverPopup({
+              feature: feature(
+                e.features?.[0].geometry as Geometry,
+                e.features?.[0].properties,
+              ),
+            })
+          : hoverPopup,
+      );
+    },
+    [hoverPopup],
+  );
+
+  const onMouseEnter = useCallback(
+    (
+      e: MapMouseEvent & {
+        features?: mapboxgl.MapboxGeoJSONFeature[];
+      },
+    ) => {
+      setPopupVisible(true);
+    },
+    [hoverPopup],
+  );
+
+  const onMouseMove = useCallback(
+    (e: MapMouseEvent) => {
+      popup.setLngLat(e.lngLat);
+      renderPopupContent(e);
+    },
+    [popup, renderPopupContent],
+  );
+
+  const onMouseLeave = useCallback((e: MapMouseEvent) => {
+    setPopupVisible(false);
+  }, []);
+
+  useEffect(() => {
+    if (hoverPopup && map) {
+      styles.forEach((style: any) => {
+        if (style.type !== 'line') {
+          map.on('mouseenter', getPrefixedLayer(style.id), onMouseEnter);
+          map.on('mousemove', getPrefixedLayer(style.id), onMouseMove);
+          map.on('mouseleave', getPrefixedLayer(style.id), onMouseLeave);
+        }
+      });
+    }
+
+    return () => {
+      if (hoverPopup && map) {
+        styles.forEach((style: any) => {
+          if (style.type !== 'line') {
+            map.off('mouseenter', getPrefixedLayer(style.id), onMouseEnter);
+            map.off('mousemove', getPrefixedLayer(style.id), onMouseMove);
+            map.off('mouseleave', getPrefixedLayer(style.id), onMouseLeave);
+          }
+        });
+      }
+    };
+  }, [hoverPopup, map, styles, onMouseEnter, onMouseMove, onMouseLeave]);
 
   useEffect(() => {
     if (map && !isLoading && !isStyleLoading) {
@@ -85,7 +202,11 @@ export const Layer = ({
           }
         }
 
-        if (previousVisible !== isVisible || isLoading !== previousLoading) {
+        if (
+          previousVisible !== isVisible ||
+          isLoading !== previousLoading ||
+          isStyleLoading !== previousStyleLoading
+        ) {
           if (isVisible) {
             log(`SETTING LAYER ${getPrefixedLayer(style.id)} VISIBLE`);
 
@@ -102,6 +223,7 @@ export const Layer = ({
               'visibility',
               'none',
             );
+            setPopupVisible(false);
           }
         }
 
@@ -143,5 +265,5 @@ export const Layer = ({
     layerPrefix,
   ]);
 
-  return null;
+  return createPortal(renderedPopupContent, popupElement);
 };
