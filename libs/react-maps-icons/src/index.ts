@@ -15,9 +15,9 @@ export { Satellite } from "./components/Satellite";
 export { Feedback } from "./components/Feedback";
 export { Themes } from "./components/Themes";
 export { X } from "./components/X";
+export { Eye } from "./components/Eye";
 export {
   default as EyeCrossedUrl,
   ReactComponent as EyeCrossed,
 } from "./svg/eye-crossed.svg";
-export { default as EyeUrl, ReactComponent as Eye } from "./svg/eye.svg";
 export { default as TickUrl, ReactComponent as Tick } from "./svg/tick.svg";
