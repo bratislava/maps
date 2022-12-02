@@ -10,6 +10,7 @@ export * from './components/SearchBar/SearchBar';
 export * from './components/ThemeController/ThemeController';
 export * from './components/ViewportController/ViewportController';
 export * from './components/SearchMarker/SearchMarker';
+export * from './components/Detail/Detail';
 
 // hooks
 export * from './hooks/useMapboxSearch';
