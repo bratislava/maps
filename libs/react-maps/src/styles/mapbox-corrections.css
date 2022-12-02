@@ -6,3 +6,23 @@
 .mapboxgl-ctrl {
   margin: 0 !important;
 }
+
+.mapboxgl-popup {
+  @apply z-50 !important;
+}
+
+.mapboxgl-popup-content {
+  @apply text-[16px] font-sans pointer-events-none bg-background-lightmode w-fit dark:bg-background-darkmode border-2 border-background-lightmode dark:border-gray-darkmode/20 rounded-lg shadow-lg text-foreground-lightmode dark:text-foreground-darkmode p-2 !important;
+}
+
+.mapboxgl-popup-tip {
+  @apply z-50 !important;
+}
+
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  @apply -translate-y-[2px] border-t-background-lightmode dark:border-t-background-darkmode !important;
+}
+
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+  @apply translate-y-[2px] border-b-background-lightmode dark:border-b-background-darkmode !important;
+}
