@@ -11,6 +11,9 @@ export default {
     drinkingFountain: "Pytná fontánka",
     orientationPoint: "Orientačný bod",
   },
+  terrainServices: {
+    title: "Terénne služby",
+  },
   layersLabel: "Vrstvy",
   filters: {
     title: "Filter",
@@ -38,6 +41,14 @@ export default {
     },
     drinkingFountain: {
       location: "Lokalita",
+    },
+    terrainService: {
+      provider: "Poskytovateľ",
+      phone: "Tel. číslo",
+      web: "Web",
+      openingHours: "Otváracie hodiny",
+      price: "Cena",
+      areas: "Oblasti",
     },
   },
 

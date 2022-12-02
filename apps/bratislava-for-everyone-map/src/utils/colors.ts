@@ -5,4 +5,5 @@ export const colors: { [key: string]: string } = {
   meals: "#FCF042",
   medicalTreatment: "#73C46F",
   culture: "#93539B",
+  terrainServices: "#FB99BE",
 };

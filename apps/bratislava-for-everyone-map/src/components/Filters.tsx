@@ -10,18 +10,23 @@ import {
   Sidebar,
 } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
-import { Layers } from "./Layers";
+import { ITerrainService, Layers } from "./Layers";
 import { SelectValueRenderer } from "./SelectValueRenderer";
+import { TerrainServices } from "./TerrainServices";
 
 export interface IFiltersProps {
   isMobile: boolean;
   isVisible?: boolean;
-  setVisible: (isVisible: boolean | undefined) => void;
+  setVisible: (isVisible: boolean) => void;
   areFiltersDefault: boolean;
   onResetFiltersClick: () => void;
   districtFilter: IFilterResult<string>;
   layerFilter: IFilterResult<string>;
   activeFilters: IActiveFilter[];
+
+  terrainServices: ITerrainService[];
+  activeTerrainService: string | null;
+  onActiveTerrainServiceChange: (terrainService: string | null) => void;
 }
 
 export const Filters = ({
@@ -33,6 +38,9 @@ export const Filters = ({
   activeFilters,
   districtFilter,
   layerFilter,
+  terrainServices,
+  activeTerrainService,
+  onActiveTerrainServiceChange,
 }: IFiltersProps) => {
   const { t, i18n } = useTranslation();
 
@@ -105,18 +113,20 @@ export const Filters = ({
       </div>
 
       <Divider className="mx-6" />
-      <div className="flex flex-col gap-3">
-        <h2 className="font-semibold px-6 text-md">{t("layersLabel")}</h2>
 
-        <Layers
-          isMobile={isMobile}
-          filter={layerFilter}
-          layers={layerFilter.keys.map((key) => ({
-            label: key,
-            subLayers: [key],
-          }))}
-        />
-      </div>
+      <Layers isMobile={isMobile} filter={layerFilter} layers={layerFilter.keys} />
+
+      <Divider className="mx-6" />
+
+      <TerrainServices
+        services={terrainServices}
+        activeServiceKey={activeTerrainService}
+        onServiceClick={(key) =>
+          activeTerrainService === key
+            ? onActiveTerrainServiceChange(null)
+            : onActiveTerrainServiceChange(key)
+        }
+      />
     </Sidebar>
   );
 };

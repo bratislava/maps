@@ -1,38 +1,42 @@
 import { Feature } from "geojson";
 import { useState, useEffect, useRef, useMemo, useCallback, forwardRef } from "react";
-import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
-import cx from "classnames";
 import {
   DrikingFountainDetail,
   drinkingFountainFeaturePropertiesSchema,
 } from "./DrinkingFountainDetail";
-import { IconButton } from "@bratislava/react-maps-ui";
-import { X } from "@bratislava/react-maps-icons";
+import { Detail as MapDetail, DetailHandle } from "@bratislava/react-maps";
 import { MainDetail, mainFeaturePropertiesSchema } from "./MainDetail";
+import { ITerrainService } from "../Layers";
+import { TerrainServiceDetail } from "./TerrainServiceDetail";
 export interface DetailProps {
   feature?: Feature | null;
   onClose: () => void;
   isMobile: boolean;
-  shouldBeBottomLeftCornerRounded: boolean;
+  activeTerrainService: ITerrainService | null;
 }
 
 export const Detail = forwardRef<HTMLDivElement, DetailProps>(
-  ({ feature, onClose, isMobile, shouldBeBottomLeftCornerRounded }, forwardedRef) => {
-    const sheetRef = useRef<BottomSheetRef>(null);
+  ({ feature, onClose, isMobile, activeTerrainService }, forwardedRef) => {
+    const detailRef = useRef<DetailHandle>(null);
 
     const [currentSnap, setCurrentSnap] = useState(0);
 
-    const onSnapChange = useCallback(() => {
-      requestAnimationFrame(() => setCurrentSnap(sheetRef.current?.height === 84 ? 1 : 0));
+    const onSnapChange = useCallback((snap: number) => {
+      setCurrentSnap(snap);
     }, []);
 
     useEffect(() => {
-      if (feature) {
-        sheetRef.current?.snapTo(({ snapPoints }) => snapPoints[1]);
+      if (feature || activeTerrainService) {
+        detailRef.current?.snapTo(1);
       }
-    }, [feature, sheetRef]);
+    }, [feature, activeTerrainService, detailRef]);
 
     const detail = useMemo(() => {
+      if (activeTerrainService) {
+        console.log("ehjeheh");
+        return <TerrainServiceDetail service={activeTerrainService} />;
+      }
+
       try {
         const props = mainFeaturePropertiesSchema.parse(feature?.properties);
         return <MainDetail properties={props} isExpanded={currentSnap === 0 || !isMobile} />;
@@ -48,44 +52,22 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
       }
 
       return null;
-    }, [currentSnap, feature, isMobile]);
+    }, [activeTerrainService, currentSnap, feature, isMobile]);
 
-    return isMobile ? (
-      <BottomSheet
-        ref={sheetRef}
-        snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 84]}
-        defaultSnap={({ snapPoints }) => snapPoints[1]}
-        expandOnContentDrag
-        blocking={false}
-        className="relative z-30"
-        open={!!feature}
-        onSpringStart={onSnapChange}
+    return (
+      <MapDetail
+        ref={detailRef}
+        isBottomSheet={isMobile}
+        onClose={onClose}
+        isVisible={!!feature || !!activeTerrainService}
+        bottomSheetSnapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 84]}
+        bottomSheetDefaultSnapPointIndex={1}
+        onBottomSheetSnapChange={onSnapChange}
       >
-        {detail}
-      </BottomSheet>
-    ) : (
-      <div
-        ref={forwardedRef}
-        className={cx("w-96 bg-background-lightmode dark:bg-background-darkmode", {
-          "shadow-lg": feature,
-          "rounded-bl-lg": shouldBeBottomLeftCornerRounded,
-        })}
-      >
-        <IconButton
-          className={cx(
-            "hidden w-8 h-8 rounded-full absolute right-6 top-6 md:flex items-center justify-center",
-            { "!shadow-none": !feature?.properties?.picture },
-          )}
-          onClick={onClose}
-        >
-          <X size="sm" />
-        </IconButton>
-        {detail}
-      </div>
+        <div ref={forwardedRef}>{detail}</div>
+      </MapDetail>
     );
   },
 );
 
 Detail.displayName = "Detail";
-
-export default Detail;

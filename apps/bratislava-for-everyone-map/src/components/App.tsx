@@ -20,60 +20,49 @@ import { useWindowSize } from "usehooks-ts";
 import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 
 // layer styles
-import DISTRICTS_STYLE from "../assets/layers/districts/districts";
+import DISTRICTS_STYLE from "../assets/layers/districts";
+import TERRAIN_SERVICES_POLYGON_STYLE from "../assets/layers/terrainServicesPolygon";
+import TERRAIN_SERVICES_POINT_STYLE from "../assets/layers/terrainServicesPoint";
 
 // utils
 import { usePrevious } from "@bratislava/utils";
 import { processData } from "../utils/utils";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
-import { FeatureCollection, Point, Feature } from "geojson";
+import { Point, Feature } from "geojson";
 import { IconButton, Modal, Sidebar } from "@bratislava/react-maps-ui";
 import { Funnel } from "@bratislava/react-maps-icons";
 import { Filters } from "./Filters";
-import Detail from "./Detail";
+import { Detail } from "./Detail";
 import { PhoneLinksModal } from "./PhoneLinksModal";
 import { Marker } from "./Marker";
 import { colors } from "../utils/colors";
 import { drinkingFountainsData } from "../data/drinking-fountains";
-import { point } from "@turf/helpers";
+import { point, featureCollection } from "@turf/helpers";
 import { DrinkingFountainMarker } from "./DrinkingFountainMarker";
 import { Legend } from "./Legend";
-import { BuildingMarker, icons } from "./BuildingMarker";
+import { BuildingMarker } from "./BuildingMarker";
 import { buildingsData } from "../data/buildings";
+import { ITerrainService } from "./Layers";
+import { terrainServicesLocalDistrictsData } from "../data/terrain-services-local-districts";
+import { terrainServicesPointsData } from "../data/terrain-services-points";
+import { regions } from "../data/regions";
+import { Popup } from "./Popup";
+
+const { data, uniqueDistricts } = processData();
+const uniqueLayers = Object.keys(colors).filter((key) => key !== "terrainServices");
+const defaultLayersValues = uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {});
 
 export const App = () => {
   const { t, i18n } = useTranslation();
 
-  const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState<FeatureCollection<Point> | null>(null);
-  const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
-  const [uniqueLayers, setUniqueLayers] = useState<string[]>([]);
-
-  useEffect(() => {
-    document.title = t("tabTitle");
-  }, [t]);
-
-  useEffect(() => {
-    const { data, uniqueDistricts } = processData();
-    setLoading(false);
-    setUniqueDistricts(uniqueDistricts);
-    setUniqueLayers(Object.keys(colors));
-    setData(data);
-  }, []);
-
-  const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
+  const [isSidebarVisible, setSidebarVisible] = useState(false);
 
   const mapRef = useRef<MapHandle>(null);
 
   const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
 
-  useEffect(() => {
-    console.log("selectedMarker", selectedMarker);
-  }, [selectedMarker]);
+  const [isMobile, setMobile] = useState(false);
 
-  const [isMobile, setMobile] = useState<boolean | null>(null);
-
-  const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
 
   const districtFilter = useFilter({
@@ -84,13 +73,11 @@ export const App = () => {
   const layerFilter = useFilter({
     property: "subLayerName",
     keys: uniqueLayers,
-    defaultValues: useMemo(
-      () => uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {}),
-      [uniqueLayers],
-    ),
+    defaultValues: defaultLayersValues,
   });
 
   const layerFilterFixedExpression = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result: any[] = ["any"];
     if (layerFilter.isAnyKeyActive(["counseling"])) result.push(["==", "isCounseling", true]);
     if (layerFilter.isAnyKeyActive(["hygiene"])) result.push(["==", "isHygiene", true]);
@@ -126,11 +113,12 @@ export const App = () => {
   }, []);
 
   // close detailbox when sidebar is opened on mobile
-  useEffect(() => {
-    if (isMobile && isSidebarVisible == true && previousSidebarVisible == false) {
+  const onSidebarOpen = useCallback(() => {
+    setSidebarVisible(true);
+    if (isMobile) {
       closeDetail();
     }
-  }, [closeDetail, isMobile, isSidebarVisible, previousMobile, previousSidebarVisible]);
+  }, [closeDetail, isMobile]);
 
   // close sidebar on mobile and open on desktop
   useEffect(() => {
@@ -159,16 +147,153 @@ export const App = () => {
     }
   }, [selectedMarker]);
 
-  const initialViewport = useMemo(
-    () => ({
-      zoom: 12.229005488986582,
-      center: {
-        lat: 48.148598,
-        lng: 17.107748,
+  const terrainServices: ITerrainService[] = useMemo(
+    () => [
+      {
+        key: "city-terrain-team",
+        title: "Mestský terénny tím",
+        provider: "Magistrát hl. mesta Bratislavy",
+        phone: "",
+        web: "https://bratislava.sk/socialne-sluzby-a-byvanie/aktivity-v-socialnej-oblasti/mestsky-terenny-tim",
+        openingHours: "",
+        price: "Zdarma",
+        geojson: featureCollection(
+          DISTRICTS_GEOJSON.features.filter((feature) => feature.properties.name === "Staré Mesto"),
+        ),
       },
-    }),
+      {
+        key: "vagus",
+        title: "STREETWORK VAGUS",
+        provider: "VAGUS o.z.",
+        phone: "0949 655 555",
+        web: "https://www.vagus.sk/streetwork/2/o-projekte-2/",
+        openingHours:
+          "denné služby: pondelok až piatok od 8:30 do 12:00; večerné služby: pondelok-sobota od 17:00 do 21:00",
+        price: "Zdarma",
+        geojson: featureCollection(
+          regions.features.filter((feature) =>
+            ["Bratislava I", "Bratislava II", "Bratislava III", "Bratislava V"].includes(
+              feature.properties?.name,
+            ),
+          ),
+        ),
+      },
+      {
+        key: "rozalie",
+        title: "TERÉNNA SOCIÁLNA PRÁCA Bl. ROZÁLIE ",
+        provider: "DEPAUL Slovensko, n.o.",
+        phone: "0910 842 170",
+        web: "https://depaul.sk/terenna-praca-bl-rozalie-rendu/",
+        openingHours: "pondelok až piatok od 7:30 do 14:00",
+        price: "Zdarma",
+        geojson: featureCollection(
+          DISTRICTS_GEOJSON.features.filter((feature) =>
+            ["Karlova Ves", "Dúbravka", "Lamač", "Devínska Nová Ves"].includes(
+              feature.properties.name,
+            ),
+          ),
+        ),
+      },
+      {
+        key: "stopa",
+        title: "TERÉNNY PREVENČNÝ TÍM STOPA",
+        provider: "STOPA Slovensko o.z.",
+        phone: "0948 389 748",
+        web: "https://www.stopaslovensko.sk/streetwork/",
+        openingHours:
+          "pondelok až piatok od 8:00 do 16:00 (počas vyhlásenej zimnej krízy 6:30 - 3:00 druhého dňa)",
+        price: "Zdarma",
+        geojson: featureCollection([
+          ...DISTRICTS_GEOJSON.features.filter((feature) =>
+            ["Staré Mesto", "Nové Mesto", "Petržalka"].includes(feature.properties.name),
+          ),
+          ...terrainServicesLocalDistrictsData.features,
+        ]),
+      },
+      {
+        key: "odyseus",
+        title:
+          "Podpora a poradenstvo  pre ľudí so skúsenosťou s drogami a pracujúcich v sexbiznise",
+        provider: "OZ ODYSEUS",
+        phone: "0948 619 022",
+        web: "https://www.ozodyseus.sk/",
+        openingHours:
+          "str. 11:30-13:00 Slovnaftská; str. 20:15-21:45 Trnavské mýto; str. 18:45-19:45 Panónska; pia 14:00-15:00 Stavbárska - Pentagon",
+        price: "Zdarma",
+        geojson: featureCollection([
+          ...terrainServicesPointsData.features.filter((feature) =>
+            [
+              "Slovnaftská ul. (parkovisko pre kamióny)",
+              "Trnavské mýto (parkovisko pri Pezinský sud)",
+              "Panónska cesta (pri AAA auto)",
+              "Stavbárska - Pentagon (pred Centrom K2)",
+            ].includes(feature.properties.name),
+          ),
+        ]),
+      },
+      {
+        key: "prima",
+        title:
+          "Podpora a poradenstvo  pre ľudí so skúsenosťou s drogami a pracujúcich v sexbiznise",
+        provider: "OZ PRIMA",
+        phone: "0948 352 330",
+        web: "http://primaoz.sk/streetwork/",
+        openingHours: "utorok a štvrtok 17:00-21:00; sobota 14:00-17:00",
+        price: "Zdarma",
+        geojson: featureCollection([
+          ...terrainServicesPointsData.features.filter((feature) =>
+            ["Parkovisko Slovnaft", "Panónska (parkovisko pri Fiate oproti Citroenu)"].includes(
+              feature.properties.name,
+            ),
+          ),
+        ]),
+      },
+    ],
     [],
   );
+
+  const [activeTerrainServiceKey, setActiveTerrainServiceKey] = useState<string | null>(null);
+
+  const activeTerrainService = useMemo(() => {
+    return terrainServices.find((ts) => ts.key === activeTerrainServiceKey) ?? null;
+  }, [terrainServices, activeTerrainServiceKey]);
+
+  const [rememberedActiveLayerKeys, setRememberedActiveLayerKeys] = useState<string[]>([]);
+
+  const handleActiveTerrainServiceChange = useCallback(
+    (terrainServiceKey: string | null) => {
+      // Close the main detail
+      setSelectedMarker(null);
+      // Set active terrain key
+      setActiveTerrainServiceKey(terrainServiceKey);
+
+      // If enabling some terrain service
+      if (terrainServiceKey) {
+        // Fit terrain service features
+        const features = terrainServices.find((service) => service.key === terrainServiceKey)
+          ?.geojson.features;
+        features && mapRef.current?.fitFeature(features);
+
+        if (activeTerrainServiceKey === null) {
+          // Remember what layers were visible
+          setRememberedActiveLayerKeys(layerFilter.activeKeys);
+          // Hide all layers
+          layerFilter.setActiveAll(false);
+        }
+      } else {
+        // Else if disabling terrain service
+        layerFilter.setActiveOnly(rememberedActiveLayerKeys, true);
+      }
+    },
+    [activeTerrainServiceKey, layerFilter, rememberedActiveLayerKeys, terrainServices],
+  );
+
+  // Disable terrain service if
+  useEffect(() => {
+    if (layerFilter.activeKeys.length) {
+      setActiveTerrainServiceKey(null);
+    }
+  }, [layerFilter.activeKeys.length]);
 
   const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
   const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
@@ -179,13 +304,9 @@ export const App = () => {
     return windowHeight < viewportControlsHeight + detailHeight + 40 && !!selectedMarker;
   }, [windowHeight, detailHeight, viewportControlsHeight, selectedMarker]);
 
-  const shouldBeBottomLeftCornerRounded = useMemo(() => {
-    return windowHeight !== detailHeight;
-  }, [windowHeight, detailHeight]);
-
   const [isLegendOpen, setLegendOpen] = useState(false);
 
-  return isLoading ? null : (
+  return (
     <Map
       loadingSpinnerColor="#F1B830"
       ref={mapRef}
@@ -194,9 +315,7 @@ export const App = () => {
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
       }}
-      initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
-      isOutsideLoading={isLoading}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
       mapInformation={{
@@ -231,11 +350,27 @@ export const App = () => {
         styles={DISTRICTS_STYLE}
       />
 
+      {terrainServices.map(({ key, geojson }, index) => (
+        <Layer
+          key={index}
+          geojson={geojson}
+          // Style ids have to be unique
+          styles={(geojson.features[0]?.geometry.type === "Polygon"
+            ? TERRAIN_SERVICES_POLYGON_STYLE
+            : TERRAIN_SERVICES_POINT_STYLE
+          ).map((style) => ({ ...style, id: `${style.id}-${index}` }))}
+          isVisible={key === activeTerrainServiceKey}
+          hoverPopup={Popup}
+        />
+      ))}
+
+      {/* BUILDING MARKERS */}
       {buildingsData.features.map((feature, index) => [
         <BuildingMarker key={index} feature={feature} icon={feature.properties.icon} />,
       ])}
 
-      <Filter expression={districtFilter.expression}>
+      {/* DRINKING FOUNTAIN MARKERS */}
+      <Filter expression={activeTerrainServiceKey ? ["any", false] : districtFilter.expression}>
         <Cluster features={drinkingFountainsData.features} radius={24}>
           {({ features, lng, lat, key, clusterExpansionZoom }) =>
             features.length === 1 ? (
@@ -313,10 +448,7 @@ export const App = () => {
         <Slot id="mobile-header" position="top-right">
           <div className="p-4 flex gap-4">
             <PhoneLinksModal />
-            <IconButton
-              className="shrink-0"
-              onClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
-            >
+            <IconButton className="shrink-0" onClick={onSidebarOpen}>
               <Funnel size="md" />
             </IconButton>
           </div>
@@ -332,6 +464,9 @@ export const App = () => {
             onResetFiltersClick={combinedFilter.reset}
             districtFilter={districtFilter}
             layerFilter={layerFilter}
+            terrainServices={terrainServices}
+            activeTerrainService={activeTerrainServiceKey}
+            onActiveTerrainServiceChange={handleActiveTerrainServiceChange}
           />
         </Slot>
 
@@ -341,9 +476,9 @@ export const App = () => {
           padding={{ bottom: window.innerHeight / 2 - 48 }}
         >
           <Detail
-            shouldBeBottomLeftCornerRounded={shouldBeBottomLeftCornerRounded}
             isMobile
             feature={selectedMarker}
+            activeTerrainService={activeTerrainService}
             onClose={() => setSelectedMarker(null)}
           />
         </Slot>
@@ -354,7 +489,7 @@ export const App = () => {
             title={t("legend.title")}
             isVisible={isLegendOpen}
             isMobile
-            onOpen={() => setLegendOpen(true)}
+            onOpen={onSidebarOpen}
             onClose={() => setLegendOpen(false)}
             closeText={t("close")}
           >
@@ -382,11 +517,14 @@ export const App = () => {
             districtFilter={districtFilter}
             activeFilters={combinedFilter.active}
             layerFilter={layerFilter}
+            terrainServices={terrainServices}
+            activeTerrainService={activeTerrainServiceKey}
+            onActiveTerrainServiceChange={handleActiveTerrainServiceChange}
           />
         </Slot>
 
         <Slot
-          isVisible={!!selectedMarker}
+          isVisible={!!selectedMarker || !!activeTerrainServiceKey}
           id="desktop-detail"
           position="top-right"
           autoPadding
@@ -395,9 +533,9 @@ export const App = () => {
         >
           <Detail
             ref={detailRef}
-            shouldBeBottomLeftCornerRounded={shouldBeBottomLeftCornerRounded}
             isMobile={false}
             feature={selectedMarker}
+            activeTerrainService={activeTerrainService}
             onClose={() => setSelectedMarker(null)}
           />
         </Slot>

@@ -11,6 +11,9 @@ export default {
     drinkingFountain: "Drinking fountain",
     orientationPoint: "Orientation point",
   },
+  terrainServices: {
+    title: "Terrain services",
+  },
   layersLabel: "Layers",
   filters: {
     title: "Filtering",
@@ -38,6 +41,14 @@ export default {
     },
     drinkingFountain: {
       location: "Location",
+    },
+    terrainService: {
+      provider: "Provider",
+      phone: "Phone",
+      web: "Website",
+      openingHours: "Opening hours",
+      price: "Price",
+      areas: "Areas",
     },
   },
 
