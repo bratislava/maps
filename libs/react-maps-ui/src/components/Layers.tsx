@@ -1,4 +1,4 @@
-import { Eye, EyeCrossed } from "@bratislava/react-maps-icons";
+import { Eye } from "@bratislava/react-maps-icons";
 import { Accordion, AccordionItem, Checkbox } from "@bratislava/react-maps-ui";
 import cx from "classnames";
 import { FC, ReactNode, useCallback } from "react";
@@ -113,11 +113,7 @@ export const Layers = <L extends string>({
                   className="cursor-pointer p-1"
                   onClick={() => layersToggleHandler(layers)}
                 >
-                  {isAnyLayerActive(layers) ? (
-                    <Eye width={18} height={18} />
-                  ) : (
-                    <EyeCrossed width={18} height={18} />
-                  )}
+                  <Eye size="sm" isCrossed={!isAnyLayerActive(layers)} />
                 </button>
               }
             >

@@ -32,3 +32,4 @@ export * from "./TagFilter";
 export * from "./CalendarCell";
 export * from "./CalendarGrid";
 export * from "./RangeCalendar";
+export * from "./ScrollArea";

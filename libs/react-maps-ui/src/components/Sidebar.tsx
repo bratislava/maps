@@ -1,6 +1,7 @@
 import { Chevron, X } from "@bratislava/react-maps-icons";
 import cx from "classnames";
 import { ReactNode } from "react";
+import { ScrollArea } from "./ScrollArea";
 
 export interface ISidebarProps {
   isVisible: boolean;
@@ -59,7 +60,7 @@ export const Sidebar = ({
             tabIndex={0}
             onKeyDown={(e) => e.key === "Enter" && onClose && onClose()}
             className={cx(
-              "absolute bg-background-lightmode dark:bg-background-darkmode z-20 dark:border-r-2 dark:border-b-2 dark:border-gray-darkmode dark:border-opacity-20 py-8 transform hover:text-primary transition-all",
+              "absolute bg-background-lightmode dark:bg-background-darkmode dark:border-r-2 dark:border-b-2 dark:border-gray-darkmode dark:border-opacity-20 py-8 transform hover:text-primary transition-all",
               {
                 "left-0 -translate-x-full rounded-bl-lg": position === "right",
                 "right-0 translate-x-full rounded-br-lg": position === "left",
@@ -104,21 +105,23 @@ export const Sidebar = ({
           </div>
         )}
 
-        <div
-          className={cx(
-            "space-y-6 w-full grow font-medium overflow-auto bg-background pb-3",
-            {
-              "shadow-lg h-full": !isMobile,
-            }
-          )}
-        >
-          {!isMobile && title && (
-            <h1 className="text-lg font-semibold relative z-30 px-6 pt-6 pb-3">
-              {title}
-            </h1>
-          )}
-          {children}
-        </div>
+        <ScrollArea>
+          <div
+            className={cx(
+              "space-y-6 w-full grow font-medium bg-background pb-3",
+              {
+                "shadow-lg h-full": !isMobile,
+              }
+            )}
+          >
+            {!isMobile && title && (
+              <h1 className="text-lg font-semibold relative z-30 px-6 pt-6 pb-3">
+                {title}
+              </h1>
+            )}
+            {children}
+          </div>
+        </ScrollArea>
 
         {isMobile && (
           <button
