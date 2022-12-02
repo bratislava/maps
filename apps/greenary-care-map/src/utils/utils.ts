@@ -13,9 +13,9 @@ export const mapCircleColors: { [index: string]: string | string[] } = {
   invasivePlantsFelling: "#F4B056",
   trimming: ["#FFD400", "#FCE304", "#FFF500", "#FCE300", "#FFE045", "#FEE980", "#FFE600"],
   injectionOfInvasivePlants: "#351900",
-  fallenTreeRemoval: "#BC9F82",
-  mistletoeManagement: "#7F674A",
   stumpRemoval: "#54463B",
+  dendrologicalAssessment: "#7F674A",
+  fallenTreeRemoval: "#BC9F82",
 };
 
 export const mapSlovakTypeToEnglishKey: { [index: string]: string } = {

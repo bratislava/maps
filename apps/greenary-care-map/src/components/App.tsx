@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useResizeDetector } from "react-resize-detector";
 import "../styles.css";
 import { useWindowSize } from "usehooks-ts";
+import { point } from "@turf/helpers";
 
 // maps
 import { Layer, Marker, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
@@ -51,7 +52,6 @@ export const App = () => {
     }[]
   >([]);
 
-  const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
 
   const { data: rawData } = useArcgis(URL);
@@ -125,7 +125,6 @@ export const App = () => {
           types: otherTypes,
         },
       ]);
-      setLoading(false);
     }
   }, [rawData, t]);
 
@@ -254,25 +253,6 @@ export const App = () => {
   const { height: desktopDetailHeight, ref: desktopDetailRef } =
     useResizeDetector<HTMLDivElement>();
 
-  const initialViewport = useMemo(
-    () => ({
-      zoom: 12.229005488986582,
-      center: {
-        lat: 48.148598,
-        lng: 17.107748,
-      },
-    }),
-    [],
-  );
-
-  const mapStyles = useMemo(
-    () => ({
-      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-    }),
-    [],
-  );
-
   const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
     mapRef.current?.moveToFeatures(features);
     setSelectedFeature(features[0] ?? null);
@@ -284,15 +264,16 @@ export const App = () => {
 
   const { height: windowHeight } = useWindowSize();
 
-  return isLoading ? null : (
+  return (
     <Map
       loadingSpinnerColor="#237c36"
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
-      mapStyles={mapStyles}
-      initialViewport={initialViewport}
+      mapStyles={{
+        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+      }}
       isDevelopment={import.meta.env.DEV}
-      isOutsideLoading={isLoading}
       onMapClick={closeDetail}
       selectedFeatures={selectedFeatures}
       onFeaturesClick={onFeaturesClick}
@@ -347,25 +328,6 @@ export const App = () => {
         geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
-
-      {!!selectedFeatures?.length && selectedFeatures[0].geometry.type === "Point" && (
-        <Marker
-          feature={{
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: selectedFeatures[0].geometry.coordinates,
-            },
-            properties: {},
-          }}
-          isRelativeToZoom
-        >
-          <div
-            className="w-4 h-4 bg-background-lightmode dark:bg-background-darkmode border-[2px] rounded-full"
-            style={{ borderColor: selectedFeatures[0].properties?.["color"] }}
-          ></div>
-        </Marker>
-      )}
 
       <Slot
         id="controls"
