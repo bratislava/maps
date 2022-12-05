@@ -13,16 +13,17 @@ export interface DetailProps {
   onClose: () => void;
   isMobile: boolean;
   activeTerrainService: ITerrainService | null;
+  isVisible: boolean;
 }
 
 export const Detail = forwardRef<HTMLDivElement, DetailProps>(
-  ({ feature, onClose, isMobile, activeTerrainService }, forwardedRef) => {
+  ({ feature, onClose, isMobile, activeTerrainService, isVisible }, forwardedRef) => {
     const detailRef = useRef<DetailHandle>(null);
 
-    const [currentSnap, setCurrentSnap] = useState(0);
+    const [currentHeight, setCurrentHeight] = useState(0);
 
-    const onSnapChange = useCallback((snap: number) => {
-      setCurrentSnap(snap);
+    const onSnapChange = useCallback((height: number) => {
+      setCurrentHeight(height);
     }, []);
 
     useEffect(() => {
@@ -39,7 +40,7 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
 
       try {
         const props = mainFeaturePropertiesSchema.parse(feature?.properties);
-        return <MainDetail properties={props} isExpanded={currentSnap === 0 || !isMobile} />;
+        return <MainDetail properties={props} isExpanded={currentHeight !== 84 || !isMobile} />;
       } catch {
         // Who cares?
       }
@@ -52,14 +53,14 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
       }
 
       return null;
-    }, [activeTerrainService, currentSnap, feature, isMobile]);
+    }, [activeTerrainService, currentHeight, feature, isMobile]);
 
     return (
       <MapDetail
         ref={detailRef}
         isBottomSheet={isMobile}
         onClose={onClose}
-        isVisible={!!feature || !!activeTerrainService}
+        isVisible={isVisible}
         bottomSheetSnapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 84]}
         bottomSheetDefaultSnapPointIndex={1}
         onBottomSheetSnapChange={onSnapChange}

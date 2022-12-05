@@ -1,8 +1,6 @@
 import {
   forwardRef,
-  HTMLProps,
   ReactNode,
-  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -25,7 +23,7 @@ export type DetailProps = {
   bottomSheetDefaultSnapPointIndex?: number;
   onClose: () => void;
   isVisible?: boolean;
-  onBottomSheetSnapChange?: (snap: number) => void;
+  onBottomSheetSnapChange?: (height: number) => void;
 };
 
 export type DetailHandle = {
@@ -53,18 +51,20 @@ export const Detail = forwardRef<DetailHandle, DetailProps>(
       targetRef: detailRef,
     });
 
-    const [currentSnap, setCurrentSnap] = useState(0);
+    const [currentSnapHeight, setCurrentSnapHeight] = useState(
+      window.innerHeight,
+    );
 
     useEffect(() => {
-      onBottomSheetSnapChange && onBottomSheetSnapChange(currentSnap);
-    }, [currentSnap, onBottomSheetSnapChange]);
+      onBottomSheetSnapChange && onBottomSheetSnapChange(currentSnapHeight);
+    }, [currentSnapHeight, onBottomSheetSnapChange]);
 
     // Update current snap
-    const onSnapChange = useCallback(() => {
-      requestAnimationFrame(() =>
-        setCurrentSnap(sheetRef.current?.height === 84 ? 1 : 0),
-      );
-    }, []);
+    const onSnapChange = () => {
+      requestAnimationFrame(() => {
+        setCurrentSnapHeight(sheetRef.current?.height ?? 0);
+      });
+    };
 
     const { height: windowHeight } = useWindowSize();
 
@@ -87,7 +87,7 @@ export const Detail = forwardRef<DetailHandle, DetailProps>(
       <Slot
         id="bottom-sheet-detail"
         position="bottom"
-        padding={{ bottom: sheetRef.current?.height }}
+        padding={{ bottom: currentSnapHeight }}
       >
         <BottomSheet
           ref={sheetRef}

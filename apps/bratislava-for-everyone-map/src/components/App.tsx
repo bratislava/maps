@@ -108,18 +108,6 @@ export const App = () => {
     return e;
   }, [districtFilter.expression, layerFilterFixedExpression]);
 
-  const closeDetail = useCallback(() => {
-    setSelectedMarker(null);
-  }, []);
-
-  // close detailbox when sidebar is opened on mobile
-  const onSidebarOpen = useCallback(() => {
-    setSidebarVisible(true);
-    if (isMobile) {
-      closeDetail();
-    }
-  }, [closeDetail, isMobile]);
-
   // close sidebar on mobile and open on desktop
   useEffect(() => {
     // from mobile to desktop
@@ -274,6 +262,11 @@ export const App = () => {
           ?.geojson.features;
         features && mapRef.current?.fitFeature(features);
 
+        // Close filters on mobile
+        if (isMobile) {
+          setSidebarVisible(false);
+        }
+
         if (activeTerrainServiceKey === null) {
           // Remember what layers were visible
           setRememberedActiveLayerKeys(layerFilter.activeKeys);
@@ -285,7 +278,7 @@ export const App = () => {
         layerFilter.setActiveOnly(rememberedActiveLayerKeys, true);
       }
     },
-    [activeTerrainServiceKey, layerFilter, rememberedActiveLayerKeys, terrainServices],
+    [activeTerrainServiceKey, layerFilter, rememberedActiveLayerKeys, terrainServices, isMobile],
   );
 
   // Disable terrain service if
@@ -294,6 +287,17 @@ export const App = () => {
       setActiveTerrainServiceKey(null);
     }
   }, [layerFilter.activeKeys.length]);
+
+  const closeDetail = useCallback(() => {
+    setSelectedMarker(null);
+    if (activeTerrainServiceKey) {
+      handleActiveTerrainServiceChange(null);
+    }
+  }, [handleActiveTerrainServiceChange, activeTerrainServiceKey]);
+
+  const isDetailVisible = useMemo(() => {
+    return (!!selectedMarker || !!activeTerrainServiceKey) && (!isMobile || !isSidebarVisible);
+  }, [isMobile, isSidebarVisible, selectedMarker, activeTerrainServiceKey]);
 
   const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
   const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
@@ -411,6 +415,15 @@ export const App = () => {
         ))}
       </Filter>
 
+      <Detail
+        ref={detailRef}
+        isVisible={isDetailVisible}
+        isMobile={isMobile}
+        feature={selectedMarker}
+        activeTerrainService={activeTerrainService}
+        onClose={closeDetail}
+      />
+
       <Slot
         id="controls"
         position="bottom"
@@ -448,7 +461,7 @@ export const App = () => {
         <Slot id="mobile-header" position="top-right">
           <div className="p-4 flex gap-4">
             <PhoneLinksModal />
-            <IconButton className="shrink-0" onClick={onSidebarOpen}>
+            <IconButton className="shrink-0" onClick={() => setSidebarVisible(true)}>
               <Funnel size="md" />
             </IconButton>
           </div>
@@ -470,26 +483,13 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot
-          id="mobile-detail"
-          position="bottom"
-          padding={{ bottom: window.innerHeight / 2 - 48 }}
-        >
-          <Detail
-            isMobile
-            feature={selectedMarker}
-            activeTerrainService={activeTerrainService}
-            onClose={() => setSelectedMarker(null)}
-          />
-        </Slot>
-
         <Slot isVisible={isLegendOpen} id="mobile-legend" position="top-right">
           <Sidebar
             position="right"
             title={t("legend.title")}
             isVisible={isLegendOpen}
             isMobile
-            onOpen={onSidebarOpen}
+            onOpen={() => setSidebarVisible(true)}
             onClose={() => setLegendOpen(false)}
             closeText={t("close")}
           >
@@ -520,23 +520,6 @@ export const App = () => {
             terrainServices={terrainServices}
             activeTerrainService={activeTerrainServiceKey}
             onActiveTerrainServiceChange={handleActiveTerrainServiceChange}
-          />
-        </Slot>
-
-        <Slot
-          isVisible={!!selectedMarker || !!activeTerrainServiceKey}
-          id="desktop-detail"
-          position="top-right"
-          autoPadding
-          avoidMapboxControls={shouldBeViewportControlsMoved}
-          persistChildrenWhenClosing
-        >
-          <Detail
-            ref={detailRef}
-            isMobile={false}
-            feature={selectedMarker}
-            activeTerrainService={activeTerrainService}
-            onClose={() => setSelectedMarker(null)}
           />
         </Slot>
 
