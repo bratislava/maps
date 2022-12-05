@@ -1,5 +1,5 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
-import { Chevron, Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
+import { Chevron, Eye, Information } from "@bratislava/react-maps-icons";
 import { Modal, Popover } from "@bratislava/react-maps-ui";
 import * as Accordion from "@radix-ui/react-accordion";
 import { keyframes, styled } from "@stitches/react";
@@ -85,7 +85,7 @@ const PrimaryLayerButton = ({
           />
         </div>
         <div>
-          {isActive ? <Eye width={18} height={18} /> : <EyeCrossed width={18} height={18} />}
+          <Eye size="sm" isCrossed={!isActive} />
         </div>
       </button>
     </>
@@ -143,7 +143,7 @@ const SecondaryLayerButton = ({
         })}
       >
         <button onClick={toggle}>
-          {isActive ? <Eye width={18} height={18} /> : <EyeCrossed width={18} height={18} />}
+          <Eye size="sm" isCrossed={!isActive} />
         </button>
         <Accordion.Trigger className="p-[2px]">
           <StyledChevron direction="bottom" size="xs" />
@@ -206,7 +206,9 @@ const SubLayerButton = ({
           />
         )}
       </div>
-      <div>{isActive ? <Eye width={18} height={18} /> : <EyeCrossed width={18} height={18} />}</div>
+      <div>
+        <Eye size="sm" isCrossed={!isActive} />
+      </div>
     </button>
   );
 };

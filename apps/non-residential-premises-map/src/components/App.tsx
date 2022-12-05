@@ -49,7 +49,6 @@ export const App = () => {
     format: "geojson",
   });
 
-  const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
   const [, setUniqueStreets] = useState<string[]>([]);
@@ -66,7 +65,6 @@ export const App = () => {
     if (rawData) {
       const { data, uniqueDistricts, uniquePurposes, uniqueOccupancies, uniqueStreets } =
         processData(rawData);
-      setLoading(false);
       setUniqueDistricts(uniqueDistricts);
       setUniqueStreets(uniqueStreets);
       setUniquePurposes(uniquePurposes);
@@ -313,7 +311,7 @@ export const App = () => {
     return windowHeight < viewportControlsHeight + detailHeight + 40;
   }, [windowHeight, detailHeight, viewportControlsHeight]);
 
-  return isLoading ? null : (
+  return (
     <Map
       loadingSpinnerColor={colors.primary}
       ref={mapRef}
@@ -321,7 +319,6 @@ export const App = () => {
       mapStyles={mapStyles}
       initialViewport={initialViewport}
       isDevelopment={isDevelopment}
-      isOutsideLoading={isLoading}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
       mapInformation={{

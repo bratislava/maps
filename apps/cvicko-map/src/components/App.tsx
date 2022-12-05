@@ -193,10 +193,6 @@ export const App = () => {
     return windowHeight < viewportControlsHeight + detailHeight + 40 && !!selectedFeature;
   }, [windowHeight, detailHeight, viewportControlsHeight, selectedFeature]);
 
-  const shouldBeBottomLeftCornerRounded = useMemo(() => {
-    return windowHeight !== detailHeight;
-  }, [windowHeight, detailHeight]);
-
   return isLoading ? null : (
     <div className="h-full w-full">
       <Map
@@ -210,7 +206,6 @@ export const App = () => {
         }}
         initialViewport={ininialViewport}
         isDevelopment={import.meta.env.DEV}
-        isOutsideLoading={isLoading}
         onMobileChange={setMobile}
         maxBounds={maxBounds}
         onMapClick={closeDetail}

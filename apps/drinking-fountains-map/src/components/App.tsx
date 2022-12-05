@@ -18,7 +18,7 @@ import {
 import { Detail } from "./Detail";
 
 // utils
-import { Feature, FeatureCollection, Point } from "geojson";
+import { Feature, Point } from "geojson";
 import { processData } from "../utils/utils";
 
 import { Modal, Sidebar } from "@bratislava/react-maps-ui";
@@ -26,6 +26,8 @@ import { Trans, useTranslation } from "react-i18next";
 import { ReactComponent as BALogo } from "../assets/ba-logo.svg";
 import { Legend } from "./Legend";
 import { Marker } from "./Marker";
+
+const { data } = processData();
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -35,15 +37,7 @@ export const App = () => {
   }, [t]);
 
   const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
-  const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState<FeatureCollection | null>(null);
   const [isLegendVisible, setLegendVisible] = useState<boolean | undefined>(undefined);
-
-  useEffect(() => {
-    const { data } = processData();
-    setData(data);
-    setLoading(false);
-  }, []);
 
   const mapRef = useRef<MapHandle>(null);
 
@@ -76,7 +70,7 @@ export const App = () => {
     [],
   );
 
-  return isLoading ? null : (
+  return (
     <Map
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
@@ -87,7 +81,6 @@ export const App = () => {
       initialViewport={initialViewport}
       loadingSpinnerColor="#2BACE2"
       isDevelopment={import.meta.env.DEV}
-      isOutsideLoading={isLoading}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
       mapInformationButtonClassName="!top-20 sm:!top-6"

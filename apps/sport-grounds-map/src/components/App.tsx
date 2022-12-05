@@ -48,7 +48,6 @@ export const App = () => {
     document.title = t("tabTitle");
   }, [t]);
 
-  const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
 
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
@@ -66,7 +65,6 @@ export const App = () => {
     setData(data);
     setUniqueDistricts(uniqueDistricts);
     setUniqueTypes(uniqueTypes);
-    setLoading(false);
   }, []);
 
   const mapRef = useRef<MapHandle>(null);
@@ -260,7 +258,7 @@ export const App = () => {
     [],
   );
 
-  return isLoading ? null : (
+  return (
     <Map
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
@@ -270,7 +268,6 @@ export const App = () => {
       }}
       initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
-      isOutsideLoading={isLoading}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
       mapInformation={{

@@ -1,5 +1,5 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
-import { Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
+import { Eye, Information } from "@bratislava/react-maps-icons";
 import { Accordion, AccordionItem, Checkbox, Modal, Popover } from "@bratislava/react-maps-ui";
 import cx from "classnames";
 import { useCallback, useState } from "react";
@@ -92,11 +92,7 @@ export const Layers = ({ filter, layers, tooltips, isMobile }: ILayerProps) => {
                       : filter.setActive(subLayers, true)
                   }
                 >
-                  {filter.isAnyKeyActive(subLayers) ? (
-                    <Eye width={18} height={18} />
-                  ) : (
-                    <EyeCrossed width={18} height={18} />
-                  )}
+                  <Eye isCrossed={!filter.isAnyKeyActive(subLayers)} size="sm" />
                 </button>
               }
             >

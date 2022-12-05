@@ -94,11 +94,7 @@ export const Layers = ({ filter, layers, tooltips, isMobile }: ILayerProps) => {
                       : filter.setActive(subLayers, true)
                   }
                 >
-                  {filter.isAnyKeyActive(subLayers) ? (
-                    <Eye width={18} height={18} />
-                  ) : (
-                    <EyeCrossed width={18} height={18} />
-                  )}
+                  <Eye size="sm" isCrossed={!filter.isAnyKeyActive(subLayers)} />
                 </button>
               }
             >

@@ -51,7 +51,6 @@ export const App = () => {
 
   const [layerCategories, setLayerCategories] = useState<ILayerCategory[]>([]);
 
-  const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<FeatureCollection | null>(null);
 
   const { data: rawData } = useArcgis(URL, { pagination: false, format: "geojson" });
@@ -88,7 +87,6 @@ export const App = () => {
           subLayers: ["replacement-planting"],
         },
       ]);
-      setLoading(false);
     }
   }, [rawData, t]);
 
@@ -230,9 +228,8 @@ export const App = () => {
     [],
   );
 
-  return isLoading ? null : (
+  return (
     <Map
-      loadingSpinnerColor="#237c36"
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={{
@@ -241,7 +238,6 @@ export const App = () => {
       }}
       initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
-      isOutsideLoading={isLoading}
       onFeaturesClick={(features) => setSelectedFeature(features[0])}
       selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}

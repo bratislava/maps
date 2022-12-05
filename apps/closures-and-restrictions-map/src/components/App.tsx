@@ -353,7 +353,6 @@ export const App = () => {
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={mapStyles}
-      isOutsideLoading={isLoading}
       onFeaturesClick={onFeaturesClick}
       selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
