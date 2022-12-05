@@ -1,7 +1,7 @@
-import { PartialViewport, Viewport } from "../../types";
+import { PartialViewport, Viewport } from '../../types';
 
 export enum ViewportActionKind {
-  Change = "Change",
+  Change = 'Change',
 }
 
 interface IViewportChangeAction {
@@ -13,7 +13,7 @@ type ViewportAction = IViewportChangeAction;
 
 export const mergeViewports = (
   viewport: Viewport,
-  partialViewport: PartialViewport
+  partialViewport: PartialViewport,
 ): Viewport => ({
   zoom: partialViewport.zoom ?? viewport.zoom,
   pitch: partialViewport.pitch ?? viewport.pitch,
@@ -32,7 +32,7 @@ export const mergeViewports = (
 
 export const viewportReducer = (
   viewport: Viewport,
-  action: ViewportAction
+  action: ViewportAction,
 ): Viewport => {
   switch (action.type) {
     case ViewportActionKind.Change:
