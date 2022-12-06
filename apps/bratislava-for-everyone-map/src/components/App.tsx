@@ -305,8 +305,10 @@ export const App = () => {
   const { height: windowHeight } = useWindowSize();
 
   const shouldBeViewportControlsMoved = useMemo(() => {
-    return windowHeight < viewportControlsHeight + detailHeight + 40 && !!selectedMarker;
-  }, [windowHeight, detailHeight, viewportControlsHeight, selectedMarker]);
+    return (
+      windowHeight < viewportControlsHeight + detailHeight + 40 && !!selectedMarker && !isMobile
+    );
+  }, [windowHeight, detailHeight, viewportControlsHeight, selectedMarker, isMobile]);
 
   const [isLegendOpen, setLegendOpen] = useState(false);
 

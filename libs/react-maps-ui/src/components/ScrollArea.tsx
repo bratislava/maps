@@ -2,15 +2,16 @@ import {
   Scrollbars,
   positionValues as PositionValues,
 } from "react-custom-scrollbars";
-import { ReactNode, useState } from "react";
+import { ReactNode, UIEventHandler, useState } from "react";
 import { useResizeDetector } from "react-resize-detector";
 import cx from "classnames";
 
 export type ScrollAreaProps = {
   children?: ReactNode;
+  onScroll?: () => void;
 };
 
-export const ScrollArea = ({ children }: ScrollAreaProps) => {
+export const ScrollArea = ({ children, onScroll }: ScrollAreaProps) => {
   const { ref, height = 0 } = useResizeDetector<HTMLDivElement>();
 
   const [isTop, setTop] = useState(true);
@@ -25,8 +26,14 @@ export const ScrollArea = ({ children }: ScrollAreaProps) => {
     setBottom(clientHeight + scrollTop === scrollHeight);
   };
 
+  const handleScroll: UIEventHandler<any> = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log(e);
+  };
+
   return (
-    <div className="h-full w-full relative">
+    <div className="h-full w-full relative" ref={ref}>
       <Scrollbars
         autoHeight
         autoHeightMax={height}
@@ -39,9 +46,7 @@ export const ScrollArea = ({ children }: ScrollAreaProps) => {
         )}
         onUpdate={handleUpdate}
       >
-        <div ref={ref} className="relative max-h-screen">
-          {children}
-        </div>
+        {children}
       </Scrollbars>
       <div
         className={cx(
