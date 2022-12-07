@@ -6,12 +6,12 @@ import {
   useMemo,
   useState,
   forwardRef,
+  useImperativeHandle,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { SnapPoint } from '../types';
 import { motion, PanInfo, useAnimation } from 'framer-motion';
 import { useResizeDetector } from 'react-resize-detector';
-import { useWindowSize } from 'usehooks-ts';
 import { getClosestSnapPoint } from '../utils/getClosestSnapPoint';
 import { usePrevious } from '@bratislava/utils';
 
@@ -50,7 +50,7 @@ export const Sheet = forwardRef<SheetRef, SheetProps>(
       className,
       onSnapChange,
     },
-    forwaredRef
+    forwardedRef
   ) => {
     const previousOpen = usePrevious(isOpen);
 
@@ -87,7 +87,6 @@ export const Sheet = forwardRef<SheetRef, SheetProps>(
     const animation = useAnimation();
 
     const [y, setY] = useState(0);
-    const [resultDebugY, setResultDebugY] = useState(0);
 
     const animateTo = useCallback(
       (value: number) => {
@@ -114,8 +113,6 @@ export const Sheet = forwardRef<SheetRef, SheetProps>(
           return;
         }
 
-        setResultDebugY(resultY);
-
         // Calculate nearest snapPoint
         const closestSnapPoint = getClosestSnapPoint(
           absoluteSnapPoints,
@@ -128,7 +125,6 @@ export const Sheet = forwardRef<SheetRef, SheetProps>(
 
     const snapTo = useCallback(
       (index: number) => {
-        console.log('snapTo', index);
         animateTo(absoluteSnapPoints[index] ?? 0);
         setCurrentSnapIndex(index);
       },
@@ -136,7 +132,6 @@ export const Sheet = forwardRef<SheetRef, SheetProps>(
     );
 
     useEffect(() => {
-      console.log('snapChange', currentSnapIndex);
       onSnapChange &&
         onSnapChange({
           snapIndex: currentSnapIndex,
@@ -170,6 +165,14 @@ export const Sheet = forwardRef<SheetRef, SheetProps>(
         currentHeight: y,
       }),
       [y]
+    );
+
+    useImperativeHandle(
+      forwardedRef,
+      () => ({
+        snapTo,
+      }),
+      [snapTo]
     );
 
     return createPortal(
@@ -224,7 +227,7 @@ export const Sheet = forwardRef<SheetRef, SheetProps>(
             left: 0,
             top: screenHeight,
             width: '100vw',
-            paddingBottom: screenHeight,
+            paddingBottom: screenHeight * 2,
           }}
           onDragEnd={onDragEnd}
           className={className}
