@@ -2,7 +2,7 @@ import {
   Scrollbars,
   positionValues as PositionValues,
 } from "react-custom-scrollbars";
-import { ReactNode, UIEventHandler, useState } from "react";
+import { ReactNode, useState } from "react";
 import { useResizeDetector } from "react-resize-detector";
 import cx from "classnames";
 
@@ -11,8 +11,9 @@ export type ScrollAreaProps = {
   onScroll?: () => void;
 };
 
-export const ScrollArea = ({ children, onScroll }: ScrollAreaProps) => {
-  const { ref, height = 0 } = useResizeDetector<HTMLDivElement>();
+export const ScrollArea = ({ children }: ScrollAreaProps) => {
+  const { ref: innerRef, height: innerHeight = 0 } =
+    useResizeDetector<HTMLDivElement>();
 
   const [isTop, setTop] = useState(true);
   const [isBottom, setBottom] = useState(false);
@@ -26,44 +27,47 @@ export const ScrollArea = ({ children, onScroll }: ScrollAreaProps) => {
     setBottom(clientHeight + scrollTop === scrollHeight);
   };
 
-  const handleScroll: UIEventHandler<any> = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log(e);
-  };
-
   return (
-    <div className="h-full w-full relative" ref={ref}>
-      <Scrollbars
-        autoHeight
-        autoHeightMax={height}
-        hideTracksWhenNotNeeded
-        autoHide
-        renderThumbVertical={() => (
-          <div className="bg-background-lightmode dark:bg-background-darkmode z-50 rounded-full">
-            <div className="bg-gray-lightmode/20 dark:bg-gray-darkmode/20 rounded-full h-full" />
-          </div>
-        )}
-        onUpdate={handleUpdate}
+    <>
+      <div
+        className="invisible select-none pointer-events-none absolute max-h-screen w-full -z-50"
+        ref={innerRef}
       >
         {children}
-      </Scrollbars>
-      <div
-        className={cx(
-          "pointer-events-none absolute z-50 w-full top-0 h-10 overflow-hidden transition-opacity duration-500",
-          { "opacity-0": isTop }
-        )}
-      >
-        <div className="w-full h-full -translate-y-10 shadow-[0_-8px_16px_16px_rgba(0,0,0,0.2)] dark:shadow-[0_-8px_16px_16px_rgba(0,0,0,0.5)]" />
       </div>
-      <div
-        className={cx(
-          "pointer-events-none absolute z-50 w-full bottom-0 h-10 overflow-hidden transition-opacity duration-500",
-          { "opacity-0": isBottom }
-        )}
-      >
-        <div className="w-full h-full translate-y-10 shadow-[0_8px_16px_16px_rgba(0,0,0,0.2)] dark:shadow-[0_8px_16px_16px_rgba(0,0,0,0.5)]" />
+      <div className="h-full w-full relative">
+        {/* INVISIBLE CHILDREN FOR HEIGHT CALCULATIONS */}
+        <Scrollbars
+          autoHeight
+          autoHeightMax={innerHeight}
+          hideTracksWhenNotNeeded
+          autoHide
+          renderThumbVertical={() => (
+            <div className="bg-background-lightmode dark:bg-background-darkmode z-50 rounded-full">
+              <div className="bg-gray-lightmode/20 dark:bg-gray-darkmode/20 rounded-full h-full" />
+            </div>
+          )}
+          onUpdate={handleUpdate}
+        >
+          <div>{children}</div>
+        </Scrollbars>
+        <div
+          className={cx(
+            "pointer-events-none absolute z-50 w-full top-0 h-10 overflow-hidden transition-opacity duration-500",
+            { "opacity-0": isTop }
+          )}
+        >
+          <div className="w-full h-full -translate-y-10 shadow-[0_-8px_16px_16px_rgba(0,0,0,0.2)] dark:shadow-[0_-8px_16px_16px_rgba(0,0,0,0.5)]" />
+        </div>
+        <div
+          className={cx(
+            "pointer-events-none absolute z-50 w-full bottom-0 h-10 overflow-hidden transition-opacity duration-500",
+            { "opacity-0": isBottom }
+          )}
+        >
+          <div className="w-full h-full translate-y-10 shadow-[0_8px_16px_16px_rgba(0,0,0,0.2)] dark:shadow-[0_8px_16px_16px_rgba(0,0,0,0.5)]" />
+        </div>
       </div>
-    </div>
+    </>
   );
 };

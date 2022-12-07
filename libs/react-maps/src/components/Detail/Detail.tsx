@@ -91,7 +91,7 @@ export const Detail = forwardRef<SheetHandle, DetailProps>(
         <div
           ref={detailRef}
           className={cx(
-            'w-96 bg-background-lightmode dark:bg-background-darkmode  border-l-2 border-b-2 border-[transparent] dark:border-gray-darkmode/20',
+            'w-96 bg-background-lightmode dark:bg-background-darkmode max-h-full border-l-2 border-b-2 border-[transparent] dark:border-gray-darkmode/20',
             {
               'shadow-lg': isVisible,
               'rounded-bl-lg': shouldBeBottomLeftCornerRounded,
