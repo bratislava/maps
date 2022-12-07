@@ -39,4 +39,5 @@ export default {
     footer: "Zanechajte nám spätnú väzbu na <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },
+  noImage: "Žiaden obrázok",
 };
