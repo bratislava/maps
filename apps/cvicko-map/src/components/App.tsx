@@ -63,7 +63,7 @@ export const App = () => {
 
   // set event listeners
   useEffect(() => {
-    const cancelAnimation = (event: any) => {
+    const cancelAnimation = (event: KeyboardEvent) => {
       if (event.keyCode === 27) stopAnimation();
     };
 
