@@ -57,6 +57,14 @@ export const Slot = ({
   const debouncedVisible = useDebounce(isVisible, 10);
   const [persistedChildren, setPersistedChildren] = useState(children);
 
+  const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 200);
+  }, []);
+
   const { ref, width = 0, height = 0 } = useResizeDetector();
 
   const calculatedHidingEdge: VerticalPosition | HorizontalPosition | null =
@@ -164,22 +172,22 @@ export const Slot = ({
   }, [mountOrUpdateSlot, slotState, unmountSlot]);
 
   const x = useMemo(() => {
-    if (!debouncedVisible) {
+    if (!debouncedVisible || isLoading) {
       if (calculatedHidingEdge === 'left') return '-100%';
       if (calculatedHidingEdge === 'right') return '100%';
       return 0;
     }
     return 0;
-  }, [debouncedVisible, calculatedHidingEdge]);
+  }, [debouncedVisible, calculatedHidingEdge, isLoading]);
 
   const y = useMemo(() => {
-    if (!debouncedVisible) {
+    if (!debouncedVisible || isLoading) {
       if (calculatedHidingEdge === 'top') return '-100%';
       if (calculatedHidingEdge === 'bottom') return '100%';
       return 0;
     }
     return 0;
-  }, [debouncedVisible, calculatedHidingEdge]);
+  }, [debouncedVisible, calculatedHidingEdge, isLoading]);
 
   // Update children after animation complete
   const onAnimationComplete = useCallback(() => {
@@ -200,7 +208,7 @@ export const Slot = ({
         x,
         y,
       }}
-      transition={{ ease: 'easeInOut', duration: 0.5 }}
+      transition={{ ease: 'easeInOut', duration: isLoading ? 0 : 0.5 }}
       onAnimationComplete={onAnimationComplete}
       className={cx(
         'fixed z-20',
