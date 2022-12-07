@@ -10,7 +10,7 @@ import { ReactComponent as CvickoNabreziecon } from "../assets/icons/cvicko-nabr
 
 import { ReactComponent as OtherCvickoIcon } from "../assets/icons/cvicko-other.svg";
 import { useTranslation } from "react-i18next";
-import { FC, FunctionComponent, SVGProps, useMemo, useState } from "react";
+import { FunctionComponent, SVGProps, useMemo, useState } from "react";
 
 const cvickoIdToIconComponentObject: {
   [cvickoId: string]: FunctionComponent<
@@ -54,7 +54,7 @@ export const CvickoMarker = ({
   isSelected,
   onClick,
 }: ICvickoMarkerProps) => {
-  const { t } = useTranslation();
+  const { t }: { t: (key: string) => string } = useTranslation();
 
   const [isHovered, setHovered] = useState(false);
 
