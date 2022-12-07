@@ -36,7 +36,7 @@ export const RunningTrackButtonMarker = ({
         className="flex text-white px-3 gap-2 h-12 items-center rounded-lg cursor-pointer shadow-lg"
         style={{ background: color }}
       >
-        <span className="font-semibold text-md w-20">{length}</span>
+        <div className="font-semibold text-md whitespace-nowrap">{length}</div>
         <PlayIcon width={24} />
       </motion.button>
     </Marker>
