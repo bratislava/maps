@@ -61,6 +61,17 @@ export const App = () => {
   const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
 
+  // set event listeners
+  useEffect(() => {
+    const cancelAnimation = (event: any) => {
+      if (event.keyCode === 27) stopAnimation();
+    };
+
+    document.addEventListener('keydown', cancelAnimation);
+
+    return () => document.removeEventListener('keydown', cancelAnimation);
+  }, []);
+
   // change page title according to current selected cvicko
   useEffect(() => {
     document.title = currentCvickoId
@@ -113,14 +124,14 @@ export const App = () => {
         line === "apollo-rt"
           ? apolloDetailedStyles
           : line === "old-bridge-rt"
-          ? oldDetailedStyles
-          : line === "snp-rt"
-          ? snpDetailedStyles
-          : line === "small-rt"
-          ? smallDetailedStyles
-          : line === "large-rt"
-          ? largeDetailedStyles
-          : [];
+            ? oldDetailedStyles
+            : line === "snp-rt"
+              ? snpDetailedStyles
+              : line === "small-rt"
+                ? smallDetailedStyles
+                : line === "large-rt"
+                  ? largeDetailedStyles
+                  : [];
 
       setAnimatedLineStyles(animatedLineStyles);
 
@@ -128,17 +139,17 @@ export const App = () => {
         line === "apollo-rt"
           ? apolloDetailedCoordinates
           : line === "old-bridge-rt"
-          ? oldDetailedCoordinates
-          : line === "snp-rt"
-          ? snpDetailedCoordinates
-          : line === "small-rt"
-          ? smallDetailedCoordinates
-          : line === "large-rt"
-          ? largeDetailedCoordinates
-          : [
-              [0, 0],
-              [0, 0],
-            ];
+            ? oldDetailedCoordinates
+            : line === "snp-rt"
+              ? snpDetailedCoordinates
+              : line === "small-rt"
+                ? smallDetailedCoordinates
+                : line === "large-rt"
+                  ? largeDetailedCoordinates
+                  : [
+                    [0, 0],
+                    [0, 0],
+                  ];
 
       setAnimatedLineCoordinates(animatedLineCoordinates);
 
