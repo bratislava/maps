@@ -364,7 +364,7 @@ export const App = () => {
           {isAnimating ? (
             <IconButton
               onClick={() => stopAnimation()}
-              className="fixed top-4 right-4 w-16 h-16 rounded-full"
+              className="fixed top-4 right-4 w-16 h-16 !rounded-full"
             >
               <X size="lg" />
             </IconButton>
