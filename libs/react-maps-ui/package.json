@@ -50,5 +50,8 @@
   "scripts": {
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
+  },
+  "dependencies": {
+    "popmotion": "^11.0.5"
   }
 }
