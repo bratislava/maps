@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 
 import { ReactComponent as PlayIcon } from "../assets/icons/play.svg";
 
-import { useTranslation } from "react-i18next";
 import { point } from "@turf/helpers";
 
 export interface IRunningTrackButtonMarkerProps {
@@ -24,7 +23,7 @@ export const RunningTrackButtonMarker = ({
   onClick,
   isVisible,
   isSmall = false,
-}: IRunningTrackButtonMarkerProps) => {
+}: IRunningTrackButtonMarkerProps): JSX.Element => {
   return (
     <Marker
       isRelativeToZoom
@@ -37,7 +36,7 @@ export const RunningTrackButtonMarker = ({
         className="flex text-white px-3 gap-2 h-12 items-center rounded-lg cursor-pointer shadow-lg"
         style={{ background: color }}
       >
-        <span className="font-semibold text-md">{length}</span>
+        <div className="font-semibold text-md whitespace-nowrap">{length}</div>
         <PlayIcon width={24} />
       </motion.button>
     </Marker>
