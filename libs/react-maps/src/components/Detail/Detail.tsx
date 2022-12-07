@@ -2,86 +2,63 @@ import {
   forwardRef,
   ReactNode,
   useEffect,
-  useImperativeHandle,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet';
-import { snapPoints } from 'react-spring-bottom-sheet/dist/types';
 import cx from 'classnames';
 import { Slot } from '../Layout/Slot';
 import { useWindowSize } from 'usehooks-ts';
 import { useResizeDetector } from 'react-resize-detector';
-import { IconButton, ScrollArea } from '@bratislava/react-maps-ui';
+import {
+  BottomSheet,
+  IconButton,
+  ScrollArea,
+  SheetHandle,
+} from '@bratislava/react-maps-ui';
 import { X } from '@bratislava/react-maps-icons';
+import { SnapPoint } from '@bratislava/react-framer-motion-bottom-sheet';
 
 export type DetailProps = {
   children?: ReactNode;
   isBottomSheet?: boolean;
-  bottomSheetSnapPoints?: snapPoints;
-  bottomSheetDefaultSnapPointIndex?: number;
+  bottomSheetSnapPoints?: SnapPoint[];
+  bottomSheetInitialSnap?: number;
   onClose: () => void;
   isVisible?: boolean;
   onBottomSheetSnapChange?: (height: number) => void;
 };
 
-export type DetailHandle = {
-  snapTo: (index: number) => void;
-};
-
-export const Detail = forwardRef<DetailHandle, DetailProps>(
+export const Detail = forwardRef<SheetHandle, DetailProps>(
   (
     {
       children,
       isBottomSheet = false,
-      bottomSheetSnapPoints = ({ maxHeight }) => [maxHeight, maxHeight / 2, 84],
-      bottomSheetDefaultSnapPointIndex = 1,
+      bottomSheetSnapPoints,
+      bottomSheetInitialSnap = 1,
       onClose,
       isVisible = true,
       onBottomSheetSnapChange,
-      ...rest
     },
     forwardedRef,
   ) => {
-    const sheetRef = useRef<BottomSheetRef>(null);
-
     const detailRef = useRef<HTMLDivElement>(null);
     const { height: detailHeight = 0 } = useResizeDetector({
       targetRef: detailRef,
     });
 
-    const [currentSnapHeight, setCurrentSnapHeight] = useState(
-      window.innerHeight,
-    );
+    const [currentSnap, setCurrentSnap] = useState(0);
+    const [currentSnapHeight, setCurrentSnapHeight] = useState(0);
 
     useEffect(() => {
-      onBottomSheetSnapChange && onBottomSheetSnapChange(currentSnapHeight);
-    }, [currentSnapHeight, onBottomSheetSnapChange]);
-
-    // Update current snap
-    const onSnapChange = () => {
-      requestAnimationFrame(() => {
-        setCurrentSnapHeight(sheetRef.current?.height ?? 0);
-      });
-    };
+      onBottomSheetSnapChange && onBottomSheetSnapChange(currentSnap);
+    }, [currentSnap, onBottomSheetSnapChange]);
 
     const { height: windowHeight } = useWindowSize();
 
     const shouldBeBottomLeftCornerRounded = useMemo(() => {
       return windowHeight > detailHeight;
     }, [detailHeight, windowHeight]);
-
-    useImperativeHandle(
-      forwardedRef,
-      () => ({
-        snapTo: (snapIndex: number) => {
-          sheetRef.current?.snapTo(({ snapPoints }) => snapPoints[snapIndex]);
-        },
-        ...rest,
-      }),
-      [rest],
-    );
 
     return isBottomSheet ? (
       <Slot
@@ -90,16 +67,14 @@ export const Detail = forwardRef<DetailHandle, DetailProps>(
         padding={{ bottom: currentSnapHeight }}
       >
         <BottomSheet
-          ref={sheetRef}
+          ref={forwardedRef}
           snapPoints={bottomSheetSnapPoints}
-          defaultSnap={({ snapPoints }) =>
-            snapPoints[bottomSheetDefaultSnapPointIndex]
-          }
-          expandOnContentDrag
-          blocking={false}
-          className="relative z-30"
-          open={isVisible}
-          onSpringStart={onSnapChange}
+          defaultSnapPoint={bottomSheetInitialSnap}
+          isOpen={isVisible}
+          onSnapChange={({ snapHeight, snapIndex }) => {
+            setCurrentSnapHeight(snapHeight), setCurrentSnap(snapIndex);
+          }}
+          onClose={onClose}
         >
           <div className="text-foreground-lightmode dark:text-foreground-darkmode">
             {children}
@@ -116,7 +91,7 @@ export const Detail = forwardRef<DetailHandle, DetailProps>(
         <div
           ref={detailRef}
           className={cx(
-            'w-96 bg-background-lightmode dark:bg-background-darkmode  border-l-2 border-b-2 border-[transparent] dark:border-gray-darkmode/20',
+            'w-96 bg-background-lightmode dark:bg-background-darkmode max-h-full border-l-2 border-b-2 border-[transparent] dark:border-gray-darkmode/20',
             {
               'shadow-lg': isVisible,
               'rounded-bl-lg': shouldBeBottomLeftCornerRounded,

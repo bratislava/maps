@@ -1,20 +1,38 @@
-import { ReactNode, useRef } from "react";
+import { forwardRef } from "react";
 import {
-  BottomSheet as ReactSpringBottomSheet,
-  BottomSheetRef as ReactSpringBottomSheetRef,
-} from "react-spring-bottom-sheet";
-import "react-spring-bottom-sheet/dist/style.css";
+  Sheet,
+  Header,
+  Content,
+  SheetRef,
+  SheetProps,
+} from "@bratislava/react-framer-motion-bottom-sheet";
 
-export interface IBottomSheet {
-  isOpen?: boolean;
-  children?: ReactNode;
-}
+export type SheetHandle = SheetRef;
 
-export const BottomSheet = ({ isOpen = false, children }: IBottomSheet) => {
-  const sheetRef = useRef<ReactSpringBottomSheetRef>(null);
-  return (
-    <ReactSpringBottomSheet ref={sheetRef} open={isOpen}>
-      {children}
-    </ReactSpringBottomSheet>
-  );
-};
+export type BottomSheetProps = Omit<SheetProps, "className">;
+
+export const BottomSheet = forwardRef<SheetRef, BottomSheetProps>(
+  ({ onClose, children, ...props }, ref) => {
+    const handleClose = () => {
+      onClose && onClose();
+    };
+
+    return (
+      <Sheet
+        ref={ref}
+        onClose={handleClose}
+        {...props}
+        className="bg-background-lightmode dark:bg-background-darkmode z-30 shadow-lg"
+      >
+        <Header>
+          <div className="flex pt-3 items-center justify-center border-t-[2px] border-background-lightmode dark:border-gray-darkmode/20">
+            <div className="w-12 h-[4px] rounded-full bg-gray-lightmode/20 dark:bg-gray-darkmode/20"></div>
+          </div>
+        </Header>
+        <Content>{children}</Content>
+      </Sheet>
+    );
+  }
+);
+
+BottomSheet.displayName = "BottomSheet";

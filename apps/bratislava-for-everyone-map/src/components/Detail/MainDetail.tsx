@@ -55,7 +55,7 @@ export const MainDetail = ({ properties, className, isExpanded }: IMainDetailPro
   }, [properties]);
 
   return (
-    <div className="max-h-screen">
+    <div>
       <motion.div layout className="flex flex-col p-6">
         <AnimateHeight isVisible={!isExpanded}>
           <DataDisplay label={detailT("name")} text={properties.name} />

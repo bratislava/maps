@@ -37,6 +37,7 @@
     "react-aria": "^3.20.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^11.17.3",
+    "react-modal-sheet": "^1.8.1",
     "react-popper": "^2.3.0",
     "react-resize-detector": "^7.1.2",
     "react-spring": "9.4.5",
@@ -49,5 +50,8 @@
   "scripts": {
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
+  },
+  "dependencies": {
+    "popmotion": "^11.0.5"
   }
 }
