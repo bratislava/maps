@@ -8,12 +8,14 @@ import { useWindowSize } from "usehooks-ts";
 // maps
 import { Slot, MapHandle, Map, ThemeController, ViewportController } from "@bratislava/react-maps";
 
-import { AnimationChangeEvent, LineString } from "@bratislava/react-mapbox";
+import { AnimationChangeEvent, Cluster, LineString } from "@bratislava/react-mapbox";
 
 // utils
 import { getCvickoIdFromQuery, getIsHomepageFromQuery } from "../utils/utils";
+import { processFountainData } from "../utils/fountainUtil";
 import { Trans, useTranslation } from "react-i18next";
 import { CvickoMarker } from "./CvickoMarker";
+import DrinkingFountainMarker from "../components/DrinkingFountainMarker";
 
 import { coordinates as apolloBasicCoordinates } from "../assets/layers/running-tracks/basic/apollo";
 import { coordinates as largeBasicCoordinates } from "../assets/layers/running-tracks/basic/large";
@@ -40,7 +42,7 @@ import smallDetailedStyles from "../assets/layers/running-tracks/detailed/small-
 import snpDetailedStyles from "../assets/layers/running-tracks/detailed/snp-styles";
 
 import { cvickoData } from "../assets/layers/cvicko/cvicko-data";
-import { Feature, Point } from "geojson";
+import type { Feature, Point } from "geojson";
 import Detail from "./Detail";
 import { RunningTrackButtonMarker } from "./RunningTrackButtonMarker";
 import { colors } from "../utils/colors";
@@ -48,6 +50,9 @@ import { IconButton } from "@bratislava/react-maps-ui";
 import { X } from "@bratislava/react-maps-icons";
 import { useQuery } from "../utils/useQuery";
 import { useResizeDetector } from "react-resize-detector";
+import FountainDetail from "./FountainDetail";
+
+export type TSelectedFeature = Feature<Point> | null;
 
 export const App = () => {
   const mapRef = useRef<MapHandle>(null);
@@ -58,8 +63,27 @@ export const App = () => {
   const isHomepage = useQuery("homepage", getIsHomepageFromQuery);
 
   const [isLoading, setLoading] = useState(true);
-  const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<TSelectedFeature>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
+
+  const [selectedFountain, setSelectedFountain] = useState<TSelectedFeature>(null);
+  const { data } = processFountainData();
+
+  const featureClickHandler = (
+    feature: TSelectedFeature = null,
+    fountain: TSelectedFeature = null) => {
+    setSelectedFeature(feature);
+    setSelectedFountain(fountain);
+    const data = feature || fountain;
+
+    data &&
+      mapRef.current?.changeViewport({
+        center: {
+          lng: data.geometry.coordinates[0],
+          lat: data.geometry.coordinates[1],
+        },
+      });
+  }
 
   // change page title according to current selected cvicko
   useEffect(() => {
@@ -70,6 +94,7 @@ export const App = () => {
 
   const closeDetail = useCallback(() => {
     setSelectedFeature(null);
+    setSelectedFountain(null);
   }, []);
 
   // set selected feature based on query
@@ -113,14 +138,14 @@ export const App = () => {
         line === "apollo-rt"
           ? apolloDetailedStyles
           : line === "old-bridge-rt"
-          ? oldDetailedStyles
-          : line === "snp-rt"
-          ? snpDetailedStyles
-          : line === "small-rt"
-          ? smallDetailedStyles
-          : line === "large-rt"
-          ? largeDetailedStyles
-          : [];
+            ? oldDetailedStyles
+            : line === "snp-rt"
+              ? snpDetailedStyles
+              : line === "small-rt"
+                ? smallDetailedStyles
+                : line === "large-rt"
+                  ? largeDetailedStyles
+                  : [];
 
       setAnimatedLineStyles(animatedLineStyles);
 
@@ -128,17 +153,17 @@ export const App = () => {
         line === "apollo-rt"
           ? apolloDetailedCoordinates
           : line === "old-bridge-rt"
-          ? oldDetailedCoordinates
-          : line === "snp-rt"
-          ? snpDetailedCoordinates
-          : line === "small-rt"
-          ? smallDetailedCoordinates
-          : line === "large-rt"
-          ? largeDetailedCoordinates
-          : [
-              [0, 0],
-              [0, 0],
-            ];
+            ? oldDetailedCoordinates
+            : line === "snp-rt"
+              ? snpDetailedCoordinates
+              : line === "small-rt"
+                ? smallDetailedCoordinates
+                : line === "large-rt"
+                  ? largeDetailedCoordinates
+                  : [
+                    [0, 0],
+                    [0, 0],
+                  ];
 
       setAnimatedLineCoordinates(animatedLineCoordinates);
 
@@ -242,6 +267,41 @@ export const App = () => {
           ),
         }}
       >
+
+        <Cluster features={data?.features ?? []} radius={24}>
+          {({ features, lng, lat, key, clusterExpansionZoom }) =>
+            features.length === 1 ? (
+              <DrinkingFountainMarker
+                key={key}
+                feature={features[0]}
+                isSelected={selectedFountain?.id === features[0].properties?.id}
+                onClick={featureClickHandler}
+              />
+            ) : (
+              <DrinkingFountainMarker
+                key={key}
+                feature={{
+                  ...features[0],
+                  geometry: {
+                    type: "Point",
+                    coordinates: [lng, lat],
+                  },
+                }}
+                count={features.length}
+                onClick={() =>
+                  mapRef.current?.changeViewport({
+                    zoom: clusterExpansionZoom ?? 0,
+                    center: {
+                      lat,
+                      lng,
+                    },
+                  })
+                }
+              />
+            )
+          }
+        </Cluster>
+
         {/* Apollo running track animation button */}
         <RunningTrackButtonMarker
           isVisible={!isAnimating}
@@ -303,7 +363,7 @@ export const App = () => {
             key={cvickoFeature.properties?.id}
             feature={cvickoFeature}
             cvickoId={cvickoFeature.properties?.id}
-            onClick={() => setSelectedFeature(cvickoFeature)}
+            onClick={() => featureClickHandler(cvickoFeature)}
           />
         ))}
 
@@ -390,15 +450,23 @@ export const App = () => {
           // padding={{ bottom: isMobile ? ((containerHeight ?? 0) / 5) * 3 : 0 }}
           autoPadding={!isMobile}
           avoidMapboxControls={shouldBeViewportControlsMoved ? true : false}
-          isVisible={!!selectedFeature}
+          isVisible={!!selectedFeature || !!selectedFountain}
         >
-          <Detail
-            ref={detailRef}
-            currentCvickoId={currentCvickoId}
-            onClose={closeDetail}
-            isMobile={isMobile ?? false}
-            feature={selectedFeature}
-          />
+
+          {selectedFeature &&
+            <Detail
+              ref={detailRef}
+              currentCvickoId={currentCvickoId}
+              onClose={closeDetail}
+              isMobile={isMobile ?? false}
+              feature={selectedFeature}
+            />
+          }
+
+          {selectedFountain &&
+            <FountainDetail isMobile={isMobile ?? false} feature={selectedFountain} onClose={closeDetail} />
+          }
+
         </Slot>
       </Map>
     </div>
