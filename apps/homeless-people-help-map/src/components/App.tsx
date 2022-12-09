@@ -30,7 +30,7 @@ import { processData } from "../utils/utils";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { Point, Feature } from "geojson";
 import { IconButton, Modal, Sidebar } from "@bratislava/react-maps-ui";
-import { Funnel } from "@bratislava/react-maps-icons";
+import { Chevron, Funnel } from "@bratislava/react-maps-icons";
 import { Filters } from "./Filters";
 import { Detail } from "./Detail";
 import { PhoneLinksModal } from "./PhoneLinksModal";
@@ -312,6 +312,8 @@ export const App = () => {
 
   const [isLegendOpen, setLegendOpen] = useState(false);
 
+  const [isWelcomeModalOpen, setWelcomeModalOpen] = useState(true);
+
   return (
     <Map
       loadingSpinnerColor="#F1B830"
@@ -457,6 +459,18 @@ export const App = () => {
         <div className="pointer-events-auto shadow-lg rounded-lg sm:hidden">
           <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
         </div>
+      </Slot>
+
+      <Slot id="welcome-modal">
+        <Modal
+          overlayClassName="max-w-lg"
+          title={t("welcomeModal.title")}
+          isOpen={isWelcomeModalOpen}
+          onClose={() => setWelcomeModalOpen(false)}
+          closeButtonIcon={<Chevron className="text-white" direction="right" />}
+        >
+          <div>{t("welcomeModal.description")}</div>
+        </Modal>
       </Slot>
 
       <Layout isOnlyMobile>
