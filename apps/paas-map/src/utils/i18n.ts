@@ -6,7 +6,8 @@ import skTranslation from "../translations/sk";
 import { i18n as ReactMapsI18n } from "@bratislava/react-maps";
 
 const getLangFromQuery = () => {
-  const langQuery = window.location.pathname.split("/")[1].split(".html")[0];
+  const pathnameArray = window.location.pathname.split("/");
+  const langQuery = pathnameArray[pathnameArray.length - 1].split(".html")[0];
   if (langQuery === "sk" || langQuery === "en") {
     return langQuery;
   } else {
