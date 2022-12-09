@@ -469,7 +469,7 @@ export const App = () => {
           onClose={() => setWelcomeModalOpen(false)}
           closeButtonIcon={<Chevron className="text-white" direction="right" />}
         >
-          <div>{t("welcomeModal.description")}</div>
+          <div className="pb-4">{t("welcomeModal.description")}</div>
         </Modal>
       </Slot>
 
