@@ -108,10 +108,11 @@ export default {
   activeFilters: "Active filters",
   resetFilters: "Reset filters",
   informationModal: {
-    title: "Map information",
-    description: "Map of help to homeless people.",
-    footer:
+    title: "Map of help to homeless people.",
+    description:
       "Did you find outdated information or did you not find what you were looking for? Write to us at <1>sekciasocialnychveci@bratislava.sk</1> and help us improve the map. You can find more about activities in the social field on the website of the capital, in the section social services and housing.",
-    footerLink: "mailto:sekciasocialnychveci@bratislava.sk",
+    descriptionLink: "mailto:sekciasocialnychveci@bratislava.sk",
+    footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
+    footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },
 };
