@@ -1,6 +1,5 @@
 export default {
-  title: "Bratislava pre všetkých",
-  tabTitle: "Bratislava pre všetkých",
+  title: "Mapa pomoci ľudom bez domova",
   search: "Hľadať",
   close: "Zavrieť",
   loading: "Načítavanie",
