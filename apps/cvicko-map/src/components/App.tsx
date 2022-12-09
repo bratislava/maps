@@ -61,17 +61,6 @@ export const App = () => {
   const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
 
-  // set event listeners
-  useEffect(() => {
-    const cancelAnimation = (event: KeyboardEvent) => {
-      if (event.keyCode === 27) stopAnimation();
-    };
-
-    document.addEventListener('keydown', cancelAnimation);
-
-    return () => document.removeEventListener('keydown', cancelAnimation);
-  }, []);
-
   // change page title according to current selected cvicko
   useEffect(() => {
     document.title = currentCvickoId
@@ -174,6 +163,17 @@ export const App = () => {
   useEffect(() => {
     setLoading(false);
   }, []);
+
+  // set event listeners
+  useEffect(() => {
+    const cancelAnimation = (event: KeyboardEvent) => {
+      if (event.code === 'Escape') stopAnimation();
+    };
+
+    document.addEventListener('keydown', cancelAnimation);
+
+    return () => document.removeEventListener('keydown', cancelAnimation);
+  }, [stopAnimation]);
 
   const ininialViewport = useMemo(
     () => ({
