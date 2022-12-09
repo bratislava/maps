@@ -53,14 +53,7 @@ export const ParkingLotDetail = ({ properties }: ParkingLotDetailProps) => {
         text={language === "sk" ? properties["Nazov_sk"] : properties["Nazov_en"]}
       />
 
-      {properties["Prevadzkova_doba"] && properties["Nazov_sk"] === "P+R Jasovská" ? (
-        <Note className="bg-[#D83728]/20 dark:bg-[#D83728]/20 flex flex-col gap-2">
-          <WarningIcon />
-          <div>{properties["Prevadzkova_doba"]}</div>
-        </Note>
-      ) : (
-        <Row label={t("operatingTime")} text={properties["Prevadzkova_doba"]} />
-      )}
+      <Row label={t("operatingTime")} text={properties["Prevadzkova_doba"]} />
 
       <Row label={t("address")} text={properties["Adresa"]} />
       <Row label={t("count")} text={properties["Pocet_parkovacich_miest"]} />
