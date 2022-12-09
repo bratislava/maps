@@ -98,7 +98,13 @@ export default {
       price: "bezplatná",
     },
   },
-  // for libraries
+
+  welcomeModal: {
+    title: "Vitajte na mape pomoci ľudom bez domova",
+    description:
+      "Mapa obsahuje všetky formy pomoci pre ľudí, ktorí prišli o domov. Informácie o miestach na nocľah, stravovanie, hygienu či zdravotné ošetrenie, pôsobenie terénnych tímov alebo linky pomoci. ",
+  },
+
   activeFilters: "Aktívny filter",
   resetFilters: "Zrušiť filter",
   informationModal: {

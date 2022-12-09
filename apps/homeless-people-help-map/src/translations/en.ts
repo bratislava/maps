@@ -99,7 +99,12 @@ export default {
     },
   },
 
-  // react-maps-ui
+  welcomeModal: {
+    title: "Welcome to the map of helping homeless people",
+    description:
+      "The map contains all forms of assistance for people who have lost their homes. Information about places to stay overnight, meals, hygiene or medical treatment, operation of field teams or help lines.",
+  },
+
   activeFilters: "Active filters",
   resetFilters: "Reset filters",
   informationModal: {
