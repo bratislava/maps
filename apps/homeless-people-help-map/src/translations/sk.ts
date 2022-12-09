@@ -103,7 +103,7 @@ export default {
   resetFilters: "Zrušiť filter",
   informationModal: {
     title: "Informácie o mape",
-    description: "Bratislava pre všetkých",
+    description: "Mapa pomoci ľudom bez domova",
     footer: "Zanechajte nám spätnú väzbu na <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },

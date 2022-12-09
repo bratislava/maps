@@ -104,7 +104,7 @@ export default {
   resetFilters: "Reset filters",
   informationModal: {
     title: "Map information",
-    description: "Bratislava for everyone",
+    description: "Map of help to homeless people",
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },
