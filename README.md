@@ -19,15 +19,21 @@ This repository is an yarn workspace.
 
 There are several libraries to handle different things. Those libraries are located inside `libs` folder and every library contains it's own `README.md` file with a little bit of documentation.
 
-For now, we are not deploying our libraries anywhere. They are just bundled into applications at build time.
+For now, we are not deploying our libraries anywhere so there is no versioning of them. They are just bundled into applications at build time. Drawback of this approach is that if we change anything in some library, it is immediately reflected to all map apps. So breaking changes brake all the apps.
 
 ### Applications
 
 Inside the `apps` folder there are all of our map applications. It is a good start to look at them if you are starting to develop new application so you can see how to use our map libraries and how to connect to different services.
 
-We are uploadig our built applications manually to our [CDN](https://cdn.bratislava.sk/buckets/static-pages/browse).
+## Deployment
 
-There is a bucket called "static-pages" in which every map is uploaded to its subfolder.
+We are uploadig our built applications manually to our [CDN](https://cdn.bratislava.sk/buckets/static-pages/browse). To get access to it, please contact Martin Pinter.
+
+There is a bucket called **static-pages** in which every map is uploaded to its subfolder.
+
+> Tip: If you are uploading files through CDN GUI you can't upload folder which contains subfolders OR multiple folders at once due to some bug otherwise CDN will mess it up. So you have to upload every folder separately and when you want to upload subfolders, you have to create root folders manually through GUI.
+
+After upploading, app is available at: `https://cdn-api.bratislava.sk/static-pages/<folder-name>/index.html`. Some maps are available also on `/sk.html` and `/en.html` urls for better SEO management.
 
 ## Developing
 
@@ -35,12 +41,14 @@ There is a bucket called "static-pages" in which every map is uploaded to its su
 yarn workspace <app-name> dev
 ```
 
+Where `<app-name>` is `name` property in corresponding `package.json` file.
+
 ## Building
 
 ```bash
 yarn workspace <app-name> build
 
-# or you can suppress TS errors using
+# Or you can suppress TS errors using
 yarn workspace <app-name> build:suppress
 ```
 
