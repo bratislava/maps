@@ -1,26 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* REACT SPRING BOTTOM SHEET */
-
-[data-rsbs-root] [aria-modal] {
-  border-radius: 0 !important;
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.16) !important;
-}
-
-[data-rsbs-footer] {
-  padding: 0 !important;
-}
-
-[data-rsbs-header] {
-  @apply border-t-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20 !important;
-}
-
-[data-rsbs-header]:before {
-  @apply bg-gray-lightmode bg-opacity-20 dark:bg-gray-darkmode dark:bg-opacity-20 w-20 !important;
-}
-
-[data-rsbs-overlay] {
-  @apply bg-background-lightmode dark:bg-background-darkmode !important;
-}

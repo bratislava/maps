@@ -52,12 +52,6 @@ export const Marker = ({ features, lat, lng, onClick, isSelected }: IMarkerProps
           size={48}
           icon={feature.properties?.icon ?? ""}
         />
-
-        {feature?.properties?.["Nazov_sk"] === "P+R Jasovská" && (
-          <div className="absolute z-50 -top-1 -right-1 text-[#D83728] bg-white rounded-full">
-            <WarningIcon />
-          </div>
-        )}
       </motion.div>
     </MapMarker>
   ) : null;

@@ -189,6 +189,17 @@ export const App = () => {
     setLoading(false);
   }, []);
 
+  // set event listeners
+  useEffect(() => {
+    const cancelAnimation = (event: KeyboardEvent) => {
+      if (event.code === 'Escape') stopAnimation();
+    };
+
+    document.addEventListener('keydown', cancelAnimation);
+
+    return () => document.removeEventListener('keydown', cancelAnimation);
+  }, [stopAnimation]);
+
   const ininialViewport = useMemo(
     () => ({
       center: {

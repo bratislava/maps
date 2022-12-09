@@ -5,12 +5,15 @@ import skTranslation from "../translations/sk";
 import { i18n as ReactMapsI18n } from "@bratislava/react-maps";
 
 const getLangFromQuery = () => {
+  const pathnameArray = window.location.pathname.split("/");
+  const langUrl = pathnameArray[pathnameArray.length - 1].split(".html")[0];
   const langQuery = new URLSearchParams(window.location.search).get("lang");
-  if (langQuery === "sk" || langQuery === "en") {
+  if (langUrl === "sk" || langUrl === "en") {
+    return langUrl;
+  } else if (langQuery === "sk" || langQuery === "en") {
     return langQuery;
-  } else {
-    return "sk";
   }
+  return "sk";
 };
 
 const queryLanguage = getLangFromQuery();

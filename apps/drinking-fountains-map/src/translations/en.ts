@@ -1,6 +1,7 @@
 export default {
   title: "Map of drinking fountains in Bratislava",
   close: "Close",
+  search: "Search",
   detail: {
     location: "Location",
   },

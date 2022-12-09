@@ -10,6 +10,8 @@ It does not support all the features yet.
   - all
   - any
   - equals
+  - gte
+  - lte
 - lookup
   - get
   - in

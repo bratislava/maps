@@ -1,6 +1,7 @@
 export default {
   title: "Mapa pitných fontán v Bratislave",
   close: "Zavrieť",
+  search: "Hľadať",
   detail: {
     location: "Lokalita",
   },
