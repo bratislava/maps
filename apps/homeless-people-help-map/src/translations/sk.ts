@@ -103,8 +103,9 @@ export default {
   resetFilters: "Zrušiť filter",
   informationModal: {
     title: "Informácie o mape",
-    description: "Mapa pomoci ľudom bez domova",
-    footer: "Zanechajte nám spätnú väzbu na <1>mapy.inovacie@bratislava.sk</1>",
-    footerLink: "mailto:mapy.inovacie@bratislava.sk",
+    description: "Mapa pomoci ľudom bez domova.",
+    footer:
+      "Našli ste neaktuálnu informáciu alebo nenašli ste čo ste hľadali? Napíšte nám na <1>sekciasocialnychveci@bratislava.sk</1> a pomôžte nám mapu zlepšovať. Viac o aktivitách v sociálnej oblasti nájdete na webe hlavného mesta, v sekcii sociálne služby a bývanie.",
+    footerLink: "mailto:sekciasocialnychveci@bratislava.sk",
   },
 };
