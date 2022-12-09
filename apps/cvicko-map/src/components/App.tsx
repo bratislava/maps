@@ -113,14 +113,14 @@ export const App = () => {
         line === "apollo-rt"
           ? apolloDetailedStyles
           : line === "old-bridge-rt"
-          ? oldDetailedStyles
-          : line === "snp-rt"
-          ? snpDetailedStyles
-          : line === "small-rt"
-          ? smallDetailedStyles
-          : line === "large-rt"
-          ? largeDetailedStyles
-          : [];
+            ? oldDetailedStyles
+            : line === "snp-rt"
+              ? snpDetailedStyles
+              : line === "small-rt"
+                ? smallDetailedStyles
+                : line === "large-rt"
+                  ? largeDetailedStyles
+                  : [];
 
       setAnimatedLineStyles(animatedLineStyles);
 
@@ -128,17 +128,17 @@ export const App = () => {
         line === "apollo-rt"
           ? apolloDetailedCoordinates
           : line === "old-bridge-rt"
-          ? oldDetailedCoordinates
-          : line === "snp-rt"
-          ? snpDetailedCoordinates
-          : line === "small-rt"
-          ? smallDetailedCoordinates
-          : line === "large-rt"
-          ? largeDetailedCoordinates
-          : [
-              [0, 0],
-              [0, 0],
-            ];
+            ? oldDetailedCoordinates
+            : line === "snp-rt"
+              ? snpDetailedCoordinates
+              : line === "small-rt"
+                ? smallDetailedCoordinates
+                : line === "large-rt"
+                  ? largeDetailedCoordinates
+                  : [
+                    [0, 0],
+                    [0, 0],
+                  ];
 
       setAnimatedLineCoordinates(animatedLineCoordinates);
 
@@ -163,6 +163,17 @@ export const App = () => {
   useEffect(() => {
     setLoading(false);
   }, []);
+
+  // set event listeners
+  useEffect(() => {
+    const cancelAnimation = (event: KeyboardEvent) => {
+      if (event.code === 'Escape') stopAnimation();
+    };
+
+    document.addEventListener('keydown', cancelAnimation);
+
+    return () => document.removeEventListener('keydown', cancelAnimation);
+  }, [stopAnimation]);
 
   const ininialViewport = useMemo(
     () => ({
