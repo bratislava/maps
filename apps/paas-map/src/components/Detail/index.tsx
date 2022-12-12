@@ -1,9 +1,6 @@
-import { X } from "@bratislava/react-maps-icons";
-import cx from "classnames";
 import { Feature, Point } from "geojson";
 import { MapboxGeoJSONFeature } from "mapbox-gl";
 import { useEffect, useMemo, useRef } from "react";
-import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 import AssistantDetail, { AssistantProperties, assistantPropertiesSchema } from "./AssistantDetail";
 import BranchDetail, { BranchProperties, branchPropertiesSchema } from "./BranchDetail";
 import ParkingLotDetail, {
@@ -14,6 +11,8 @@ import ParkomatDetail, { ParkomatProperties, parkomatPropertiesSchema } from "./
 import PartnerDetail, { PartnerProperties, partnerPropertiesSchema } from "./PartnerDetail";
 import ResidentDetail, { ResidentProperties, residentPropertiesSchema } from "./ResidentDetail";
 import VisitorDetail, { VisitorProperties, visitorPropertiesSchema } from "./VisitorDetail";
+import { Detail as MapDetail } from "@bratislava/react-maps";
+import { SheetHandle } from "@bratislava/react-maps-ui";
 
 export interface DetailProps {
   feature: Feature<Point> | MapboxGeoJSONFeature | null;
@@ -23,7 +22,7 @@ export interface DetailProps {
 }
 
 export const Detail = ({ feature, isOpen, onClose, isMobile }: DetailProps) => {
-  const sheetRef = useRef<BottomSheetRef>(null);
+  const detailRef = useRef<SheetHandle>(null);
 
   const detail = useMemo(
     () => (
@@ -51,44 +50,22 @@ export const Detail = ({ feature, isOpen, onClose, isMobile }: DetailProps) => {
   );
 
   useEffect(() => {
-    setTimeout(() => {
-      sheetRef.current?.snapTo((snaps) => snaps.minHeight);
-    }, 10);
-  }, [detail]);
+    if (isOpen) {
+      detailRef.current?.snapTo(1);
+    }
+  }, [detail, isOpen]);
 
-  return isMobile ? (
-    <BottomSheet
-      ref={sheetRef}
-      snapPoints={({ maxHeight, minHeight }) => [maxHeight, minHeight, 80]}
-      defaultSnap={({ snapPoints }) => snapPoints[1]}
-      blocking={false}
-      className="relative z-30"
-      open={!!feature}
-      expandOnContentDrag
+  return (
+    <MapDetail
+      ref={detailRef}
+      isBottomSheet={isMobile}
+      onClose={onClose}
+      isVisible={isOpen}
+      bottomSheetSnapPoints={[84, "content", "100%"]}
+      bottomSheetInitialSnap={1}
     >
-      <div className="p-8 text-foreground-lightmode dark:text-foreground-darkmode">{detail}</div>
-    </BottomSheet>
-  ) : (
-    <div
-      className={cx(
-        "fixed top-0 right-0 w-96 text-foreground-lightmode dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode transition-all duration-500 p-6 border-l-2 border-b-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20 rounded-bl-lg",
-        {
-          "translate-x-full": !isOpen,
-          "shadow-lg": isOpen,
-        },
-      )}
-    >
-      <button onClick={onClose} className="absolute top-6 right-6 z-10 hover:text-primary">
-        <X size="lg" />
-      </button>
-      {detail}
-
-      {/* <div>
-        <pre className="p-2 mt-16 h-72 bg-black text-white overflow-auto">
-          <code>{JSON.stringify(feature?.properties, null, 2)}</code>
-        </pre>
-      </div> */}
-    </div>
+      <div className="px-6 py-4">{detail}</div>
+    </MapDetail>
   );
 };
 
