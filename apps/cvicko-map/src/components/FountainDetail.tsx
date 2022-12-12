@@ -23,7 +23,7 @@ const FountainDetail = ({ feature, onClose, isMobile }: DetailProps) => {
       <button className="hidden sm:block absolute right-4 top-8 p-2" onClick={onClose}>
         <X size="sm" />
       </button>
-      <div className="mt-8 hidden sm:block text-black">
+      <div className="mt-8 hidden sm:block text-black dark:text-white">
         <Row label={t("detail.location")} text={feature.properties?.["location"]} />
       </div>
       <h2 className="font-semibold sm:hidden h-12 flex items-center">
