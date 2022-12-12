@@ -429,20 +429,6 @@ export const App = () => {
             markerFilter={markerFilter as IFilterResult<string>}
           />
         </Slot>
-
-        <Slot
-          id="mobile-detail"
-          isVisible={isDetailOpen}
-          position="bottom"
-          padding={{ bottom: window.innerHeight / 2 }}
-        >
-          <Detail
-            isOpen={isDetailOpen}
-            isMobile
-            feature={selectedFeature ?? selectedMarker}
-            onClose={closeDetail}
-          />
-        </Slot>
       </Layout>
 
       <Layout isOnlyDesktop>
@@ -465,23 +451,14 @@ export const App = () => {
             markerFilter={markerFilter as IFilterResult<string>}
           />
         </Slot>
-
-        <Slot id="desktop-detail" isVisible={isDetailOpen} position="top-right" autoPadding>
-          <div
-            ref={desktopDetailRef}
-            className={cx("w-96", {
-              "shadow-lg": isDetailOpen,
-            })}
-          >
-            <Detail
-              isOpen={isDetailOpen}
-              isMobile={false}
-              feature={selectedFeature ?? selectedMarker}
-              onClose={closeDetail}
-            />
-          </div>
-        </Slot>
       </Layout>
+
+      <Detail
+        isOpen={isDetailOpen}
+        isMobile={isMobile ?? false}
+        feature={selectedFeature ?? selectedMarker}
+        onClose={closeDetail}
+      />
     </Map>
   );
 };
