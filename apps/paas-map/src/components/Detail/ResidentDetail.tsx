@@ -26,7 +26,7 @@ export const ResidentDetail = ({ properties }: ResidentDetailProps) => {
   } = useTranslation("translation", { keyPrefix: "layers.residents.detail" });
 
   return (
-    <div className="flex flex-col justify-end w-full gap-4">
+    <div className="flex flex-col justify-end w-full gap-4 sm:pb-4">
       <div className="font-semibold pb-1">{t("title")}</div>
       {properties.Status === "planned" && <div className="font-semibold">{t("planned")}</div>}
       <Row label={t("cardValidity")} text={properties["Kod_parkovacej_zony"]} />
@@ -43,7 +43,7 @@ export const ResidentDetail = ({ properties }: ResidentDetailProps) => {
       )}
 
       <div className="relative">
-        <div className="sm:absolute -bottom-12">
+        <div className="sm:fixed -bottom-6">
           <ButtonLink noShadow isSecondary href={t("cardsUrl")} text={t("cards")} />
         </div>
       </div>

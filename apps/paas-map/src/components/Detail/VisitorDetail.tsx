@@ -37,7 +37,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
     i18n: { language },
   } = useTranslation("translation", { keyPrefix: "layers.visitors.detail" });
   return (
-    <div className="flex flex-col justify-end w-full gap-4">
+    <div className="flex flex-col justify-end w-full gap-4 sm:pb-4">
       <div className="font-semibold pb-1">{t("title")}</div>
       {properties.Status === "planned" && <div className="font-semibold">{t("planned")}</div>}
       <Row label={t("location")} text={properties["Nazov"]} />
@@ -142,7 +142,7 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
         </Note>
       )}
       <div className="relative">
-        <div className="sm:absolute -bottom-12">
+        <div className="sm:fixed -bottom-6">
           <ButtonLink noShadow href={t("paymentUrl")} text={t("payment")} />
         </div>
       </div>

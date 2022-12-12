@@ -98,14 +98,21 @@ export default {
       price: "bezplatná",
     },
   },
-  // for libraries
+
+  welcomeModal: {
+    title: "Vitajte na mape pomoci ľudom bez domova",
+    description:
+      "Mapa obsahuje všetky formy pomoci pre ľudí, ktorí prišli o domov. Informácie o miestach na nocľah, stravovanie, hygienu či zdravotné ošetrenie, pôsobenie terénnych tímov alebo linky pomoci. ",
+  },
+
   activeFilters: "Aktívny filter",
   resetFilters: "Zrušiť filter",
   informationModal: {
-    title: "Informácie o mape",
-    description: "Mapa pomoci ľudom bez domova.",
-    footer:
+    title: "Mapa pomoci ľudom bez domova.",
+    description:
       "Našli ste neaktuálnu informáciu alebo nenašli ste čo ste hľadali? Napíšte nám na <1>sekciasocialnychveci@bratislava.sk</1> a pomôžte nám mapu zlepšovať. Viac o aktivitách v sociálnej oblasti nájdete na webe hlavného mesta, v sekcii sociálne služby a bývanie.",
-    footerLink: "mailto:sekciasocialnychveci@bratislava.sk",
+    descriptionLink: "mailto:sekciasocialnychveci@bratislava.sk",
+    footer: "Zanechajte nám spätnú väzbu na <1>mapy.inovacie@bratislava.sk</1>",
+    footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },
 };
