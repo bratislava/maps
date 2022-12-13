@@ -1,34 +1,80 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
+
+const phoneRegex = /\+?(([0-9][\s\-/]?){10,12})/g;
+const emailRegex =
+  /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/gi;
+const urlRegex =
+  /(?:(https?|ircs?):\/\/(?:www\.)?|www\.)((?:(?:[-\w]+\.)+)[-\w]+)(?::\d+)?(?:\/((?:[-a-zA-Z;./\d#:_?=&,]*)))?/gi;
+
+const enhancePhoneNumbers = (text: string) => {
+  return text.replace(
+    phoneRegex,
+    (tel) =>
+      `<a href="tel:${tel.replaceAll(
+        /[\s\-/]/g,
+        ""
+      )}" class="font-semibold underline">${tel}</a>`
+  );
+};
+
+const enhanceEmails = (text: string) => {
+  return text.replace(
+    emailRegex,
+    (email) =>
+      `<a href="mailto:${email}" class="font-semibold underline">${email}</a>`
+  );
+};
+
+const enhanceUrls = (text: string) => {
+  return text.replace(
+    urlRegex,
+    (url) =>
+      `<a href="${url}" class="font-semibold underline" target="_blank">${url}</a>`
+  );
+};
 
 export const DataDisplay = ({
   label,
   text,
+  enableEnhancements = false,
 }: {
   label?: ReactNode | null;
   text?: ReactNode;
+  enableEnhancements?: boolean;
 }) => {
+  const textWrapperRef = useRef<HTMLDivElement>(null);
+  const textWrapper = (
+    <div className="hidden" ref={textWrapperRef}>
+      {text}
+    </div>
+  );
+
+  const [enahncedHtml, setEnhancedHtml] = useState("");
+
+  useEffect(() => {
+    let enhanced = textWrapperRef.current?.innerHTML ?? "";
+    enhanced = enhancePhoneNumbers(enhanced);
+    enhanced = enhanceEmails(enhanced);
+    enhanced = enhanceUrls(enhanced);
+    setEnhancedHtml(enhanced);
+  }, [text]);
+
   if (!text || (text === " " && !label)) {
     return null;
   } else {
     return (
       <div>
         <div className="font-light text-[14px]">{label}</div>
-        {text.toString().startsWith("http") ? (
-          <a
-            href={text.toString()}
-            className="underline font-semibold"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {new URL(text.toString()).hostname.replace("www.", "")}
-          </a>
-        ) : text.toString().includes("@") ? (
-          <a href={`mailto:${text}`} className="underline font-semibold">
-            {text}
-          </a>
-        ) : (
-          <div className="font-semibold">{text}</div>
-        )}
+
+        <div className="font-semibold">
+          {enableEnhancements ? (
+            <div dangerouslySetInnerHTML={{ __html: enahncedHtml }} />
+          ) : (
+            text
+          )}
+        </div>
+
+        {textWrapper}
       </div>
     );
   }

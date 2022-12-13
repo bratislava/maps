@@ -58,6 +58,8 @@ export const processData = () => {
     (a, b) => DISTRICTS.findIndex((d) => d == a) - DISTRICTS.findIndex((d) => d == b) ?? 0,
   );
 
+  console.log(getUniqueValuesFromFeatures(data.features, "phone"));
+
   return {
     data,
     uniqueDistricts,
