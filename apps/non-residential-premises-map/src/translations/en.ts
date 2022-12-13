@@ -57,6 +57,7 @@ export default {
   legend: {
     title: "Legend",
     free: "Free",
+    forRent: "For rent",
     occupied: "Occupied",
     districtBorder: "Disctrict border",
   },
