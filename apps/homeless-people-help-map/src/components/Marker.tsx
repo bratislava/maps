@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { VictoryPie } from "victory";
 import cx from "classnames";
 import { colors } from "../utils/colors";
+import { ReactComponent as KoloIcon } from "../assets/icons/layers/kolo.svg";
 
 export interface IMarkerProps {
   feature: Feature<Point>;
@@ -35,6 +36,8 @@ const PieChart = ({
 );
 
 export const Marker = ({ feature, onClick, isSelected, activeKeys }: IMarkerProps) => {
+  const isKolo = feature.properties?.isKolo;
+
   const pieChartData = useMemo(
     () => [
       {
@@ -79,17 +82,28 @@ export const Marker = ({ feature, onClick, isSelected, activeKeys }: IMarkerProp
           className={cx(
             "w-[calc(100%-2px)] h-[calc(100%-2px)] m-[1px] absolute -z-20 rounded-full bg-[#333333]",
           )}
+          style={{
+            background: isKolo ? colors.kolo : undefined,
+          }}
         ></div>
-        <div className={cx("absolute -z-10 w-full h-full")}>
-          <PieChart data={pieChartData} />
-        </div>
+        {!isKolo && (
+          <div className={cx("absolute -z-10 w-full h-full")}>
+            <PieChart data={pieChartData} />
+          </div>
+        )}
         <div className="p-1 flex z-20 relative h-full">
           <div
-            className={cx("w-full h-full rounded-full", {
-              "bg-white": isSelected,
-              "bg-[#333333]": !isSelected,
+            className={cx("w-full h-full flex items-center justify-center rounded-full", {
+              "bg-white": isSelected && !isKolo,
+              "bg-[#333333]": !isSelected && !isKolo,
             })}
-          ></div>
+            style={{
+              background: isKolo ? (isSelected ? "white" : colors.kolo) : undefined,
+              color: isKolo ? (isSelected ? colors.kolo : "white") : undefined,
+            }}
+          >
+            {isKolo && <KoloIcon className="w-5" />}
+          </div>
         </div>
       </div>
     </MapMarker>

@@ -22,7 +22,9 @@ export const TerrainServices = ({
   const { t } = useTranslation();
   return (
     <div
-      className={cx("flex flex-col gap-4 border-l-[4px]")}
+      className={cx("flex flex-col gap-4 border-l-[4px]", {
+        "bg-gray-lightmode/10 dark:bg-gray-darkmode/10": !!activeServiceKey,
+      })}
       style={{
         borderColor: activeServiceKey ? COLOR : "transparent",
       }}
@@ -34,7 +36,7 @@ export const TerrainServices = ({
           value="terrainServices"
           title={t("terrainServices.title")}
         >
-          <div className="px-6 py-1 flex flex-col gap-2 font-normal">
+          <div className="px-6 pt-1 pb-3 flex flex-col gap-2 font-normal">
             {services.map(({ title, key }) => (
               <Checkbox
                 id={key}

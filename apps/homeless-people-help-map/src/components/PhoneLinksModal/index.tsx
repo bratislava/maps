@@ -33,7 +33,7 @@ export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
       </button>
       <Modal
         closeButtonInCorner
-        overlayClassName="!p-6 w-full max-w-xl"
+        overlayClassName="w-full max-w-xl"
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
       >

@@ -17,6 +17,7 @@ export const otherServiceFeaturePropertiesSchema = z.object({
   locality: z.string(),
   isNotaBene: z.boolean().optional(),
   isDrugsAndSex: z.boolean().optional(),
+  isKolo: z.boolean().optional(),
 });
 
 type OtherServiceProperties = z.infer<typeof otherServiceFeaturePropertiesSchema>;
@@ -34,6 +35,7 @@ export const OtherServiceDetail = ({
   locality,
   isNotaBene,
   isDrugsAndSex,
+  isKolo,
 }: OtherServiceProperties) => {
   const { t } = useTranslation();
   return (
@@ -42,6 +44,7 @@ export const OtherServiceDetail = ({
       <Tag
         className={cx("text-white w-fit lowercase", {
           "bg-[#547242]": isNotaBene,
+          "bg-[#EFB646]": isKolo,
           "bg-[#9E2D35]": isDrugsAndSex,
         })}
       >

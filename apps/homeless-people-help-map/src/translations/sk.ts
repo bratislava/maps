@@ -9,6 +9,9 @@ export default {
     districtBorder: "Hranica mestskej časti",
     drinkingFountain: "Pitná fontánka",
     orientationPoint: "Orientačný bod",
+    fixpoint: "Fixpoint",
+    syringeExchange: "Výmena striekačiek",
+    fixpointAndSyringeExchange: "Fixpoint a výmena striekačiek",
   },
   terrainServices: {
     title: "Terénne služby",

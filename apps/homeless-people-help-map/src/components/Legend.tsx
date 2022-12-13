@@ -1,8 +1,13 @@
 import { ReactComponent as FountainMarkerIcon } from "../assets/icons/fountains/marker.svg";
+import { ReactComponent as FixpointMarkerIcon } from "../assets/icons/fixpointsAndSyringeExchanges/fixpoint.svg";
+import { ReactComponent as SyringeExchangeMarkerIcon } from "../assets/icons/fixpointsAndSyringeExchanges/syringe-exchange.svg";
+import { ReactComponent as FixpointAndSyringeExchangeMarkerIcon } from "../assets/icons/fixpointsAndSyringeExchanges/fixpoint-and-syringe-exchange.svg";
 
 import { ReactComponent as OvernightIcon } from "../assets/icons/layers/overnight.svg";
 import { ReactComponent as CounselingIcon } from "../assets/icons/layers/counseling.svg";
 import { ReactComponent as CultureIcon } from "../assets/icons/layers/culture.svg";
+import { ReactComponent as NotaBeneIcon } from "../assets/icons/layers/nota-bene.svg";
+import { ReactComponent as DrugsAndSexIcon } from "../assets/icons/layers/drugs-and-sex.svg";
 import { ReactComponent as HygieneIcon } from "../assets/icons/layers/hygiene.svg";
 import { ReactComponent as MealsIcon } from "../assets/icons/layers/meals.svg";
 import { ReactComponent as MedicalTreatmentIcon } from "../assets/icons/layers/medical-treatment.svg";
@@ -59,6 +64,20 @@ export const Legend = () => {
           <CultureIcon className="w-6 h-6" />
           {t("layers.culture")}
         </Tag>
+        <Tag
+          style={{ background: colors.drugsAndSex }}
+          className="w-fit flex items-center gap-3 text-white"
+        >
+          <DrugsAndSexIcon className="w-6 h-6" />
+          {t("layers.drugsAndSex")}
+        </Tag>
+        <Tag
+          style={{ background: colors.notaBene }}
+          className="w-fit flex items-center gap-3 text-white"
+        >
+          <NotaBeneIcon className="w-6 h-6" />
+          {t("layers.notaBene")}
+        </Tag>
       </div>
       <div className="flex flex-col gap-4">
         <div className="flex gap-2 items-center">
@@ -69,6 +88,19 @@ export const Legend = () => {
           <FountainMarkerIcon />
           <div>{t("legend.drinkingFountain")}</div>
         </div>
+        <div className="flex gap-2 items-center">
+          <FixpointMarkerIcon />
+          <div>{t("legend.fixpoint")}</div>
+        </div>
+        <div className="flex gap-2 items-center">
+          <SyringeExchangeMarkerIcon />
+          <div>{t("legend.syringeExchange")}</div>
+        </div>
+        <div className="flex gap-2 items-center">
+          <FixpointAndSyringeExchangeMarkerIcon />
+          <div>{t("legend.fixpointAndSyringeExchange")}</div>
+        </div>
+
         <div className="flex gap-2 items-center">
           <div className="bg-black opacity-40 w-4 h-[3px] rounded-full"></div>
           <div>{t("legend.districtBorder")}</div>

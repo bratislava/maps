@@ -23,7 +23,7 @@ export const FixpointMarker = ({ feature, onClick, isSelected = false }: IFixpoi
   );
 
   return (
-    <Marker zIndex={1} ignoreFilters onClick={onClickHandler} feature={feature}>
+    <Marker zIndex={1} onClick={onClickHandler} feature={feature}>
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}

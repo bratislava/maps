@@ -9,6 +9,9 @@ export default {
     districtBorder: "District border",
     drinkingFountain: "Drinking fountain",
     orientationPoint: "Orientation point",
+    fixpoint: "Fixpoint",
+    syringeExchange: "Syringe exchange",
+    fixpointAndSyringeExchange: "Fixpoint and syringe exchange",
   },
   terrainServices: {
     title: "Terrain services",
