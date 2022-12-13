@@ -64,7 +64,7 @@ export default {
   resetFilters: "Zrušiť filter",
   informationModal: {
     title: "Informácie o mape",
-    description: "Mapa nebytových priestorov v Bratislave.",
+    description: "Zoznam nebytových priestorov vo vlastníctve a správe mesta Bratislava. V prípade záujmu o bližšie informácie k nájmom nás kontaktujte na ",
     footer: "Zanechajte nám spätnú väzbu na <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },

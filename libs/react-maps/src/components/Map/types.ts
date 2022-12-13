@@ -73,6 +73,7 @@ export type MapProps = {
   mapInformation: {
     title: string;
     description: ReactNode;
+    descriptionLink?: { text: string, href: string };
     partners: {
       name: string;
       link: string;

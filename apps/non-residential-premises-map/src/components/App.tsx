@@ -324,6 +324,7 @@ export const App = () => {
       mapInformation={{
         title: t("informationModal.title"),
         description: t("informationModal.description"),
+        descriptionLink: {text: "spravanehnutelnosti@bratislava.sk.", href: "mailto:spravanehnutelnosti@bratislava.sk."},
         partners: [
           {
             name: "bratislava",
