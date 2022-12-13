@@ -118,53 +118,11 @@ export const MainDetail = ({ properties, className, isExpanded }: IMainDetailPro
             </a>
           )}
 
-          {properties.email && (
-            <DataDisplay
-              label={detailT("email")}
-              text={
-                <a
-                  className="underline font-semibold"
-                  href={`mailto:${properties.email}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {properties.email}
-                </a>
-              }
-            />
-          )}
+          <DataDisplay enableEnhancements label={detailT("email")} text={properties.email} />
 
-          {properties.phone && (
-            <DataDisplay
-              label={detailT("phone")}
-              text={
-                <a
-                  className="underline font-semibold"
-                  href={`tel:${properties.phone}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {properties.phone}
-                </a>
-              }
-            />
-          )}
+          <DataDisplay enableEnhancements label={detailT("phone")} text={properties.phone} />
 
-          {properties.web && (
-            <DataDisplay
-              label={detailT("web")}
-              text={
-                <a
-                  className="underline font-semibold"
-                  href={properties.web}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {properties.web}
-                </a>
-              }
-            />
-          )}
+          <DataDisplay enableEnhancements label={detailT("web")} text={properties.web} />
 
           <DataDisplay label={detailT("provider")} text={properties.provider} />
 

@@ -52,11 +52,11 @@ export const OtherServiceDetail = ({
       </Tag>
       <DataDisplay label={t("detail.otherService.provider")} text={provider} />
       <DataDisplay label={t("detail.otherService.service")} text={service} />
-      <DataDisplay label={t("detail.otherService.phone")} text={phone} />
+      <DataDisplay enableEnhancements label={t("detail.otherService.phone")} text={phone} />
       <DataDisplay label={t("detail.otherService.time")} text={time} />
       <DataDisplay label={t("detail.otherService.price")} text={price} />
       <DataDisplay label={t("detail.otherService.how")} text={how} />
-      <DataDisplay label={t("detail.otherService.web")} text={web} />
+      <DataDisplay enableEnhancements label={t("detail.otherService.web")} text={web} />
       <DataDisplay label={t("detail.otherService.locality")} text={locality} />
     </div>
   );
