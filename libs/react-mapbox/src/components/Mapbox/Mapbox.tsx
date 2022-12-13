@@ -244,8 +244,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       ],
     );
 
-    // LOADING SOURCES
-    const loadSources = useCallback(() => {
+    // LOADING SATELLITE SOURCE
+    const loadSatelliteSource = useCallback(() => {
       if (!map) return;
 
       if (!map.getSource('satellite')) {
@@ -625,26 +625,11 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         );
 
         map.on('style.load', () => {
-          loadSources();
           setStyleLoading(false);
         });
       },
-      [
-        isDarkmode,
-        layerPrefix,
-        mapStyles?.dark,
-        mapStyles?.light,
-        loadSources,
-        map,
-      ],
-      [
-        'isDarkmode',
-        'layerPrefix',
-        'darkStyle',
-        'lightStyle',
-        'loadSources',
-        'map',
-      ],
+      [isDarkmode, layerPrefix, mapStyles?.dark, mapStyles?.light, map],
+      ['isDarkmode', 'layerPrefix', 'darkStyle', 'lightStyle', 'map'],
       'SET STYLE',
     );
 
@@ -654,6 +639,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         if (!map) return;
 
         if (isSatellite) {
+          loadSatelliteSource();
           if (!map.getLayer('satellite-raster')) {
             const layers = map.getStyle().layers;
             const bottomLayer = layers.find((layer) =>
@@ -674,8 +660,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           }
         }
       },
-      [isSatellite, layerPrefix, map],
-      ['isSatellite', 'layerPrefix', 'map'],
+      [loadSatelliteSource, isSatellite, layerPrefix, map],
+      ['loadSatelliteSource', 'isSatellite', 'layerPrefix', 'map'],
       'SATELLITE CHANGE',
     );
 
