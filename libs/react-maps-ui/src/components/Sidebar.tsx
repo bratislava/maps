@@ -35,7 +35,7 @@ export const Sidebar = ({
     >
       <div
         className={cx(
-          "w-full h-full flex flex-col bg-background-lightmode dark:bg-background-darkmode dark:border-r-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20 pr-0 transition-all",
+          "w-full h-full shadow-lg flex flex-col bg-background-lightmode dark:bg-background-darkmode dark:border-r-2 border-background-lightmode dark:border-gray-darkmode dark:border-opacity-20 pr-0 transition-all",
           {
             "overflow-auto": isMobile,
           }
@@ -110,7 +110,7 @@ export const Sidebar = ({
             className={cx(
               "space-y-6 w-full grow font-medium bg-background pb-3",
               {
-                "shadow-lg h-full": !isMobile,
+                "h-full": !isMobile,
               }
             )}
           >

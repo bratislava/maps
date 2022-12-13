@@ -8,6 +8,7 @@ export interface CheckboxProps {
   label?: string | ReactNode;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
+  color?: string;
 }
 
 export const Checkbox = ({
@@ -15,6 +16,7 @@ export const Checkbox = ({
   label,
   checked = false,
   onChange,
+  color,
 }: CheckboxProps) => {
   return (
     <div className="flex items-center">
@@ -23,13 +25,17 @@ export const Checkbox = ({
         onCheckedChange={(e) => onChange && onChange(!!e)}
         id={id}
         className={cx(
-          "flex border-2 flex-col w-4 h-4 rounded items-center justify-center focus:border-primary dark:focus:border-primary transition-all outline-none",
+          "flex shrink-0 border-2 flex-col w-4 h-4 rounded items-center justify-center focus:border-primary dark:focus:border-primary transition-all outline-none",
           {
-            "bg-primary border-primary": checked,
+            "bg-primary border-primary": checked && !color,
             "border-gray-lightmode dark:border-gray-darkmode border-opacity-50 dark:border-opacity-100":
               !checked,
           }
         )}
+        style={{
+          background: checked ? color : undefined,
+          borderColor: checked ? color : undefined,
+        }}
       >
         <Indicator>
           <Tick width={10} height={10} className="text-white" />

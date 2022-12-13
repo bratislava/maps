@@ -63,7 +63,7 @@ const REPAIRS_POLYGONS_URLS = [
 ];
 
 export const App = () => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
 
   useEffect(() => {
     document.title = t("tabTitle");

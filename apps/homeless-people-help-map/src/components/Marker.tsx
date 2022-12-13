@@ -4,11 +4,13 @@ import { useMemo } from "react";
 import { VictoryPie } from "victory";
 import cx from "classnames";
 import { colors } from "../utils/colors";
+import { ReactComponent as KoloIcon } from "../assets/icons/layers/kolo.svg";
 
 export interface IMarkerProps {
   feature: Feature<Point>;
   onClick: () => void;
   isSelected: boolean;
+  activeKeys: string[];
 }
 
 const PieChart = ({
@@ -33,17 +35,44 @@ const PieChart = ({
   </div>
 );
 
-export const Marker = ({ feature, onClick, isSelected }: IMarkerProps) => {
+export const Marker = ({ feature, onClick, isSelected, activeKeys }: IMarkerProps) => {
+  const isKolo = feature.properties?.isKolo;
+
   const pieChartData = useMemo(
     () => [
-      { x: "counseling", y: feature.properties?.counseling ? 1 : 0 },
-      { x: "hygiene", y: feature.properties?.hygiene ? 1 : 0 },
-      { x: "overnight", y: feature.properties?.overnight ? 1 : 0 },
-      { x: "meals", y: feature.properties?.meals ? 1 : 0 },
-      { x: "medicalTreatment", y: feature.properties?.medicalTreatment ? 1 : 0 },
-      { x: "culture", y: feature.properties?.culture ? 1 : 0 },
+      {
+        x: "counseling",
+        y: feature.properties?.isCounseling && activeKeys.includes("counseling") ? 1 : 0,
+      },
+      {
+        x: "hygiene",
+        y: feature.properties?.isHygiene && activeKeys.includes("hygiene") ? 1 : 0,
+      },
+      {
+        x: "overnight",
+        y: feature.properties?.isOvernight && activeKeys.includes("overnight") ? 1 : 0,
+      },
+      { x: "meals", y: feature.properties?.isMeals && activeKeys.includes("meals") ? 1 : 0 },
+      {
+        x: "medicalTreatment",
+        y:
+          feature.properties?.isMedicalTreatment && activeKeys.includes("medicalTreatment") ? 1 : 0,
+      },
+      {
+        x: "culture",
+        y: feature.properties?.isCulture && activeKeys.includes("culture") ? 1 : 0,
+      },
+      {
+        x: "drugsAndSex",
+        y: feature.properties?.isDrugsAndSex && activeKeys.includes("drugsAndSex") ? 1 : 0,
+      },
+      { x: "kolo", y: feature.properties?.isKolo && activeKeys.includes("kolo") ? 1 : 0 },
+      {
+        x: "notaBene",
+        y: feature.properties?.isNotaBene && activeKeys.includes("notaBene") ? 1 : 0,
+      },
     ],
-    [feature],
+    [feature, activeKeys],
   );
 
   return (
@@ -53,17 +82,28 @@ export const Marker = ({ feature, onClick, isSelected }: IMarkerProps) => {
           className={cx(
             "w-[calc(100%-2px)] h-[calc(100%-2px)] m-[1px] absolute -z-20 rounded-full bg-[#333333]",
           )}
+          style={{
+            background: isKolo ? colors.kolo : undefined,
+          }}
         ></div>
-        <div className={cx("absolute -z-10 w-full h-full")}>
-          <PieChart data={pieChartData} />
-        </div>
+        {!isKolo && (
+          <div className={cx("absolute -z-10 w-full h-full")}>
+            <PieChart data={pieChartData} />
+          </div>
+        )}
         <div className="p-1 flex z-20 relative h-full">
           <div
-            className={cx("w-full h-full rounded-full", {
-              "bg-white": isSelected,
-              "bg-[#333333]": !isSelected,
+            className={cx("w-full h-full flex items-center justify-center rounded-full", {
+              "bg-white": isSelected && !isKolo,
+              "bg-[#333333]": !isSelected && !isKolo,
             })}
-          ></div>
+            style={{
+              background: isKolo ? (isSelected ? "white" : colors.kolo) : undefined,
+              color: isKolo ? (isSelected ? colors.kolo : "white") : undefined,
+            }}
+          >
+            {isKolo && <KoloIcon className="w-5" />}
+          </div>
         </div>
       </div>
     </MapMarker>

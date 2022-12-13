@@ -54,7 +54,7 @@ export const Filters = ({
   onDateStartChange,
   onDateEndChange,
 }: IFiltersProps) => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
 
   const content = (
     <>

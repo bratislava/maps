@@ -7,13 +7,17 @@ export default {
     title: "Legenda",
     point: "Bod",
     districtBorder: "Hranica mestskej časti",
-    drinkingFountain: "Pytná fontánka",
+    drinkingFountain: "Pitná fontánka",
     orientationPoint: "Orientačný bod",
+    fixpoint: "Fixpoint",
+    syringeExchange: "Výmena striekačiek",
+    fixpointAndSyringeExchange: "Fixpoint a výmena striekačiek",
   },
   terrainServices: {
     title: "Terénne služby",
   },
-  layersLabel: "Vrstvy",
+  layersLabel: "Typy pomoci",
+  otherLayersLabel: "Ďalšie služby",
   filters: {
     title: "Filter",
     reset: "Zrušiť",
@@ -39,6 +43,7 @@ export default {
       navigate: "Navigovať",
     },
     drinkingFountain: {
+      drinkingFountain: "Pitná fontánka",
       location: "Lokalita",
     },
     terrainService: {
@@ -49,6 +54,21 @@ export default {
       price: "Cena",
       areas: "Oblasti",
     },
+    fixpointSyringeExchange: {
+      name: "Názov",
+      address: "Adresa",
+    },
+    otherService: {
+      name: "Názov",
+      provider: "Poskytovateľ / Zriaďovateľ",
+      service: "Služba",
+      phone: "Tel. číslo",
+      time: "Čas",
+      price: "Cena",
+      how: "Ako sa tam dostať?",
+      web: "Web",
+      locality: "Lokalita",
+    },
   },
 
   layers: {
@@ -58,6 +78,9 @@ export default {
     meals: "strava",
     medicalTreatment: "zdravotné oštrenie",
     culture: "kultúra",
+    drugsAndSex: "Kontaktné centrum pre užívateľov drog a ľudí zo sexbiznisu",
+    kolo: "Kolo - centrum opätovného použitia",
+    notaBene: "Pouličný časopis Nota Bene",
   },
 
   helpPhoneLinks: {

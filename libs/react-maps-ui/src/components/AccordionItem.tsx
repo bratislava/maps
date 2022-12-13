@@ -98,7 +98,7 @@ export const AccordionItem = ({
           >
             <div>{title}</div>
             <div
-              className={cx("flex gap-4 h-12 px-6", {
+              className={cx("flex gap-4 h-12 px-6 items-center", {
                 "bg-primary-soft text-foreground-lightmode":
                   paasDesign && isActive,
               })}

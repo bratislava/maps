@@ -34,9 +34,13 @@ export const DigupClosureDisorderDetail = ({ properties }: DigupClosureDisorderD
   const {
     t,
     i18n: { language },
-  } = useTranslation("translation", { keyPrefix: `layers.${properties.layer}.detail` });
+  } = useTranslation("translation", {
+    keyPrefix: `layers.${
+      properties.layer as "digups" | "closures" | "disorders" | "repairs"
+    }.detail`,
+  });
 
-  const { t: mainT } = useTranslation();
+  const { t: mainT }: { t: (key: string) => string } = useTranslation();
 
   const { data: attachments } = useArcgisAttachments(DIGUPS_URL, properties.objectId);
 
