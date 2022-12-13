@@ -11,6 +11,7 @@ import {
 } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { ITerrainService, Layers } from "./Layers";
+import { OtherLayers } from "./OtherLayers";
 import { SelectValueRenderer } from "./SelectValueRenderer";
 import { TerrainServices } from "./TerrainServices";
 
@@ -114,18 +115,28 @@ export const Filters = ({
 
       <Divider className="mx-6" />
 
-      <Layers isMobile={isMobile} filter={layerFilter} layers={layerFilter.keys} />
+      <div>
+        <Layers
+          isMobile={isMobile}
+          filter={layerFilter}
+          layers={["counseling", "hygiene", "overnight", "meals", "medicalTreatment", "culture"]}
+        />
 
-      <Divider className="mx-6" />
+        <TerrainServices
+          services={terrainServices}
+          activeServiceKey={activeTerrainService}
+          onServiceClick={(key) =>
+            activeTerrainService === key
+              ? onActiveTerrainServiceChange(null)
+              : onActiveTerrainServiceChange(key)
+          }
+        />
+      </div>
 
-      <TerrainServices
-        services={terrainServices}
-        activeServiceKey={activeTerrainService}
-        onServiceClick={(key) =>
-          activeTerrainService === key
-            ? onActiveTerrainServiceChange(null)
-            : onActiveTerrainServiceChange(key)
-        }
+      <OtherLayers
+        isMobile={isMobile}
+        filter={layerFilter}
+        layers={["drugsAndSex", "kolo", "notaBene"]}
       />
     </Sidebar>
   );

@@ -1,11 +1,9 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
-import { capitalizeFirstLetter } from "../../../../planting-map/src/utils/utils";
-import { colors } from "../../utils/colors";
+import { capitalizeFirstLetter } from "../../../planting-map/src/utils/utils";
+import { colors } from "../utils/colors";
 import { useTranslation } from "react-i18next";
 import { FeatureCollection } from "geojson";
-import { Accordion, ILayerGroup, Layers as MapLayers } from "@bratislava/react-maps-ui";
-import { Layer } from "./Layer";
-import { SubLayer } from "./SubLayer";
+import { LayerButton } from "./LayerButton";
 
 export interface ITerrainService {
   key: string;
@@ -18,29 +16,20 @@ export interface ITerrainService {
   geojson: FeatureCollection;
 }
 
-export type LayersProps = {
+export type OtherLayersProps = {
   filter: IFilterResult<string>;
   layers: string[];
   isMobile: boolean;
 };
 
-const layerGroups: ILayerGroup<string>[] = [
-  {
-    label: "dwa",
-    layers: [],
-  },
-];
-
-export const Layers = ({ filter }: LayersProps) => {
+export const OtherLayers = ({ filter, layers }: OtherLayersProps) => {
   const { t }: { t: (key: string) => string } = useTranslation();
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="font-semibold px-6 text-md">{t("layersLabel")}</h2>
+      <h2 className="font-semibold px-6 text-md">{t("otherLayersLabel")}</h2>
 
-      <div>{/* <MapLayers /> */}</div>
-
-      {/* <div>
+      <div>
         {layers.map((layer) => (
           <LayerButton
             key={layer}
@@ -54,7 +43,7 @@ export const Layers = ({ filter }: LayersProps) => {
             }
           />
         ))}
-      </div> */}
+      </div>
     </div>
   );
 };

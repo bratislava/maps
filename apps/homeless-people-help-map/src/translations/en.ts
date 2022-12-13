@@ -13,7 +13,8 @@ export default {
   terrainServices: {
     title: "Terrain services",
   },
-  layersLabel: "Layers",
+  layersLabel: "Types of help",
+  otherLayersLabel: "Other services",
   filters: {
     title: "Filtering",
     reset: "Reset",
@@ -39,6 +40,7 @@ export default {
       navigate: "Navigate",
     },
     drinkingFountain: {
+      drinkingFountain: "Drinking fountain",
       location: "Location",
     },
     terrainService: {
@@ -49,6 +51,21 @@ export default {
       price: "Price",
       areas: "Areas",
     },
+    fixpointSyringeExchange: {
+      name: "Name",
+      address: "Address",
+    },
+    otherService: {
+      name: "Name",
+      provider: "Provider",
+      service: "Service",
+      phone: "Phone",
+      time: "Time",
+      price: "Price",
+      how: "How to get there?",
+      web: "Web",
+      locality: "Locality",
+    },
   },
 
   layers: {
@@ -58,6 +75,9 @@ export default {
     meals: "meals",
     medicalTreatment: "medical treatment",
     culture: "culture",
+    drugsAndSex: "Contact center for drug users and people from the sex business",
+    kolo: "Kolo - the center of reuse",
+    notaBene: "Street magazine Nota Bene",
   },
 
   helpPhoneLinks: {

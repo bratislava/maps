@@ -1,8 +1,10 @@
 import {
-  Scrollbars,
-  positionValues as PositionValues,
-} from "react-custom-scrollbars";
-import { ReactNode, useState } from "react";
+  ReactNode,
+  useState,
+  UIEventHandler,
+  useEffect,
+  useCallback,
+} from "react";
 import { useResizeDetector } from "react-resize-detector";
 import cx from "classnames";
 
@@ -12,45 +14,35 @@ export type ScrollAreaProps = {
 };
 
 export const ScrollArea = ({ children }: ScrollAreaProps) => {
+  const { ref: outerRef, height: outerHeight = 0 } =
+    useResizeDetector<HTMLDivElement>();
   const { ref: innerRef, height: innerHeight = 0 } =
     useResizeDetector<HTMLDivElement>();
 
   const [isTop, setTop] = useState(true);
-  const [isBottom, setBottom] = useState(false);
+  const [isBottom, setBottom] = useState(true);
 
-  const handleUpdate = ({
-    scrollTop,
-    clientHeight,
-    scrollHeight,
-  }: PositionValues) => {
+  const handleUpdate = useCallback(() => {
+    const scrollTop = outerRef.current?.scrollTop ?? 0;
     setTop(scrollTop === 0);
-    setBottom(clientHeight + scrollTop === scrollHeight);
-  };
+    setBottom(outerHeight + scrollTop >= innerHeight);
+  }, [innerHeight, outerHeight]);
+
+  useEffect(() => {
+    handleUpdate();
+  }, [handleUpdate]);
 
   return (
     <>
-      <div
-        className="invisible select-none pointer-events-none absolute max-h-screen w-full -z-50"
-        ref={innerRef}
-      >
-        {children}
-      </div>
       <div className="h-full w-full relative">
         {/* INVISIBLE CHILDREN FOR HEIGHT CALCULATIONS */}
-        <Scrollbars
-          autoHeight
-          autoHeightMax={innerHeight}
-          hideTracksWhenNotNeeded
-          autoHide
-          renderThumbVertical={() => (
-            <div className="bg-background-lightmode dark:bg-background-darkmode z-50 rounded-full">
-              <div className="bg-gray-lightmode/20 dark:bg-gray-darkmode/20 rounded-full h-full" />
-            </div>
-          )}
-          onUpdate={handleUpdate}
+        <div
+          className="h-full max-h-screen overflow-auto"
+          onScroll={handleUpdate}
+          ref={outerRef}
         >
-          <div>{children}</div>
-        </Scrollbars>
+          <div ref={innerRef}>{children}</div>
+        </div>
         <div
           className={cx(
             "pointer-events-none absolute z-50 w-full top-0 h-10 overflow-hidden transition-opacity duration-500",

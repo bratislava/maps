@@ -9,6 +9,7 @@ export interface IMarkerProps {
   feature: Feature<Point>;
   onClick: () => void;
   isSelected: boolean;
+  activeKeys: string[];
 }
 
 const PieChart = ({
@@ -33,17 +34,42 @@ const PieChart = ({
   </div>
 );
 
-export const Marker = ({ feature, onClick, isSelected }: IMarkerProps) => {
+export const Marker = ({ feature, onClick, isSelected, activeKeys }: IMarkerProps) => {
   const pieChartData = useMemo(
     () => [
-      { x: "counseling", y: feature.properties?.counseling ? 1 : 0 },
-      { x: "hygiene", y: feature.properties?.hygiene ? 1 : 0 },
-      { x: "overnight", y: feature.properties?.overnight ? 1 : 0 },
-      { x: "meals", y: feature.properties?.meals ? 1 : 0 },
-      { x: "medicalTreatment", y: feature.properties?.medicalTreatment ? 1 : 0 },
-      { x: "culture", y: feature.properties?.culture ? 1 : 0 },
+      {
+        x: "counseling",
+        y: feature.properties?.isCounseling && activeKeys.includes("counseling") ? 1 : 0,
+      },
+      {
+        x: "hygiene",
+        y: feature.properties?.isHygiene && activeKeys.includes("hygiene") ? 1 : 0,
+      },
+      {
+        x: "overnight",
+        y: feature.properties?.isOvernight && activeKeys.includes("overnight") ? 1 : 0,
+      },
+      { x: "meals", y: feature.properties?.isMeals && activeKeys.includes("meals") ? 1 : 0 },
+      {
+        x: "medicalTreatment",
+        y:
+          feature.properties?.isMedicalTreatment && activeKeys.includes("medicalTreatment") ? 1 : 0,
+      },
+      {
+        x: "culture",
+        y: feature.properties?.isCulture && activeKeys.includes("culture") ? 1 : 0,
+      },
+      {
+        x: "drugsAndSex",
+        y: feature.properties?.isDrugsAndSex && activeKeys.includes("drugsAndSex") ? 1 : 0,
+      },
+      { x: "kolo", y: feature.properties?.isKolo && activeKeys.includes("kolo") ? 1 : 0 },
+      {
+        x: "notaBene",
+        y: feature.properties?.isNotaBene && activeKeys.includes("notaBene") ? 1 : 0,
+      },
     ],
-    [feature],
+    [feature, activeKeys],
   );
 
   return (

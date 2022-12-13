@@ -1,6 +1,7 @@
+import { Accordion, AccordionItem, Checkbox } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { colors } from "../utils/colors";
-import { LayerButton } from "./LayerButton";
+import cx from "classnames";
 
 const COLOR = colors.terrainServices;
 
@@ -20,20 +21,33 @@ export const TerrainServices = ({
 }: TerrainServicesProps) => {
   const { t } = useTranslation();
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="font-semibold px-6 text-md">{t("terrainServices.title")}</h2>
-
-      <div>
-        {services.map(({ title, key }) => (
-          <LayerButton
-            color={COLOR}
-            key={key}
-            isVisible={activeServiceKey === key}
-            title={title}
-            onClick={() => onServiceClick(key)}
-          />
-        ))}
-      </div>
+    <div
+      className={cx("flex flex-col gap-4 border-l-[4px]")}
+      style={{
+        borderColor: activeServiceKey ? COLOR : "transparent",
+      }}
+    >
+      <Accordion type="multiple">
+        <AccordionItem
+          headerIsTrigger
+          headerClassName="pl-[22px] pr-[2px]"
+          value="terrainServices"
+          title={t("terrainServices.title")}
+        >
+          <div className="px-6 py-1 flex flex-col gap-2 font-normal">
+            {services.map(({ title, key }) => (
+              <Checkbox
+                id={key}
+                color={COLOR}
+                key={key}
+                checked={activeServiceKey === key}
+                label={title}
+                onChange={() => onServiceClick(key)}
+              />
+            ))}
+          </div>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 };

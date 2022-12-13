@@ -44,11 +44,13 @@ import { BuildingMarker } from "./BuildingMarker";
 import { buildingsData } from "../data/buildings";
 import { ITerrainService } from "./Layers";
 import { terrainServicesLocalDistrictsData } from "../data/terrain-services-local-districts";
-import { terrainServicesPointsData } from "../data/terrain-services-points";
 import { regions } from "../data/regions";
 import { Popup } from "./Popup";
+import { FixpointMarker } from "./FixpointMarker";
+import { SyringeExchangeMarker } from "./SyringeExchangeMarker";
+import { FixpointAndSyringeExchangeMarker } from "./FixpointAndSyringeExchangeMarker";
 
-const { data, uniqueDistricts } = processData();
+const { data, otherServicesData, uniqueDistricts, fixpointAndSyringeExchangeData } = processData();
 const uniqueLayers = Object.keys(colors).filter((key) => key !== "terrainServices");
 const defaultLayersValues = uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {});
 
@@ -72,7 +74,7 @@ export const App = () => {
 
   const layerFilter = useFilter({
     property: "subLayerName",
-    keys: uniqueLayers,
+    keys: useMemo(() => [...uniqueLayers, "drugsAndSex", "kolo", "notaBene"], []),
     defaultValues: defaultLayersValues,
   });
 
@@ -86,6 +88,9 @@ export const App = () => {
     if (layerFilter.isAnyKeyActive(["medicalTreatment"]))
       result.push(["==", "isMedicalTreatment", true]);
     if (layerFilter.isAnyKeyActive(["culture"])) result.push(["==", "isCulture", true]);
+    if (layerFilter.isAnyKeyActive(["drugsAndSex"])) result.push(["==", "isDrugsAndSex", true]);
+    if (layerFilter.isAnyKeyActive(["kolo"])) result.push(["==", "isKolo", true]);
+    if (layerFilter.isAnyKeyActive(["notaBene"])) result.push(["==", "isNotaBene", true]);
     return result;
   }, [layerFilter]);
 
@@ -151,7 +156,7 @@ export const App = () => {
       },
       {
         key: "vagus",
-        title: "STREETWORK VAGUS",
+        title: "Streetwork Vagus",
         provider: "VAGUS o.z.",
         phone: "0949 655 555",
         web: "https://www.vagus.sk/streetwork/2/o-projekte-2/",
@@ -168,7 +173,7 @@ export const App = () => {
       },
       {
         key: "rozalie",
-        title: "TERÉNNA SOCIÁLNA PRÁCA Bl. ROZÁLIE ",
+        title: "Terénna sociálna práca Bl. Rozálie ",
         provider: "DEPAUL Slovensko, n.o.",
         phone: "0910 842 170",
         web: "https://depaul.sk/terenna-praca-bl-rozalie-rendu/",
@@ -184,7 +189,7 @@ export const App = () => {
       },
       {
         key: "stopa",
-        title: "TERÉNNY PREVENČNÝ TÍM STOPA",
+        title: "Terénny prevenčný tím Stopa",
         provider: "STOPA Slovensko o.z.",
         phone: "0948 389 748",
         web: "https://www.stopaslovensko.sk/streetwork/",
@@ -196,44 +201,6 @@ export const App = () => {
             ["Staré Mesto", "Nové Mesto", "Petržalka"].includes(feature.properties.name),
           ),
           ...terrainServicesLocalDistrictsData.features,
-        ]),
-      },
-      {
-        key: "odyseus",
-        title:
-          "Podpora a poradenstvo  pre ľudí so skúsenosťou s drogami a pracujúcich v sexbiznise",
-        provider: "OZ ODYSEUS",
-        phone: "0948 619 022",
-        web: "https://www.ozodyseus.sk/",
-        openingHours:
-          "str. 11:30-13:00 Slovnaftská; str. 20:15-21:45 Trnavské mýto; str. 18:45-19:45 Panónska; pia 14:00-15:00 Stavbárska - Pentagon",
-        price: "Zdarma",
-        geojson: featureCollection([
-          ...terrainServicesPointsData.features.filter((feature) =>
-            [
-              "Slovnaftská ul. (parkovisko pre kamióny)",
-              "Trnavské mýto (parkovisko pri Pezinský sud)",
-              "Panónska cesta (pri AAA auto)",
-              "Stavbárska - Pentagon (pred Centrom K2)",
-            ].includes(feature.properties.name),
-          ),
-        ]),
-      },
-      {
-        key: "prima",
-        title:
-          "Podpora a poradenstvo  pre ľudí so skúsenosťou s drogami a pracujúcich v sexbiznise",
-        provider: "OZ PRIMA",
-        phone: "0948 352 330",
-        web: "http://primaoz.sk/streetwork/",
-        openingHours: "utorok a štvrtok 17:00-21:00; sobota 14:00-17:00",
-        price: "Zdarma",
-        geojson: featureCollection([
-          ...terrainServicesPointsData.features.filter((feature) =>
-            ["Parkovisko Slovnaft", "Panónska (parkovisko pri Fiate oproti Citroenu)"].includes(
-              feature.properties.name,
-            ),
-          ),
         ]),
       },
     ],
@@ -384,6 +351,34 @@ export const App = () => {
         <BuildingMarker key={index} feature={feature} icon={feature.properties.icon} />,
       ])}
 
+      {/* FIXPOINT AND SYRINGE EXCHANGE MARKERS */}
+      <Filter expression={activeTerrainServiceKey ? ["any", false] : districtFilter.expression}>
+        {fixpointAndSyringeExchangeData.features.map((feature, index) =>
+          feature.properties?.icon === "fixpoint" ? (
+            <FixpointMarker
+              isSelected={!!(selectedMarker && feature.id === selectedMarker.id)}
+              key={index}
+              feature={feature}
+              onClick={() => setSelectedMarker(feature)}
+            />
+          ) : feature.properties?.icon === "syringeExchange" ? (
+            <SyringeExchangeMarker
+              isSelected={!!(selectedMarker && feature.id === selectedMarker.id)}
+              key={index}
+              feature={feature}
+              onClick={() => setSelectedMarker(feature)}
+            />
+          ) : (
+            <FixpointAndSyringeExchangeMarker
+              isSelected={!!(selectedMarker && feature.id === selectedMarker.id)}
+              key={index}
+              feature={feature}
+              onClick={() => setSelectedMarker(feature)}
+            />
+          ),
+        )}
+      </Filter>
+
       {/* DRINKING FOUNTAIN MARKERS */}
       <Filter expression={activeTerrainServiceKey ? ["any", false] : districtFilter.expression}>
         <Cluster features={drinkingFountainsData.features} radius={24}>
@@ -421,6 +416,17 @@ export const App = () => {
             key={index}
             feature={feature}
             onClick={() => setSelectedMarker(feature)}
+            activeKeys={layerFilter.activeKeys}
+            isSelected={selectedMarker?.id === feature.id}
+          />
+        ))}
+
+        {otherServicesData?.features.map((feature, index) => (
+          <Marker
+            key={index}
+            feature={feature}
+            onClick={() => setSelectedMarker(feature)}
+            activeKeys={layerFilter.activeKeys}
             isSelected={selectedMarker?.id === feature.id}
           />
         ))}

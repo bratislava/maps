@@ -48,6 +48,7 @@
     "typescript": "^4.7.2"
   },
   "dependencies": {
-    "popmotion": "^11.0.5"
+    "popmotion": "^11.0.5",
+    "react-scrollbars-custom": "^4.1.1"
   }
 }

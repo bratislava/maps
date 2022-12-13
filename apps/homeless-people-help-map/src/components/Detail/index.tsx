@@ -1,16 +1,23 @@
 import { Feature } from "geojson";
 import { useState, useEffect, useRef, useMemo, useCallback, forwardRef } from "react";
+
 import {
-  DrikingFountainDetail,
+  DrinkingFountainDetail,
   drinkingFountainFeaturePropertiesSchema,
 } from "./DrinkingFountainDetail";
+
+import {
+  FixpointSyringeExchangeDetail,
+  fixpointSyringeExchangeFeaturePropertiesSchema,
+} from "./FixpointSyringeExchangeDetail";
+
+import { OtherServiceDetail, otherServiceFeaturePropertiesSchema } from "./OtherServiceDetail";
+
 import { Detail as MapDetail } from "@bratislava/react-maps";
 import { MainDetail, mainFeaturePropertiesSchema } from "./MainDetail";
 import { ITerrainService } from "../Layers";
 import { TerrainServiceDetail } from "./TerrainServiceDetail";
 import { SheetHandle } from "@bratislava/react-maps-ui";
-import { useResizeDetector } from "react-resize-detector";
-import { useWindowSize } from "usehooks-ts";
 
 export interface DetailProps {
   feature?: Feature | null;
@@ -50,17 +57,27 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
 
       try {
         const props = drinkingFountainFeaturePropertiesSchema.parse(feature?.properties);
-        return <DrikingFountainDetail {...props} />;
+        return <DrinkingFountainDetail {...props} />;
+      } catch {
+        // Who cares?
+      }
+
+      try {
+        const props = fixpointSyringeExchangeFeaturePropertiesSchema.parse(feature?.properties);
+        return <FixpointSyringeExchangeDetail {...props} />;
+      } catch {
+        // Who cares?
+      }
+
+      try {
+        const props = otherServiceFeaturePropertiesSchema.parse(feature?.properties);
+        return <OtherServiceDetail {...props} />;
       } catch {
         // Who cares?
       }
 
       return null;
     }, [activeTerrainService, currentHeight, feature, isMobile]);
-
-    const { height: innerHeight = 0, ref: innerRef } = useResizeDetector<HTMLDivElement | null>();
-
-    const { height: screenHeight } = useWindowSize();
 
     return (
       <MapDetail
@@ -72,9 +89,7 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
         bottomSheetInitialSnap={1}
         onBottomSheetSnapChange={onSnapChange}
       >
-        <div ref={forwardedRef}>
-          <div ref={innerRef}>{detail}</div>
-        </div>
+        <div ref={forwardedRef}>{detail}</div>
       </MapDetail>
     );
   },
