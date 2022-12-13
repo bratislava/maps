@@ -1,7 +1,7 @@
 import { Darkmode, Satellite, Themes } from '@bratislava/react-maps-icons';
 import { AnimateHeight, Popover } from '@bratislava/react-maps-ui';
 import cx from 'classnames';
-import { useCallback, useContext, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation, I18nextProvider } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 
@@ -12,10 +12,12 @@ import i18n from '../../utils/i18n';
 
 interface ThemeControllerProps {
   className?: string;
+  satelliteOnLoad?: boolean;
 }
 
 const ThemeControllerWithoutTranslations = ({
   className,
+  satelliteOnLoad
 }: ThemeControllerProps) => {
   const { mapState, dispatchMapState } = useContext(mapContext);
 
@@ -37,16 +39,17 @@ const ThemeControllerWithoutTranslations = ({
     [dispatchMapState],
   );
 
-  const handleSatelliteChange = useCallback(
-    (isSatellite: boolean) => {
-      dispatchMapState &&
-        dispatchMapState({
-          type: MapActionKind.SetSatellite,
-          value: isSatellite,
-        });
-    },
-    [dispatchMapState],
-  );
+  const handleSatelliteChange = (value: boolean) => {
+    dispatchMapState && dispatchMapState({
+      type: MapActionKind.SetSatellite,
+      value,
+    });
+  };
+
+  useEffect(() => {
+    satelliteOnLoad && setTimeout(() => handleSatelliteChange(satelliteOnLoad), 2000) 
+    // TODO: find out how to prerender map styles instead using timeout!!!!
+  }, [satelliteOnLoad])
 
   const ref = useRef(null);
 
