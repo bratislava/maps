@@ -324,7 +324,14 @@ export const App = () => {
       onMapClick={closeDetail}
       mapInformation={{
         title: t("informationModal.title"),
-        description: t("informationModal.description"),
+        description: (
+          <Trans i18nKey="informationModal.description">
+            before
+            <a href={t("informationModal.descriptionLink")} className="underline font-semibold">
+              link
+            </a>
+          </Trans>
+        ),
         partners: [
           {
             name: "bratislava",
