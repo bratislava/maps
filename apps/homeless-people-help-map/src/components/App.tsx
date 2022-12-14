@@ -74,7 +74,7 @@ export const App = () => {
 
   const layerFilter = useFilter({
     property: "subLayerName",
-    keys: useMemo(() => [...uniqueLayers, "drugsAndSex", "kolo", "notaBene"], []),
+    keys: useMemo(() => [...uniqueLayers], []),
     defaultValues: defaultLayersValues,
   });
 
