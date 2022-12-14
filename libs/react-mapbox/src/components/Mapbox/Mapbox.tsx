@@ -246,12 +246,12 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
 
     // LOADING SATELLITE SOURCE
     const loadSatelliteSource = useCallback(() => {
-      if (!map) return;
+      if (!map || isStyleLoading || isLoading) return;
 
       if (!map.getSource('satellite')) {
         map.addSource('satellite', defaultSatelliteSource);
       }
-    }, [map]);
+    }, [map, isStyleLoading, isLoading]);
 
     // MAP CLICK HANDLER
     const onMapClick = useCallback(
@@ -636,7 +636,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     // SATELLITE CHANGE
     useEffectDebugger(
       () => {
-        if (!map) return;
+        if (!map || isStyleLoading || isLoading) return;
 
         if (isSatellite) {
           loadSatelliteSource();
@@ -660,8 +660,22 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           }
         }
       },
-      [loadSatelliteSource, isSatellite, layerPrefix, map],
-      ['loadSatelliteSource', 'isSatellite', 'layerPrefix', 'map'],
+      [
+        loadSatelliteSource,
+        isSatellite,
+        layerPrefix,
+        map,
+        isStyleLoading,
+        isLoading,
+      ],
+      [
+        'loadSatelliteSource',
+        'isSatellite',
+        'layerPrefix',
+        'map',
+        'isStyleLoading',
+        'isLoading',
+      ],
       'SATELLITE CHANGE',
     );
 

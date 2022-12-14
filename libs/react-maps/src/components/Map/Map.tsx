@@ -96,6 +96,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
       maxBounds,
       cooperativeGestures = false,
       interactive,
+      enableSatelliteOnLoad = false,
       mapInformation,
       mapInformationButtonClassName,
       prevI18n,
@@ -116,7 +117,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
 
     const [mapState, dispatchMapState] = useReducer(mapReducer, {
       isDarkmode: false,
-      isSatellite: false,
+      isSatellite: enableSatelliteOnLoad,
       isFullscreen: false,
       viewport: mergeViewports(defaultInitialViewport, initialViewport ?? {}),
       isGeolocation: false,

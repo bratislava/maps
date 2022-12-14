@@ -317,6 +317,7 @@ export const App = () => {
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={mapStyles}
+      enableSatelliteOnLoad
       initialViewport={initialViewport}
       isDevelopment={isDevelopment}
       onMobileChange={setMobile}
@@ -392,7 +393,6 @@ export const App = () => {
       >
         <div className="flex justify-between items-end">
           <ThemeController
-            satelliteOnLoad={true}
             className={cx("pointer-events-auto", {
               "translate-x-96 delay-75": isSidebarVisible && !isMobile,
               "translate-x-0 delay-200": !(isSidebarVisible && !isMobile),
