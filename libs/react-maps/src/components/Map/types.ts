@@ -67,6 +67,7 @@ export type MapProps = {
   maxBounds?: [[number, number], [number, number]];
   cooperativeGestures?: boolean;
   interactive?: boolean;
+  enableSatelliteOnLoad?: boolean;
   mapInformationButtonClassName?: string;
   onViewportChange?: (viewport: Viewport) => void;
   onViewportChangeDebounced?: (viewport: Viewport) => void;

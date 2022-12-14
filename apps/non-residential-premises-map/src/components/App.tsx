@@ -317,6 +317,7 @@ export const App = () => {
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={mapStyles}
+      enableSatelliteOnLoad
       initialViewport={initialViewport}
       isDevelopment={isDevelopment}
       onMobileChange={setMobile}
