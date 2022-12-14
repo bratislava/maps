@@ -9,7 +9,7 @@ export const otherServices: FeatureCollection<Point> = {
       geometry: { type: "Point", coordinates: [17.182557733327812, 48.17049146279601] },
       properties: {
         isKolo: true,
-        name: "KOLO",
+        name: "Kolo",
         tag: "Ďaľšie služby",
         provider: "Magistrát hl. mesta Bratislavy",
         service: "Bratislavské centrum opätovného použitia",

@@ -53,6 +53,7 @@ export default {
       openingHours: "Opening hours",
       price: "Price",
       areas: "Areas",
+      tag: "terrain service",
     },
     fixpointSyringeExchange: {
       name: "Name",
