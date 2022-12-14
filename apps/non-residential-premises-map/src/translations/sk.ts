@@ -57,6 +57,7 @@ export default {
   legend: {
     title: "Legenda",
     free: "Voľné",
+    forRent: "Na prenájom",
     occupied: "Obsadené",
     districtBorder: "Hranica mestskej časti",
   },

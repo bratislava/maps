@@ -289,6 +289,10 @@ export const App = () => {
             color: colors.free,
           },
           {
+            title: t("legend.forRent"),
+            color: colors.forRent,
+          },
+          {
             title: t("legend.occupied"),
             color: colors.occupied,
           },
