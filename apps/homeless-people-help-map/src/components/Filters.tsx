@@ -11,7 +11,6 @@ import {
 } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { ITerrainService, Layers } from "./Layers";
-import { OtherLayers } from "./OtherLayers";
 import { SelectValueRenderer } from "./SelectValueRenderer";
 import { TerrainServices } from "./TerrainServices";
 
@@ -117,6 +116,7 @@ export const Filters = ({
 
       <div>
         <Layers
+          title={t("layersLabel")}
           isMobile={isMobile}
           filter={layerFilter}
           layers={["counseling", "hygiene", "overnight", "meals", "medicalTreatment", "culture"]}
@@ -133,7 +133,8 @@ export const Filters = ({
         />
       </div>
 
-      <OtherLayers
+      <Layers
+        title={t("otherLayersLabel")}
         isMobile={isMobile}
         filter={layerFilter}
         layers={["drugsAndSex", "kolo", "notaBene"]}
