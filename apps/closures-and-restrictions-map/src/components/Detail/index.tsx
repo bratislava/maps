@@ -1,9 +1,5 @@
-import { forwardRef } from "react";
-import { Slot } from "@bratislava/react-maps";
-import { X } from "@bratislava/react-maps-icons";
-import cx from "classnames";
+import { forwardRef, useEffect, useMemo, useRef } from "react";
 import { Feature } from "geojson";
-import { BottomSheet } from "react-spring-bottom-sheet";
 import DigupDetail, {
   DigupClosureDisorderProperties,
   digupClosureDisorderPropertiesSchema,
@@ -21,16 +17,20 @@ export interface DetailProps {
   feature: Feature | null;
   onClose: () => void;
 }
+import { Detail as MapDetail } from "@bratislava/react-maps";
+import { SheetHandle } from "@bratislava/react-maps-ui";
 
 export const Detail = forwardRef<HTMLDivElement, DetailProps>(
   ({ feature, isMobile, onClose }, forwardedRef) => {
-    const { originalProperties, ...processedProperties } = feature?.properties ?? {};
+    const detailRef = useRef<SheetHandle>(null);
 
-    if (!feature) return null;
+    const { /* originalProperties, */ ...processedProperties } = feature?.properties ?? {};
 
-    const detail = (
-      <>
-        <div className="p-8 text-foreground-lightmode dark:text-foreground-darkmode max-h-screen overflow-auto">
+    const isOpen = useMemo(() => !!feature, [feature]);
+
+    const detail = useMemo(
+      () => (
+        <div>
           {feature ? (
             digupClosureDisorderPropertiesSchema.safeParse(processedProperties).success ? (
               <DigupDetail properties={processedProperties as DigupClosureDisorderProperties} />
@@ -59,37 +59,29 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
             </code>
           </pre> */}
         </div>
-      </>
+      ),
+      [feature, processedProperties],
     );
 
-    return isMobile ? (
-      <BottomSheet
-        snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 80]}
-        defaultSnap={({ snapPoints }) => snapPoints[1]}
-        blocking={false}
-        // onSpringStart={onSnapChange}
-        className="relative z-30"
-        open={true}
-        expandOnContentDrag
+    useEffect(() => {
+      if (isOpen) {
+        detailRef.current?.snapTo(1);
+      }
+    }, [detail, isOpen]);
+
+    return (
+      <MapDetail
+        ref={detailRef}
+        isBottomSheet={isMobile}
+        onClose={onClose}
+        isVisible={!!feature}
+        bottomSheetSnapPoints={[84, "50%", "100%"]}
+        bottomSheetInitialSnap={1}
       >
-        {detail}
-      </BottomSheet>
-    ) : (
-      <div
-        ref={forwardedRef}
-        className={cx(
-          "w-96 overflow-auto max-h-full bg-background-lightmode dark:bg-background-darkmode transition-all duration-500",
-          {
-            "translate-x-full": !feature,
-            "shadow-lg": !!feature,
-          },
-        )}
-      >
-        <button onClick={onClose} className="absolute top-8 right-6 z-10 hover:text-primary">
-          <X size="default" />
-        </button>
-        {detail}
-      </div>
+        <div ref={forwardedRef} className="px-6 py-4">
+          {detail}
+        </div>
+      </MapDetail>
     );
   },
 );

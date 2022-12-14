@@ -2,6 +2,7 @@ export default {
   title: "Closures and restrictions map",
   tabTitle: "Closures and restrictions map in Bratislave",
   search: "Search",
+  close: "Close",
   filters: {
     title: "Filtering",
     reset: "Reset",
