@@ -42,7 +42,7 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
               <RepairPointDetail properties={processedProperties as RepairPointDetailProperties} />
             ) : null
           ) : null}
-          <pre className="p-2 bg-black rounded-lg text-white overflow-auto">
+          {/* <pre className="p-2 bg-black rounded-lg text-white overflow-auto">
             <div className="font-semibold">Processed properties</div>
             <code>{JSON.stringify(processedProperties, null, 2)}</code>
           </pre>
@@ -57,7 +57,7 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
                 2,
               )}
             </code>
-          </pre>
+          </pre> */}
         </div>
       </>
     );

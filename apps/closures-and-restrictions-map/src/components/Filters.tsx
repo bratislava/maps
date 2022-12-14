@@ -157,14 +157,7 @@ export const Filters = ({
               label: t(`filters.status.${status.key}`),
               isActive: status.isActive,
             }))
-            // This another tag button is for testing purposes only, // TODO: remove it
-            .concat([
-              {
-                key: "all",
-                label: "všetky",
-                isActive: statusFilter.activeKeys.length === 3,
-              },
-            ])}
+           }
           onTagClick={(status) => {
             if (status === "all") {
               if (statusFilter.activeKeys.length !== 3) {
