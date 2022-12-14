@@ -48,6 +48,7 @@ export type MapboxProps = {
   initialViewport?: PartialViewport;
   isDevelopment?: boolean;
   onClick?: (event: mapboxgl.MapMouseEvent & mapboxgl.EventData) => void;
+  onCustomFeaturesClickOutside?: () => void;
   maxBounds?: [[number, number], [number, number]];
   cooperativeGestures?: boolean;
   locale?: { [key: string]: string };
@@ -108,6 +109,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       isDevelopment = false,
       onLoad,
       onClick,
+      onCustomFeaturesClickOutside,
       disableBearing = false,
       disablePitch = false,
       maxBounds,
@@ -120,6 +122,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     const mapContainerId = useId();
 
     const [map, setMap] = useState<mapboxgl.Map | null>(null);
+
+    const [isDragging, setDragging] = useState(false);
 
     const [clickableLayerIds, setClickableLayerIds] = useState<string[]>([]);
 
@@ -171,7 +175,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     );
 
     const changeViewport = useCallback(
-      (partialViewport: PartialViewport, duration = 500) => {
+      (partialViewport: PartialViewport, duration = 1000) => {
         if (!map) return;
 
         const newFutureViewport = mergeViewports(
@@ -186,20 +190,51 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
             type: ViewportActionKind.Change,
             partialViewport: newFutureViewport,
           });
-          if (duration === 0) {
-            map.jumpTo({
-              ...newFutureViewport,
-            });
-          } else {
-            map.easeTo({
-              ...newFutureViewport,
-              duration,
-            });
-          }
+          // if (duration === 0) {
+          //   map.jumpTo({
+          //     ...newFutureViewport,
+          //   });
+          // } else {
+          //   map.easeTo({
+          //     ...newFutureViewport,
+          //     duration,
+          //   });
+          // }
         }
       },
       [map, futureViewport],
     );
+
+    const [debouncedFutureViewport, setDebouncedFutureViewport] =
+      useState(futureViewport);
+
+    const previousDebouncedFutureViewport = usePrevious(
+      debouncedFutureViewport,
+    );
+
+    useEffect(() => {
+      const timer =
+        !isDragging &&
+        setTimeout(() => setDebouncedFutureViewport(futureViewport), 100);
+
+      return () => {
+        timer && clearTimeout(timer);
+      };
+    }, [futureViewport, isDragging]);
+
+    useEffect(() => {
+      if (!map) return;
+
+      if (
+        JSON.stringify(debouncedFutureViewport) !==
+        JSON.stringify(previousDebouncedFutureViewport)
+      ) {
+        map.easeTo({
+          ...debouncedFutureViewport,
+          duration: 500,
+        });
+      }
+    }, [debouncedFutureViewport, previousDebouncedFutureViewport]);
 
     const [isLoading, setLoading] = useState(true);
     const [isStyleLoading, setStyleLoading] = useState(false);
@@ -284,6 +319,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
                 )
               ) {
                 return [...filteredFeatures, feature];
+                1;
               }
               return filteredFeatures;
             },
@@ -320,13 +356,22 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
             //   };
             // });
 
-            filteredFeatures.length &&
-              onFeaturesClick &&
-              onFeaturesClick(filteredFeatures);
+            if (filteredFeatures.length) {
+              onFeaturesClick && onFeaturesClick(filteredFeatures);
+            } else {
+              onCustomFeaturesClickOutside && onCustomFeaturesClickOutside();
+            }
           }
         }
       },
-      [layerPrefix, onFeaturesClick, clickableLayerIds, onClick, map],
+      [
+        layerPrefix,
+        onFeaturesClick,
+        onCustomFeaturesClickOutside,
+        clickableLayerIds,
+        onClick,
+        map,
+      ],
     );
 
     // MAP MOVE HANDLER
@@ -338,6 +383,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       const pitch = map.getPitch();
       const bearing = map.getBearing();
       const padding = map.getPadding();
+
+      setDragging(true);
 
       const viewport: Viewport = {
         center,
@@ -362,6 +409,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       const pitch = map.getPitch();
       const bearing = map.getBearing();
       const padding = map.getPadding();
+
+      setDragging(false);
 
       const viewport: Viewport = {
         center,
@@ -479,7 +528,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           newMap.on('load', () => {
             newMap.resize();
             newMap.getCanvas().style.cursor = 'default';
-            setTimeout(() => setLoading(false), 0);
+            setLoading(false);
           });
 
           return newMap;
@@ -666,14 +715,9 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     );
 
     // EVENTS
-    useEffectDebugger(
-      () => {
-        onViewportChange && onViewportChange(viewport);
-      },
-      [map, viewport, onViewportChange],
-      ['map', 'viewport', 'onViewportChange'],
-      'VIEWPORT',
-    );
+    useEffect(() => {
+      onViewportChange && onViewportChange(viewport);
+    }, [map, viewport, onViewportChange]);
 
     useEffectDebugger(
       () => {

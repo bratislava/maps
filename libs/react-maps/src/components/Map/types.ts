@@ -61,6 +61,7 @@ export type MapProps = {
   onMobileChange?: (isMobile: boolean) => void;
   onGeolocationChange?: (isGeolocation: boolean) => void;
   onMapClick?: (event: MapMouseEvent & EventData) => void;
+  onCustomFeaturesClickOutside?: () => void;
   loadingSpinnerColor?: string;
   selectedFeatures?: MapboxGeoJSONFeature[];
   onFeaturesClick?: (features: MapboxGeoJSONFeature[]) => void;

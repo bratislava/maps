@@ -26,7 +26,7 @@ import { Detail } from "./Detail";
 
 // utils
 import { Feature, FeatureCollection, Point } from "geojson";
-import { MapboxGeoJSONFeature } from "mapbox-gl";
+import { EventData, MapboxGeoJSONFeature, MapMouseEvent } from "mapbox-gl";
 import { processData } from "../utils/utils";
 import { MobileHeader } from "./mobile/MobileHeader";
 
@@ -285,8 +285,8 @@ export const App = () => {
   );
 
   const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
-    console.log(features);
-    // mapRef.current?.moveToFeatures(features);
+    console.log("MOVE TO FEATURES");
+    mapRef.current?.moveToFeatures(features);
     setSelectedFeature(features[0] ?? null);
     setSelectedMarker(null);
   }, []);
@@ -320,7 +320,7 @@ export const App = () => {
       initialViewport={initialViewport}
       isDevelopment={import.meta.env.DEV}
       onMobileChange={setMobile}
-      onMapClick={closeDetail}
+      onCustomFeaturesClickOutside={closeDetail}
       selectedFeatures={selectedFeatures}
       onFeaturesClick={onFeaturesClick}
       mapInformationButtonClassName="!top-20 sm:!top-6"

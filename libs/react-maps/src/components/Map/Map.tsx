@@ -90,6 +90,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
       onMobileChange,
       onGeolocationChange,
       onMapClick,
+      onCustomFeaturesClickOutside,
       onFeaturesClick,
       disablePitch,
       disableBearing,
@@ -521,6 +522,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
                 onFeaturesClick={onFeaturesClick}
                 selectedFeatures={selectedFeatures}
                 onClick={onMapClick}
+                onCustomFeaturesClickOutside={onCustomFeaturesClickOutside}
                 onViewportChange={handleViewportChange}
                 onViewportChangeDebounced={onViewportChangeDebounced}
                 isDevelopment={isDevelopment && isDevInfoVisible}
