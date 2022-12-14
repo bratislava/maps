@@ -610,14 +610,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
               <div className="text-md px-6 font-medium">
                 {mapInformation.title}
               </div>
-              <div className="px-6">{mapInformation.description}
-                {mapInformation.descriptionLink &&
-                  <a
-                    href={mapInformation.descriptionLink?.href}
-                    className="text-[DodgerBlue]">
-                    {mapInformation.descriptionLink?.text}
-                  </a>
-                } </div>
+              <div className="px-6">{mapInformation.description}</div>
               <div className="flex flex-wrap items-center justify-center gap-4 px-6 py-2">
                 {mapInformation.partners.map((partner, index) => (
                   <a
