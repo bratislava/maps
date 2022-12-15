@@ -29,7 +29,7 @@ export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
         )}
       >
         <HelpPhoneLinksIcon width={32} height={32} />
-        <div className="whitespace-nowrap">Linky pomoci</div>
+        <div className="whitespace-nowrap">{t("helpPhoneLinks.title")}</div>
       </button>
       <Modal
         closeButtonInCorner

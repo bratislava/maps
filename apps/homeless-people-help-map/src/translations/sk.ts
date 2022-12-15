@@ -3,6 +3,7 @@ export default {
   search: "Hľadať",
   close: "Zavrieť",
   loading: "Načítavanie",
+  moreInformation: "Viac informácií",
   legend: {
     title: "Legenda",
     point: "Bod",
@@ -15,6 +16,43 @@ export default {
   },
   terrainServices: {
     title: "Terénne služby",
+
+    cityTerrainService: {
+      title: "Mestský terénny tím",
+      provider: "Magistrát hl. mesta Bratislavy",
+      service: "pomoc v uliciach",
+      openingHours: "",
+      phone: "",
+      price: "zdarma",
+    },
+    vagus: {
+      title: "Streetwork Vagus",
+      provider: "OZ Vagus",
+      service:
+        "sociálne poradenstvo a pomoc v uliciach - sociálne poradenstvo, základné ošetrenie, jedlo, prikrývky, odvoz do nemocnice/nocľahárne; v prípade krízového podnetu večer je možnosť ísť aj do iných mestských častí",
+      openingHours:
+        "denné služby: pondelok-piatok 8:30-12:00; večerné služby: pondelok-sobota 17:00-21:00",
+      phone: "+421 949 655 555",
+      price: "zdarma",
+    },
+    rozalie: {
+      title: "Terénna sociálna práva bl. Rozálie Rendu",
+      provider: "DEPAUL Slovensko, n.o.",
+      service:
+        "sociálne poradenstvo, sprevádzanie (po dohode) k lekárovi, po úradoch, asistencia pri vybavovaní dokladov, dôchodkov a dávok, základné ošetrenie v rámci poskytnutia prvej pomoci, v krízových situáciach oblečenie, potraviny a teplý nápoj",
+      openingHours: "pondelok-piatok 7:30-14:00",
+      phone: "+421 910 842 170",
+      price: "zdarma",
+    },
+    stopa: {
+      title: "Terénny prevenčný tím STOPA",
+      provider: "STOPA Slovensko o.z.",
+      service: "krízové intervencie, poradenstvo, základné ošetrenie, sociálna asistencia",
+      openingHours:
+        "pondelok-piatok 8:00-16:00 (počas vyhlásenej zimnej krízy 6:30-3:00 druhého dňa) ",
+      phone: "+421 948 389 748",
+      price: "zdarma",
+    },
   },
   layersLabel: "Typy pomoci",
   otherLayersLabel: "Ďalšie služby",
@@ -69,6 +107,8 @@ export default {
       how: "Ako sa tam dostať?",
       web: "Web",
       locality: "Lokalita",
+      address: "Adresa",
+      description: "Popis",
     },
   },
 
@@ -85,6 +125,7 @@ export default {
   },
 
   helpPhoneLinks: {
+    title: "Linky pomoci",
     labels: {
       showMore: "Viac informácií",
       description: "Popis",
@@ -95,31 +136,31 @@ export default {
     womenViolence: {
       title: "Národná linka pre ženy zažívajúce násilie",
       operator: "Ministerstvo práce,sociálnych vecí a rodiny",
-      phone: "0800 212 212",
+      phone: "+421 800 212 212",
       description:
-        "Sociálno-právne a psychologické poradenstvo pri riešení domáceho násilia, sprostredkovanie bezpečného ubytovania, aj cez email: linkaprezeny@ivpr.gov.sk",
+        "Sociálno-právne a psychologické poradenstvo pri riešení domáceho násilia, sprostredkovanie bezpečného ubytovania, aj cez email linkaprezeny@ivpr.gov.sk",
       operation: "nonstop",
-      price: "bezplatná",
+      price: "zadarmo",
     },
     homelessPeople: {
-      title: "SOS linka na pomoc ľuďom bez domova Vagus",
+      title: "SOS linka na pomoc ľuďom bez domova",
       operator: "OZ Vagus",
-      phone: "0949 655 555",
+      phone: "+421 949 655 555",
       description:
         "Sociálne poradenstvo v teréne, základné ošetrenie, jedlo, odvoz do nocľahárne prípadne privolanie zdravotnej pomoci alebo polície a napojenie na ďalšie sociálne služby.",
       operation:
-        "pondelok až sobota od 9:00 do 12:00 a v prípade večernej služby od 17:00 do 21:00. Mimo stanovenej doby môžete zanechať odkaz so svojimi kontaktnými údajmi a informáciami, kde sa človek bez domova nachádza.",
-      price: "",
+        "pondelok-sobota 9:00-12:00 a 17:00-21:00. Mimo stanovenej doby môžete zanechať odkaz so svojimi kontaktnými údajmi a informáciami, kde sa človek bez domova nachádza.",
+      price: "zadarmo",
     },
     humanTrafficking: {
       title: "Linka na pomoc obetiam obchodovania s ľuďmi",
       operator: "Slovenská katolícka charita",
-      phone: "0800 800 818",
+      phone: "+421 800 800 818",
       description:
         "Poskytovanie pomoci a informácií v prvom kontakte s osobami, ktoré sa mohli dostať do rizikovej situácie v súvislosti s obchodovaním s ľuďmi.",
       operation:
-        "pondelok až piatok od 8:00 do 20:00. Mimo  prevádzkových hodín možnosť zanechať odkaz prostredníctvom záznamníka.",
-      price: "bezplatná",
+        "pondelok-piatok 8:00-20:00. Mimo prevádzkových hodín možnosť zanechať odkaz prostredníctvom záznamníka.",
+      price: "zadarmo",
     },
   },
 

@@ -50,7 +50,13 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
 
       try {
         const props = mainFeaturePropertiesSchema.parse(feature?.properties);
-        return <MainDetail properties={props} isExpanded={currentHeight !== 84 || !isMobile} />;
+        return (
+          <MainDetail
+            isMobile={isMobile}
+            properties={props}
+            isExpanded={currentHeight !== 84 || !isMobile}
+          />
+        );
       } catch {
         // Who cares?
       }
