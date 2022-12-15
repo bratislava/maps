@@ -105,23 +105,25 @@ export const Sidebar = ({
           </div>
         )}
 
-        <ScrollArea>
-          <div
-            className={cx(
-              "space-y-6 w-full grow font-medium bg-background pb-3",
-              {
-                "h-full": !isMobile,
-              }
-            )}
-          >
-            {!isMobile && title && (
-              <h1 className="text-lg font-semibold relative z-30 px-6 pt-6 pb-3">
-                {title}
-              </h1>
-            )}
-            {children}
-          </div>
-        </ScrollArea>
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea>
+            <div
+              className={cx(
+                "space-y-6 w-full grow font-medium bg-background pb-3",
+                {
+                  "h-full": !isMobile,
+                }
+              )}
+            >
+              {!isMobile && title && (
+                <h1 className="text-lg font-semibold relative z-30 px-6 pt-6 pb-3">
+                  {title}
+                </h1>
+              )}
+              {children}
+            </div>
+          </ScrollArea>
+        </div>
 
         {isMobile && (
           <button

@@ -141,7 +141,7 @@ export const App = () => {
 
   const mapRef = useRef<MapHandle>(null);
 
-  const [isMobile, setMobile] = useState<boolean | null>(null);
+  const [isMobile, setMobile] = useState<boolean>(false);
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
 
@@ -343,8 +343,8 @@ export const App = () => {
   const { height: windowHeight } = useWindowSize();
 
   const shouldBeViewportControlsMoved = useMemo(() => {
-    return windowHeight < viewportControlsHeight + detailHeight + 40;
-  }, [windowHeight, detailHeight, viewportControlsHeight]);
+    return !isMobile && windowHeight < viewportControlsHeight + detailHeight + 40;
+  }, [windowHeight, detailHeight, viewportControlsHeight, isMobile]);
 
   return isLoading ? null : (
     <Map
@@ -359,20 +359,7 @@ export const App = () => {
       onMapClick={closeDetail}
       mapInformation={{
         title: t("informationModal.title"),
-        description: (
-          <Trans i18nKey="informationModal.description">
-            before
-            <a
-              className="underline text-secondary font-semibold"
-              href={t("informationModal.descriptionLink")}
-              target="_blank"
-              rel="noreferrer"
-            >
-              link
-            </a>
-            after
-          </Trans>
-        ),
+        description: null,
         partners: [
           {
             name: "bratislava",
@@ -383,6 +370,11 @@ export const App = () => {
             name: "inovation",
             link: "https://inovacie.bratislava.sk/",
             image: "logos/inovation.png",
+          },
+          {
+            name: "geoportal",
+            link: "https://geoportal.bratislava.sk/pfa/apps/sites/#/verejny-mapovy-portal",
+            image: "logos/geoportal.png",
           },
         ],
         footer: (
@@ -468,43 +460,22 @@ export const App = () => {
         </div>
       </Slot>
 
+      <Detail
+        ref={detailRef}
+        feature={selectedFeature ?? selectedMarker}
+        isMobile={isMobile}
+        onClose={closeDetail}
+      />
+
       <Layout isOnlyMobile>
         <Slot id="mobile-header">
           <MobileHeader
             onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
           />
         </Slot>
-
-        <Slot
-          id="mobile-detail"
-          isVisible={!!(selectedFeature ?? selectedMarker)}
-          position="bottom"
-        >
-          <Detail
-            ref={detailRef}
-            feature={selectedFeature ?? selectedMarker}
-            isMobile={true}
-            onClose={closeDetail}
-          />
-        </Slot>
       </Layout>
 
-      <Layout isOnlyDesktop>
-        <Slot
-          id="desktop-detail"
-          autoPadding
-          isVisible={!!(selectedFeature ?? selectedMarker)}
-          avoidMapboxControls
-          position="top-right"
-        >
-          <Detail
-            ref={detailRef}
-            feature={selectedFeature ?? selectedMarker}
-            isMobile={false}
-            onClose={closeDetail}
-          />
-        </Slot>
-      </Layout>
+      <Layout isOnlyDesktop></Layout>
 
       <Filters
         isMobile={isMobile ?? false}

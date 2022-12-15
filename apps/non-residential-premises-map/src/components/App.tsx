@@ -289,6 +289,10 @@ export const App = () => {
             color: colors.free,
           },
           {
+            title: t("legend.forRent"),
+            color: colors.forRent,
+          },
+          {
             title: t("legend.occupied"),
             color: colors.occupied,
           },
@@ -317,13 +321,21 @@ export const App = () => {
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={mapStyles}
+      enableSatelliteOnLoad
       initialViewport={initialViewport}
       isDevelopment={isDevelopment}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
       mapInformation={{
         title: t("informationModal.title"),
-        description: t("informationModal.description"),
+        description: (
+          <Trans i18nKey="informationModal.description">
+            before
+            <a href={t("informationModal.descriptionLink")} className="underline font-semibold">
+              link
+            </a>
+          </Trans>
+        ),
         partners: [
           {
             name: "bratislava",

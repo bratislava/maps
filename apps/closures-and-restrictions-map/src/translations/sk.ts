@@ -2,6 +2,7 @@ export default {
   title: "Mapa rozkopávok a uzávierok",
   tabTitle: "Mapa rozkopávok a uzávierok v Bratislave",
   search: "Hľadať",
+  close: "Zavrieť",
   filters: {
     title: "Filter",
     reset: "Zrušiť",

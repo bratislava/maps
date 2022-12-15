@@ -53,6 +53,7 @@ export default {
       openingHours: "Otváracie hodiny",
       price: "Cena",
       areas: "Oblasti",
+      tag: "terénna služba",
     },
     fixpointSyringeExchange: {
       name: "Názov",

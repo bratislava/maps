@@ -29,7 +29,10 @@ const enhanceUrls = (text: string) => {
   return text.replace(
     urlRegex,
     (url) =>
-      `<a href="${url}" class="font-semibold underline" target="_blank">${url}</a>`
+      `<a href="${url}" class="font-semibold underline" target="_blank">${url
+        .replace("https://", "")
+        .replace("http://", "")
+        .replace(/^www\./, "")}</a>`
   );
 };
 

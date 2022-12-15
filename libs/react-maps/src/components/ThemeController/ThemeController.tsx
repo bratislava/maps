@@ -1,7 +1,7 @@
 import { Darkmode, Satellite, Themes } from '@bratislava/react-maps-icons';
 import { AnimateHeight, Popover } from '@bratislava/react-maps-ui';
 import cx from 'classnames';
-import { useCallback, useContext, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation, I18nextProvider } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 

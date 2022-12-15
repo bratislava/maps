@@ -57,6 +57,7 @@ export default {
   legend: {
     title: "Legend",
     free: "Free",
+    forRent: "For rent",
     occupied: "Occupied",
     districtBorder: "Disctrict border",
   },
@@ -64,7 +65,9 @@ export default {
   resetFilters: "Reset filters",
   informationModal: {
     title: "Map information",
-    description: "Map of non-residential premises in Bratislava.",
+    description:
+      "List of non-residential premises owned and managed by the city of Bratislava. If you are interested in more information about the lease, contact us at <1>spravanehnutelnosti@bratislava.sk</1>.",
+    descriptionLink: "mailto:spravanehnutelnosti@bratislava.sk",
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },
