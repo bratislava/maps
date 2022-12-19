@@ -278,6 +278,8 @@ export const App = () => {
       selectedFeatures={selectedFeatures}
       onFeaturesClick={onFeaturesClick}
       onMobileChange={setMobile}
+      disableBearing
+      disablePitch
       mapInformation={{
         title: t("informationModal.title"),
         description: (

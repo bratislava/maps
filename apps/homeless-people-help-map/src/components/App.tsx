@@ -297,7 +297,7 @@ export const App = () => {
       onMobileChange={setMobile}
       onMapClick={closeDetail}
       disablePitch
-      // disableBearing
+      disableBearing
       mapInformation={{
         title: t("informationModal.title"),
         description: (

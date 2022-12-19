@@ -317,7 +317,8 @@ export const App = () => {
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
       }}
-      initialViewport={initialViewport}
+      disableBearing
+      disablePitch
       isDevelopment={import.meta.env.DEV}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
