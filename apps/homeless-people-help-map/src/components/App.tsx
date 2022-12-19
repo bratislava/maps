@@ -36,7 +36,6 @@ import { Detail } from "./Detail";
 import { PhoneLinksModal } from "./PhoneLinksModal";
 import { Marker } from "./Marker";
 import { colors } from "../utils/colors";
-import { drinkingFountainsData } from "../data/drinking-fountains";
 import { point, featureCollection } from "@turf/helpers";
 import { DrinkingFountainMarker } from "./DrinkingFountainMarker";
 import { Legend } from "./Legend";
@@ -50,7 +49,13 @@ import { FixpointMarker } from "./FixpointMarker";
 import { SyringeExchangeMarker } from "./SyringeExchangeMarker";
 import { FixpointAndSyringeExchangeMarker } from "./FixpointAndSyringeExchangeMarker";
 
-const { data, otherServicesData, uniqueDistricts, fixpointAndSyringeExchangeData } = processData();
+const {
+  data,
+  otherServicesData,
+  uniqueDistricts,
+  fixpointAndSyringeExchangeData,
+  drinkingFountainsData,
+} = processData();
 const uniqueLayers = Object.keys(colors).filter((key) => key !== "terrainServices");
 const defaultLayersValues = uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {});
 
@@ -291,6 +296,8 @@ export const App = () => {
       isDevelopment={import.meta.env.DEV}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
+      disablePitch
+      // disableBearing
       mapInformation={{
         title: t("informationModal.title"),
         description: (
