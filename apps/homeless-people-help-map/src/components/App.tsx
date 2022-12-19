@@ -155,7 +155,7 @@ export const App = () => {
         ),
       },
       {
-        key: "stopa",
+        key: "vagus",
         title: t("terrainServices.vagus.title"),
         provider: t("terrainServices.vagus.provider"),
         phone: t("terrainServices.vagus.phone"),
