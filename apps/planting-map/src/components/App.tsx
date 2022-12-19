@@ -1,7 +1,6 @@
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { useResizeDetector } from "react-resize-detector";
 import "../styles.css";
 import { point } from "@turf/helpers";
 
@@ -62,8 +61,8 @@ export const App = () => {
   const [uniqueKinds, setUniqueKinds] = useState<string[]>([]);
   const [uniqueLayers, setUniqueLayers] = useState<string[]>([]);
 
-  const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
-  const [isLegendVisible, setLegendVisible] = useState<boolean | undefined>(undefined);
+  const [isSidebarVisible, setSidebarVisible] = useState(false);
+  const [isLegendVisible, setLegendVisible] = useState(false);
 
   useEffect(() => {
     if (rawData) {
@@ -186,8 +185,6 @@ export const App = () => {
     }
   }, [previousMobile, isMobile]);
 
-  const isDetailOpen = useMemo(() => !!selectedFeature, [selectedFeature]);
-
   // fit to district
   useEffect(() => {
     mapRef.current?.fitDistrict(districtFilter.activeKeys);
@@ -209,9 +206,6 @@ export const App = () => {
       }, 0);
     }
   }, [selectedFeature]);
-
-  const { height: desktopDetailHeight, ref: desktopDetailRef } =
-    useResizeDetector<HTMLDivElement>();
 
   const selectedFeatures = useMemo(() => {
     return selectedFeature ? [selectedFeature] : [];
@@ -346,16 +340,6 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot
-          id="mobile-detail"
-          isVisible={isDetailOpen}
-          padding={{
-            bottom: window.innerHeight / 2, // w-96 or 24rem
-          }}
-        >
-          <Detail isMobile features={selectedFeatures ?? []} onClose={closeDetail} />
-        </Slot>
-
         <Slot id="mobile-legend" isVisible={isLegendVisible} position="top-right">
           <Sidebar
             title={t("title")}
@@ -369,6 +353,12 @@ export const App = () => {
           </Sidebar>
         </Slot>
       </Layout>
+
+      <Detail
+        isMobile={isMobile ?? false}
+        features={selectedFeatures ?? []}
+        onClose={closeDetail}
+      />
 
       <Layout isOnlyDesktop>
         <Slot id="desktop-filters" isVisible={isSidebarVisible} position="top-left" autoPadding>
@@ -387,28 +377,6 @@ export const App = () => {
           />
         </Slot>
 
-        <Slot
-          id="desktop-detail"
-          isVisible={isDetailOpen}
-          position="top-right"
-          autoPadding
-          avoidMapboxControls={
-            window.innerHeight <= (desktopDetailHeight ?? 0) + 200 ? true : false
-          }
-        >
-          <div
-            ref={desktopDetailRef}
-            className={cx(
-              "fixed top-0 right-0 w-96 bg-background-lightmode dark:bg-background-darkmode transition-all duration-500",
-              {
-                "translate-x-full": !isDetailOpen,
-                "shadow-lg": isDetailOpen,
-              },
-            )}
-          >
-            <Detail isMobile={false} features={selectedFeatures ?? []} onClose={closeDetail} />
-          </div>
-        </Slot>
         <Slot id="desktop-legend">
           <Modal
             closeButtonInCorner

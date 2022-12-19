@@ -14,8 +14,8 @@ import { ILayerCategory, Layers } from "../Layers";
 import { SelectValueRenderer } from "../SelectValueRenderer";
 
 export interface IMobileFiltersProps {
-  isVisible?: boolean;
-  setVisible: (isVisible: boolean | undefined) => void;
+  isVisible: boolean;
+  setVisible: (isVisible: boolean) => void;
   areFiltersDefault: boolean;
   activeFilters: IActiveFilter[];
   onResetFiltersClick: () => void;
