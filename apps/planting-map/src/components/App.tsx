@@ -2,7 +2,6 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import "../styles.css";
-import { point } from "@turf/helpers";
 
 // maps
 import {
@@ -17,7 +16,7 @@ import {
 
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 
-import { Layer, Marker, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
+import { Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 import { useArcgis } from "@bratislava/react-use-arcgis";
 
 // components
@@ -288,15 +287,6 @@ export const App = () => {
         geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
-
-      {!!selectedFeatures?.length && selectedFeatures[0].geometry.type === "Point" && (
-        <Marker feature={point(selectedFeatures[0].geometry.coordinates)} isRelativeToZoom>
-          <div
-            className="w-4 h-4 bg-background-lightmode dark:bg-background-darkmode border-[2px] rounded-full"
-            style={{ borderColor: selectedFeatures[0].properties?.["color"] }}
-          ></div>
-        </Marker>
-      )}
 
       <Slot id="controls">
         <ThemeController
