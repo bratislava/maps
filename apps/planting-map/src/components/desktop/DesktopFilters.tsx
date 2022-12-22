@@ -8,8 +8,8 @@ import { ILayerCategory, Layers } from "../Layers";
 import { SelectValueRenderer } from "../SelectValueRenderer";
 
 export interface IDesktopFiltersProps {
-  isVisible?: boolean;
-  setVisible: (isVisible: boolean | undefined) => void;
+  isVisible: boolean;
+  setVisible: (isVisible: boolean) => void;
   areFiltersDefault: boolean;
   onResetFiltersClick: () => void;
   yearFilter: IFilterResult<string>;

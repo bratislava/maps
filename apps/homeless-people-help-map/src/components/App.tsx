@@ -36,7 +36,6 @@ import { Detail } from "./Detail";
 import { PhoneLinksModal } from "./PhoneLinksModal";
 import { Marker } from "./Marker";
 import { colors } from "../utils/colors";
-import { drinkingFountainsData } from "../data/drinking-fountains";
 import { point, featureCollection } from "@turf/helpers";
 import { DrinkingFountainMarker } from "./DrinkingFountainMarker";
 import { Legend } from "./Legend";
@@ -50,7 +49,13 @@ import { FixpointMarker } from "./FixpointMarker";
 import { SyringeExchangeMarker } from "./SyringeExchangeMarker";
 import { FixpointAndSyringeExchangeMarker } from "./FixpointAndSyringeExchangeMarker";
 
-const { data, otherServicesData, uniqueDistricts, fixpointAndSyringeExchangeData } = processData();
+const {
+  data,
+  otherServicesData,
+  uniqueDistricts,
+  fixpointAndSyringeExchangeData,
+  drinkingFountainsData,
+} = processData();
 const uniqueLayers = Object.keys(colors).filter((key) => key !== "terrainServices");
 const defaultLayersValues = uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {});
 
@@ -144,25 +149,24 @@ export const App = () => {
     () => [
       {
         key: "city-terrain-team",
-        title: "Mestský terénny tím",
-        provider: "Magistrát hl. mesta Bratislavy",
-        phone: "",
+        title: t("terrainServices.cityTerrainService.title"),
+        provider: t("terrainServices.cityTerrainService.provider"),
+        phone: t("terrainServices.cityTerrainService.phone"),
         web: "https://bratislava.sk/socialne-sluzby-a-byvanie/aktivity-v-socialnej-oblasti/mestsky-terenny-tim",
-        openingHours: "",
-        price: "Zdarma",
+        openingHours: t("terrainServices.cityTerrainService.openingHours"),
+        price: t("terrainServices.cityTerrainService.price"),
         geojson: featureCollection(
           DISTRICTS_GEOJSON.features.filter((feature) => feature.properties.name === "Staré Mesto"),
         ),
       },
       {
         key: "vagus",
-        title: "Streetwork Vagus",
-        provider: "VAGUS o.z.",
-        phone: "0949 655 555",
+        title: t("terrainServices.vagus.title"),
+        provider: t("terrainServices.vagus.provider"),
+        phone: t("terrainServices.vagus.phone"),
         web: "https://www.vagus.sk/streetwork/2/o-projekte-2/",
-        openingHours:
-          "denné služby: pondelok až piatok od 8:30 do 12:00; večerné služby: pondelok-sobota od 17:00 do 21:00",
-        price: "Zdarma",
+        openingHours: t("terrainServices.vagus.openingHours"),
+        price: t("terrainServices.vagus.price"),
         geojson: featureCollection(
           regions.features.filter((feature) =>
             ["Bratislava I", "Bratislava II", "Bratislava III", "Bratislava V"].includes(
@@ -173,12 +177,12 @@ export const App = () => {
       },
       {
         key: "rozalie",
-        title: "Terénna sociálna práca Bl. Rozálie ",
-        provider: "DEPAUL Slovensko, n.o.",
-        phone: "0910 842 170",
+        title: t("terrainServices.rozalie.title"),
+        provider: t("terrainServices.rozalie.provider"),
+        phone: t("terrainServices.rozalie.phone"),
         web: "https://depaul.sk/terenna-praca-bl-rozalie-rendu/",
-        openingHours: "pondelok až piatok od 7:30 do 14:00",
-        price: "Zdarma",
+        openingHours: t("terrainServices.rozalie.openingHours"),
+        price: t("terrainServices.rozalie.price"),
         geojson: featureCollection(
           DISTRICTS_GEOJSON.features.filter((feature) =>
             ["Karlova Ves", "Dúbravka", "Lamač", "Devínska Nová Ves"].includes(
@@ -189,13 +193,12 @@ export const App = () => {
       },
       {
         key: "stopa",
-        title: "Terénny prevenčný tím Stopa",
-        provider: "STOPA Slovensko o.z.",
-        phone: "0948 389 748",
+        title: t("terrainServices.stopa.title"),
+        provider: t("terrainServices.stopa.provider"),
+        phone: t("terrainServices.stopa.phone"),
         web: "https://www.stopaslovensko.sk/streetwork/",
-        openingHours:
-          "pondelok až piatok od 8:00 do 16:00 (počas vyhlásenej zimnej krízy 6:30 - 3:00 druhého dňa)",
-        price: "Zdarma",
+        openingHours: t("terrainServices.stopa.openingHours"),
+        price: t("terrainServices.stopa.price"),
         geojson: featureCollection([
           ...DISTRICTS_GEOJSON.features.filter((feature) =>
             ["Staré Mesto", "Nové Mesto", "Petržalka"].includes(feature.properties.name),
@@ -204,7 +207,7 @@ export const App = () => {
         ]),
       },
     ],
-    [],
+    [t],
   );
 
   const [activeTerrainServiceKey, setActiveTerrainServiceKey] = useState<string | null>(null);
@@ -293,6 +296,8 @@ export const App = () => {
       isDevelopment={import.meta.env.DEV}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
+      disablePitch
+      disableBearing
       mapInformation={{
         title: t("informationModal.title"),
         description: (

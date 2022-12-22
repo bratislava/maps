@@ -119,7 +119,15 @@ export const Filters = ({
           title={t("layersLabel")}
           isMobile={isMobile}
           filter={layerFilter}
-          layers={["counseling", "hygiene", "overnight", "meals", "medicalTreatment", "culture"]}
+          layers={[
+            "counseling",
+            "hygiene",
+            "overnight",
+            "meals",
+            "medicalTreatment",
+            "culture",
+            "drugsAndSex",
+          ]}
         />
 
         <TerrainServices
@@ -137,7 +145,7 @@ export const Filters = ({
         title={t("otherLayersLabel")}
         isMobile={isMobile}
         filter={layerFilter}
-        layers={["drugsAndSex", "kolo", "notaBene"]}
+        layers={["kolo", "notaBene"]}
       />
     </Sidebar>
   );

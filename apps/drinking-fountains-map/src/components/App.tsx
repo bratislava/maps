@@ -83,6 +83,8 @@ export const App = () => {
       isDevelopment={import.meta.env.DEV}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
+      disableBearing
+      disablePitch
       mapInformationButtonClassName="!top-20 sm:!top-6"
       mapInformation={{
         title: t("informationModal.title"),

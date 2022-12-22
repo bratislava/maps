@@ -1,6 +1,5 @@
 import { Marker } from "@bratislava/react-mapbox";
 import cx from "classnames";
-import { motion } from "framer-motion";
 import { Feature, Point } from "geojson";
 import { MouseEvent, useCallback } from "react";
 
@@ -21,13 +20,10 @@ export const FixpointMarker = ({ feature, onClick, isSelected = false }: IFixpoi
     },
     [feature, onClick],
   );
-
+  console.log("hereee");
   return (
     <Marker zIndex={1} onClick={onClickHandler} feature={feature}>
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.2, type: "easeOut" }}
+      <div
         className={cx(
           "relative transform active:scale-75 transition-transform cursor-pointer flex items-center justify-center",
           { "z-50": isSelected },
@@ -38,7 +34,7 @@ export const FixpointMarker = ({ feature, onClick, isSelected = false }: IFixpoi
         ) : (
           <MarkerInactiveIcon width={32} height={32} />
         )}
-      </motion.div>
+      </div>
     </Marker>
   );
 };

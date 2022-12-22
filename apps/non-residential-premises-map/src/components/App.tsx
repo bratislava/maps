@@ -326,6 +326,8 @@ export const App = () => {
       isDevelopment={isDevelopment}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
+      disableBearing
+      disablePitch
       mapInformation={{
         title: t("informationModal.title"),
         description: (

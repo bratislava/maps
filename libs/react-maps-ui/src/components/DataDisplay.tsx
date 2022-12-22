@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
+import cx from "classnames";
 
 const phoneRegex = /\+?(([0-9][\s\-/]?){10,12})/g;
 const emailRegex =
@@ -40,10 +41,12 @@ export const DataDisplay = ({
   label,
   text,
   enableEnhancements = false,
+  switchFontWeights = false,
 }: {
   label?: ReactNode | null;
   text?: ReactNode;
   enableEnhancements?: boolean;
+  switchFontWeights?: boolean;
 }) => {
   const textWrapperRef = useRef<HTMLDivElement>(null);
   const textWrapper = (
@@ -67,9 +70,21 @@ export const DataDisplay = ({
   } else {
     return (
       <div>
-        <div className="font-light text-[14px]">{label}</div>
+        <div
+          className={cx(" text-[14px]", {
+            "font-light": !switchFontWeights,
+            "font-semibold": switchFontWeights,
+          })}
+        >
+          {label}
+        </div>
 
-        <div className="font-semibold">
+        <div
+          className={cx({
+            "font-light": switchFontWeights,
+            "font-semibold": !switchFontWeights,
+          })}
+        >
           {enableEnhancements ? (
             <div dangerouslySetInnerHTML={{ __html: enahncedHtml }} />
           ) : (
