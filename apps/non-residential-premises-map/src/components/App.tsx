@@ -239,7 +239,7 @@ export const App = () => {
   // Open legend on desktop by default
   useEffect(() => {
     if (!isMobile && previousMobile) {
-      setLegendVisible(true);
+      setTimeout(() => setLegendVisible(true), 1000);
     }
     if (data?.features && isMobile) {
       mapRef.current?.fitFeature(data.features, { padding: 16 });
