@@ -10,7 +10,6 @@ import {
   shift,
 } from "@floating-ui/react-dom-interactions";
 import cx from "classnames";
-import { AnimatePresence, motion } from "framer-motion";
 import { FC, ReactNode, useRef, useState, useMemo } from "react";
 import { PopoverArrow } from "./PopoverArrow";
 
@@ -75,7 +74,7 @@ export const Popover = ({
   const { getReferenceProps, getFloatingProps } = useInteractions([
     useDismiss(context, {
       escapeKey: true,
-      outsidePressEvent: "click",
+      outsidePressEvent: "mousedown",
       ancestorScroll: true,
     }),
   ]);
