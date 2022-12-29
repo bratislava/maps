@@ -26,7 +26,8 @@ export type DetailProps = {
   bottomSheetInitialSnap?: number;
   onClose: () => void;
   isVisible?: boolean;
-  onBottomSheetSnapChange?: (height: number) => void;
+  onBottomSheetSnapChange?: (index: number) => void;
+  hideBottomSheetHeader?: boolean;
 };
 
 export const Detail = forwardRef<SheetHandle, DetailProps>(
@@ -39,6 +40,7 @@ export const Detail = forwardRef<SheetHandle, DetailProps>(
       onClose,
       isVisible = true,
       onBottomSheetSnapChange,
+      hideBottomSheetHeader = false,
     },
     forwardedRef,
   ) => {
@@ -72,9 +74,11 @@ export const Detail = forwardRef<SheetHandle, DetailProps>(
           defaultSnapPoint={bottomSheetInitialSnap}
           isOpen={isVisible}
           onSnapChange={({ snapHeight, snapIndex }) => {
-            setCurrentSnapHeight(snapHeight), setCurrentSnap(snapIndex);
+            setCurrentSnapHeight(snapHeight);
+            setCurrentSnap(snapIndex);
           }}
           onClose={onClose}
+          hideHeader={hideBottomSheetHeader}
         >
           <div className="text-foreground-lightmode dark:text-foreground-darkmode">
             {children}
@@ -87,17 +91,24 @@ export const Detail = forwardRef<SheetHandle, DetailProps>(
         position="top-right"
         isVisible={isVisible}
         autoPadding
+        persistChildrenWhenClosing
       >
         <div
           ref={detailRef}
           className={cx(
-            'w-96 bg-background-lightmode dark:bg-background-darkmode max-h-full border-l-2 border-b-2 border-[transparent] dark:border-gray-darkmode/20',
+            'relative w-96 bg-background-lightmode dark:bg-background-darkmode max-h-full',
             {
               'shadow-lg': isVisible,
               'rounded-bl-lg': shouldBeBottomLeftCornerRounded,
             },
           )}
         >
+          <div
+            className={cx(
+              'dark:border-gray-darkmode/20 absolute h-full w-full border-l-2 border-b-2 border-[transparent]',
+              { 'rounded-bl-lg': shouldBeBottomLeftCornerRounded },
+            )}
+          />
           <IconButton
             className={cx(
               'hidden w-8 h-8 !rounded-full !border-0 !shadow-none absolute right-6 top-6 md:flex items-center justify-center z-50',
