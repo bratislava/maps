@@ -28,6 +28,7 @@ export type DetailProps = {
   isVisible?: boolean;
   onBottomSheetSnapChange?: (index: number) => void;
   hideBottomSheetHeader?: boolean;
+  avoidMapboxControls?: boolean;
 };
 
 export const Detail = forwardRef<SheetHandle, DetailProps>(
@@ -41,6 +42,7 @@ export const Detail = forwardRef<SheetHandle, DetailProps>(
       isVisible = true,
       onBottomSheetSnapChange,
       hideBottomSheetHeader = false,
+      avoidMapboxControls = false,
     },
     forwardedRef,
   ) => {
@@ -92,6 +94,7 @@ export const Detail = forwardRef<SheetHandle, DetailProps>(
         isVisible={isVisible}
         autoPadding
         persistChildrenWhenClosing
+        avoidMapboxControls={avoidMapboxControls}
       >
         <div
           ref={detailRef}

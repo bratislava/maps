@@ -70,7 +70,6 @@ export const App = () => {
       setUniquePurposes(uniquePurposes);
       setUniqueOccupancies(uniqueOccupancies);
       setData(data);
-      console.log(data);
     }
   }, [rawData]);
 
@@ -448,15 +447,6 @@ export const App = () => {
           </IconButton>
         </Slot>
 
-        <Slot
-          id="mobile-detail"
-          isVisible={isDetailOpen}
-          position="bottom"
-          padding={{ bottom: window.innerHeight / 2 }}
-        >
-          <Detail isMobile features={selectedFeatures ?? []} onClose={closeDetail} />
-        </Slot>
-
         <Slot id="mobile-legend" isVisible={isLegendVisible} position="top-right">
           <Sidebar
             title={t("title")}
@@ -512,19 +502,13 @@ export const App = () => {
         />
       </Slot>
 
-      <Layout isOnlyDesktop>
-        <Slot
-          id="desktop-detail"
-          isVisible={isDetailOpen}
-          position="top-right"
-          autoPadding
-          avoidMapboxControls={shouldBeViewportControlsMoved}
-        >
-          <div ref={detailRef}>
-            <Detail isMobile={false} features={selectedFeatures ?? []} onClose={closeDetail} />
-          </div>
-        </Slot>
-      </Layout>
+      <Detail
+        ref={detailRef}
+        avoidMapboxControls={shouldBeViewportControlsMoved}
+        isMobile={isMobile ?? false}
+        features={selectedFeatures ?? []}
+        onClose={closeDetail}
+      />
     </Map>
   );
 };
