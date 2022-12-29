@@ -25,7 +25,7 @@ import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 
 // utils
 import { usePrevious } from "@bratislava/utils";
-import { Feature, FeatureCollection, Point } from "geojson";
+import { Feature, FeatureCollection } from "geojson";
 import { processData } from "../utils/utils";
 import { Filters } from "./Filters";
 
@@ -113,7 +113,9 @@ export const App = () => {
         filter: occupancyFilter,
         mapToActive: (activeOccupancies) => ({
           title: t("filters.occupancy.title"),
-          items: activeOccupancies,
+          items: activeOccupancies.map((ao) =>
+            t(`filters.occupancy.types.${ao as "free" | "forRent" | "occupied"}`),
+          ),
         }),
       },
     ],
