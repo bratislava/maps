@@ -1,11 +1,9 @@
 import { Feature } from "geojson";
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
-import cx from "classnames";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { SingleFeatureDetail } from "./SingleFeatureDetail";
 import { MultiFeatureDetail } from "./MultiFeatureDetail";
-import { useResizeDetector } from "react-resize-detector";
-import { useWindowSize } from "usehooks-ts";
+import { Detail as MapDetail } from "@bratislava/react-maps";
+import { SheetHandle } from "@bratislava/react-maps-ui";
 export interface DetailProps {
   features: Feature[];
   onClose: () => void;
@@ -13,14 +11,10 @@ export interface DetailProps {
 }
 
 export const Detail = ({ features, onClose, isMobile }: DetailProps) => {
-  const sheetRef = useRef<BottomSheetRef>(null);
+  const detailRef = useRef<SheetHandle>(null);
 
   const [feature, setFeature] = useState<Feature | null>(null);
   const [currentSnap, setCurrentSnap] = useState(0);
-
-  const onSnapChange = useCallback(() => {
-    requestAnimationFrame(() => setCurrentSnap(sheetRef.current?.height === 84 ? 1 : 0));
-  }, []);
 
   useEffect(() => {
     setFeature(null);
@@ -33,57 +27,35 @@ export const Detail = ({ features, onClose, isMobile }: DetailProps) => {
 
   useEffect(() => {
     if (feature) {
-      sheetRef.current?.snapTo(({ snapPoints }) => snapPoints[1]);
+      detailRef.current?.snapTo(1);
     }
-  }, [feature, sheetRef]);
+  }, [feature, detailRef]);
 
   const detail = useMemo(() => {
     if (features.length === 1) {
       return (
-        <SingleFeatureDetail
-          isExpanded={currentSnap === 0}
-          feature={features[0]}
-          onClose={onClose}
-        />
+        <SingleFeatureDetail isExpanded={currentSnap !== 0 || !isMobile} feature={features[0]} />
       );
     }
     if (features.length > 1) {
-      return <MultiFeatureDetail features={features} onClose={onClose} />;
+      return <MultiFeatureDetail features={features} />;
     }
     return null;
-  }, [currentSnap, features, onClose]);
+  }, [currentSnap, features, isMobile]);
 
-  const { ref: detailRef, height: detailHeight = 0 } = useResizeDetector();
-  const { height: windowHeight } = useWindowSize();
-
-  const shouldBeBottomLeftCornerRounded = useMemo(() => {
-    return windowHeight !== detailHeight;
-  }, [windowHeight, detailHeight]);
-
-  return isMobile ? (
-    <BottomSheet
-      ref={sheetRef}
-      snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 84]}
-      defaultSnap={({ snapPoints }) => snapPoints[1]}
-      expandOnContentDrag
-      blocking={false}
-      className="relative z-30"
-      open={!!feature}
-      onSpringStart={onSnapChange}
-    >
-      {detail}
-    </BottomSheet>
-  ) : !feature ? null : (
-    <div
+  return (
+    <MapDetail
       ref={detailRef}
-      className={cx("w-96 overflow-hidden bg-background-lightmode dark:bg-background-darkmode", {
-        "translate-x-full": !feature,
-        "shadow-lg": feature,
-        "rounded-bl-lg": shouldBeBottomLeftCornerRounded,
-      })}
+      isBottomSheet={isMobile}
+      onClose={onClose}
+      isVisible={!!feature}
+      bottomSheetSnapPoints={[84, "50%", "100%"]}
+      bottomSheetInitialSnap={1}
+      onBottomSheetSnapChange={setCurrentSnap}
+      hideBottomSheetHeader
     >
       {detail}
-    </div>
+    </MapDetail>
   );
 };
 

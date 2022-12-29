@@ -9,10 +9,25 @@ export const processData = (rawData: FeatureCollection) => {
     featureCollection(
       rawData.features.map((feature) => {
         const originalPropertiesKeys = Object.keys(feature.properties ?? {});
-        const occupancy = feature.properties?.["Obsadenosť"] === "obsadené" ? "occupied" : "free";
-        const color = occupancy === "occupied" ? colors.occupied : colors.free;
+        const originalOccupancy = feature.properties?.["obsadenost"];
+        const occupancy =
+          originalOccupancy === "na prenájom"
+            ? "forRent"
+            : originalOccupancy === "obsadené"
+            ? "occupied"
+            : "free";
+        const color =
+          occupancy === "forRent"
+            ? colors.forRent
+            : occupancy === "occupied"
+            ? colors.occupied
+            : colors.free;
         const locality = feature.properties?.["ulica"];
         const street = locality.replaceAll(/[0-9]/g, "").trim().split(",")[0];
+        const competition =
+          feature.properties?.["OVS_aktualne"] === "neprebieha"
+            ? false
+            : feature.properties?.["OVS_aktualne"];
         return {
           ...feature,
           properties: {
@@ -21,23 +36,24 @@ export const processData = (rawData: FeatureCollection) => {
               {},
             ),
             locality,
-            purpose: feature.properties?.["Účel"],
-            lessee: feature.properties?.["Nájomca"],
+            purpose: feature.properties?.["ucel_najmu"],
+            lessee: feature.properties?.["najomca"],
             picture: feature.properties?.["picture"],
             occupancy,
-            rentUntil: feature.properties?.["Doba_nájmu"],
-            description: feature.properties?.["Poznámka"],
-            approximateArea: feature.properties?.["Orientačná_výmera_v_m2"],
-            approximateRentPricePerYear: feature.properties?.["Cena_rok"],
+            rentUntil: feature.properties?.["doba_najmu"],
+            description: feature.properties?.["poznamka"],
+            approximateArea: feature.properties?.["orientacna_vymera_m2"],
+            approximateRentPricePerYear: feature.properties?.["orientacna_cena_najmu_rok"],
             color,
             street,
+            competition,
           },
         };
       }),
     ),
   );
 
-  const uniqueOccupancies = ["free", "occupied"];
+  const uniqueOccupancies = getUniqueValuesFromFeatures(data.features, "occupancy");
   const uniquePurposes = getUniqueValuesFromFeatures(data.features, "purpose")
     .sort()
     .filter((p) => p !== "iné")

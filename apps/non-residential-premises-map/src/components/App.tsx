@@ -25,7 +25,7 @@ import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 
 // utils
 import { usePrevious } from "@bratislava/utils";
-import { Feature, FeatureCollection } from "geojson";
+import { Feature, FeatureCollection, Point } from "geojson";
 import { processData } from "../utils/utils";
 import { Filters } from "./Filters";
 
@@ -40,7 +40,7 @@ import { useWindowSize } from "usehooks-ts";
 const isDevelopment = !!import.meta.env.DEV;
 
 const GEOPORTAL_LAYER_URL =
-  "https://geoportal.bratislava.sk/hsite/rest/services/majetok/N%C3%A1jom_nebytov%C3%BDch_priestorov_mesta_Bratislava/MapServer/4";
+  "https://geoportal.bratislava.sk/hsite/rest/services/majetok/N%C3%A1jom_nebytov%C3%BDch_priestorov_december_2022/MapServer/0";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -70,6 +70,7 @@ export const App = () => {
       setUniquePurposes(uniquePurposes);
       setUniqueOccupancies(uniqueOccupancies);
       setData(data);
+      console.log(data);
     }
   }, [rawData]);
 
@@ -134,7 +135,7 @@ export const App = () => {
   const [maxPrice, setMaxPrice] = useState(maxPriceDefault);
   const [maxPriceDebounced, setMaxPriceDebounced] = useState(maxPriceDefault);
 
-  const areaFilterExpression = useMemo(() => {
+  const fullFilterExpression = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const filter: any = [
       "all",
@@ -152,8 +153,8 @@ export const App = () => {
     maxAreaDebounced,
     minPriceDebounced,
     maxPriceDebounced,
-    purposeFilter,
-    occupancyFilter,
+    purposeFilter.expression,
+    occupancyFilter.expression,
   ]);
 
   const closeDetail = useCallback(() => {
@@ -201,25 +202,6 @@ export const App = () => {
       }, 0);
     }
   }, [selectedFeatures]);
-
-  const initialViewport = useMemo(
-    () => ({
-      zoom: 12.229005488986582,
-      center: {
-        lat: 48.148598,
-        lng: 17.107748,
-      },
-    }),
-    [],
-  );
-
-  const mapStyles = useMemo(
-    () => ({
-      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-    }),
-    [],
-  );
 
   const areFiltersDefault = useMemo(() => {
     return (
@@ -320,9 +302,18 @@ export const App = () => {
       loadingSpinnerColor={colors.primary}
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
-      mapStyles={mapStyles}
+      mapStyles={{
+        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+      }}
       enableSatelliteOnLoad
-      initialViewport={initialViewport}
+      initialViewport={{
+        zoom: 12.229005488986582,
+        center: {
+          lat: 48.148598,
+          lng: 17.107748,
+        },
+      }}
       isDevelopment={isDevelopment}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
@@ -365,32 +356,50 @@ export const App = () => {
         ),
       }}
     >
-      <Filter expression={areaFilterExpression}>
+      <Filter expression={fullFilterExpression}>
         <Cluster features={data?.features ?? []} radius={28}>
-          {({ features, lng, lat, isCluster, key, clusterExpansionZoom }) => (
-            <Marker
-              features={features}
-              lng={lng}
-              lat={lat}
-              key={key}
-              isSelected={!!selectedFeatures.find((sf) => sf.id === features[0].id)}
-              onClick={() => {
-                // When it's cluster and it's expandable
-                if (isCluster && clusterExpansionZoom && clusterExpansionZoom !== 31) {
-                  setSelectedFeatures([]);
-                  mapRef.current?.changeViewport({
-                    center: { lat, lng },
-                    zoom: clusterExpansionZoom,
-                  });
-                } else {
-                  setSelectedFeatures(features);
-                  mapRef.current?.changeViewport({ center: { lat, lng } });
-                }
-              }}
-            />
-          )}
+          {({ features, lng, lat, isCluster, key, clusterExpansionZoom }) => {
+            return (
+              <Marker
+                features={features}
+                lng={lng}
+                lat={lat}
+                key={key}
+                isSelected={!!selectedFeatures.find((sf) => sf.id === features[0].id)}
+                onClick={() => {
+                  // When it's cluster and it's expandable
+                  if (isCluster && clusterExpansionZoom && clusterExpansionZoom !== 31) {
+                    setSelectedFeatures([]);
+                    mapRef.current?.changeViewport({
+                      center: { lat, lng },
+                      zoom: clusterExpansionZoom,
+                    });
+                  } else {
+                    setSelectedFeatures(features);
+                    mapRef.current?.changeViewport({ center: { lat, lng } });
+                  }
+                }}
+              />
+            );
+          }}
         </Cluster>
       </Filter>
+
+      {/* <Filter expression={areaFilterExpression}>
+        {(data?.features as Feature<Point>[])?.map((feature, key) => (
+          <Marker
+            features={[feature]}
+            lng={feature.geometry.coordinates[0]}
+            lat={feature.geometry.coordinates[1]}
+            key={key}
+            isSelected={!!selectedFeatures.find((sf) => sf.id === feature.id)}
+            onClick={() => {
+              // setSelectedFeatures(features);
+              // mapRef.current?.changeViewport({ center: { lat, lng } });
+            }}
+          />
+        ))}
+      </Filter> */}
 
       <Layer
         ignoreClick

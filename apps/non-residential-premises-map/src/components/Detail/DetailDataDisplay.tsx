@@ -3,6 +3,7 @@ import { Feature } from "geojson";
 import { useTranslation } from "react-i18next";
 import colors from "../../utils/colors.json";
 import cx from "classnames";
+import { ButtonLink } from "../ButtonLink";
 
 export interface IDetailDataDisplayProps {
   feature: Feature;
@@ -11,15 +12,26 @@ export interface IDetailDataDisplayProps {
 
 export const DetailDataDisplay = ({ feature, className }: IDetailDataDisplayProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "detail" });
+
+  const occupancy = feature?.properties?.occupancy as "forRent" | "occupied" | "free";
+
   return (
-    <div className={cx("flex flex-col space-y-4 p-6", className)}>
+    <div className={cx("relative flex flex-col space-y-4 p-6", className)}>
+      {feature.properties?.competition && occupancy === "forRent" && (
+        <div className="absolute -translate-y-12">
+          <ButtonLink color={colors.forRent} href={feature.properties?.competition}>
+            {t("ongoingCompetition")}
+          </ButtonLink>
+        </div>
+      )}
+
       <Tag
         className="w-fit text-white"
         style={{
-          background: feature?.properties?.occupancy === "free" ? colors.free : colors.occupied,
+          background: colors[occupancy],
         }}
       >
-        {feature?.properties?.occupancy === "free" ? t("free") : t("occupied")}
+        {t(occupancy)}
       </Tag>
 
       <DataDisplay label={t(`locality`)} text={feature?.properties?.locality} />

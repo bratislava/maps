@@ -21,6 +21,7 @@ export default {
       multipleOccupancies: "Selected",
       types: {
         free: "Free",
+        forRent: "For rent",
         occupied: "Occupied",
       },
     },
@@ -53,6 +54,8 @@ export default {
     free: "Free",
     occupied: "Occupied",
     premisePhotos: "Premise photos",
+    forRent: "For rent",
+    ongoingCompetition: "Ongoing competition",
   },
   legend: {
     title: "Legend",

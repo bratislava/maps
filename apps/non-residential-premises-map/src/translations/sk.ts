@@ -21,6 +21,7 @@ export default {
       multipleOccupancies: "Zvolených",
       types: {
         free: "Voľné",
+        forRent: "Na prenájom",
         occupied: "Obsadené",
       },
     },
@@ -53,6 +54,8 @@ export default {
     free: "Voľné",
     occupied: "Obsadené",
     premisePhotos: "Fotografie priestoru",
+    forRent: "Na prenájom",
+    ongoingCompetition: "Prebiehajúca súťaž",
   },
   legend: {
     title: "Legenda",

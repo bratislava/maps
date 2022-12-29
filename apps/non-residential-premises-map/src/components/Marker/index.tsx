@@ -14,7 +14,7 @@ export interface IMarkerProps {
 
 export const Marker = ({ features, lng, lat, onClick, isSelected }: IMarkerProps) => {
   return (
-    <MapMarker feature={point([lng, lat], features[0].properties)} onClick={onClick}>
+    <MapMarker ignoreFilters feature={point([lng, lat], features[0].properties)} onClick={onClick}>
       {features.length > 1 ? (
         <MultiFeatureMarker features={features} isSelected={isSelected} />
       ) : (

@@ -19,6 +19,7 @@ module.exports = {
         },
         free: colors.free,
         occupied: colors.occupied,
+        "for-rent": colors.forRent,
       },
     },
   },

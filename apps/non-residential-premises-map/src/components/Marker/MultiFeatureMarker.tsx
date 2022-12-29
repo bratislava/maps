@@ -23,7 +23,7 @@ const PieChart = ({
     <div className="-m-[10px]">
       <VictoryPie
         labels={[]}
-        colorScale={[colors.occupied, colors.free]}
+        colorScale={[colors.forRent, colors.occupied, colors.free]}
         innerRadius={innerRadius}
         data={data}
       />
@@ -36,13 +36,16 @@ export const MultiFeatureMarker = ({ features, isSelected }: IMultiFeatureMarker
     () =>
       features.reduce(
         (prev, feature) => {
-          if (feature.properties?.occupancy === "occupied") {
-            return [{ x: "occupied", y: prev[0].y + 1 }, prev[1]];
-          } else {
-            return [prev[0], { x: "free", y: prev[1].y + 1 }];
+          if (feature.properties?.occupancy === "forRent") {
+            return [{ x: "forRent", y: prev[0].y + 1 }, prev[1], prev[2]];
           }
+          if (feature.properties?.occupancy === "occupied") {
+            return [prev[0], { x: "occupied", y: prev[1].y + 1 }, prev[2]];
+          }
+          return [prev[0], prev[1], { x: "free", y: prev[2].y + 1 }];
         },
         [
+          { x: "forRent", y: 0 },
           { x: "occupied", y: 0 },
           { x: "free", y: 0 },
         ],

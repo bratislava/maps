@@ -15,9 +15,12 @@ export const SingleFeatureMarker = ({ feature, isSelected }: ISingleFeatureMarke
           {
             "bg-occupied": feature.properties?.occupancy === "occupied",
             "bg-free": feature.properties?.occupancy === "free",
+            "bg-for-rent": feature.properties?.occupancy === "forRent",
             "outline-2 !outline-occupied":
               isSelected && feature.properties?.occupancy === "occupied",
             "outline-2 !outline-free": isSelected && feature.properties?.occupancy === "free",
+            "outline-2 !outline-for-rent":
+              isSelected && feature.properties?.occupancy === "forRent",
           },
         )}
       ></div>

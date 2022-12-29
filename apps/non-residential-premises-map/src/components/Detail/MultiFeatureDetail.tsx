@@ -12,11 +12,8 @@ import { useTranslation } from "react-i18next";
 import { DetailDataDisplay } from "./DetailDataDisplay";
 import cx from "classnames";
 import { getUniqueValuesFromFeatures } from "@bratislava/utils";
-import { Image } from "../Image";
-import { t } from "i18next";
 
 const CustomAccordionItem = ({
-  key,
   value,
   feature,
   isLastFromCluster,
@@ -31,16 +28,17 @@ const CustomAccordionItem = ({
   return (
     <AccordionItem
       headerIsTrigger
-      key={key}
       value={value}
       title={<div className="font-semibold pl-6">{feature.properties?.lessee}</div>}
       headerClassName={cx("text-left border-l-[4px]", {
+        "border-[#F1B830]": feature.properties?.occupancy === "forRent",
         "border-[#E46054]": feature.properties?.occupancy === "occupied",
         "border-[#0F6D95]": feature.properties?.occupancy === "free",
       })}
     >
       <div
         className={cx("border-l-[4px]", {
+          "border-[#F1B830]": feature.properties?.occupancy === "forRent",
           "border-[#E46054]": feature.properties?.occupancy === "occupied",
           "border-[#0F6D95]": feature.properties?.occupancy === "free",
           "pb-3": isLastFromCluster,
@@ -84,10 +82,9 @@ const CustomAccordionItem = ({
 
 export interface IMultiFeatureDetailProps {
   features: Feature[];
-  onClose: () => void;
 }
 
-export const MultiFeatureDetail = ({ features, onClose }: IMultiFeatureDetailProps) => {
+export const MultiFeatureDetail = ({ features }: IMultiFeatureDetailProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "detail" });
 
   const featureCount = useMemo(() => features.length, [features]);
@@ -118,14 +115,7 @@ export const MultiFeatureDetail = ({ features, onClose }: IMultiFeatureDetailPro
   }, [features, uniquePurposes]);
 
   return (
-    <div className="flex flex-col max-h-screen gap-5 overflow-auto pb-2">
-      <IconButton
-        className="hidden !bg-[transparent] absolute right-3 top-5 md:flex items-center justify-center !shadow-none !border-none"
-        onClick={onClose}
-      >
-        <X />
-      </IconButton>
-
+    <div className="flex flex-col gap-5 pb-2">
       <div className="font-semibold px-6 pt-8">
         <span>{locality}</span>{" "}
         <span className="opacity-50">({t("premiseCount", { count: featureCount })})</span>
