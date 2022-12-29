@@ -16,6 +16,8 @@ import {
 import { PartialViewport, Viewport } from '../../types';
 import { DevelopmentInfo } from '../DevelopmentInfo/DevelopmentInfo';
 import {
+  areViewportsSame,
+  mergePartialViewports,
   mergeViewports,
   ViewportActionKind,
   viewportReducer,
@@ -170,36 +172,58 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       [map],
     );
 
+    const [futurePartialViewport, setFuturePartialViewport] =
+      useState<PartialViewport>({});
+
     const changeViewport = useCallback(
       (partialViewport: PartialViewport, duration = 500) => {
-        if (!map) return;
-
-        const newFutureViewport = mergeViewports(
-          futureViewport,
+        const newFuturePartialViewport = mergePartialViewports(
+          futurePartialViewport ?? {},
           partialViewport,
         );
 
         if (
-          JSON.stringify(futureViewport) !== JSON.stringify(newFutureViewport)
+          !areViewportsSame(futurePartialViewport, newFuturePartialViewport)
         ) {
-          dispatchFutureViewport({
-            type: ViewportActionKind.Change,
-            partialViewport: newFutureViewport,
-          });
-          if (duration === 0) {
-            map.jumpTo({
-              ...newFutureViewport,
-            });
-          } else {
-            map.easeTo({
-              ...newFutureViewport,
-              duration,
-            });
-          }
+          setFuturePartialViewport(newFuturePartialViewport);
         }
       },
-      [map, futureViewport],
+      [futurePartialViewport],
     );
+
+    useEffect(() => {
+      if (!map) return;
+
+      const center = map.getCenter();
+      const zoom = map.getZoom();
+      const pitch = map.getPitch();
+      const bearing = map.getBearing();
+      const padding = map.getPadding();
+
+      const currentViewport: Viewport = {
+        center,
+        zoom,
+        pitch,
+        bearing,
+        padding,
+      };
+
+      const futureViewport = mergeViewports(
+        currentViewport,
+        futurePartialViewport,
+      );
+
+      const timer = setTimeout(() => {
+        if (!areViewportsSame(currentViewport, futureViewport)) {
+          setFuturePartialViewport({});
+          map?.easeTo(futureViewport);
+        }
+      }, 50);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }, [changeViewport, futurePartialViewport, map]);
 
     const [isLoading, setLoading] = useState(true);
     const [isStyleLoading, setStyleLoading] = useState(false);

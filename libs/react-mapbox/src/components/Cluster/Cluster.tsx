@@ -63,8 +63,6 @@ export const Cluster = ({
 
     const bbox = [west, south, east, north] as [number, number, number, number];
 
-    console.log('RECALCULATE');
-
     const supercluster = new Supercluster({ radius, maxZoom: 30 });
     supercluster.load(
       pointFeatures.filter((f) =>

@@ -273,20 +273,8 @@ export const App = () => {
     keys: useMemo(() => ["SM1", "NM1", "RU1", "PE1", "RA1"], []),
   });
 
-  const initialViewport = useMemo(
-    () => ({
-      zoom: 12.229005488986582,
-      center: {
-        lat: 48.16290360284438,
-        lng: 17.125377342563297,
-      },
-    }),
-    [],
-  );
-
   const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
-    console.log(features);
-    // mapRef.current?.moveToFeatures(features);
+    mapRef.current?.moveToFeatures(features);
     setSelectedFeature(features[0] ?? null);
     setSelectedMarker(null);
   }, []);
