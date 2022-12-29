@@ -35,6 +35,35 @@ There is a bucket called **static-pages** in which every map is uploaded to its 
 
 After upploading, app is available at: `https://cdn-api.bratislava.sk/static-pages/<folder-name>/index.html`. Some maps are available also on `/sk.html` and `/en.html` urls for better SEO management.
 
+### Iframes
+
+Those deployments are currently embeded through iframes on several places:
+
+bratislava.sk:
+- https://bratislava.sk/doprava-a-mapy/mapy - vysadba a starostlivost
+- https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/stromy-v-meste - vysadba zelene
+- https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/stromy-v-meste/vysadba-stromov - vysadba zelene
+- https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/stromy-v-meste/starostlivost-o-dreviny - starostlivost o zelen
+- https://bratislava.sk/doprava-a-mapy/pitne-fontany - pitné fontány (zatial pod doprava a mapy, neskor sa mozno presunie na inu podstranku)
+
+gmb.sk:
+- https://www.gmb.sk/navstivte - navštívte galériu
+
+10000stromov.sk:
+- https://10000stromov.sk/zelena-mapa - vysadba zelene “zelena mapa” (historicky nazov)
+
+cvicko.sk:
+- https://cvicko.sk/ - homepage mapa
+- https://cvicko.sk/most-snp/ - most snp (mapy pre jednotlive cvicka maju upravene zobrazenie)
+- https://cvicko.sk/tyrsak/ - tyrsak
+- https://cvicko.sk/apollo/ - apollo
+- https://cvicko.sk/promenada/ - promenada
+- https://cvicko.sk/nabrezie/ - nabrezie
+- https://cvicko.sk/lanfranconi/ - lanfranconi
+
+paas.sk:
+- https://paas.sk/mapa-zon/ - mapa zón
+
 ## Developing
 
 ```
