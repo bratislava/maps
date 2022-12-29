@@ -1,4 +1,3 @@
-import { AnimatePresence } from 'framer-motion';
 import { Feature, Point } from 'geojson';
 import {
   FC,
@@ -42,16 +41,6 @@ export const Cluster = ({
     [features],
   );
 
-  const supercluster = useMemo(() => {
-    const s = new Supercluster({ radius, maxZoom: 30 });
-    s.load(
-      pointFeatures.filter((f) =>
-        isFeatureVisible === undefined ? true : isFeatureVisible(f),
-      ),
-    );
-    return s;
-  }, [pointFeatures, radius, isFeatureVisible]);
-
   const { map } = useContext(mapboxContext);
 
   const [clusters, setClusters] = useState<IClusterChildProps[]>([]);
@@ -74,8 +63,18 @@ export const Cluster = ({
 
     const bbox = [west, south, east, north] as [number, number, number, number];
 
-    setClusters(
-      supercluster.getClusters(bbox, zoom ?? 0).map((cluster, key) => {
+    console.log('RECALCULATE');
+
+    const supercluster = new Supercluster({ radius, maxZoom: 30 });
+    supercluster.load(
+      pointFeatures.filter((f) =>
+        isFeatureVisible === undefined ? true : isFeatureVisible(f),
+      ),
+    );
+
+    const clusters = supercluster
+      .getClusters(bbox, zoom ?? 0)
+      .map((cluster, key) => {
         const isCluster = cluster.properties.cluster_id !== undefined;
 
         if (isCluster) {
@@ -104,15 +103,18 @@ export const Cluster = ({
             clusterExpansionZoom: null,
           };
         }
-      }),
-    );
-  }, [map, supercluster]);
+      });
+
+    setClusters(clusters);
+  }, [isFeatureVisible, map, pointFeatures, radius]);
 
   useEffect(() => {
     recalculate();
+    const timer = setTimeout(recalculate, 10);
     map?.on('move', recalculate);
     return () => {
       map?.off('move', recalculate);
+      clearTimeout(timer);
     };
   }, [map, recalculate]);
 

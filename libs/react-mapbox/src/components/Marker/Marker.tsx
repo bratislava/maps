@@ -1,4 +1,3 @@
-import { AnimatePresence } from 'framer-motion';
 import { Feature, Point } from 'geojson';
 import { Marker as MapboxMarker } from 'mapbox-gl';
 import {
