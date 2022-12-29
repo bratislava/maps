@@ -37,6 +37,7 @@ export type SheetProps = {
   onClose?: () => void;
   className?: string;
   onSnapChange?: (event: { snapIndex: number; snapHeight: number }) => void;
+  hideHeader?: boolean;
 };
 
 export const Sheet = forwardRef<SheetRef, SheetProps>(
@@ -49,6 +50,7 @@ export const Sheet = forwardRef<SheetRef, SheetProps>(
       onClose,
       className,
       onSnapChange,
+      hideHeader = false,
     },
     forwardedRef
   ) => {
@@ -104,6 +106,14 @@ export const Sheet = forwardRef<SheetRef, SheetProps>(
       return innerHeight > screenHeight;
     }, [innerHeight, screenHeight]);
 
+    const snapTo = useCallback(
+      (index: number) => {
+        animateTo(absoluteSnapPoints[index] ?? 0);
+        setCurrentSnapIndex(index);
+      },
+      [absoluteSnapPoints, animateTo]
+    );
+
     const onDragEnd = useCallback(
       (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         const resultY = y - info.offset.y - info.velocity.y / 5;
@@ -114,21 +124,15 @@ export const Sheet = forwardRef<SheetRef, SheetProps>(
         }
 
         // Calculate nearest snapPoint
-        const closestSnapPoint = getClosestSnapPoint(
+        const { index: closestSnapPointIndex } = getClosestSnapPoint(
           absoluteSnapPoints,
           resultY
         );
-        animateTo(closestSnapPoint);
-      },
-      [y, isScrollable, screenHeight, absoluteSnapPoints, animateTo]
-    );
 
-    const snapTo = useCallback(
-      (index: number) => {
-        animateTo(absoluteSnapPoints[index] ?? 0);
-        setCurrentSnapIndex(index);
+        // animateTo(closestSnapPointHeight);
+        snapTo(closestSnapPointIndex);
       },
-      [absoluteSnapPoints, animateTo]
+      [y, isScrollable, screenHeight, absoluteSnapPoints, snapTo, animateTo]
     );
 
     useEffect(() => {
