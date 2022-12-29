@@ -385,7 +385,7 @@ export const App = () => {
       </Filter>
 
       {/* DRINKING FOUNTAIN MARKERS */}
-      <Filter expression={activeTerrainServiceKey ? ["any", false] : districtFilter.expression}>
+      {/* <Filter expression={activeTerrainServiceKey ? ["any", false] : districtFilter.expression}>
         <Cluster features={drinkingFountainsData.features} radius={24}>
           {({ features, lng, lat, key, clusterExpansionZoom }) =>
             features.length === 1 ? (
@@ -413,7 +413,7 @@ export const App = () => {
             )
           }
         </Cluster>
-      </Filter>
+      </Filter> */}
 
       <Filter expression={fullFilterExpression}>
         {data?.features.map((feature, index) => (
