@@ -62,8 +62,8 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
       }
 
       try {
-        const props = drinkingFountainFeaturePropertiesSchema.parse(feature?.properties);
-        return <DrinkingFountainDetail {...props} />;
+        const props = otherServiceFeaturePropertiesSchema.parse(feature?.properties);
+        return <OtherServiceDetail {...props} />;
       } catch {
         // Who cares?
       }
@@ -76,8 +76,8 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
       }
 
       try {
-        const props = otherServiceFeaturePropertiesSchema.parse(feature?.properties);
-        return <OtherServiceDetail {...props} />;
+        const props = drinkingFountainFeaturePropertiesSchema.parse(feature?.properties);
+        return <DrinkingFountainDetail {...props} />;
       } catch {
         // Who cares?
       }
