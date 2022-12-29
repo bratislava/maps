@@ -28,11 +28,13 @@ export const ImageLightBox = (props: ImageLightBoxProps) => {
     <Modal
       noOverlayStyles
       underlayClassName="!p-0"
-      overlayClassName="w-full h-full pointer-events-none"
+      overlayClassName="w-full h-[80vh] pointer-events-none"
       {...rest}
     >
       <IconButton
-        className={cx("absolute right-6 top-6 items-center justify-center")}
+        className={cx(
+          "absolute right-6 top-6 items-center justify-center !rounded-full"
+        )}
         onClick={onClose}
       >
         <X size="sm" />
