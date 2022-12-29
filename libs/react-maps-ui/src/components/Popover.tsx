@@ -99,65 +99,43 @@ export const Popover = ({
         )}
       </div>
       <FloatingPortal>
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              {...getFloatingProps()}
-              className="z-40"
-              ref={floating}
-              initial={{
-                scale: 0.9,
-                opacity: 0,
-              }}
-              animate={{
-                scale: isOpen ? 1 : 0.9,
-                opacity: isOpen ? 1 : 0,
-              }}
-              exit={{
-                scale: 0.9,
-                opacity: 0,
-              }}
-              transition={{
-                type: "easeInOut",
-                duration: 0.2,
-              }}
-              style={{
-                position: strategy,
-                top: `${y ?? 0}px`,
-                left: `${x ?? 0}px`,
-              }}
-            >
-              <div className="relative">
-                <PopoverArrow
-                  ref={arrowRef}
-                  placement={placement}
-                  x={
-                    middlewareData.arrow?.x
-                      ? `${middlewareData.arrow?.x}px`
-                      : ""
+        {isOpen && (
+          <div
+            {...getFloatingProps()}
+            className="z-40"
+            ref={floating}
+            style={{
+              position: strategy,
+              top: `${y ?? 0}px`,
+              left: `${x ?? 0}px`,
+            }}
+          >
+            <div className="relative">
+              <PopoverArrow
+                ref={arrowRef}
+                placement={placement}
+                x={
+                  middlewareData.arrow?.x ? `${middlewareData.arrow?.x}px` : ""
+                }
+                y={
+                  middlewareData.arrow?.y ? `${middlewareData.arrow?.y}px` : ""
+                }
+                isSmall={isSmall}
+              />
+              <div
+                className={cx(
+                  "bg-background-lightmode w-fit dark:bg-background-darkmode border-2 border-background-lightmode dark:border-gray-darkmode/20 rounded-lg shadow-lg text-foreground-lightmode dark:text-foreground-darkmode",
+                  {
+                    "p-6": !isSmall,
+                    "p-2": isSmall,
                   }
-                  y={
-                    middlewareData.arrow?.y
-                      ? `${middlewareData.arrow?.y}px`
-                      : ""
-                  }
-                  isSmall={isSmall}
-                />
-                <div
-                  className={cx(
-                    "bg-background-lightmode w-fit dark:bg-background-darkmode border-2 border-background-lightmode dark:border-gray-darkmode/20 rounded-lg shadow-lg text-foreground-lightmode dark:text-foreground-darkmode",
-                    {
-                      "p-6": !isSmall,
-                      "p-2": isSmall,
-                    }
-                  )}
-                >
-                  {panel}
-                </div>
+                )}
+              >
+                {panel}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          </div>
+        )}
       </FloatingPortal>
     </>
   );
