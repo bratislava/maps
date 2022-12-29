@@ -255,7 +255,7 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
                     value="value"
                     title={<div className="font-semibold">{mainT("moreInformation")}</div>}
                   >
-                    {moreInformation}
+                    <div className="flex flex-col gap-4">{moreInformation}</div>
                   </AccordionItem>
                 </Accordion>
               )}
