@@ -286,7 +286,7 @@ export const App = () => {
 
   return (
     <Map
-      loadingSpinnerColor="#F1B830"
+      loadingSpinnerColor={colors.yellow}
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={{

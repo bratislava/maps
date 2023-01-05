@@ -26,6 +26,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { ReactComponent as BALogo } from "../assets/ba-logo.svg";
 import { Legend } from "./Legend";
 import { Marker } from "./Marker";
+import { colors } from "../utils/colors";
 
 const { data } = processData();
 
@@ -79,7 +80,7 @@ export const App = () => {
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
       }}
       initialViewport={initialViewport}
-      loadingSpinnerColor="#2BACE2"
+      loadingSpinnerColor={colors.blue}
       isDevelopment={import.meta.env.DEV}
       onMobileChange={setMobile}
       onMapClick={closeDetail}

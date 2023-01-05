@@ -1,3 +1,5 @@
+import { colors } from "../utils/colors";
+
 const styles = [
   {
     id: "udr-line",
@@ -6,8 +8,8 @@ const styles = [
       "line-color": [
         "case",
         ["boolean", ["feature-state", "selected"], false],
-        "#fcac00",
-        "#89c764",
+        colors.orange,
+        colors.lawnGreen,
       ],
       "line-dasharray": [
         "match",
@@ -36,8 +38,8 @@ const styles = [
       "fill-color": [
         "case",
         ["boolean", ["feature-state", "selected"], false],
-        "#fcac00",
-        "#89c764",
+        colors.orange,
+        colors.lawnGreen,
       ],
       "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], 0.4, 0.2],
     },

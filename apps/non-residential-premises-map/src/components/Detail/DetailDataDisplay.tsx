@@ -1,7 +1,7 @@
 import { DataDisplay, Tag } from "@bratislava/react-maps-ui";
 import { Feature } from "geojson";
 import { useTranslation } from "react-i18next";
-import colors from "../../utils/colors.json";
+import { colors } from "../../utils/colors";
 import cx from "classnames";
 import { ButtonLink } from "../ButtonLink";
 

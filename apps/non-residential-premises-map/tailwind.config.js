@@ -1,8 +1,6 @@
-/* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-var-requires */
-const colors = require("./src/utils/colors.json");
+import { colors } from "./src/utils/colors";
 
-module.exports = {
+export default {
   presets: [require("../../libs/react-maps-ui/tailwind.config")],
   darkMode: "class",
   content: [

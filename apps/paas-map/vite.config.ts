@@ -5,6 +5,7 @@ import checker from "vite-plugin-checker";
 import svgr from "vite-plugin-svgr";
 import { VitePWA } from "vite-plugin-pwa";
 import { resolve } from "path";
+import postcss from "./postcss.config.js";
 
 export default defineConfig({
   plugins: [
@@ -59,4 +60,7 @@ export default defineConfig({
     },
   },
   base: "./",
+  css: {
+    postcss
+  }
 });

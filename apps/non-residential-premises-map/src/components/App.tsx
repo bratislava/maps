@@ -3,7 +3,7 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import "../styles.css";
-import colors from "../utils/colors.json";
+import { colors } from "../utils/colors";
 
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 

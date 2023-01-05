@@ -4,7 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 import "../styles.css";
 import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
-import { DateValue } from "@react-types/calendar";
+import  { DateValue } from "@react-types/calendar";
 
 // maps
 import {
@@ -53,6 +53,7 @@ import { MobileHeader } from "./mobile/MobileHeader";
 import { Icon } from "./Icon";
 import { Marker } from "./Marker";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
+import { colors } from "../utils/colors";
 
 const REPAIRS_POINTS_URLS = [REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL];
 
@@ -348,7 +349,7 @@ export const App = () => {
 
   return isLoading ? null : (
     <Map
-      loadingSpinnerColor="#0F6D95"
+      loadingSpinnerColor={colors.defaultBlue}
       initialViewport={initialViewport}
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}

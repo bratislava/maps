@@ -1,7 +1,7 @@
 import { VictoryPie } from "victory";
 import { Feature } from "geojson";
 import cx from "classnames";
-import colors from "../../utils/colors.json";
+import { colors } from "../../utils/colors";
 import { useMemo } from "react";
 
 export interface IMultiFeatureMarkerProps {
