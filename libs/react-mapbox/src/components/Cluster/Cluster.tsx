@@ -43,14 +43,14 @@ export const Cluster = ({
 
   const { map } = useContext(mapboxContext);
 
-  const [clusters, setClusters] = useState<IClusterChildProps[]>([]);
+  const [clusters, setClusters] = useState<Array<IClusterChildProps>>([]);
 
   useEffect(() => {
     const recalculate = (): void => {
       if (!map) return;
 
-      const zoom = map.getZoom();
-      const bounds = map.getBounds();
+      const zoom: number = map.getZoom();
+      const bounds: mapboxgl.LngLatBounds = map.getBounds();
 
       const bbox: [number, number, number, number] = [
         bounds.getWest(),
@@ -59,17 +59,17 @@ export const Cluster = ({
         bounds.getNorth(),
       ];
 
-      const supercluster = new Supercluster({ radius, maxZoom: 30 });
+      const supercluster: Supercluster<Supercluster.AnyProps, Supercluster.AnyProps> = new Supercluster({ radius, maxZoom: 30 });
       supercluster.load(
         pointFeatures.filter((f) =>
           isFeatureVisible === undefined ? true : isFeatureVisible(f),
         ),
       );
 
-      const newClusters = supercluster
+      const newClusters: Array<IClusterChildProps> = supercluster
         .getClusters(bbox, zoom ?? 0)
         .map((cluster, key) => {
-          const isCluster = cluster.properties.cluster_id !== undefined;
+          const isCluster: boolean = cluster.properties.cluster_id !== undefined;
 
           if (isCluster) {
             const features = supercluster.getLeaves(
