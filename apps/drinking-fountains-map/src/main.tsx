@@ -4,6 +4,8 @@ import { I18nextProvider } from "react-i18next";
 import App from "./components/App";
 import i18n from "./utils/i18n";
 
+// FIXME: warning: ReactDOM.render is no longer supported in React 18, after fixing map goes too endless loop
+// TODO: find the reason, after fix update ReactDOM.render
 const rootElement = document.getElementById("root");
 
 if (!rootElement) {
