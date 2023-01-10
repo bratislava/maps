@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: 16.x
     - run: yarn --cwd \apps\closures-and-restrictions-map
     - run: yarn --cwd \apps\closures-and-restrictions-map lint
     - run: yarn --cwd \apps\closures-and-restrictions-map build
@@ -21,7 +21,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: 16.x
     - run: yarn --cwd \apps\cvicko-map
     - run: yarn --cwd \apps\cvicko-map lint
     - run: yarn --cwd \apps\cvicko-map build
@@ -31,7 +31,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: 16.x
     - run: yarn --cwd \apps\drinking-fountains-map
     - run: yarn --cwd \apps\drinking-fountains-map lint
     - run: yarn --cwd \apps\drinking-fountains-map build
@@ -41,7 +41,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: 16.x
     - run: yarn --cwd \apps\greenary-care-map
     - run: yarn --cwd \apps\greenary-care-map lint
     - run: yarn --cwd \apps\greenary-care-map build
@@ -51,7 +51,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: 16.x
     - run: yarn --cwd \apps\homeless-people-help-map
     - run: yarn --cwd \apps\homeless-people-help-map lint
     - run: yarn --cwd \apps\homeless-people-help-map build
@@ -61,7 +61,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: 16.x
     - run: yarn --cwd \apps\non-residential-premises-map
     - run: yarn --cwd \apps\non-residential-premises-map lint
     - run: yarn --cwd \apps\non-residential-premises-map build
@@ -71,7 +71,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: 16.x
     - run: yarn --cwd \apps\paas-map
     - run: yarn --cwd \apps\paas-map lint
     - run: yarn --cwd \apps\paas-map build
@@ -81,7 +81,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: 16.x
     - run: yarn --cwd \apps\planting-map
     - run: yarn --cwd \apps\planting-map lint
     - run: yarn --cwd \apps\planting-map build
@@ -91,7 +91,8 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: 16.x
     - run: yarn --cwd \apps\sport-grounds-map
     - run: yarn --cwd \apps\sport-grounds-map lint
     - run: yarn --cwd \apps\sport-grounds-map build
+
