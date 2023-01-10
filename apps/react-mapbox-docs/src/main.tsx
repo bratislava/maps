@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import slugify from 'slugify';
 import './global.css';
 import cx from 'classnames';
 
@@ -36,7 +35,7 @@ const examples = [
 
 const examplesWithSlugs = examples.map((example) => ({
   ...example,
-  path: `${slugify(example.title).toLowerCase()}`,
+  path: `${(example.title).toLowerCase()}`,
 }));
 
 const Router = () => {
@@ -47,7 +46,7 @@ const Router = () => {
         <div className="flex flex-col">
           {examplesWithSlugs.map((example) => (
             <NavLink
-              className={({ isActive }) =>
+              className={({ isActive }: any) =>
                 cx('px-4 py-2 rounded-lg hover: text-blue-500', {
                   ' bg-blue-500/20 font-semibold': isActive,
                 })
