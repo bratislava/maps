@@ -43,70 +43,64 @@ export const Cluster = ({
 
   const { map } = useContext(mapboxContext);
 
-  const [clusters, setClusters] = useState<IClusterChildProps[]>([]);
-
-  const recalculate = useCallback(() => {
-    const MAP = map;
-    if (!MAP) return;
-
-    const zoom = MAP.getZoom();
-
-    // width and height in pixels
-    const { width: canvasWidth, height: canvasHeight } = MAP.getCanvas();
-    const offset = 100;
-
-    const { lng: west, lat: north } = MAP.unproject([-offset, -offset]);
-    const { lng: east, lat: south } = MAP.unproject([
-      canvasWidth + offset,
-      canvasHeight + offset,
-    ]);
-
-    const bbox = [west, south, east, north] as [number, number, number, number];
-
-    const supercluster = new Supercluster({ radius, maxZoom: 30 });
-    supercluster.load(
-      pointFeatures.filter((f) =>
-        isFeatureVisible === undefined ? true : isFeatureVisible(f),
-      ),
-    );
-
-    const clusters = supercluster
-      .getClusters(bbox, zoom ?? 0)
-      .map((cluster, key) => {
-        const isCluster = cluster.properties.cluster_id !== undefined;
-
-        if (isCluster) {
-          const features = supercluster.getLeaves(
-            cluster.properties.cluster_id,
-            Infinity,
-          );
-          return {
-            key: features[0].id ?? key,
-            features,
-            lng: cluster.geometry.coordinates[0],
-            lat: cluster.geometry.coordinates[1],
-            isCluster,
-            clusterExpansionZoom: supercluster.getClusterExpansionZoom(
-              cluster.properties.cluster_id,
-            ),
-          };
-        } else {
-          const feature = cluster;
-          return {
-            key: feature.id ?? key,
-            features: [feature],
-            lng: feature.geometry.coordinates[0],
-            lat: feature.geometry.coordinates[1],
-            isCluster,
-            clusterExpansionZoom: null,
-          };
-        }
-      });
-
-    setClusters(clusters);
-  }, [isFeatureVisible, map, pointFeatures, radius]);
+  const [clusters, setClusters] = useState<Array<IClusterChildProps>>([]);
 
   useEffect(() => {
+    const recalculate = (): void => {
+      if (!map) return;
+
+      const zoom: number = map.getZoom();
+      const bounds: mapboxgl.LngLatBounds = map.getBounds();
+
+      const bbox: [number, number, number, number] = [
+        bounds.getWest(),
+        bounds.getSouth(),
+        bounds.getEast(),
+        bounds.getNorth(),
+      ];
+
+      const supercluster: Supercluster<Supercluster.AnyProps, Supercluster.AnyProps> = new Supercluster({ radius, maxZoom: 30 });
+      supercluster.load(
+        pointFeatures.filter((f) =>
+          isFeatureVisible === undefined ? true : isFeatureVisible(f),
+        ),
+      );
+
+      const newClusters: Array<IClusterChildProps> = supercluster
+        .getClusters(bbox, zoom ?? 0)
+        .map((cluster, key) => {
+          const isCluster: boolean = cluster.properties.cluster_id !== undefined;
+
+          if (isCluster) {
+            const features = supercluster.getLeaves(
+              cluster.properties.cluster_id,
+              Infinity,
+            );
+            return {
+              key: features[0].id ?? key,
+              features,
+              lng: cluster.geometry.coordinates[0],
+              lat: cluster.geometry.coordinates[1],
+              isCluster,
+              clusterExpansionZoom: supercluster.getClusterExpansionZoom(
+                cluster.properties.cluster_id,
+              ),
+            };
+          } else {
+            return {
+              key: cluster.id ?? key,
+              features: [cluster],
+              lng: cluster.geometry.coordinates[0],
+              lat: cluster.geometry.coordinates[1],
+              isCluster,
+              clusterExpansionZoom: null,
+            };
+          }
+        });
+
+      setClusters(newClusters);
+    };
+
     recalculate();
     const timer = setTimeout(recalculate, 10);
     map?.on('move', recalculate);
@@ -114,7 +108,7 @@ export const Cluster = ({
       map?.off('move', recalculate);
       clearTimeout(timer);
     };
-  }, [map, recalculate]);
+  }, [map, isFeatureVisible, pointFeatures, radius]);
 
   return <>{clusters.map((cluster) => children(cluster))}</>;
 };
