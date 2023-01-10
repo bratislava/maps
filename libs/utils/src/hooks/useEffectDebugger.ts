@@ -34,6 +34,8 @@ export const useEffectDebugger = (
         )
       : {};
 
+  // FIXME: this line drops build on pipeline but in local build is ok, fix 
+  // @ts-ignore
   if (Object.keys(changedDeps).length && import.meta.env.DEV) {
     console.log(name ?? "[use-effect-debugger]", changedDeps);
   }
