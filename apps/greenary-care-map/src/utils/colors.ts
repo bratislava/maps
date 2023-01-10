@@ -10,7 +10,4 @@ export const colors = {
     darkBrown: "#351900",
     lightBrown: "#7F674A",
     sand: "#BC9F82"
-
-
-
 }
