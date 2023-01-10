@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { X } from "@bratislava/react-maps-icons";
-import { AnimateHeight, DataDisplay, IconButton, ImageLightBox } from "@bratislava/react-maps-ui";
+import { AnimateHeight, DataDisplay, ImageLightBox } from "@bratislava/react-maps-ui";
 import { Feature } from "geojson";
 import { Image } from "../Image";
 import { DetailDataDisplay } from "./DetailDataDisplay";
-import cx from "classnames";
 import { useTranslation } from "react-i18next";
 
 export interface ISingleFeatureDetailProps {
