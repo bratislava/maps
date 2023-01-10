@@ -51,6 +51,7 @@ export default {
     approximateRentPricePerYear: "Approximate rent price per year",
     description: "Description",
     contract: "Contract",
+    rentalContract: "rental contract",
     free: "Free",
     occupied: "Occupied",
     premisePhotos: "Premise photos",
