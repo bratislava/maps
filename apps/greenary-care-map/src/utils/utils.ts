@@ -5,17 +5,18 @@ import {
   getUniqueValuesFromFeatures,
 } from "@bratislava/utils";
 import { Feature, FeatureCollection } from "geojson";
+import { colors } from "./colors";
 
 // predefined colors for points
 export const mapCircleColors: { [index: string]: string | string[] } = {
-  fellingByPermit: "#E03F00",
-  emergencyFelling: "#E57D00",
-  invasivePlantsFelling: "#F4B056",
+  fellingByPermit: colors.red,
+  emergencyFelling: colors.brick,
+  invasivePlantsFelling: colors.lightOrange,
   trimming: ["#FFD400", "#FCE304", "#FFF500", "#FCE300", "#FFE045", "#FEE980", "#FFE600"],
-  injectionOfInvasivePlants: "#351900",
-  stumpRemoval: "#54463B",
-  dendrologicalAssessment: "#7F674A",
-  fallenTreeRemoval: "#BC9F82",
+  injectionOfInvasivePlants: colors.darkBrown,
+  stumpRemoval: colors.brown,
+  dendrologicalAssessment: colors.lightBrown,
+  fallenTreeRemoval: colors.sand,
 };
 
 export const mapSlovakTypeToEnglishKey: { [index: string]: string } = {
@@ -43,7 +44,7 @@ export const processData = (
       const dateString = feature.properties?.TERMIN_REAL_1;
       const year = dateString ? new Date(dateString).getFullYear().toString() : undefined;
       const season = getSeasonFromDate(dateString);
-      const color = getRandomItemFrom(mapCircleColors[type]) ?? "#54463B";
+      const color = getRandomItemFrom(mapCircleColors[type]) ?? colors.brown;
 
       return {
         ...feature,

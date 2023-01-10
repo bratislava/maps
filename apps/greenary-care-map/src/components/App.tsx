@@ -38,6 +38,7 @@ import { MobileFilters } from "./mobile/MobileFilters";
 import { MobileHeader } from "./mobile/MobileHeader";
 
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
+import { colors } from "../utils/colors";
 
 const URL =
   "https://services8.arcgis.com/pRlN1m0su5BYaFAS/ArcGIS/rest/services/orezy_a_vyruby_2022_OTMZ_zobrazenie/FeatureServer/0";
@@ -266,7 +267,7 @@ export const App = () => {
 
   return (
     <Map
-      loadingSpinnerColor="#237c36"
+      loadingSpinnerColor={colors.green}
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={{
@@ -354,7 +355,7 @@ export const App = () => {
               slots={["legend", ["compass", "zoom"]]}
               desktopSlots={["legend", "geolocation", "compass", ["fullscreen", "zoom"]]}
               legend={
-                <Legend mapCircleColors={{ ...mapCircleColors, districtBorder: "#E29F45" }} />
+                <Legend mapCircleColors={{ ...mapCircleColors, districtBorder: colors.brick }} />
               }
               isLegendOpen={isLegendVisible}
               onLegendOpenChange={setLegendVisible}
@@ -409,7 +410,7 @@ export const App = () => {
             position="right"
             closeText={t("close")}
           >
-            <Legend mapCircleColors={{ ...mapCircleColors, districtBorder: "#E29F45" }} />
+            <Legend mapCircleColors={{ ...mapCircleColors, districtBorder: colors.orange }} />
           </Sidebar>
         </Slot>
       </Layout>

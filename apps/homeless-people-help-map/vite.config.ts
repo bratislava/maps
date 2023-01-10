@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import checker from "vite-plugin-checker";
 import svgr from "vite-plugin-svgr";
 import { resolve } from "path";
+import postcss from "./postcss.config.js";
 
 export default defineConfig({
   plugins: [react(), svgr(), checker({ typescript: true })],
@@ -26,4 +27,7 @@ export default defineConfig({
       },
     },
   },
+  css: {
+    postcss
+  }
 });

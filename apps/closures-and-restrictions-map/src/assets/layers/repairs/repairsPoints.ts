@@ -1,3 +1,7 @@
+import { colors } from "../../../utils/colors";
+
+const { white, purple } = colors;
+
 const styles = [
   {
     id: "repairs-points",
@@ -6,10 +10,10 @@ const styles = [
       "circle-color": [
         "case",
         ["boolean", ["feature-state", "selected"], false],
-        "#ffffff",
-        "#D753F8",
+        white,
+        purple,
       ],
-      "circle-stroke-color": "#D753F8",
+      "circle-stroke-color": purple,
       "circle-stroke-width": ["case", ["boolean", ["feature-state", "selected"], false], 4, 1],
       "circle-opacity": [
         "case",

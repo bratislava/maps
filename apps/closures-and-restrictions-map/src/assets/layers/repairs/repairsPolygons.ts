@@ -1,9 +1,13 @@
+import { colors } from "../../../utils/colors";
+
+const { purple } = colors
+
 const styles = [
   {
     id: "repairs-polygons-line",
     type: "line",
     paint: {
-      "line-color": "#D753F8",
+      "line-color": purple,
       "line-width": [
         "interpolate",
         ["linear"],
@@ -21,7 +25,7 @@ const styles = [
     id: "repairs-polygons-fill",
     type: "fill",
     paint: {
-      "fill-color": "#D753F8",
+      "fill-color": purple,
       "fill-opacity": [
         "case",
         [

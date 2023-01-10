@@ -35,6 +35,7 @@ import { usePrevious } from "@bratislava/utils";
 import { DesktopSearch } from "./desktop/DesktopSearch";
 import { Filters } from "./Filters";
 import { Marker } from "./Marker";
+import { colors } from "../utils/colors";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -300,7 +301,7 @@ export const App = () => {
     <Map
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
-      loadingSpinnerColor="#71CA55"
+      loadingSpinnerColor={colors.green}
       mapStyles={{
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,

@@ -92,10 +92,10 @@ export const App = () => {
       : `Cvičko | ${t("title")}`;
   }, [t, currentCvickoId]);
 
-  const closeDetail = useCallback(() => {
+  const closeDetail = () => {
     setSelectedFeature(null);
     setSelectedFountain(null);
-  }, []);
+  };
 
   // set selected feature based on query
   useEffect(() => {
@@ -176,14 +176,14 @@ export const App = () => {
     [closeDetail],
   );
 
-  const stopAnimation = useCallback(() => {
+  const stopAnimation = () => {
     setAnimating(false);
     mapRef.current?.fitFeature(lineString(apolloBasicCoordinates));
-  }, []);
+  };
 
-  const handleAnimationChange = useCallback((event: AnimationChangeEvent) => {
+  const handleAnimationChange = (event: AnimationChangeEvent) => {
     mapRef.current?.changeViewport({ center: event.center, pitch: 20, bearing: 25, zoom: 15 }, 200);
-  }, []);
+  };
 
   useEffect(() => {
     setLoading(false);
@@ -233,7 +233,7 @@ export const App = () => {
     <div className="h-full w-full">
       <Map
         interactive={!isAnimating}
-        loadingSpinnerColor="#00D4DF"
+        loadingSpinnerColor={colors.cyan}
         ref={mapRef}
         mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
         mapStyles={{

@@ -38,7 +38,7 @@ const styles = [
     id: "snp-line-middle",
     type: "line",
     paint: {
-      "line-color": "#E5E5E5",
+      "line-color": colors.lightGrey,
       "line-offset": [
         "interpolate",
         ["linear"],

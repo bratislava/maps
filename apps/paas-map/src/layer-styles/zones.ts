@@ -1,9 +1,11 @@
+import { colors } from "../utils/colors";
+
 const styles = [
   {
     id: "zones-line",
     type: "line",
     paint: {
-      "line-color": "#7C7C7C",
+      "line-color": colors.grey,
       "line-opacity": 0.6,
       "line-width": [
         "interpolate",

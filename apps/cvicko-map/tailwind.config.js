@@ -1,7 +1,9 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-module.exports = {
+import { themeColors } from "./src/utils/colors"
+
+export default {
   presets: [require("../../libs/react-maps-ui/tailwind.config")],
   darkMode: "class",
   content: [
@@ -13,28 +15,28 @@ module.exports = {
     extend: {
       colors: {
         gray: {
-          lightmode: "#D85D30",
-          darkmode: "#FFEFE9",
+          lightmode: themeColors.orange,
+          darkmode: themeColors.softOrange,
         },
         background: {
-          lightmode: "#FFEFE9",
-          darkmode: "#D85D30",
+          lightmode: themeColors.softOrange,
+          darkmode: themeColors.orange,
         },
         foreground: {
-          lightmode: "#D85D30",
-          darkmode: "#FFEFE9",
+          lightmode: themeColors.orange,
+          darkmode: themeColors.softOrange,
         },
         primary: {
-          DEFAULT: "#88E0FF",
-          soft: "#88E0FF",
+          DEFAULT: themeColors.lightBlue,
+          soft: themeColors.lightBlue,
         },
         secodary: {
-          DEFAULT: "#D93D04",
-          soft: "#D93D04",
+          DEFAULT: themeColors.red,
+          soft: themeColors.red,
         },
         blue: {
-          DEFAULT: "#066384",
-          soft: "#BDEBFF",
+          DEFAULT: themeColors.blue,
+          soft: themeColors.softBlue,
         },
       },
       fontFamily: {
