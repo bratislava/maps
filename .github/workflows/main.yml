@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-closures-and-restrictions-map:
-    runs-on: ubuntu-latest/gpu-2gb
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
@@ -16,7 +16,7 @@ jobs:
     - run: yarn --cwd \apps\closures-and-restrictions-map lint
     - run: yarn --cwd \apps\closures-and-restrictions-map build
   build-cvicko-map:
-    runs-on: ubuntu-latest/gpu-2gb
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
@@ -26,7 +26,7 @@ jobs:
     - run: yarn --cwd \apps\cvicko-map lint
     - run: yarn --cwd \apps\cvicko-map build
   build-drinking-fountains-map:
-    runs-on: ubuntu-latest/gpu-2gb
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
@@ -36,7 +36,7 @@ jobs:
     - run: yarn --cwd \apps\drinking-fountains-map lint
     - run: yarn --cwd \apps\drinking-fountains-map build
   build-greenary-care-map:
-    runs-on: ubuntu-latest/gpu-2gb
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
@@ -46,7 +46,7 @@ jobs:
     - run: yarn --cwd \apps\greenary-care-map lint
     - run: yarn --cwd \apps\greenary-care-map build
   build-homeless-people-help-map:
-    runs-on: ubuntu-latest/gpu-2gb
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
@@ -56,7 +56,7 @@ jobs:
     - run: yarn --cwd \apps\homeless-people-help-map lint
     - run: yarn --cwd \apps\homeless-people-help-map build
   build-non-residential-premises-map:
-    runs-on: ubuntu-latest/gpu-2gb
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
@@ -66,7 +66,7 @@ jobs:
     - run: yarn --cwd \apps\non-residential-premises-map lint
     - run: yarn --cwd \apps\non-residential-premises-map build
   build-paas-map:
-    runs-on: ubuntu-latest/gpu-2gb
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
@@ -76,7 +76,7 @@ jobs:
     - run: yarn --cwd \apps\paas-map lint
     - run: yarn --cwd \apps\paas-map build
   build-planting-map:
-    runs-on: ubuntu-latest/gpu-2gb
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
@@ -86,7 +86,7 @@ jobs:
     - run: yarn --cwd \apps\planting-map lint
     - run: yarn --cwd \apps\planting-map build
   build-sport-grounds-map:
-    runs-on: ubuntu-latest/gpu-2gb
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
