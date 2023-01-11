@@ -3,96 +3,157 @@ name: Maps Pipeline
 on:
   push:
   pull_request:
-
 jobs:
-  build-closures-and-restrictions-map:
+  test-and-build-all-maps:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout code
     - uses: actions/checkout@v2
+
+    - name: Set up Node.js
     - uses: actions/setup-node@v2
       with:
         node-version: 16.x
+    
+    - name: Test closures-and-restrictions-map
     - run: yarn --cwd \apps\closures-and-restrictions-map
     - run: yarn --cwd \apps\closures-and-restrictions-map lint
     - run: yarn --cwd \apps\closures-and-restrictions-map build
-  build-cvicko-map:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
+
+    - name: Test cvicko-map
     - run: yarn --cwd \apps\cvicko-map
     - run: yarn --cwd \apps\cvicko-map lint
     - run: yarn --cwd \apps\cvicko-map build
-  build-drinking-fountains-map:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
+  
+    - name: Test drinking-fountains-map
     - run: yarn --cwd \apps\drinking-fountains-map
     - run: yarn --cwd \apps\drinking-fountains-map lint
     - run: yarn --cwd \apps\drinking-fountains-map build
-  build-greenary-care-map:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
+  
+    - name: Test greenary-care-map
     - run: yarn --cwd \apps\greenary-care-map
     - run: yarn --cwd \apps\greenary-care-map lint
     - run: yarn --cwd \apps\greenary-care-map build
-  build-homeless-people-help-map:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
+
+    - name: Test homeless-people-help-map
     - run: yarn --cwd \apps\homeless-people-help-map
     - run: yarn --cwd \apps\homeless-people-help-map lint
     - run: yarn --cwd \apps\homeless-people-help-map build
-  build-non-residential-premises-map:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
+
+    - name: Test non-residential-premises-map
     - run: yarn --cwd \apps\non-residential-premises-map
     - run: yarn --cwd \apps\non-residential-premises-map lint
     - run: yarn --cwd \apps\non-residential-premises-map build
-  build-paas-map:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
+
+    - name: Test paas-mapp
     - run: yarn --cwd \apps\paas-map
     - run: yarn --cwd \apps\paas-map lint
     - run: yarn --cwd \apps\paas-map build
-  build-planting-map:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
+
+    - name: Test planting-map
     - run: yarn --cwd \apps\planting-map
     - run: yarn --cwd \apps\planting-map lint
     - run: yarn --cwd \apps\planting-map build
-  build-sport-grounds-map:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
+
+    - name: Test sport-grounds-map
     - run: yarn --cwd \apps\sport-grounds-map
     - run: yarn --cwd \apps\sport-grounds-map lint
     - run: yarn --cwd \apps\sport-grounds-map build
+
+# name: Maps Pipeline
+
+# on:
+#   push:
+#   pull_request:
+# jobs:
+#   build-closures-and-restrictions-map:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - uses: actions/setup-node@v2
+#       with:
+#         node-version: 16.x
+#     - run: yarn --cwd \apps\closures-and-restrictions-map
+#     - run: yarn --cwd \apps\closures-and-restrictions-map lint
+#     - run: yarn --cwd \apps\closures-and-restrictions-map build
+#   build-cvicko-map:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - uses: actions/setup-node@v2
+#       with:
+#         node-version: 16.x
+#     - run: yarn --cwd \apps\cvicko-map
+#     - run: yarn --cwd \apps\cvicko-map lint
+#     - run: yarn --cwd \apps\cvicko-map build
+#   build-drinking-fountains-map:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - uses: actions/setup-node@v2
+#       with:
+#         node-version: 16.x
+#     - run: yarn --cwd \apps\drinking-fountains-map
+#     - run: yarn --cwd \apps\drinking-fountains-map lint
+#     - run: yarn --cwd \apps\drinking-fountains-map build
+#   build-greenary-care-map:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - uses: actions/setup-node@v2
+#       with:
+#         node-version: 16.x
+#     - run: yarn --cwd \apps\greenary-care-map
+#     - run: yarn --cwd \apps\greenary-care-map lint
+#     - run: yarn --cwd \apps\greenary-care-map build
+#   build-homeless-people-help-map:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - uses: actions/setup-node@v2
+#       with:
+#         node-version: 16.x
+#     - run: yarn --cwd \apps\homeless-people-help-map
+#     - run: yarn --cwd \apps\homeless-people-help-map lint
+#     - run: yarn --cwd \apps\homeless-people-help-map build
+#   build-non-residential-premises-map:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - uses: actions/setup-node@v2
+#       with:
+#         node-version: 16.x
+#     - run: yarn --cwd \apps\non-residential-premises-map
+#     - run: yarn --cwd \apps\non-residential-premises-map lint
+#     - run: yarn --cwd \apps\non-residential-premises-map build
+#   build-paas-map:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - uses: actions/setup-node@v2
+#       with:
+#         node-version: 16.x
+#     - run: yarn --cwd \apps\paas-map
+#     - run: yarn --cwd \apps\paas-map lint
+#     - run: yarn --cwd \apps\paas-map build
+#   build-planting-map:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - uses: actions/setup-node@v2
+#       with:
+#         node-version: 16.x
+#     - run: yarn --cwd \apps\planting-map
+#     - run: yarn --cwd \apps\planting-map lint
+#     - run: yarn --cwd \apps\planting-map build
+#   build-sport-grounds-map:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - uses: actions/setup-node@v2
+#       with:
+#         node-version: 16.x
+#     - run: yarn --cwd \apps\sport-grounds-map
+#     - run: yarn --cwd \apps\sport-grounds-map lint
+#     - run: yarn --cwd \apps\sport-grounds-map build
 
