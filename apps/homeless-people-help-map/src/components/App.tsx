@@ -17,7 +17,7 @@ import {
 import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
 
-import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
+import { Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 
 // layer styles
 import DISTRICTS_STYLE from "../assets/layers/districts";
@@ -36,8 +36,7 @@ import { Detail } from "./Detail";
 import { PhoneLinksModal } from "./PhoneLinksModal";
 import { Marker } from "./Marker";
 import { colors } from "../utils/colors";
-import { point, featureCollection } from "@turf/helpers";
-import { DrinkingFountainMarker } from "./DrinkingFountainMarker";
+import { featureCollection } from "@turf/helpers";
 import { Legend } from "./Legend";
 import { BuildingMarker } from "./BuildingMarker";
 import { buildingsData } from "../data/buildings";
@@ -54,7 +53,6 @@ const {
   otherServicesData,
   uniqueDistricts,
   fixpointAndSyringeExchangeData,
-  drinkingFountainsData,
 } = processData();
 const uniqueLayers = Object.keys(colors).filter((key) => key !== "terrainServices");
 const defaultLayersValues = uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {});
