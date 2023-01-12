@@ -1,15 +1,22 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import { I18nextProvider } from "react-i18next";
 import App from "./components/App";
 import i18n from "./utils/i18n";
 
-const rootElement = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+// FIXME: warning: ReactDOM.render is no longer supported in React 18, after fixing breaks in Mobile version
+// TODO: find the reason, after fix update ReactDOM.render 
+const rootElement = document.getElementById("root");
 
-rootElement.render(
-  <React.StrictMode>
-    <I18nextProvider i18n={i18n}>
-      <App />
-    </I18nextProvider>
-  </React.StrictMode>,
-);
+if (!rootElement) {
+  console.error("No #root element...");
+} else {
+  ReactDOM.render(
+    <React.StrictMode>
+      <I18nextProvider i18n={i18n}>
+        <App />
+      </I18nextProvider>
+    </React.StrictMode>,
+    rootElement,
+  );
+}
