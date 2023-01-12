@@ -1,7 +1,7 @@
 export const colors = {
     orange: "#E29F45",
     lightOrange: "#F4B056",
-    brick: "E57D00",
+    brick: "#E57D00",
     red: "#E03F00",
     white: "#ffffff",
     green: "#237c36",
