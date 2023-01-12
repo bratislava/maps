@@ -671,7 +671,7 @@ export const data: FeatureCollection<Point> = {
     {
       id: 16,
       type: "Feature",
-      geometry: { type: "Point", coordinates: [17.11446854310301, 48.1159038239079] },
+      geometry: { type: "Point", coordinates: [17.075288, 48.144518] },
       properties: {
         layerName: "Služby pre ľudí bez domova",
         counseling_sk: "",
