@@ -1,7 +1,4 @@
 export const colors: { [key: string]: string } = {
-  black: "#000000",
-  yellow: "#F1B830",
-  softYellow: "#FFE781",
   counseling: "#FFA33D",
   hygiene: "#12C8F2",
   overnight: "#F94346",
@@ -13,3 +10,9 @@ export const colors: { [key: string]: string } = {
   notaBene: "#547242",
   terrainServices: "#FB99BE",
 };
+
+export const mainColors = {
+  black: "#000000",
+  yellow: "#F1B830",
+  softYellow: "#FFE781",
+}
