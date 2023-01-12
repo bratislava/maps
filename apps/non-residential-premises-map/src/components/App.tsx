@@ -148,12 +148,14 @@ export const App = () => {
 
     if (purposeFilter.expression.length) filter.push(purposeFilter.expression);
     if (occupancyFilter.expression.length) filter.push(occupancyFilter.expression);
+    if (districtFilter.expression.length) filter.push(districtFilter.expression);
     return filter;
   }, [
     minAreaDebounced,
     maxAreaDebounced,
     minPriceDebounced,
     maxPriceDebounced,
+    districtFilter.expression,
     purposeFilter.expression,
     occupancyFilter.expression,
   ]);
