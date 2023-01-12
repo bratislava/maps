@@ -1,4 +1,4 @@
-import colors from "../../../utils/colors.json";
+import { colors } from "../../../utils/colors";
 
 const styles = [
   {

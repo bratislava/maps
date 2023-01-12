@@ -1,3 +1,5 @@
+import { colors } from "../../../utils/colors";
+
 const styles = [
   {
     id: "esri",
@@ -6,7 +8,7 @@ const styles = [
       "circle-color": [
         "case",
         ["boolean", ["feature-state", "selected"], false],
-        "#ffffff",
+        colors.white,
         ["get", "color"],
       ],
       "circle-stroke-color": ["get", "color"],

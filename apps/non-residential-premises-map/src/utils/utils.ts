@@ -2,7 +2,7 @@ import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps";
 import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 import { featureCollection } from "@turf/helpers";
 import { FeatureCollection } from "geojson";
-import colors from "../utils/colors.json";
+import { colors } from "../utils/colors";
 
 export const processData = (rawData: FeatureCollection) => {
   const data: FeatureCollection = addDistrictPropertyToLayer(
@@ -14,14 +14,14 @@ export const processData = (rawData: FeatureCollection) => {
           originalOccupancy === "na prenájom"
             ? "forRent"
             : originalOccupancy === "obsadené"
-            ? "occupied"
-            : "free";
+              ? "occupied"
+              : "free";
         const color =
           occupancy === "forRent"
             ? colors.forRent
             : occupancy === "occupied"
-            ? colors.occupied
-            : colors.free;
+              ? colors.occupied
+              : colors.free;
         const locality = feature.properties?.["ulica"];
         const street = locality.replaceAll(/[0-9]/g, "").trim().split(",")[0];
         const competition =

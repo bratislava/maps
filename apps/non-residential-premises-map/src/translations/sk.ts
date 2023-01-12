@@ -51,6 +51,7 @@ export default {
     approximateRentPricePerYear: "Orientačná ročná cena nájmu",
     description: "Detailný popis",
     contract: "Zmluva",
+    rentalContract: "nájomná zmluva",
     free: "Voľné",
     occupied: "Obsadené",
     premisePhotos: "Fotografie priestoru",

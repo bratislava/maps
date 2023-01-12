@@ -1,7 +1,7 @@
 import { DataDisplay, Tag } from "@bratislava/react-maps-ui";
 import { Feature } from "geojson";
 import { useTranslation } from "react-i18next";
-import colors from "../../utils/colors.json";
+import { colors } from "../../utils/colors";
 import cx from "classnames";
 import { ButtonLink } from "../ButtonLink";
 
@@ -14,6 +14,7 @@ export const DetailDataDisplay = ({ feature, className }: IDetailDataDisplayProp
   const { t } = useTranslation("translation", { keyPrefix: "detail" });
 
   const occupancy = feature?.properties?.occupancy as "forRent" | "occupied" | "free";
+  const contractLink: string = feature.properties?.ORIGINAL_NZ_link || '';
 
   return (
     <div className={cx("relative flex flex-col space-y-4 p-6", className)}>
@@ -63,6 +64,21 @@ export const DetailDataDisplay = ({ feature, className }: IDetailDataDisplayProp
           )
         }
       />
+      {contractLink &&
+        <DataDisplay
+          label={t(`contract`)}
+          text={
+              <a
+                className="font-bold flex underline"
+                rel="noreferrer"
+                href={contractLink}
+                target="_blank"
+              >
+                {t("rentalContract")}
+              </a>
+          }
+        />
+      }
     </div>
   );
 };

@@ -50,7 +50,7 @@ const styles = [
         20,
         12,
       ],
-      "line-color": "#E5E5E5",
+      "line-color": colors.lightGrey,
       "line-opacity": 1,
       "line-width": 1,
     },

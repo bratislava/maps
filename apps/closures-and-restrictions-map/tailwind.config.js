@@ -1,7 +1,7 @@
-/* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-var-requires */
 
-module.exports = {
+import { colors } from "./src/utils/colors";
+
+export default {
   presets: [require("../../libs/react-maps-ui/tailwind.config")],
   content: [
     "./src/**/*.{html,ts,tsx}",
@@ -12,8 +12,8 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#0F6D95",
-          soft: "#D0ECF8",
+          DEFAULT: colors.defaultBlue,
+          soft: colors.lightBlue,
         },
       },
     },
