@@ -1,4 +1,4 @@
-import { colors } from "./src/utils/colors";
+import { mainColors } from "./src/utils/colors";
 
 export default {
   presets: [require("../../libs/react-maps-ui/tailwind.config")],
@@ -12,8 +12,8 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: colors.yellow,
-          soft: colors.softYellow,
+          DEFAULT: mainColors.yellow,
+          soft: mainColors.softYellow,
         },
       },
     },

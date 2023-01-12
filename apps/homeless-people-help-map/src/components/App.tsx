@@ -35,7 +35,7 @@ import { Filters } from "./Filters";
 import { Detail } from "./Detail";
 import { PhoneLinksModal } from "./PhoneLinksModal";
 import { Marker } from "./Marker";
-import { colors } from "../utils/colors";
+import { mainColors, colors } from "../utils/colors";
 import { featureCollection } from "@turf/helpers";
 import { Legend } from "./Legend";
 import { BuildingMarker } from "./BuildingMarker";
@@ -284,7 +284,7 @@ export const App = () => {
 
   return (
     <Map
-      loadingSpinnerColor={colors.yellow}
+      loadingSpinnerColor={mainColors.yellow}
       ref={mapRef}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={{

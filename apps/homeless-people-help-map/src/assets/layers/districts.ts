@@ -1,11 +1,11 @@
-import { colors } from "../../utils/colors";
+import { mainColors } from "../../utils/colors";
 
 const styles = [
   {
     id: "districts-line",
     type: "line",
     paint: {
-      "line-color": colors.black,
+      "line-color": mainColors.black,
       "line-opacity": 0.4,
       "line-width": [
         "interpolate",
