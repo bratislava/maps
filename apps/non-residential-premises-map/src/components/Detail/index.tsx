@@ -1,18 +1,20 @@
 import { Feature } from "geojson";
-import { useState, useEffect, useRef, useMemo, forwardRef } from "react";
+import { useState, useEffect, useRef, useMemo, ForwardRefRenderFunction, MutableRefObject } from "react";
 import { SingleFeatureDetail } from "./SingleFeatureDetail";
 import { MultiFeatureDetail } from "./MultiFeatureDetail";
 import { Detail as MapDetail } from "@bratislava/react-maps";
 import { SheetHandle } from "@bratislava/react-maps-ui";
+
 export interface DetailProps {
-  features: Feature[];
+  features: Array<Feature>;
   onClose: () => void;
   isMobile: boolean;
   avoidMapboxControls?: boolean;
+  ref: MutableRefObject<any>;
 }
 
-export const Detail = forwardRef<HTMLDivElement, DetailProps>(
-  ({ features, onClose, isMobile, avoidMapboxControls = false }, forwardedRef) => {
+export const Detail: ForwardRefRenderFunction<HTMLDivElement, DetailProps> =
+  ({ features, onClose, isMobile, avoidMapboxControls = false, ref }) => {
     const detailRef = useRef<SheetHandle>(null);
 
     const [feature, setFeature] = useState<Feature | null>(null);
@@ -57,11 +59,10 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
         hideBottomSheetHeader
         avoidMapboxControls={avoidMapboxControls}
       >
-        <div ref={forwardedRef}>{detail}</div>
+        <div ref={ref}>{detail}</div>
       </MapDetail>
     );
-  },
-);
+  };
 
 Detail.displayName = "Detail";
 
