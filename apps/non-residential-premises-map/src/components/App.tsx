@@ -102,6 +102,13 @@ export const App = () => {
     combiner: "all",
     filters: [
       {
+        filter: districtFilter,
+        mapToActive: (activeDistricts) => ({
+          title: t("filters.district.title"),
+          items: activeDistricts,
+        }),
+      },
+      {
         filter: purposeFilter,
         mapToActive: (activePurposes) => ({
           title: t("filters.purpose.title"),
