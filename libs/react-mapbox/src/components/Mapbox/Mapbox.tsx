@@ -28,12 +28,12 @@ import {
   defaultSatelliteSource,
 } from '../../utils/constants';
 
-export type MapboxGesturesOptions = {
+export interface MapboxGesturesOptions {
   disableBearing?: boolean;
   disablePitch?: boolean;
 };
 
-export type MapboxProps = {
+export interface MapboxProps extends MapboxGesturesOptions {
   mapboxAccessToken: string;
   isDarkmode?: boolean;
   isSatellite?: boolean;
@@ -51,10 +51,12 @@ export type MapboxProps = {
   isDevelopment?: boolean;
   onClick?: (event: mapboxgl.MapMouseEvent & mapboxgl.EventData) => void;
   maxBounds?: [[number, number], [number, number]];
+  maxZoom?: number;
+  minZoom?: number;
   cooperativeGestures?: boolean;
   locale?: { [key: string]: string };
   interactive?: boolean;
-} & MapboxGesturesOptions;
+}
 
 export interface ISlotPadding {
   isVisible: boolean;
@@ -113,6 +115,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       disableBearing = false,
       disablePitch = false,
       maxBounds,
+      maxZoom = 30,
+      minZoom = 10.8,
       locale,
       cooperativeGestures = false,
       interactive = true,
@@ -122,6 +126,12 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     const mapContainerId = useId();
 
     const [map, setMap] = useState<mapboxgl.Map | null>(null);
+
+    useEffect(() => {
+     if(!map) return;
+      map.setMaxZoom(maxZoom);
+      map.setMinZoom(minZoom);
+    }, [maxZoom, minZoom])
 
     const [clickableLayerIds, setClickableLayerIds] = useState<string[]>([]);
 
@@ -489,8 +499,8 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
             accessToken: mapboxAccessToken,
             container: mapContainerId,
             style: initialStyle,
-            // maxZoom: 20,
-            // minZoom: 10.75,
+            maxZoom,
+            minZoom,
             cooperativeGestures,
             locale,
             maxBounds,
@@ -541,7 +551,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           (!isLoading && previousLoading) ||
           (!isLoading &&
             JSON.stringify(prevClickableLayerIds) !==
-              JSON.stringify(clickableLayerIds))
+            JSON.stringify(clickableLayerIds))
         ) {
           // get custom layers (prefixed)
           const customLayers = map
@@ -645,7 +655,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
         setStyleLoading(true);
         map.setStyle(
           (isDarkmode ? mapStyles?.['dark'] : mapStyles?.['light']) ??
-            'mapbox://styles/mapbox/streets-v11',
+          'mapbox://styles/mapbox/streets-v11',
         );
 
         map.on('style.load', () => {

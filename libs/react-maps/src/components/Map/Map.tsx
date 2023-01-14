@@ -94,6 +94,8 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
       disablePitch,
       disableBearing,
       maxBounds,
+      maxZoom,
+      minZoom,
       cooperativeGestures = false,
       interactive,
       enableSatelliteOnLoad = false,
@@ -530,6 +532,8 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
                 maxBounds={maxBounds}
                 cooperativeGestures={cooperativeGestures}
                 locale={mapboxLocale}
+                maxZoom={maxZoom}
+                minZoom={minZoom}
               >
                 {/* information button */}
                 <Slot id="information-button">

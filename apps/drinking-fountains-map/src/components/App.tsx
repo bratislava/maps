@@ -74,6 +74,7 @@ export const App = () => {
   return (
     <Map
       ref={mapRef}
+      minZoom={11.5}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={{
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
