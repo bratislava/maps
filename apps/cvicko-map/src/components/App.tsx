@@ -233,7 +233,7 @@ export const App = () => {
     <div className="h-full w-full">
       <Map
         interactive={!isAnimating}
-        // minZoom={!isMobile ? 11.5 : 10.8}
+        minZoom={!isMobile ? 13 : 13.3}
         loadingSpinnerColor={colors.cyan}
         ref={mapRef}
         mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
