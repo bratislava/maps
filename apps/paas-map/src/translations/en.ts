@@ -29,7 +29,7 @@ export default {
     support: {
       title: "Support",
       tooltip:
-        "If you need help with registration, you can contact us <1>online</1>, or by phone on <3>0800 200 222</3> or you can visit one of our customer centres.",
+        "If you need help with registration, you can contact us <1>online</1>, or by phone on <3>0800 222 888</3> or you can visit one of our customer centres.",
       tooltipLink: "mailto:registracie@paas.sk",
       tooltipPhone: "tel:0800200222",
     },
