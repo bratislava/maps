@@ -300,6 +300,7 @@ export const App = () => {
   return isLoading ? null : (
     <Map
       ref={mapRef}
+      minZoom={9.5}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       loadingSpinnerColor={colors.green}
       mapStyles={{
