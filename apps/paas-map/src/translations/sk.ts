@@ -29,7 +29,7 @@ export default {
     support: {
       title: "Podpora",
       tooltip:
-        "Ak potrebujete pomôcť s registráciou a nákupom parkovacích kariet, kontaktovať náš môžete <1>online</1>, na infolinke <3>0800 200 222</3> alebo osobne na jednom z klientskych miest.",
+        "Ak potrebujete pomôcť s registráciou a nákupom parkovacích kariet, kontaktovať náš môžete <1>online</1>, na infolinke <3>0800 222 888</3> alebo osobne na jednom z klientskych miest.",
       tooltipLink: "https://paas.sk/formular/",
       tooltipPhone: "tel:0800200222",
     },
