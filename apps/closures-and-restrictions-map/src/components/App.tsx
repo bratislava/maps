@@ -4,7 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 import "../styles.css";
 import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
-import  { DateValue } from "@react-types/calendar";
+import { DateValue } from "@react-types/calendar";
 
 // maps
 import {
@@ -47,10 +47,8 @@ import {
 import { processData } from "../utils/utils";
 import Detail from "./Detail";
 import { Filters } from "./Filters";
-import { ILayerCategory } from "./Layers";
 import { MobileHeader } from "./mobile/MobileHeader";
 
-import { Icon } from "./Icon";
 import { Marker } from "./Marker";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { colors } from "../utils/colors";
@@ -85,9 +83,9 @@ export const App = () => {
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
   const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
 
-  const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
-  const [uniqueLayers, setUniqueLayers] = useState<string[]>([]);
-  const [uniqueTypes, setUniqueTypes] = useState<string[]>([]);
+  const [uniqueDistricts, setUniqueDistricts] = useState<Array<string>>([]);
+  const [uniqueLayers, setUniqueLayers] = useState<Array<string>>([]);
+  const [uniqueTypes, setUniqueTypes] = useState<Array<string>>([]);
 
   useEffect(() => {
     if (
@@ -111,29 +109,6 @@ export const App = () => {
       setUniqueLayers(uniqueLayers);
       setUniqueTypes(uniqueTypes);
 
-      setLayerCategories([
-        {
-          label: t("layers.digups.title"),
-          icon: <Icon icon="digup" size={40} />,
-          subLayers: ["digups"],
-        },
-        {
-          label: t("layers.closures.title"),
-          icon: <Icon icon="closure" size={40} />,
-          subLayers: ["closures"],
-        },
-        {
-          label: t("layers.disorders.title"),
-          icon: <Icon icon="disorder" size={40} />,
-          subLayers: ["disorders"],
-        },
-        {
-          label: t("layers.repairs.title"),
-          icon: <Icon icon="repair" size={40} />,
-          subLayers: ["repairs"],
-        },
-      ]);
-
       setLoading(false);
     }
   }, [rawDisordersData, rawDigupsAndClosuresData, rawRepairsPointsData, rawRepairsPolygonsData, t]);
@@ -149,19 +124,19 @@ export const App = () => {
   // close sidebar on mobile and open on desktop
   useEffect(() => {
     // from mobile to desktop
-    if (previousMobile == true && isMobile == false) {
+    if (previousMobile == true && !isMobile) {
       setSidebarVisible(true);
     }
     // from desktop to mobile
-    if (previousMobile == false && isMobile == true) {
+    if (previousMobile == false && isMobile) {
       setSidebarVisible(false);
     }
   }, [isMobile, previousMobile]);
 
-  const closeDetail = useCallback(() => {
+  const closeDetail = () => {
     setSelectedFeature(null);
     setSelectedMarker(null);
-  }, []);
+  };
 
   // close detailbox when sidebar is opened on mobile
   useEffect(() => {
@@ -170,34 +145,28 @@ export const App = () => {
     }
   }, [closeDetail, isMobile, isSidebarVisible, previousSidebarVisible]);
 
-  const initialViewport = useMemo(
-    () => ({
-      zoom: 12.229005488986582,
-      center: {
-        lat: 48.16290360284438,
-        lng: 17.125377342563297,
-      },
-    }),
-    [],
-  );
+  const initialViewport = {
+    zoom: 12.229005488986582,
+    center: {
+      lat: 48.16290360284438,
+      lng: 17.125377342563297,
+    },
+  }
 
-  const mapStyles = useMemo(
-    () => ({
-      light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-      dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-    }),
-    [],
-  );
+  const mapStyles = {
+    light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+    dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+  }
 
   const selectedFeatures = useMemo(() => {
     return selectedFeature ? [selectedFeature] : [];
   }, [selectedFeature]);
 
-  const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
+  const onFeaturesClick = (features: Array<MapboxGeoJSONFeature>) => {
     mapRef.current?.moveToFeatures(features);
     setSelectedFeature(features[0] ?? null);
     setSelectedMarker(null);
-  }, []);
+  };
 
   const districtFilter = useFilter({
     property: "district",
@@ -221,7 +190,7 @@ export const App = () => {
     property: "status",
     combiner: "any",
     keys: useMemo(() => ["planned", "active", "done"], []),
-    defaultValues: useMemo(() => ({ planned: false, active: true, done: false }), []),
+    defaultValues: useMemo(() => ({ planned: false, active: false, done: false }), []),
   });
 
   const layerfilter = useFilter({
@@ -238,8 +207,8 @@ export const App = () => {
   });
 
   // Date filter
-  const [dateStart, setDateStart] = useState<DateValue>();
-  const [dateEnd, setDateEnd] = useState<DateValue>();
+  const [dateStart, setDateStart] = useState<DateValue | undefined>();
+  const [dateEnd, setDateEnd] = useState<DateValue | undefined>();
 
   const dateFilterExpression = useMemo(() => {
     if (!dateStart || !dateEnd) return null;
@@ -336,7 +305,6 @@ export const App = () => {
     ],
   });
 
-  const [layerCategories, setLayerCategories] = useState<ILayerCategory[]>([]);
 
   const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
   const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
@@ -346,6 +314,12 @@ export const App = () => {
   const shouldBeViewportControlsMoved = useMemo(() => {
     return !isMobile && windowHeight < viewportControlsHeight + detailHeight + 40;
   }, [windowHeight, detailHeight, viewportControlsHeight, isMobile]);
+
+  const onFilterReset = () => {
+    combinedFilter.reset();
+    setDateStart(undefined);
+    setDateEnd(undefined);
+  }
 
   return isLoading ? null : (
     <Map
@@ -487,13 +461,8 @@ export const App = () => {
         districtFilter={districtFilter}
         areFiltersDefault={combinedFilter.areDefault && dateFilterExpression === null}
         activeFilters={combinedFilter.active}
-        onResetFiltersClick={() => {
-          combinedFilter.reset();
-          setDateStart(undefined);
-          setDateEnd(undefined);
-        }}
+        onResetFiltersClick={() => onFilterReset()}
         layerFilter={layerfilter}
-        layerCategories={layerCategories}
         statusFilter={statusFilter as IFilterResult<string>}
         typeFilter={typeFilter}
         dateStart={dateStart}
