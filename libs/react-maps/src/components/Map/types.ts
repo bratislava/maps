@@ -11,7 +11,7 @@ import { ReactNode } from 'react';
 import { i18n as i18nType } from 'i18next';
 
 // State of one slot
-export type SlotState = {
+export interface SlotState {
   id: string;
   isVisible: boolean;
   padding: Padding;
@@ -19,7 +19,7 @@ export type SlotState = {
 };
 
 // Methods passed to context and imperative handle
-export type MapMethods = {
+export interface MapMethods {
   changeViewport: (
     wantedViewport: PartialViewport,
     duration?: number,
@@ -47,7 +47,21 @@ export type MapMethods = {
   unmountSlot: (slotState: SlotState) => void;
 };
 
-export type MapProps = {
+interface IPartner {
+  name: string;
+  link: string;
+  image: string;
+  height?: number;
+  width?: number;
+}
+interface IMapInformation {
+  title: string;
+  description: ReactNode;
+  partners: Array<IPartner>;
+  footer: ReactNode;
+}
+
+export interface MapProps extends MapboxGesturesOptions {
   mapboxAccessToken: string;
   isDevelopment?: boolean;
   mapStyles: {
@@ -65,23 +79,14 @@ export type MapProps = {
   selectedFeatures?: MapboxGeoJSONFeature[];
   onFeaturesClick?: (features: MapboxGeoJSONFeature[]) => void;
   maxBounds?: [[number, number], [number, number]];
+  maxZoom?: number;
+  minZoom?: number;
   cooperativeGestures?: boolean;
   interactive?: boolean;
   enableSatelliteOnLoad?: boolean;
   mapInformationButtonClassName?: string;
   onViewportChange?: (viewport: Viewport) => void;
   onViewportChangeDebounced?: (viewport: Viewport) => void;
-  mapInformation: {
-    title: string;
-    description: ReactNode;
-    partners: {
-      name: string;
-      link: string;
-      image: string;
-      height?: number;
-      width?: number;
-    }[];
-    footer: ReactNode;
-  };
+  mapInformation: IMapInformation;
   prevI18n: i18nType;
-} & MapboxGesturesOptions;
+};

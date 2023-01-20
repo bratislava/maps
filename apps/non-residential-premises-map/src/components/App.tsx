@@ -311,6 +311,7 @@ export const App = () => {
     <Map
       loadingSpinnerColor={colors.primary}
       ref={mapRef}
+      minZoom={!isMobile ? 10.8 : 10.4}
       mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
       mapStyles={{
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
