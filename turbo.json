@@ -5,6 +5,14 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "build:a-j": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "build:k-z": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
     "lint": {
       "outputs": []
     }

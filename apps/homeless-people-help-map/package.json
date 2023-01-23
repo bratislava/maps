@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite --host",
-    "build": "echo no-build",
+    "build": "tsc && vite build",
+    "build:a-j": "tsc && vite build",
     "build:suppress": "tsc-silent -p ./tsconfig.json --suppress @ && vite build",
     "preview": "vite preview",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",

@@ -1,4 +1,5 @@
-name: Build every app and lib
+# check out README for the reason behind splitting the builds by app names
+name: Build apps with names form K to Z
 on: [pull_request]
 jobs:
   Build:
@@ -10,4 +11,4 @@ jobs:
           node-version: 16.x
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
-      - run: yarn build
+      - run: yarn build:k-z
