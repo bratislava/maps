@@ -1,0 +1,23 @@
+name: Deploy prod closures-and-restrictions-map
+
+on:
+  push:
+    tags:
+      - 'prod-closures-and-restrictions-map-v*'
+
+jobs:
+  Deploy:
+    name: Deploy prod closures-and-restrictions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: yarn install --frozen-lockfile
+      - run: yarn workspace @bratislava/closures-and-restrictions build 
+      - uses: lovellfelix/minio-deploy-action@v1
+        with:
+          endpoint: ${{ secrets.MINIO_ENDPOINT }}
+          access_key: ${{ secrets.MINIO_ACCESS_KEY }}
+          secret_key: ${{ secrets.MINIO_SECRET_KEY }}
+          bucket: 'static-pages'
+          source_dir: 'apps/closures-and-restrictions/dist'
+          target_dir: '/closures-and-restrictions'
