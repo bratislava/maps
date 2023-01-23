@@ -6,17 +6,17 @@ on:
       - master
 jobs:
   Deploy:
-    name: Deploy staging closures-and-restrictions
+    name: Deploy staging closures-and-restrictions-map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: yarn install --frozen-lockfile
-      - run: yarn workspace @bratislava/closures-and-restrictions build 
+      - run: yarn workspace @bratislava/closures-and-restrictions-map build 
       - uses: lovellfelix/minio-deploy-action@v1
         with:
           endpoint: ${{ secrets.MINIO_ENDPOINT }}
           access_key: ${{ secrets.MINIO_ACCESS_KEY }}
           secret_key: ${{ secrets.MINIO_SECRET_KEY }}
           bucket: 'static-pages'
-          source_dir: 'apps/closures-and-restrictions/dist'
-          target_dir: '/dev/closures-and-restrictions'
+          source_dir: 'apps/closures-and-restrictions-map/dist'
+          target_dir: '/dev/closures-and-restrictions-map'
