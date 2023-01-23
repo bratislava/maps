@@ -1,7 +1,6 @@
 import { Feature, Point } from 'geojson';
 import {
   FC,
-  useCallback,
   useContext,
   useEffect,
   useMemo,

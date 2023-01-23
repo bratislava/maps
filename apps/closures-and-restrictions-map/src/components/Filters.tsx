@@ -13,7 +13,7 @@ import {
 } from "@bratislava/react-maps-ui";
 import cx from "classnames";
 import { useTranslation } from "react-i18next";
-import { ILayerCategory, Layers } from "./Layers";
+import { Layers } from "./Layers";
 import { SelectValueRenderer } from "./SelectValueRenderer";
 import { DateValue } from "@react-types/calendar";
 
@@ -28,8 +28,6 @@ export interface IFiltersProps {
   layerFilter: IFilterResult<string>;
   typeFilter: IFilterResult<string>;
   statusFilter: IFilterResult<string>;
-  layerCategories: ILayerCategory[];
-
   dateStart?: DateValue;
   dateEnd?: DateValue;
   onDateStartChange: (date?: DateValue) => void;
@@ -43,12 +41,10 @@ export const Filters = ({
   activeFilters,
   onResetFiltersClick,
   districtFilter,
-  layerCategories,
   layerFilter,
   isMobile,
   statusFilter,
   typeFilter,
-
   dateStart,
   dateEnd,
   onDateStartChange,
@@ -158,23 +154,7 @@ export const Filters = ({
               isActive: status.isActive,
             }))
            }
-          onTagClick={(status) => {
-            if (status === "all") {
-              if (statusFilter.activeKeys.length !== 3) {
-                statusFilter.setActiveAll(true);
-              }
-              return;
-            }
-
-            if (statusFilter.activeKeys.length === 3) {
-              statusFilter.setActiveOnly(status);
-              return;
-            }
-
-            if (!(statusFilter.activeKeys.length === 1 && statusFilter.activeKeys[0] === status)) {
-              statusFilter.toggleActive(status);
-            }
-          }}
+          onTagClick={(status: string) => statusFilter.toggleActive(status)}
         />
 
         <div className="mx-6 flex flex-col gap-2">
@@ -198,7 +178,7 @@ export const Filters = ({
 
       <h2 className="font-semibold px-6 text-md">{t("layers.title")}</h2>
 
-      <Layers isMobile={isMobile ?? false} filter={layerFilter} layers={layerCategories} />
+      <Layers isMobile={isMobile ?? false} filter={layerFilter} />
     </>
   );
 

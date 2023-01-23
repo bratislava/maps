@@ -1,9 +1,11 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
-import { Eye, EyeCrossed, Information } from "@bratislava/react-maps-icons";
+import { Eye, Information } from "@bratislava/react-maps-icons";
 import { Accordion, AccordionItem, Checkbox, Modal, Popover } from "@bratislava/react-maps-ui";
 import cx from "classnames";
 import { ReactNode, useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { capitalizeFirstLetter } from "../../../planting-map/src/utils/utils";
+import { Icon } from "./Icon";
 
 export interface ILayerCategory {
   label: string;
@@ -14,16 +16,40 @@ export interface ILayerCategory {
 export interface ILayerProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter: IFilterResult<any>;
-  layers: ILayerCategory[];
   tooltips?: {
     [index: string]: string;
   };
   isMobile: boolean;
 }
 
-export const Layers = ({ filter, layers, tooltips, isMobile }: ILayerProps) => {
+export const Layers = ({ filter, tooltips, isMobile }: ILayerProps) => {
+  const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
+
   const [currentTooltipType, setCurrentTooltipType] = useState<string | null>(null);
   const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
+
+  const layers: Array<ILayerCategory> = [
+    {
+      label: t("layers.digups.title"),
+      icon: <Icon icon="digup" size={40} />,
+      subLayers: ["digups"],
+    },
+    {
+      label: t("layers.closures.title"),
+      icon: <Icon icon="closure" size={40} />,
+      subLayers: ["closures"],
+    },
+    {
+      label: t("layers.disorders.title"),
+      icon: <Icon icon="disorder" size={40} />,
+      subLayers: ["disorders"],
+    },
+    {
+      label: t("layers.repairs.title"),
+      icon: <Icon icon="repair" size={40} />,
+      subLayers: ["repairs"],
+    },
+  ];
 
   const openTooltipModal = useCallback(
     (type: string) => {
