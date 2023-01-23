@@ -36,7 +36,7 @@ export const useEffectDebugger = (
   
   // TODO find out how to fix this or if it's even used anymore
   //@ts-ignore
-  if (Object.keys(changedDeps).length && importMeta?.env?.DEV) {
+  if (Object.keys(changedDeps).length && import.meta.env.DEV) {
     console.log(name ?? "[use-effect-debugger]", changedDeps);
   }
 
