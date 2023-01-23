@@ -1,0 +1,22 @@
+name: Deploy staging greenary-care-map
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  Deploy:
+    name: Deploy staging greenary-care-map
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: yarn install --frozen-lockfile
+      - run: yarn workspace @bratislava/greenary-care-map build 
+      - uses: lovellfelix/minio-deploy-action@v1
+        with:
+          endpoint: ${{ secrets.MINIO_ENDPOINT }}
+          access_key: ${{ secrets.MINIO_ACCESS_KEY }}
+          secret_key: ${{ secrets.MINIO_SECRET_KEY }}
+          bucket: 'static-pages'
+          source_dir: 'apps/greenary-care-map/dist'
+          target_dir: '/dev/greenary-care-map'
