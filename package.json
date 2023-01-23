@@ -8,11 +8,20 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "build:a-j": "turbo run build:a-j",
+    "build:k-z": "turbo run build:k-z",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "dev": "turbo run dev"
   },
   "devDependencies": {
     "turbo": "^1.6.3"
+  },
+  "engines": {
+    "node": "16.x.x",
+    "yarn": "1.22"
+  },
+  "volta": {
+    "node": "16.19.0"
   }
 }

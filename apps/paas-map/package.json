@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build",
+    "build:k-z": "tsc && vite build",
     "build:suppress": "tsc-silent -p ./tsconfig.json --suppress @ && vite build",
     "preview": "vite preview",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
