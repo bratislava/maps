@@ -1,6 +1,9 @@
 name: Deploy staging closures-and-restrictions
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - master
 jobs:
   Deploy:
     name: Deploy staging closures-and-restrictions

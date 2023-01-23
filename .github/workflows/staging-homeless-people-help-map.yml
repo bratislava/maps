@@ -1,4 +1,4 @@
-name: Deploy staging drinking-fountains-map
+name: Deploy staging homeless-people-help-map
 
 on:
   push:
@@ -6,17 +6,17 @@ on:
       - master
 jobs:
   Deploy:
-    name: Deploy staging drinking-fountains-map
+    name: Deploy staging homeless-people-help-map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: yarn install --frozen-lockfile
-      - run: yarn workspace @bratislava/drinking-fountains-map build 
+      - run: yarn workspace @bratislava/homeless-people-help-map build 
       - uses: lovellfelix/minio-deploy-action@v1
         with:
           endpoint: ${{ secrets.MINIO_ENDPOINT }}
           access_key: ${{ secrets.MINIO_ACCESS_KEY }}
           secret_key: ${{ secrets.MINIO_SECRET_KEY }}
           bucket: 'static-pages'
-          source_dir: 'apps/drinking-fountains-map/dist'
-          target_dir: '/dev/drinking-fountains-map'
+          source_dir: 'apps/homeless-people-help-map/dist'
+          target_dir: '/dev/homeless-people-help-map'

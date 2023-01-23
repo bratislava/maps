@@ -1,6 +1,9 @@
 name: Deploy staging cvicko-map
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - master
 jobs:
   Deploy:
     name: Deploy staging cvicko-map
