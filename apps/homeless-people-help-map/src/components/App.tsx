@@ -208,34 +208,27 @@ export const App = () => {
     [t],
   );
 
-  const [activeTerrainServiceKey, setActiveTerrainServiceKey] = useState<string | null>(null);
-
-  const activeTerrainService = useMemo(() => {
-    return terrainServices.find((ts) => ts.key === activeTerrainServiceKey) ?? null;
-  }, [terrainServices, activeTerrainServiceKey]);
-
   const [rememberedActiveLayerKeys, setRememberedActiveLayerKeys] = useState<string[]>([]);
+  const [activeTerrainService, setActiveTerrainService] = useState<ITerrainService | null>(null);
+  const [serviceDetail, setServiceDetail] = useState<boolean>(false);
+
+  const isDetailVisible = useMemo(() => {
+    return (!!selectedMarker || !!activeTerrainService) && (!isMobile || !isSidebarVisible);
+  }, [isMobile, isSidebarVisible, selectedMarker, serviceDetail]);
 
   const handleActiveTerrainServiceChange = useCallback(
-    (terrainServiceKey: string | null) => {
+    (terrainService: ITerrainService | null) => {
       // Close the main detail
       setSelectedMarker(null);
       // Set active terrain key
-      setActiveTerrainServiceKey(terrainServiceKey);
+      setActiveTerrainService(terrainService);
 
       // If enabling some terrain service
-      if (terrainServiceKey) {
-        // Fit terrain service features
-        const features = terrainServices.find((service) => service.key === terrainServiceKey)
-          ?.geojson.features;
-        features && mapRef.current?.fitFeature(features);
-
+      if (terrainService) {
         // Close filters on mobile
-        if (isMobile) {
-          setSidebarVisible(false);
-        }
+        isMobile && setSidebarVisible(false);
 
-        if (activeTerrainServiceKey === null) {
+        if (!activeTerrainService) {
           // Remember what layers were visible
           setRememberedActiveLayerKeys(layerFilter.activeKeys);
           // Hide all layers
@@ -246,26 +239,42 @@ export const App = () => {
         layerFilter.setActiveOnly(rememberedActiveLayerKeys, true);
       }
     },
-    [activeTerrainServiceKey, layerFilter, rememberedActiveLayerKeys, terrainServices, isMobile],
+    [activeTerrainService, layerFilter, rememberedActiveLayerKeys, isMobile],
   );
+
+  useEffect(() => {
+    if (!activeTerrainService) {
+      layerFilter.setActiveOnly(rememberedActiveLayerKeys, true);
+      setServiceDetail(false);
+      return;
+    } 
+    const features = activeTerrainService.geojson.features;
+    // Fit terrain service features
+    features && mapRef.current?.fitFeature(features);
+
+    // Close filters on mobile
+    isMobile && setSidebarVisible(false);
+
+    // Wait to fit features
+    setTimeout(() => {
+      setServiceDetail(true);
+    }, 500);
+
+  }, [activeTerrainService])
 
   // Disable terrain service if
   useEffect(() => {
     if (layerFilter.activeKeys.length) {
-      setActiveTerrainServiceKey(null);
+      setActiveTerrainService(null);
     }
   }, [layerFilter.activeKeys.length]);
 
   const closeDetail = useCallback(() => {
     setSelectedMarker(null);
-    if (activeTerrainServiceKey) {
+    if (activeTerrainService) {
       handleActiveTerrainServiceChange(null);
     }
-  }, [handleActiveTerrainServiceChange, activeTerrainServiceKey]);
-
-  const isDetailVisible = useMemo(() => {
-    return (!!selectedMarker || !!activeTerrainServiceKey) && (!isMobile || !isSidebarVisible);
-  }, [isMobile, isSidebarVisible, selectedMarker, activeTerrainServiceKey]);
+  }, [handleActiveTerrainServiceChange, activeTerrainService]);
 
   const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
   const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
@@ -345,7 +354,7 @@ export const App = () => {
             ? TERRAIN_SERVICES_POLYGON_STYLE
             : TERRAIN_SERVICES_POINT_STYLE
           ).map((style) => ({ ...style, id: `${style.id}-${index}` }))}
-          isVisible={key === activeTerrainServiceKey}
+          isVisible={key === activeTerrainService?.key}
           hoverPopup={Popup}
         />
       ))}
@@ -356,7 +365,7 @@ export const App = () => {
       ])}
 
       {/* FIXPOINT AND SYRINGE EXCHANGE MARKERS */}
-      <Filter expression={activeTerrainServiceKey ? ["any", false] : districtFilter.expression}>
+      <Filter expression={activeTerrainService?.key ? ["any", false] : districtFilter.expression}>
         {fixpointAndSyringeExchangeData.features.map((feature, index) =>
           feature.properties?.icon === "fixpoint" ? (
             <FixpointMarker
@@ -382,37 +391,6 @@ export const App = () => {
           ),
         )}
       </Filter>
-
-      {/* DRINKING FOUNTAIN MARKERS */}
-      {/* <Filter expression={activeTerrainServiceKey ? ["any", false] : districtFilter.expression}>
-        <Cluster features={drinkingFountainsData.features} radius={24}>
-          {({ features, lng, lat, key, clusterExpansionZoom }) =>
-            features.length === 1 ? (
-              <DrinkingFountainMarker
-                isSelected={!!(selectedMarker && features[0].id === selectedMarker.id)}
-                key={key}
-                feature={features[0]}
-                onClick={() => setSelectedMarker(features[0])}
-              />
-            ) : (
-              <DrinkingFountainMarker
-                key={key}
-                feature={point([lng, lat], features[0].properties)}
-                count={features.length}
-                onClick={() =>
-                  mapRef.current?.changeViewport({
-                    zoom: clusterExpansionZoom ?? 0,
-                    center: {
-                      lat,
-                      lng,
-                    },
-                  })
-                }
-              />
-            )
-          }
-        </Cluster>
-      </Filter> */}
 
       <Filter expression={fullFilterExpression}>
         {data?.features.map((feature, index) => (
@@ -511,7 +489,7 @@ export const App = () => {
             districtFilter={districtFilter}
             layerFilter={layerFilter}
             terrainServices={terrainServices}
-            activeTerrainService={activeTerrainServiceKey}
+            activeTerrainService={activeTerrainService?.key || null}
             onActiveTerrainServiceChange={handleActiveTerrainServiceChange}
           />
         </Slot>
@@ -551,7 +529,7 @@ export const App = () => {
             activeFilters={combinedFilter.active}
             layerFilter={layerFilter}
             terrainServices={terrainServices}
-            activeTerrainService={activeTerrainServiceKey}
+            activeTerrainService={activeTerrainService?.key || null}
             onActiveTerrainServiceChange={handleActiveTerrainServiceChange}
           />
         </Slot>
