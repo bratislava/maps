@@ -15,6 +15,18 @@ export default {
           DEFAULT: colors.defaultBlue,
           soft: colors.lightBlue,
         },
+        closure: {
+          DEFAULT: colors.closuresColor,
+        },
+        disorder: {
+          DEFAULT: colors.disorderColor,
+        },
+        repair: {
+          DEFAULT: colors.repairColor,
+        },
+        digup: {
+          DEFAULT: colors.digupColor,
+        }
       },
     },
   },
