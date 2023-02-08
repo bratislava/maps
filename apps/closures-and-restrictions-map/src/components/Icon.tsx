@@ -15,27 +15,27 @@ const icons: Array<IIcon> = [
   {
     name: "closure",
     component: ClosureIcon,
-    background: 'bg-closure'
+    background: "bg-closure",
   },
   {
     name: "digup",
     component: DigupIcon,
-    background: 'bg-digup'
+    background: "bg-digup",
   },
   {
     name: "disorder",
     component: DisorderIcon,
-    background: 'bg-disorder'
+    background: "bg-disorder",
   },
   {
     name: "repair",
     component: RepairIcon,
-    background: 'bg-repair'
+    background: "bg-repair",
   },
 ];
 
 export interface IIconProps {
-  icon: typeof icons[number]["name"];
+  icon: (typeof icons)[number]["name"];
   size?: number;
   isWhite?: boolean;
   count?: number;
@@ -45,17 +45,16 @@ export interface IIconProps {
 export const Icon = ({ icon, size = 24, isWhite = false, count, shadow = true }: IIconProps) => {
   const currentIcon: IIcon | undefined = icons.find((i) => i.name === icon);
 
-  let svgBackground: string = !isWhite ? `${currentIcon?.background} text-secondary` : 'bg-white !text-primary z-50';
-  
-  if(shadow) svgBackground = svgBackground + " shadow-lg"
-  const IconSvgComponent = currentIcon?.component;
+  let svgBackground: string = !isWhite
+    ? `${currentIcon?.background} text-secondary`
+    : "bg-white !text-primary z-50";
 
+  if (shadow) svgBackground = svgBackground + " shadow-lg";
+  const IconSvgComponent = currentIcon?.component;
 
   return IconSvgComponent ? (
     <div
-      className={
-        `relative transform active:scale-75 transition-transform cursor-pointer w-fit h-fit rounded-full text-white flex items-center justify-center text-secondary ${svgBackground} shadow-lg`
-      }
+      className={`relative transform active:scale-75 transition-transform cursor-pointer w-fit h-fit rounded-full text-white flex items-center justify-center text-secondary ${svgBackground} shadow-lg`}
     >
       {count !== undefined && (
         <div
@@ -68,5 +67,7 @@ export const Icon = ({ icon, size = 24, isWhite = false, count, shadow = true }:
       )}
       <IconSvgComponent width={size} height={size} />
     </div>
-  ) : <></>;
+  ) : (
+    <></>
+  );
 };
