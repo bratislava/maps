@@ -26,7 +26,7 @@ export interface IFiltersProps {
 
   terrainServices: ITerrainService[];
   activeTerrainService: string | null;
-  onActiveTerrainServiceChange: (terrainService: string | null) => void;
+  onActiveTerrainServiceChange: (terrainService: ITerrainService | null) => void;
 }
 
 export const Filters = ({
@@ -133,11 +133,7 @@ export const Filters = ({
         <TerrainServices
           services={terrainServices}
           activeServiceKey={activeTerrainService}
-          onServiceClick={(key) =>
-            activeTerrainService === key
-              ? onActiveTerrainServiceChange(null)
-              : onActiveTerrainServiceChange(key)
-          }
+          onServiceClick={onActiveTerrainServiceChange}
         />
       </div>
 
