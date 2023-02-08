@@ -55,6 +55,7 @@ import { MobileHeader } from "./mobile/MobileHeader";
 import { Marker } from "./Marker";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { colors } from "../utils/colors";
+import { Modal } from "@bratislava/react-maps-ui";
 
 // const REPAIRS_POINTS_URLS = [REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL];
 
@@ -63,6 +64,20 @@ import { colors } from "../utils/colors";
 //   REPAIRS_2022_RECONSTRUCTION_DESIGN_POLYGONS_URL,
 //   REPAIRS_2022_POLYGONS_URL,
 // ];
+
+export interface ITooltip {
+  name: string;
+  title: string;
+  description: string;
+}
+
+export const tooltips: Array<ITooltip> = [
+  {
+    name: 'state',
+    title: '',
+    description: 'Stav plánované zobrazuje body, ktorých dátum začiatku realizácie je neskôr ako aktuálny čas. Stav aktuálne zobrazuje body, ktorých začiatok je skôr a zároveň koniec neskôr ako aktuálny čas.'
+  }
+]
 
 export const App = () => {
   const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
@@ -97,11 +112,11 @@ export const App = () => {
       // rawRepairsPointsData &&
       // rawRepairsPolygonsData
     ) {
-      const { 
-        markersData, 
+      const {
+        markersData,
         // repairsPolygonsData, 
-        uniqueDistricts, 
-        uniqueLayers, 
+        uniqueDistricts,
+        uniqueLayers,
         uniqueTypes } =
         processData({
           rawDisordersData,
@@ -120,8 +135,8 @@ export const App = () => {
       setLoading(false);
     }
   }, [
-    rawDisordersData, 
-    rawDigupsAndClosuresData, 
+    rawDisordersData,
+    rawDigupsAndClosuresData,
     // rawRepairsPointsData, 
     // rawRepairsPolygonsData, 
     t]);
@@ -134,6 +149,17 @@ export const App = () => {
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
 
+  const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
+  const [activeTooltip, setActiveTooltip] = useState<ITooltip | null>(null);
+  const closeTooltipModal = () => setTooltipModalOpen(false);
+
+  const modalHandler = (tooltip: ITooltip | null) => {
+    setActiveTooltip(tooltip);
+    (tooltip && isMobile) && setTooltipModalOpen(true);
+    
+    !tooltip && setTooltipModalOpen(false);
+  }
+
   // close sidebar on mobile and open on desktop
   useEffect(() => {
     // from mobile to desktop
@@ -144,6 +170,8 @@ export const App = () => {
     if (previousMobile == false && isMobile) {
       setSidebarVisible(false);
     }
+
+    modalHandler(null);
   }, [isMobile, previousMobile]);
 
   const closeDetail = () => {
@@ -482,7 +510,16 @@ export const App = () => {
         dateEnd={dateEnd}
         onDateStartChange={setDateStart}
         onDateEndChange={setDateEnd}
+        modalHandler={modalHandler}
       />
+
+      <Modal
+        overlayClassName="max-w-lg"
+        isOpen={isTooltipModalOpen && !!activeTooltip}
+        title={activeTooltip?.title}
+        description={activeTooltip?.description}
+        onClose={closeTooltipModal}
+      ></Modal>
     </Map>
   );
 };
