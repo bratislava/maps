@@ -6,6 +6,9 @@ import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
 import { DateValue } from "@react-types/calendar";
 
+// NOTE: "Repair layers was removed by comments in Commit "Repair Layesrs Removed" at 7.2.2023
+// TODO: if you need to return those Layers just revert changes/or uncomment them"
+
 // maps
 import {
   Cluster,
@@ -31,7 +34,7 @@ import { MapboxGeoJSONFeature } from "mapbox-gl";
 
 // layer styles
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
-import REPAIRS_POLYGONS_STYLE from "../assets/layers/repairs/repairsPolygons";
+// import REPAIRS_POLYGONS_STYLE from "../assets/layers/repairs/repairsPolygons";
 
 // utils
 import { usePrevious } from "@bratislava/utils";
@@ -39,10 +42,10 @@ import { Feature, FeatureCollection, Point } from "geojson";
 import {
   DIGUPS_URL,
   DISORDERS_URL,
-  REPAIRS_2022_ODP_POLYGONS_URL,
-  REPAIRS_2022_POLYGONS_URL,
-  REPAIRS_2022_RECONSTRUCTION_DESIGN_POLYGONS_URL,
-  REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL,
+  // REPAIRS_2022_ODP_POLYGONS_URL,
+  // REPAIRS_2022_POLYGONS_URL,
+  // REPAIRS_2022_RECONSTRUCTION_DESIGN_POLYGONS_URL,
+  // REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL,
 } from "../utils/urls";
 import { processData } from "../utils/utils";
 import Detail from "./Detail";
@@ -53,13 +56,13 @@ import { Marker } from "./Marker";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { colors } from "../utils/colors";
 
-const REPAIRS_POINTS_URLS = [REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL];
+// const REPAIRS_POINTS_URLS = [REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL];
 
-const REPAIRS_POLYGONS_URLS = [
-  REPAIRS_2022_ODP_POLYGONS_URL,
-  REPAIRS_2022_RECONSTRUCTION_DESIGN_POLYGONS_URL,
-  REPAIRS_2022_POLYGONS_URL,
-];
+// const REPAIRS_POLYGONS_URLS = [
+//   REPAIRS_2022_ODP_POLYGONS_URL,
+//   REPAIRS_2022_RECONSTRUCTION_DESIGN_POLYGONS_URL,
+//   REPAIRS_2022_POLYGONS_URL,
+// ];
 
 export const App = () => {
   const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
@@ -72,13 +75,13 @@ export const App = () => {
 
   const [markersData, setMarkersData] = useState<FeatureCollection | null>(null);
 
-  const [repairsPolygonsData, setRepairsPolygonsData] = useState<FeatureCollection | null>(null);
+  // const [repairsPolygonsData, setRepairsPolygonsData] = useState<FeatureCollection | null>(null);
 
   const { data: rawDisordersData } = useArcgis(DISORDERS_URL);
   const { data: rawDigupsAndClosuresData } = useArcgis(DIGUPS_URL);
 
-  const { data: rawRepairsPointsData } = useArcgis(REPAIRS_POINTS_URLS);
-  const { data: rawRepairsPolygonsData } = useArcgis(REPAIRS_POLYGONS_URLS);
+  // const { data: rawRepairsPointsData } = useArcgis(REPAIRS_POINTS_URLS);
+  // const { data: rawRepairsPolygonsData } = useArcgis(REPAIRS_POLYGONS_URLS);
 
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
   const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
@@ -90,20 +93,25 @@ export const App = () => {
   useEffect(() => {
     if (
       rawDisordersData &&
-      rawDigupsAndClosuresData &&
-      rawRepairsPointsData &&
-      rawRepairsPolygonsData
+      rawDigupsAndClosuresData
+      // rawRepairsPointsData &&
+      // rawRepairsPolygonsData
     ) {
-      const { markersData, repairsPolygonsData, uniqueDistricts, uniqueLayers, uniqueTypes } =
+      const { 
+        markersData, 
+        // repairsPolygonsData, 
+        uniqueDistricts, 
+        uniqueLayers, 
+        uniqueTypes } =
         processData({
           rawDisordersData,
           rawDigupsAndClosuresData,
-          rawRepairsPointsData,
-          rawRepairsPolygonsData,
+          // rawRepairsPointsData,
+          // rawRepairsPolygonsData,
         });
 
       setMarkersData(markersData);
-      setRepairsPolygonsData(repairsPolygonsData);
+      // setRepairsPolygonsData(repairsPolygonsData);
 
       setUniqueDistricts(uniqueDistricts);
       setUniqueLayers(uniqueLayers);
@@ -111,7 +119,12 @@ export const App = () => {
 
       setLoading(false);
     }
-  }, [rawDisordersData, rawDigupsAndClosuresData, rawRepairsPointsData, rawRepairsPolygonsData, t]);
+  }, [
+    rawDisordersData, 
+    rawDigupsAndClosuresData, 
+    // rawRepairsPointsData, 
+    // rawRepairsPolygonsData, 
+    t]);
 
   const [isSidebarVisible, setSidebarVisible] = useState(true);
 
@@ -397,11 +410,11 @@ export const App = () => {
           )}
         </Cluster>
       </Filter>
-      <Layer
+      {/* <Layer
         filters={combinedFilterWithoutStatus.expression}
         geojson={repairsPolygonsData}
         styles={REPAIRS_POLYGONS_STYLE}
-      />
+      /> */}
       <Layer
         filters={districtFilter.keepOnEmptyExpression}
         ignoreClick

@@ -6,8 +6,8 @@ import { Feature, FeatureCollection } from "geojson";
 export interface IProcessDataProps {
   rawDisordersData: FeatureCollection;
   rawDigupsAndClosuresData: FeatureCollection;
-  rawRepairsPointsData: FeatureCollection;
-  rawRepairsPolygonsData: FeatureCollection;
+  // rawRepairsPointsData: FeatureCollection;
+  // rawRepairsPolygonsData: FeatureCollection;
 }
 
 const currentTimestamp = Date.now();
@@ -27,8 +27,8 @@ const parseSlovakTypeToKey = (slovakType: string) => {
 export const processData = ({
   rawDisordersData,
   rawDigupsAndClosuresData,
-  rawRepairsPointsData,
-  rawRepairsPolygonsData,
+  // rawRepairsPointsData,
+  // rawRepairsPolygonsData,
 }: IProcessDataProps) => {
   let GLOBAL_ID = 0;
 
@@ -142,69 +142,69 @@ export const processData = ({
     ),
   };
 
-  const repairsPointData: FeatureCollection = addDistrictPropertyToLayer({
-    ...rawRepairsPointsData,
-    features: rawRepairsPointsData.features.map((feature) => {
-      GLOBAL_ID++;
-      const originalProperties = feature.properties;
-      const timestamp = originalProperties?.datum;
-      const location = originalProperties?.f4;
-      const status = "active";
-      return {
-        ...feature,
-        id: GLOBAL_ID,
-        properties: {
-          originalProperties,
-          layer: "repairs",
-          icon: "repair",
-          type: "other",
-          timestamp,
-          location,
-          status,
-        },
-      } as Feature;
-    }),
-  });
+  // const repairsPointData: FeatureCollection = addDistrictPropertyToLayer({
+  //   ...rawRepairsPointsData,
+  //   features: rawRepairsPointsData.features.map((feature) => {
+  //     GLOBAL_ID++;
+  //     const originalProperties = feature.properties;
+  //     const timestamp = originalProperties?.datum;
+  //     const location = originalProperties?.f4;
+  //     const status = "active";
+  //     return {
+  //       ...feature,
+  //       id: GLOBAL_ID,
+  //       properties: {
+  //         originalProperties,
+  //         layer: "repairs",
+  //         icon: "repair",
+  //         type: "other",
+  //         timestamp,
+  //         location,
+  //         status,
+  //       },
+  //     } as Feature;
+  //   }),
+  // });
 
-  const repairsPolygonsData: FeatureCollection = addDistrictPropertyToLayer({
-    ...rawRepairsPolygonsData,
-    features: rawRepairsPolygonsData.features.map((feature) => {
-      GLOBAL_ID++;
-      const originalProperties = feature.properties;
-      const address = originalProperties?.ulica;
-      const description = originalProperties?.popis_opravy ?? originalProperties?.Popis;
-      const location = originalProperties?.lokalizacia;
-      const length = originalProperties?.Dlzka_usek;
-      const fullSize = originalProperties?.Plocha_opr;
-      return {
-        ...feature,
-        id: GLOBAL_ID,
-        properties: {
-          originalProperties,
-          layer: "repairs",
-          address,
-          description,
-          location,
-          length,
-          fullSize,
-        },
-      } as Feature;
-    }),
-  });
+  // const repairsPolygonsData: FeatureCollection = addDistrictPropertyToLayer({
+  //   ...rawRepairsPolygonsData,
+  //   features: rawRepairsPolygonsData.features.map((feature) => {
+  //     GLOBAL_ID++;
+  //     const originalProperties = feature.properties;
+  //     const address = originalProperties?.ulica;
+  //     const description = originalProperties?.popis_opravy ?? originalProperties?.Popis;
+  //     const location = originalProperties?.lokalizacia;
+  //     const length = originalProperties?.Dlzka_usek;
+  //     const fullSize = originalProperties?.Plocha_opr;
+  //     return {
+  //       ...feature,
+  //       id: GLOBAL_ID,
+  //       properties: {
+  //         originalProperties,
+  //         layer: "repairs",
+  //         address,
+  //         description,
+  //         location,
+  //         length,
+  //         fullSize,
+  //       },
+  //     } as Feature;
+  //   }),
+  // });
 
   const allFeatures = [
     ...disordersData.features,
     ...digupsData.features,
     ...closuresData.features,
-    ...repairsPointData.features,
-    ...repairsPolygonsData.features,
+    // ...repairsPointData.features,
+    // ...repairsPolygonsData.features,
   ];
 
   const markersData = featureCollection([
     ...disordersData.features,
     ...digupsData.features,
     ...closuresData.features,
-    ...repairsPointData.features,
+    // ...repairsPointData.features,
   ]);
 
   const uniqueDistricts: string[] = getUniqueValuesFromFeatures(allFeatures, "district").sort(
@@ -221,7 +221,7 @@ export const processData = ({
 
   return {
     markersData,
-    repairsPolygonsData,
+    // repairsPolygonsData,
     uniqueLayers,
     uniqueDistricts,
     uniqueTypes,

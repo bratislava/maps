@@ -44,11 +44,11 @@ export const Layers = ({ filter, tooltips, isMobile }: ILayerProps) => {
       icon: <Icon icon="disorder" size={40} />,
       subLayers: ["disorders"],
     },
-    {
-      label: t("layers.repairs.title"),
-      icon: <Icon icon="repair" size={40} />,
-      subLayers: ["repairs"],
-    },
+    // {
+    //   label: t("layers.repairs.title"),
+    //   icon: <Icon icon="repair" size={40} />,
+    //   subLayers: ["repairs"],
+    // },
   ];
 
   const openTooltipModal = useCallback(
