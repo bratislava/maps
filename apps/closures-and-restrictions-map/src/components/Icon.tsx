@@ -1,5 +1,3 @@
-import cx from "classnames";
-
 import { ReactComponent as ClosureIcon } from "../assets/icons/closure.svg";
 import { ReactComponent as DigupIcon } from "../assets/icons/digup.svg";
 import { ReactComponent as DisorderIcon } from "../assets/icons/disorder.svg";
@@ -9,6 +7,8 @@ interface IIcon {
   name: string;
   component: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   background: string;
+  border: string;
+  text: string;
 }
 
 const icons: Array<IIcon> = [
@@ -16,21 +16,30 @@ const icons: Array<IIcon> = [
     name: "closure",
     component: ClosureIcon,
     background: "bg-closure",
+    border: "border-8 border-closure-soft",
+    text: "!text-closure"
   },
   {
     name: "digup",
     component: DigupIcon,
     background: "bg-digup",
+    border: "border-8 border-digup-soft",
+    text: "!text-digup"
+
   },
   {
     name: "disorder",
     component: DisorderIcon,
     background: "bg-disorder",
+    border: "border-8 border-disorder-soft",
+    text: "!text-disorder"
   },
   {
     name: "repair",
     component: RepairIcon,
     background: "bg-repair",
+    border: "border-8 border-repair-soft",
+    text: "!text-repair"
   },
 ];
 
@@ -47,20 +56,22 @@ export const Icon = ({ icon, size = 24, isWhite = false, count, shadow = true }:
 
   let svgBackground: string = !isWhite
     ? `${currentIcon?.background} text-secondary`
-    : "bg-white !text-primary z-50";
+    : `${currentIcon?.text} ` + "bg-white z-50";
+
+  const svgBorder = !isWhite ? "" : currentIcon?.border;
 
   if (shadow) svgBackground = svgBackground + " shadow-lg";
   const IconSvgComponent = currentIcon?.component;
 
   return IconSvgComponent ? (
     <div
-      className={`relative transform active:scale-75 transition-transform cursor-pointer w-fit h-fit rounded-full text-white flex items-center justify-center text-secondary ${svgBackground} shadow-lg`}
+      className={`relative transform active:scale-75 transition-transform cursor-pointer w-fit h-fit rounded-full text-white flex items-center justify-center  ${svgBackground}  ${svgBorder}`}
     >
       {count !== undefined && (
         <div
-          className={cx(
-            `absolute -top-[6px] -right-[8px] rounded-full min-w-[24px] px-2 h-6 text font-bold flex items-center shadow-lg text-primary bg-primary-soft`,
-          )}
+          className={
+            `absolute -top-[6px] -right-[8px] rounded-full min-w-[24px] px-2 h-6 text font-bold flex items-center shadow-lg text-primary bg-primary-soft`
+          }
         >
           {count}
         </div>
