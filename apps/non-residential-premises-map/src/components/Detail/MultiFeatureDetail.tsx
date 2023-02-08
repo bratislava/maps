@@ -32,15 +32,15 @@ const CustomAccordionItem = ({
       title={<div className="font-semibold pl-6">{feature.properties?.lessee}</div>}
       headerClassName={cx("text-left border-l-[4px]", {
         "border-[#F1B830]": feature.properties?.occupancy === "forRent",
-        "border-[#E46054]": feature.properties?.occupancy === "occupied",
-        "border-[#0F6D95]": feature.properties?.occupancy === "free",
+        "border-[#D83728]": feature.properties?.occupancy === "occupied",
+        "border-[#005F88]": feature.properties?.occupancy === "free",
       })}
     >
       <div
         className={cx("border-l-[4px]", {
           "border-[#F1B830]": feature.properties?.occupancy === "forRent",
-          "border-[#E46054]": feature.properties?.occupancy === "occupied",
-          "border-[#0F6D95]": feature.properties?.occupancy === "free",
+          "border-[#D83728]": feature.properties?.occupancy === "occupied",
+          "border-[#005F88]": feature.properties?.occupancy === "free",
           "pb-3": isLastFromCluster,
         })}
       >

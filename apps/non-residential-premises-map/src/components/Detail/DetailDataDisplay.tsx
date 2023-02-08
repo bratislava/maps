@@ -10,24 +10,27 @@ export interface IDetailDataDisplayProps {
   className?: string;
 }
 
+export type TOccupacy = "forRent" | "occupied" | "free";
+
 export const DetailDataDisplay = ({ feature, className }: IDetailDataDisplayProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "detail" });
 
-  const occupancy = feature?.properties?.occupancy as "forRent" | "occupied" | "free";
+  const occupancy: TOccupacy = feature?.properties?.occupancy;
   const contractLink: string = feature.properties?.ORIGINAL_NZ_link || '';
+  const txtClrByOccupacy = occupancy === 'forRent' ? 'black' : 'white';
 
   return (
     <div className={cx("relative flex flex-col space-y-4 p-6", className)}>
       {feature.properties?.competition && occupancy === "forRent" && (
         <div className="absolute -translate-y-12">
-          <ButtonLink color={colors.forRent} href={feature.properties?.competition}>
+          <ButtonLink occupancy={occupancy} href={feature.properties?.competition}>
             {t("ongoingCompetition")}
           </ButtonLink>
         </div>
       )}
 
       <Tag
-        className="w-fit text-white"
+        className={`w-fit text-${txtClrByOccupacy}`}
         style={{
           background: colors[occupancy],
         }}
