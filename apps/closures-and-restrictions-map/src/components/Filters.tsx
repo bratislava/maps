@@ -182,7 +182,7 @@ export const Filters = ({
 
       <h2 className="font-semibold px-6 text-md">{t("layers.title")}</h2>
 
-      <Layers isMobile={isMobile ?? false} filter={layerFilter} />
+      <Layers filter={layerFilter} />
     </>
   );
 
