@@ -40,7 +40,7 @@ import { useWindowSize } from "usehooks-ts";
 const isDevelopment = !!import.meta.env.DEV;
 
 const GEOPORTAL_LAYER_URL =
-  "https://geoportal.bratislava.sk/hsite/rest/services/majetok/N%C3%A1jom_nebytov%C3%BDch_priestorov_december_2022/MapServer/0";
+  "https://nest-proxy.staging.bratislava.sk/geoportal/hsite/rest/services/majetok/N%C3%A1jom_nebytov%C3%BDch_priestorov_december_2022/MapServer/0";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -353,7 +353,7 @@ export const App = () => {
           },
           {
             name: "geoportal",
-            link: "https://geoportal.bratislava.sk/pfa/apps/sites/#/verejny-mapovy-portal",
+            link: "https://nest-proxy.staging.bratislava.sk/geoportal/pfa/apps/sites/#/verejny-mapovy-portal",
             image: "logos/geoportal.png",
           },
         ],

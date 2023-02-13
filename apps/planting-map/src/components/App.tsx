@@ -38,7 +38,8 @@ import { Legend } from "./Legend";
 import { MobileFilters } from "./mobile/MobileFilters";
 import { MobileHeader } from "./mobile/MobileHeader";
 
-const URL = "https://geoportal.bratislava.sk/hsite/rest/services/zp/STROMY/MapServer/0";
+const URL =
+  "https://nest-proxy.staging.bratislava.sk/geoportal/hsite/rest/services/zp/STROMY/MapServer/0";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -267,7 +268,7 @@ export const App = () => {
           },
           {
             name: "geoportal",
-            link: "https://geoportal.bratislava.sk/pfa/apps/sites/#/verejny-mapovy-portal",
+            link: "https://nest-proxy.staging.bratislava.sk/geoportal/pfa/apps/sites/#/verejny-mapovy-portal",
             image: "logos/geoportal.png",
           },
         ],
