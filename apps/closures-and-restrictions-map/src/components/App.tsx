@@ -114,16 +114,16 @@ export const App = () => {
     ) {
       const {
         markersData,
-        // repairsPolygonsData, 
+        // repairsPolygonsData,
         uniqueDistricts,
         uniqueLayers,
-        uniqueTypes } =
-        processData({
-          rawDisordersData,
-          rawDigupsAndClosuresData,
-          // rawRepairsPointsData,
-          // rawRepairsPolygonsData,
-        });
+        uniqueTypes,
+      } = processData({
+        rawDisordersData,
+        rawDigupsAndClosuresData,
+        // rawRepairsPointsData,
+        // rawRepairsPolygonsData,
+      });
 
       setMarkersData(markersData);
       // setRepairsPolygonsData(repairsPolygonsData);
@@ -137,9 +137,10 @@ export const App = () => {
   }, [
     rawDisordersData,
     rawDigupsAndClosuresData,
-    // rawRepairsPointsData, 
-    // rawRepairsPolygonsData, 
-    t]);
+    // rawRepairsPointsData,
+    // rawRepairsPolygonsData,
+    t,
+  ]);
 
   const [isSidebarVisible, setSidebarVisible] = useState(true);
 
@@ -192,12 +193,12 @@ export const App = () => {
       lat: 48.16290360284438,
       lng: 17.125377342563297,
     },
-  }
+  };
 
   const mapStyles = {
     light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
     dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-  }
+  };
 
   const selectedFeatures = useMemo(() => {
     return selectedFeature ? [selectedFeature] : [];
@@ -346,7 +347,6 @@ export const App = () => {
     ],
   });
 
-
   const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
   const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
 
@@ -360,7 +360,7 @@ export const App = () => {
     combinedFilter.reset();
     setDateStart(undefined);
     setDateEnd(undefined);
-  }
+  };
 
   return isLoading ? null : (
     <Map
@@ -391,7 +391,7 @@ export const App = () => {
           },
           {
             name: "geoportal",
-            link: "https://geoportal.bratislava.sk/pfa/apps/sites/#/verejny-mapovy-portal",
+            link: "https://nest-proxy.bratislava.sk/geoportal/pfa/apps/sites/#/verejny-mapovy-portal",
             image: "logos/geoportal.png",
           },
         ],

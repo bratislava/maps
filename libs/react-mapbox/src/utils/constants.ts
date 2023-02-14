@@ -22,6 +22,6 @@ export const defaultSatelliteSource: RasterSource = {
   type: 'raster',
   tileSize: 256,
   tiles: [
-    'https://geoportal.bratislava.sk/hsite/rest/services/Hosted/Ortofoto_2021_WGS/MapServer/tile/{z}/{y}/{x}',
+    'https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/Hosted/Ortofoto_2021_WGS/MapServer/tile/{z}/{y}/{x}',
   ],
 };

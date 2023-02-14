@@ -679,15 +679,15 @@ export const data: FeatureCollection<Point> = {
         drugsAndSex_sk: "",
         drugsAndSex_en: "",
         hygiene_sk:
-          "Ošatenie zdarma štvrtok 19:00 - 20:30 v zime aj sobota 19:00-20:30; v zimných mesiacoch aj zimný materiál (prikrývky, spacáky a pod.)",
+          "Ošatenie zdarma štvrtok 19:30 celoročne, v zimných mesiacoch aj zimný materiál (prikrývky, spacáky a pod.)",
         hygiene_en:
-          "Free clothing Thursday 19:00 - 20:30, in winter also Saturday 19:00 - 20:30; in the winter months also winter material (blankets, sleeping bags, etc.)",
+          "Free clothing Thursday 19:30 year-round; in the winter months also winter material (blankets, sleeping bags, etc.)",
         overnight_sk: "",
         overnight_en: "",
         meals_sk:
-          "Strava zdarma: utorok, štvrtok 19:00 - 20:30. Výdaj stravy od novembra do marca aj v soboty od 18:0 - 20.00",
+          "Strava zdarma: utorok, štvrtok 19:30 celoročne. Výdaj stravy od novembra do marca aj v soboty od 17:00",
         meals_en:
-          "Free meals: Tuesday, Thursday 7:00 - 8:30. Meals are served from November to March also on Saturdays from 6:00 - 8:00",
+          "Free meals: Tuesday, Thursday 19:30   year-round. Meals are served from November to March also on Saturdays from 17:00",
         medicalTreatment_sk: "",
         medicalTreatment_en: "",
         culture_sk: "",
@@ -898,7 +898,7 @@ export const data: FeatureCollection<Point> = {
     {
       id: 21,
       type: "Feature",
-      geometry: { type: "Point", coordinates: [17.13703483535824, 48.17508640224894] },
+      geometry: { type: "Point", coordinates: [17.110685, 48.156531] },
       properties: {
         layerName: "Služby pre ľudí bez domova",
         counseling_sk:
