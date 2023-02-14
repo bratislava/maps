@@ -36,7 +36,7 @@ export default {
       price: "zdarma",
     },
     rozalie: {
-      title: "Terénna sociálna práva bl. Rozálie Rendu",
+      title: "Terénna sociálna práca bl. Rozálie Rendu",
       provider: "DEPAUL Slovensko, n.o.",
       service:
         "sociálne poradenstvo, sprevádzanie (po dohode) k lekárovi, po úradoch, asistencia pri vybavovaní dokladov, dôchodkov a dávok, základné ošetrenie v rámci poskytnutia prvej pomoci, v krízových situáciach oblečenie, potraviny a teplý nápoj",
