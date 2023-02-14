@@ -9,13 +9,14 @@ import {
   Select,
   SelectOption,
   Sidebar,
-  TagFilter,
 } from "@bratislava/react-maps-ui";
 import cx from "classnames";
 import { useTranslation } from "react-i18next";
 import { Layers } from "./Layers";
 import { SelectValueRenderer } from "./SelectValueRenderer";
 import { DateValue } from "@react-types/calendar";
+import { ITooltip } from "./App";
+import { TagFilter } from "./TagFilter";
 
 export interface IFiltersProps {
   isVisible?: boolean;
@@ -32,6 +33,7 @@ export interface IFiltersProps {
   dateEnd?: DateValue;
   onDateStartChange: (date?: DateValue) => void;
   onDateEndChange: (date?: DateValue) => void;
+  modalHandler: (arg1: ITooltip | null) => void;
 }
 
 export const Filters = ({
@@ -49,6 +51,7 @@ export const Filters = ({
   dateEnd,
   onDateStartChange,
   onDateEndChange,
+  modalHandler,
 }: IFiltersProps) => {
   const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
 
@@ -107,9 +110,8 @@ export const Filters = ({
               <SelectValueRenderer
                 values={values}
                 placeholder={t("filters.district.placeholder")}
-                multiplePlaceholder={`${t("filters.district.multipleDistricts")} (${
-                  values.length
-                })`}
+                multiplePlaceholder={`${t("filters.district.multipleDistricts")} (${values.length
+                  })`}
               />
             )}
           >
@@ -146,6 +148,7 @@ export const Filters = ({
         </div>
 
         <TagFilter
+          modalHandler={modalHandler}
           title={t("filters.status.title")}
           values={statusFilter.values
             .map((status) => ({
@@ -153,8 +156,9 @@ export const Filters = ({
               label: t(`filters.status.${status.key}`),
               isActive: status.isActive,
             }))
-           }
-          onTagClick={(status: string) => statusFilter.toggleActive(status)}
+          }
+          onTagClick={(status: string) => statusFilter.toggleActive(status)
+          }
         />
 
         <div className="mx-6 flex flex-col gap-2">
@@ -178,7 +182,7 @@ export const Filters = ({
 
       <h2 className="font-semibold px-6 text-md">{t("layers.title")}</h2>
 
-      <Layers isMobile={isMobile ?? false} filter={layerFilter} />
+      <Layers filter={layerFilter} />
     </>
   );
 
