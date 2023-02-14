@@ -16,7 +16,7 @@ Hook returns data property, which is simple `Promise<FeatureCollection>`.
 
 Your url should look similar to these:
 
-Our selfhosted geoportal: `https://nest-proxy.staging.bratislava.sk/geoportal/hsite/rest/services/zp/STROMY/MapServer/0`
+Our selfhosted geoportal: `https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/zp/STROMY/MapServer/0`
 
 (we are temporarily proxying `https://nest-proxy.bratislava.sk/geoportal` to `https://geoportal.bratislava.sk` because of present CORS issues)
 

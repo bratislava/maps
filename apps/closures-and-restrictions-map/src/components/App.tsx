@@ -97,18 +97,18 @@ export const App = () => {
       // rawRepairsPointsData &&
       // rawRepairsPolygonsData
     ) {
-      const { 
-        markersData, 
-        // repairsPolygonsData, 
-        uniqueDistricts, 
-        uniqueLayers, 
-        uniqueTypes } =
-        processData({
-          rawDisordersData,
-          rawDigupsAndClosuresData,
-          // rawRepairsPointsData,
-          // rawRepairsPolygonsData,
-        });
+      const {
+        markersData,
+        // repairsPolygonsData,
+        uniqueDistricts,
+        uniqueLayers,
+        uniqueTypes,
+      } = processData({
+        rawDisordersData,
+        rawDigupsAndClosuresData,
+        // rawRepairsPointsData,
+        // rawRepairsPolygonsData,
+      });
 
       setMarkersData(markersData);
       // setRepairsPolygonsData(repairsPolygonsData);
@@ -120,11 +120,12 @@ export const App = () => {
       setLoading(false);
     }
   }, [
-    rawDisordersData, 
-    rawDigupsAndClosuresData, 
-    // rawRepairsPointsData, 
-    // rawRepairsPolygonsData, 
-    t]);
+    rawDisordersData,
+    rawDigupsAndClosuresData,
+    // rawRepairsPointsData,
+    // rawRepairsPolygonsData,
+    t,
+  ]);
 
   const [isSidebarVisible, setSidebarVisible] = useState(true);
 
@@ -362,7 +363,7 @@ export const App = () => {
           },
           {
             name: "geoportal",
-            link: "https://nest-proxy.staging.bratislava.sk/geoportal/pfa/apps/sites/#/verejny-mapovy-portal",
+            link: "https://nest-proxy.bratislava.sk/geoportal/pfa/apps/sites/#/verejny-mapovy-portal",
             image: "logos/geoportal.png",
           },
         ],
