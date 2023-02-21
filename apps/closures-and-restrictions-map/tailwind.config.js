@@ -19,15 +19,19 @@ export default {
         },
         closure: {
           DEFAULT: colors.closuresColor,
+          soft: colors.closuresSoft,
         },
         disorder: {
           DEFAULT: colors.disorderColor,
+          soft: colors.disorderSoft,
         },
-        repair: {
-          DEFAULT: colors.repairColor,
-        },
+        // repair: {
+        //   DEFAULT: colors.repair,
+        //   soft: colors.repairSoft,
+        // },
         digup: {
           DEFAULT: colors.digupColor,
+          soft: colors.digupSoft,
         }
       },
     },

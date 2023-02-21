@@ -55,6 +55,7 @@ import { MobileHeader } from "./mobile/MobileHeader";
 import { Marker } from "./Marker";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { colors } from "../utils/colors";
+import { Modal } from "@bratislava/react-maps-ui";
 
 // const REPAIRS_POINTS_URLS = [REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL];
 
@@ -63,6 +64,20 @@ import { colors } from "../utils/colors";
 //   REPAIRS_2022_RECONSTRUCTION_DESIGN_POLYGONS_URL,
 //   REPAIRS_2022_POLYGONS_URL,
 // ];
+
+export interface ITooltip {
+  name: string;
+  title: string;
+  description: string;
+}
+
+export const tooltips: Array<ITooltip> = [
+  {
+    name: 'state',
+    title: '',
+    description: 'Stav plánované zobrazuje body, ktorých dátum začiatku realizácie je neskôr ako aktuálny čas. Stav aktuálne zobrazuje body, ktorých začiatok je skôr a zároveň koniec neskôr ako aktuálny čas.'
+  }
+]
 
 export const App = () => {
   const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
@@ -97,18 +112,18 @@ export const App = () => {
       // rawRepairsPointsData &&
       // rawRepairsPolygonsData
     ) {
-      const { 
-        markersData, 
-        // repairsPolygonsData, 
-        uniqueDistricts, 
-        uniqueLayers, 
-        uniqueTypes } =
-        processData({
-          rawDisordersData,
-          rawDigupsAndClosuresData,
-          // rawRepairsPointsData,
-          // rawRepairsPolygonsData,
-        });
+      const {
+        markersData,
+        // repairsPolygonsData,
+        uniqueDistricts,
+        uniqueLayers,
+        uniqueTypes,
+      } = processData({
+        rawDisordersData,
+        rawDigupsAndClosuresData,
+        // rawRepairsPointsData,
+        // rawRepairsPolygonsData,
+      });
 
       setMarkersData(markersData);
       // setRepairsPolygonsData(repairsPolygonsData);
@@ -120,11 +135,12 @@ export const App = () => {
       setLoading(false);
     }
   }, [
-    rawDisordersData, 
-    rawDigupsAndClosuresData, 
-    // rawRepairsPointsData, 
-    // rawRepairsPolygonsData, 
-    t]);
+    rawDisordersData,
+    rawDigupsAndClosuresData,
+    // rawRepairsPointsData,
+    // rawRepairsPolygonsData,
+    t,
+  ]);
 
   const [isSidebarVisible, setSidebarVisible] = useState(true);
 
@@ -133,6 +149,17 @@ export const App = () => {
   const [isMobile, setMobile] = useState<boolean>(false);
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
+
+  const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
+  const [activeTooltip, setActiveTooltip] = useState<ITooltip | null>(null);
+  const closeTooltipModal = () => setTooltipModalOpen(false);
+
+  const modalHandler = (tooltip: ITooltip | null) => {
+    setActiveTooltip(tooltip);
+    (tooltip && isMobile) && setTooltipModalOpen(true);
+    
+    !tooltip && setTooltipModalOpen(false);
+  }
 
   // close sidebar on mobile and open on desktop
   useEffect(() => {
@@ -144,6 +171,8 @@ export const App = () => {
     if (previousMobile == false && isMobile) {
       setSidebarVisible(false);
     }
+
+    modalHandler(null);
   }, [isMobile, previousMobile]);
 
   const closeDetail = () => {
@@ -164,12 +193,12 @@ export const App = () => {
       lat: 48.16290360284438,
       lng: 17.125377342563297,
     },
-  }
+  };
 
   const mapStyles = {
     light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
     dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-  }
+  };
 
   const selectedFeatures = useMemo(() => {
     return selectedFeature ? [selectedFeature] : [];
@@ -318,7 +347,6 @@ export const App = () => {
     ],
   });
 
-
   const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
   const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
 
@@ -332,7 +360,7 @@ export const App = () => {
     combinedFilter.reset();
     setDateStart(undefined);
     setDateEnd(undefined);
-  }
+  };
 
   return isLoading ? null : (
     <Map
@@ -363,7 +391,7 @@ export const App = () => {
           },
           {
             name: "geoportal",
-            link: "https://geoportal.bratislava.sk/pfa/apps/sites/#/verejny-mapovy-portal",
+            link: "https://nest-proxy.bratislava.sk/geoportal/pfa/apps/sites/#/verejny-mapovy-portal",
             image: "logos/geoportal.png",
           },
         ],
@@ -482,7 +510,16 @@ export const App = () => {
         dateEnd={dateEnd}
         onDateStartChange={setDateStart}
         onDateEndChange={setDateEnd}
+        modalHandler={modalHandler}
       />
+
+      <Modal
+        overlayClassName="max-w-lg"
+        isOpen={isTooltipModalOpen && !!activeTooltip}
+        title={activeTooltip?.title}
+        description={activeTooltip?.description}
+        onClose={closeTooltipModal}
+      ></Modal>
     </Map>
   );
 };

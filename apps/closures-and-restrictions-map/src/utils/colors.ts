@@ -5,6 +5,9 @@ export const colors = {
     purple: "#D753F8",
     white: "#ffffff",
     closuresColor: "#005F88",
+    closuresSoft: "#acc4ce",
     disorderColor: "#30449A",
-    digupColor: "#00345E"
+    disorderSoft: "#b8bdd2",
+    digupColor: "#00345E",
+    digupSoft: "#8097a9"
 };

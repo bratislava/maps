@@ -5,6 +5,7 @@ import cx from "classnames";
 import { ReactNode, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { capitalizeFirstLetter } from "../../../planting-map/src/utils/utils";
+import { ITooltip } from "./App";
 import { Icon } from "./Icon";
 
 export interface ILayerCategory {
@@ -16,17 +17,10 @@ export interface ILayerCategory {
 export interface ILayerProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter: IFilterResult<any>;
-  tooltips?: {
-    [index: string]: string;
-  };
-  isMobile: boolean;
 }
 
-export const Layers = ({ filter, tooltips, isMobile }: ILayerProps) => {
+export const Layers = ({ filter }: ILayerProps) => {
   const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
-
-  const [currentTooltipType, setCurrentTooltipType] = useState<string | null>(null);
-  const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
 
   const layers: Array<ILayerCategory> = [
     {
@@ -51,20 +45,6 @@ export const Layers = ({ filter, tooltips, isMobile }: ILayerProps) => {
     // },
   ];
 
-  const openTooltipModal = useCallback(
-    (type: string) => {
-      if (isMobile && tooltips && tooltips[type]) {
-        setCurrentTooltipType(type);
-        setTooltipModalOpen(true);
-      }
-    },
-    [tooltips, isMobile],
-  );
-
-  const closeTooltipModal = useCallback(() => {
-    setTooltipModalOpen(false);
-  }, []);
-
   return (
     <div className="flex flex-col w-full">
       <Accordion type="multiple">
@@ -87,28 +67,6 @@ export const Layers = ({ filter, tooltips, isMobile }: ILayerProps) => {
                 <div className="flex items-center py-2 gap-2">
                   <div>{icon}</div>
                   <div>{label}</div>
-                  {tooltips && subLayers.length == 1 && (
-                    <Popover
-                      button={() => (
-                        <div
-                          className="pt-[1px]"
-                          onClick={() => {
-                            openTooltipModal(subLayers[0]);
-                          }}
-                        >
-                          <Information className="text-primary mt-[4px]" size="sm" />
-                        </div>
-                      )}
-                      panel={
-                        <div className="flex flex-col gap-2">
-                          <div className="text-md font-semibold">
-                            {capitalizeFirstLetter(subLayers[0])}
-                          </div>
-                          <div className="">{capitalizeFirstLetter(tooltips[subLayers[0]])}</div>
-                        </div>
-                      }
-                    />
-                  )}
                 </div>
               }
               rightSlot={
@@ -133,43 +91,6 @@ export const Layers = ({ filter, tooltips, isMobile }: ILayerProps) => {
                       label={
                         <div className="flex items-center gap-2">
                           <span className="pb-[2px]">{type}</span>
-                          {tooltips && (
-                            <>
-                              {tooltips[type] ? (
-                                <Popover
-                                  button={() => (
-                                    <div
-                                      className="pt-[1px]"
-                                      onClick={() => {
-                                        openTooltipModal(type);
-                                      }}
-                                    >
-                                      <Information className="text-primary mt-[6px]" size="sm" />
-                                    </div>
-                                  )}
-                                  panel={
-                                    <div className="flex flex-col gap-2">
-                                      <div className="text-md font-semibold">
-                                        {capitalizeFirstLetter(type)}
-                                      </div>
-                                      <div className="">
-                                        {capitalizeFirstLetter(tooltips[type])}
-                                      </div>
-                                    </div>
-                                  }
-                                />
-                              ) : (
-                                <div
-                                  className="pt-[1px]"
-                                  onClick={() => {
-                                    openTooltipModal(type);
-                                  }}
-                                >
-                                  <Information className="text-primary mt-[2px]" size="sm" />
-                                </div>
-                              )}
-                            </>
-                          )}
                         </div>
                       }
                       checked={filter.areKeysActive(type)}
@@ -183,13 +104,6 @@ export const Layers = ({ filter, tooltips, isMobile }: ILayerProps) => {
         })}
       </Accordion>
 
-      <Modal
-        overlayClassName="max-w-lg"
-        isOpen={isTooltipModalOpen}
-        title={capitalizeFirstLetter(currentTooltipType ?? "")}
-        description={tooltips && capitalizeFirstLetter(tooltips[currentTooltipType ?? ""] ?? "")}
-        onClose={closeTooltipModal}
-      ></Modal>
     </div>
   );
 };
