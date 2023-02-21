@@ -61,7 +61,7 @@ export const Select = ({
                     noBorder,
                   "bg-opacity-0 dark:bg-opacity-0": noBorder && !open,
                   "bg-opacity-10 dark:bg-opacity-10": noBorder && open,
-                  "bg-background-light dark:bg-background-dark border-2 rounded-lg":
+                  "bg-background-light dark:bg-background-dark border-[1px] rounded-lg":
                     !noBorder,
                   "border-primary": open,
                   "border-gray-lightmode dark:border-gray-darkmode border-opacity-10 dark:border-opacity-20 group-focus:border-primary group-focus:border-opacity-100":
