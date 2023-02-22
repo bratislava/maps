@@ -100,7 +100,14 @@ export const Cluster = ({
       setClusters(newClusters);
     };
 
+    // Do not remove this recalculation block, it recalculates features by Map moving and filtering and scrolling
+    recalculate();
+    const timer = setTimeout(recalculate, 10);
     map?.on('move', recalculate);
+    return () => {
+      map?.off('move', recalculate);
+      clearTimeout(timer);
+    };
   }, [map, isFeatureVisible, pointFeatures, radius]);
 
   return <>{clusters.map((cluster) => children(cluster))}</>;
