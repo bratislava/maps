@@ -100,7 +100,13 @@ export const Cluster = ({
       setClusters(newClusters);
     };
 
+    recalculate();
+    const timer = setTimeout(recalculate, 10);
     map?.on('move', recalculate);
+    return () => {
+      map?.off('move', recalculate);
+      clearTimeout(timer);
+    };
   }, [map, isFeatureVisible, pointFeatures, radius]);
 
   return <>{clusters.map((cluster) => children(cluster))}</>;
