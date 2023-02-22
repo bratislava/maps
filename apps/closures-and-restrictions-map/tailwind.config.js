@@ -11,6 +11,8 @@ export default {
   theme: {
     extend: {
       colors: {
+        headers: "#1F1F1F",
+        text: "#333333",
         primary: {
           DEFAULT: colors.defaultBlue,
           soft: colors.lightBlue,

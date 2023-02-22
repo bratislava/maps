@@ -51,7 +51,7 @@ export const ComboBox = <T extends IOption>({
       <Combobox value={selectedOption} onChange={handleChange}>
         <div className="relative">
           <Combobox.Input
-            className="w-full bg-background-lightmode dark:bg-background-darkmode placeholder:text-foreground-lightmode placeholder:dark:text-foreground-darkmode border-2 font-medium placeholder:font-medium border-gray-lightmode dark:border-gray-darkmode border-opacity-10 dark:border-opacity-20 h-12 rounded-lg px-3 outline-none focus:border-primary focus:border-opacity-100 focus:dark:border-primary transition-all"
+            className="w-full bg-background-lightmode dark:bg-background-darkmode placeholder:text-foreground-lightmode placeholder:dark:text-foreground-darkmode border-[1px] font-medium placeholder:font-medium border-gray-lightmode dark:border-gray-darkmode border-opacity-10 dark:border-opacity-20 h-12 rounded-lg px-3 outline-none focus:border-primary focus:border-opacity-100 focus:dark:border-primary transition-all"
             value={searchQuery}
             onChange={(event) => onSearchQueryChange(event.target.value)}
             displayValue={(option: T | null) => option?.title ?? ""}

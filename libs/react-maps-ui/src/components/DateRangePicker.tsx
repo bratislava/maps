@@ -50,7 +50,7 @@ const DateRangePicker = (props: DateRangePickerProps) => {
         <div
           {...groupProps}
           ref={ref}
-          className="flex items-center w-full bg-background-lightmode dark:bg-background-darkmode placeholder:text-foreground-lightmode placeholder:dark:text-foreground-darkmode border-2 font-medium placeholder:font-medium border-gray-lightmode dark:border-gray-darkmode border-opacity-10 dark:border-opacity-20 h-12 rounded-lg px-5 outline-none focus:border-primary focus:border-opacity-100 focus:dark:border-primary transition-all justify-between"
+          className="flex items-center w-full bg-background-lightmode dark:bg-background-darkmode placeholder:text-foreground-lightmode placeholder:dark:text-foreground-darkmode border-[1px] font-medium placeholder:font-medium border-gray-lightmode dark:border-gray-darkmode border-opacity-10 dark:border-opacity-20 h-12 rounded-lg px-5 outline-none focus:border-primary focus:border-opacity-100 focus:dark:border-primary transition-all justify-between"
           aria-label="Date picker"
         >
           <div className="flex">
@@ -72,17 +72,13 @@ const DateRangePicker = (props: DateRangePickerProps) => {
               </div>
             )}
             <Button {...buttonProps}>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M19 3H18V1H16V3H8V1H6V3H5C3.895 3 3.01 3.895 3.01 5L3 19C3 20.105 3.895 21 5 21H19C20.105 21 21 20.105 21 19V5C21 3.895 20.105 3 19 3ZM19 19H5V8H19V19ZM7 10H12V15H7V10Z"
-                  fill="currentColor"
-                />
+              <svg 
+                width="20" 
+                height="22" 
+                viewBox="0 0 20 22" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M15.8889 2.85014V0.890137H14.3889V2.85014H5.60891V0.890137H4.10891V2.85014H0.128906V21.2401H14.1589L19.8589 15.5401V2.85014H15.8789H15.8889ZM4.10891 4.35014V5.64014H5.60891V4.35014H14.3889V5.64014H15.8889V4.35014H18.3689V7.22014H1.62891V4.35014H4.10891ZM1.62891 8.72014H18.3589V13.3401H11.9589V19.7401H1.62891V8.72014ZM13.5389 19.7401H13.4689V14.8401H18.3689V14.9101L13.5389 19.7401Z" fill="#333333" />
               </svg>
             </Button>
           </div>

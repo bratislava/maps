@@ -79,7 +79,7 @@ export const Filters = ({
         <div className="flex justify-between px-6 items-center">
           <div className="flex gap-2 items-center">
             {isMobile && <Funnel />}
-            <h2 className="font-semibold text-md py-1">{t("filters.title")}</h2>
+            <h2 className="font-semibold text-md py-1 text-headers">{t("filters.title")}</h2>
           </div>
           {!areFiltersDefault && (
             <button
@@ -180,7 +180,7 @@ export const Filters = ({
 
       <Divider className="mx-6" />
 
-      <h2 className="font-semibold px-6 text-md">{t("layers.title")}</h2>
+      <h2 className="font-semibold px-6 text-md text-headers">{t("layers.title")}</h2>
 
       <Layers filter={layerFilter} />
     </>
