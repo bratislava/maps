@@ -82,7 +82,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ feature }) => {
             <div><p>{infoForResidents}</p></div>
             <Row label={t("address")} text={address} />
             <a
-                href={t("reportProblemLink")}
+                href={""}
                 target="_blank"
                 className="underline flex gap-2 items-center"
                 rel="noreferrer"
