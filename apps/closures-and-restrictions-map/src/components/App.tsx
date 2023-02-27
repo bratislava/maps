@@ -326,27 +326,6 @@ export const App = () => {
     return combinedFilter.expression;
   }, [combinedFilter.expression, dateFilterExpression]);
 
-  const combinedFilterWithoutStatus = useCombinedFilter({
-    combiner: "all",
-    filters: [
-      {
-        filter: districtFilter,
-        mapToActive: (activeDistricts) => ({
-          title: t("filters.district.title"),
-          items: activeDistricts,
-        }),
-      },
-      {
-        onlyInExpression: true,
-        filter: layerfilter,
-        mapToActive: (activeLayers) => ({
-          title: t("layers"),
-          items: activeLayers.map((l) => t(`layers.${l}.title`)),
-        }),
-      },
-    ],
-  });
-
   const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
   const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
 

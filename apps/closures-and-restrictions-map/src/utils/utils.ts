@@ -10,6 +10,29 @@ export interface IProcessDataProps {
   // rawRepairsPolygonsData: FeatureCollection;
 }
 
+export type TLayer = 'disorders' | 'closures' | 'digups';
+export type TIcon = 'disorder' | 'closure' | 'digup';
+export type TStatus = 'planned' | 'active' | 'done';
+
+export interface IFeatureProps {
+    objectId?: number;
+    subject: string | null;
+    type: Array<string>;
+    address: string | null;
+    startTimestamp: number | null;
+    endTimestamp: number | null;
+    length: number | null;
+    width: number | null;
+    fullSize: number | null;
+    investor: string | null;
+    contractor: string | null;
+    layer: TLayer;
+    icon: TIcon;
+    infoForResidents?: string | null;
+    status: TStatus;
+    originalProperties: any;
+}
+
 const currentTimestamp = Date.now();
 
 const parseSlovakTypeToKey = (slovakType: string) => {
@@ -30,43 +53,50 @@ export const processData = ({
   // rawRepairsPointsData,
   // rawRepairsPolygonsData,
 }: IProcessDataProps) => {
+
   let GLOBAL_ID = 0;
+
+  const setStatus = (startTimestamp: number, endTimestamp: number): TStatus  => {
+    return startTimestamp > currentTimestamp
+    ? "planned"
+    : startTimestamp < currentTimestamp && endTimestamp > currentTimestamp
+    ? "active"
+    : "done";
+  }
+
+  const setCommonFeatureProps = (feature: Feature): Omit<IFeatureProps, 'layer' | 'icon'> => {
+    const originalProperties = {...feature.properties};
+    const startTimestamp = originalProperties?.d_tum_vzniku_poruchy || 0;
+    const endTimestamp = originalProperties?.term_n_fin_lnej_pravy_povrchu || 0;
+
+    return {
+      originalProperties,
+      startTimestamp,
+      endTimestamp,
+      status: setStatus(startTimestamp, endTimestamp),
+      type: parseSlovakTypeToKey(originalProperties?.druh_vedenia).split(","),
+      subject: originalProperties?.predmet_iadosti,
+      address: originalProperties?.adresa,
+      fullSize: originalProperties?.rozmery_vykopu,
+      width: originalProperties?._rka_v_kopu_m,
+      length: originalProperties?.velkost_vykopu,
+      investor: originalProperties?.investor,
+      contractor: originalProperties?.zhotovite_
+    }
+  }
 
   const disordersData: FeatureCollection = addDistrictPropertyToLayer({
     ...rawDisordersData,
     features: rawDisordersData.features.map((feature) => {
       GLOBAL_ID++;
-      const originalProperties = feature.properties;
-
-      const startTimestamp = parseInt(originalProperties?.["d_tum_vzniku_poruchy"] ?? "0");
-      const endTimestamp = parseInt(originalProperties?.["term_n_fin_lnej_pravy_povrchu"] ?? "0");
-
-      const subject = originalProperties?.predmet_iadosti;
-      const type = parseSlovakTypeToKey(originalProperties?.druh_vedenia);
-      const address = originalProperties?.adresa;
-      const fullSize = originalProperties?.rozmery_vykopu;
-      const width = originalProperties?._rka_v_kopu_m;
-      const length = originalProperties?.velkost_vykopu;
-      const investor = originalProperties?.investor;
-      const contractor = originalProperties?.zhotovite_;
 
       return {
         ...feature,
         id: GLOBAL_ID,
         properties: {
-          originalProperties,
+          ...setCommonFeatureProps(feature),
           layer: "disorders",
           icon: "disorder",
-          type,
-          subject,
-          address,
-          startTimestamp,
-          endTimestamp,
-          fullSize,
-          width,
-          length,
-          investor,
-          contractor,
         },
       } as Feature;
     }),
@@ -85,44 +115,15 @@ export const processData = ({
 
       const icon = layer == "closures" ? "closure" : "digup";
 
-      const startTimestamp = parseInt(originalProperties?.["d_tum_vzniku_poruchy"] ?? "0");
-      const endTimestamp = parseInt(originalProperties?.["term_n_fin_lnej_pravy_povrchu"] ?? "0");
-      const status =
-        startTimestamp > currentTimestamp
-          ? "planned"
-          : startTimestamp < currentTimestamp && endTimestamp > currentTimestamp
-          ? "active"
-          : "done";
-
-      const subject = originalProperties?.predmet_iadosti;
-      const type = parseSlovakTypeToKey(originalProperties?.druh_vedenia).split(",");
-      const address = originalProperties?.adresa;
-      const fullSize = originalProperties?.rozmery_vykopu;
-      const width = originalProperties?._rka_v_kopu_m;
-      const length = originalProperties?.velkost_vykopu;
-      const investor = originalProperties?.investor;
-      const contractor = originalProperties?.zhotovite_;
-      const objectId = originalProperties?.objectid;
-
       return {
         ...feature,
         id: GLOBAL_ID,
         properties: {
-          originalProperties,
-          type,
+          ...setCommonFeatureProps(feature),
           layer,
-          subject,
-          address,
-          startTimestamp,
-          endTimestamp,
-          fullSize,
-          width,
           icon,
-          length,
-          objectId,
-          status,
-          investor,
-          contractor,
+          objectId: originalProperties?.objectid,
+          infoForResidents: originalProperties?.inform_cie_pre_obyvate_ov,
         },
       } as Feature;
     }),
