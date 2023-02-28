@@ -150,6 +150,9 @@ export const App = () => {
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
 
+  const [frameState, setFrameState] = useState<boolean>(false);
+  const [frameStateSideBar, setFrameStateSideBar] = useState<boolean>(isSidebarVisible);
+
   const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
   const [activeTooltip, setActiveTooltip] = useState<ITooltip | null>(null);
   const closeTooltipModal = () => setTooltipModalOpen(false);
@@ -172,6 +175,8 @@ export const App = () => {
       setSidebarVisible(false);
     }
 
+    (window === window.parent || isMobile) ? setFrameState(false) : setFrameState(true);
+
     modalHandler(null);
   }, [isMobile, previousMobile]);
 
@@ -179,6 +184,18 @@ export const App = () => {
     setSelectedFeature(null);
     setSelectedMarker(null);
   };
+
+  useEffect(() => {
+    if(!frameState) return;
+
+    if(selectedMarker) {
+      setFrameStateSideBar(isSidebarVisible)
+      setSidebarVisible(false);
+    }
+    else{
+      setSidebarVisible(frameStateSideBar);
+    }
+  }, [frameState, selectedMarker])
 
   // close detailbox when sidebar is opened on mobile
   useEffect(() => {
