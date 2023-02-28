@@ -13,11 +13,12 @@ import { ReactComponent as GoogleStreet } from "../../assets/icons/googlestreetv
 import type { IFeatureProps } from '../../utils/utils';
 
 interface IDetail {
-    feature?: IFeatureProps;
+    featureProps?: IFeatureProps;
+    streetViewUrl: string;
 }
 
-export const DynamicDetail: React.FC<IDetail> = ({ feature }) => {
-    if (!feature) return null;
+export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl }) => {
+    if (!featureProps) return null;
 
     const {
         objectId,
@@ -33,7 +34,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ feature }) => {
         length,
         width,
         layer
-    } = feature;
+    } = featureProps;
 
     const {
         t,
@@ -44,7 +45,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ feature }) => {
     });
 
     const { t: mainT }: { t: (key: string) => string } = useTranslation();
-    
+
     const { data: attachments } = useArcgisAttachments(DIGUPS_URL, objectId || 0);
 
     const displayLocaleDate = (timeStamp: number | null): string | null => {
@@ -81,14 +82,16 @@ export const DynamicDetail: React.FC<IDetail> = ({ feature }) => {
             <DetailValue>{subject}</DetailValue>
             <div><p>{infoForResidents}</p></div>
             <Row label={t("address")} text={address} />
-            <a
-                href={""}
-                target="_blank"
-                className="underline flex gap-2 items-center"
-                rel="noreferrer"
-            >
-                Google Street View <GoogleStreet width={18} height={13} />
-            </a>
+            {streetViewUrl &&
+                <a
+                    href={streetViewUrl}
+                    target="_blank"
+                    className="underline flex gap-2 items-center"
+                    rel="noreferrer"
+                >
+                    Google Street View <GoogleStreet width={18} height={13} />
+                </a>
+            }
             <Row
                 label={t("category")}
                 tags={type?.map((type) => mainT(`filters.type.types.${type}`)) ?? []}
