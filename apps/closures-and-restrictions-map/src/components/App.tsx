@@ -1,10 +1,10 @@
+import { DateValue } from "@react-types/calendar";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import "../styles.css";
 import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
-import { DateValue } from "@react-types/calendar";
+import "../styles.css";
 
 // NOTE: "Repair layers was removed by comments in Commit "Repair Layesrs Removed" at 7.2.2023
 // TODO: if you need to return those Layers just revert changes/or uncomment them"
@@ -16,7 +16,7 @@ import {
   IFilterResult,
   Layer,
   useCombinedFilter,
-  useFilter,
+  useFilter
 } from "@bratislava/react-mapbox";
 import {
   Layout,
@@ -25,7 +25,7 @@ import {
   SearchBar,
   Slot,
   ThemeController,
-  ViewportController,
+  ViewportController
 } from "@bratislava/react-maps";
 import { useArcgis } from "@bratislava/react-use-arcgis";
 import { MapboxGeoJSONFeature } from "mapbox-gl";
@@ -41,21 +41,17 @@ import { usePrevious } from "@bratislava/utils";
 import { Feature, FeatureCollection, Point } from "geojson";
 import {
   DIGUPS_URL,
-  DISORDERS_URL,
-  // REPAIRS_2022_ODP_POLYGONS_URL,
-  // REPAIRS_2022_POLYGONS_URL,
-  // REPAIRS_2022_RECONSTRUCTION_DESIGN_POLYGONS_URL,
-  // REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL,
+  DISORDERS_URL
 } from "../utils/urls";
 import { processData } from "../utils/utils";
 import Detail from "./Detail";
 import { Filters } from "./Filters";
 import { MobileHeader } from "./mobile/MobileHeader";
 
-import { Marker } from "./Marker";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
-import { colors } from "../utils/colors";
 import { Modal } from "@bratislava/react-maps-ui";
+import { colors } from "../utils/colors";
+import { Marker } from "./Marker";
 
 // const REPAIRS_POINTS_URLS = [REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL];
 
@@ -157,7 +153,7 @@ export const App = () => {
   const modalHandler = (tooltip: ITooltip | null) => {
     setActiveTooltip(tooltip);
     (tooltip && isMobile) && setTooltipModalOpen(true);
-    
+
     !tooltip && setTooltipModalOpen(false);
   }
 

@@ -15,22 +15,23 @@ export type TIcon = 'disorder' | 'closure' | 'digup';
 export type TStatus = 'planned' | 'active' | 'done';
 
 export interface IFeatureProps {
-    objectId?: number;
-    subject: string | null;
-    type: Array<string>;
-    address: string | null;
-    startTimestamp: number | null;
-    endTimestamp: number | null;
-    length: number | null;
-    width: number | null;
-    fullSize: number | null;
-    investor: string | null;
-    contractor: string | null;
-    layer: TLayer;
-    icon: TIcon;
-    infoForResidents?: string | null;
-    status: TStatus;
-    originalProperties: any;
+  objectId?: number;
+  subject: string | null;
+  type: Array<string>;
+  address: string | null;
+  startTimestamp: number | null;
+  endTimestamp: number | null;
+  length: number | null;
+  width: number | null;
+  fullSize: number | null;
+  investor: string | null;
+  contractor: string | null;
+  layer: TLayer;
+  icon: TIcon;
+  infoForResidents?: string | null;
+  status: TStatus;
+  imageUrl?: string;
+  originalProperties: any;
 }
 
 const currentTimestamp = Date.now();
@@ -56,16 +57,16 @@ export const processData = ({
 
   let GLOBAL_ID = 0;
 
-  const setStatus = (startTimestamp: number, endTimestamp: number): TStatus  => {
+  const setStatus = (startTimestamp: number, endTimestamp: number): TStatus => {
     return startTimestamp > currentTimestamp
-    ? "planned"
-    : startTimestamp < currentTimestamp && endTimestamp > currentTimestamp
-    ? "active"
-    : "done";
+      ? "planned"
+      : startTimestamp < currentTimestamp && endTimestamp > currentTimestamp
+        ? "active"
+        : "done";
   }
 
   const setCommonFeatureProps = (feature: Feature): Omit<IFeatureProps, 'layer' | 'icon'> => {
-    const originalProperties = {...feature.properties};
+    const originalProperties = { ...feature.properties };
     const startTimestamp = originalProperties?.d_tum_vzniku_poruchy || 0;
     const endTimestamp = originalProperties?.term_n_fin_lnej_pravy_povrchu || 0;
 
@@ -109,7 +110,7 @@ export const processData = ({
       const originalProperties = feature.properties;
       const layer =
         originalProperties?.["uz_vierka"] === "čiastočná" ||
-        originalProperties?.["uz_vierka"] === "úplná"
+          originalProperties?.["uz_vierka"] === "úplná"
           ? "closures"
           : "digups";
 

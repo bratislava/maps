@@ -1,14 +1,14 @@
-import { forwardRef } from "react";
+import { Detail as MapDetail } from "@bratislava/react-maps";
+import { GeoJsonProperties, Geometry } from "@bratislava/utils/src/types";
 import { Feature } from "geojson";
+import { forwardRef } from "react";
+import type { IFeatureProps } from "../../utils/utils";
+import { DynamicDetail } from "./DynamicDetail";
 export interface DetailProps {
   isMobile: boolean;
   feature: Feature | null;
   onClose: () => void;
 }
-import { Detail as MapDetail } from "@bratislava/react-maps";
-import { DynamicDetail } from "./DynamicDetail";
-import type { IFeatureProps } from "../../utils/utils";
-import { GeoJsonProperties, Geometry } from "@bratislava/utils/src/types";
 
 
 export const Detail = forwardRef<HTMLDivElement, DetailProps>(
@@ -28,10 +28,13 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
         bottomSheetInitialSnap={1}
       >
         <div ref={forwardedRef} className="px-6 py-4">
-          <DynamicDetail
-            featureProps={feature?.properties as IFeatureProps}
-            streetViewUrl={getStreetViewUrl(feature)}
-          />
+          {feature?.properties &&
+            < DynamicDetail
+              featureProps={feature.properties as IFeatureProps}
+              streetViewUrl={getStreetViewUrl(feature)}
+            />
+          }
+
         </div>
       </MapDetail>
     );
