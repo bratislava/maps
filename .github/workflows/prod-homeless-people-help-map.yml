@@ -15,6 +15,7 @@ jobs:
       - run: yarn workspace @bratislava/homeless-people-help-map build 
       - uses: lovellfelix/minio-deploy-action@v1
         with:
+          node-version: 16.x
           endpoint: ${{ secrets.MINIO_ENDPOINT }}
           access_key: ${{ secrets.MINIO_ACCESS_KEY }}
           secret_key: ${{ secrets.MINIO_SECRET_KEY }}
