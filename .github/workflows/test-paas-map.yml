@@ -1,14 +1,15 @@
-# check out README for the reason behind splitting the builds by app names
-name: Build apps with names form K to Z
+name: Deploy staging paas-map
+
 on: [pull_request]
 jobs:
-  Build:
+  Deploy:
+    name: Deploy staging paas-map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
-          cache: 'yarn'
+          cache: "yarn"
       - run: yarn install --frozen-lockfile
-      - run: yarn build:k-z
+      - run: yarn workspace @bratislava/paas-map build

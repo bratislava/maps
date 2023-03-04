@@ -1,14 +1,15 @@
-# check out README for the reason behind splitting the builds by app names
-name: Build apps with names form A to J
+name: Deploy staging sport-grounds-map
+
 on: [pull_request]
 jobs:
-  Build:
+  Deploy:
+    name: Deploy staging sport-grounds-map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
-          cache: 'yarn'
+          cache: "yarn"
       - run: yarn install --frozen-lockfile
-      - run: yarn build:a-j
+      - run: yarn workspace @bratislava/sport-grounds-map build
