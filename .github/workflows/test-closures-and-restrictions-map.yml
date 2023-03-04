@@ -1,5 +1,6 @@
 name: Deploy staging closures-and-restrictions
 
+on: [pull_request]
 jobs:
   Deploy:
     name: Deploy staging closures-and-restrictions-map
@@ -12,10 +13,3 @@ jobs:
           cache: "yarn"
       - run: yarn install --frozen-lockfile
       - run: yarn workspace @bratislava/closures-and-restrictions-map build
-      - uses: lovellfelix/minio-deploy-action@v1
-          endpoint: ${{ secrets.MINIO_ENDPOINT }}
-          access_key: ${{ secrets.MINIO_ACCESS_KEY }}
-          secret_key: ${{ secrets.MINIO_SECRET_KEY }}
-          bucket: "static-pages"
-          source_dir: "apps/closures-and-restrictions-map/dist"
-          target_dir: "/dev/closures-and-restrictions-map"
