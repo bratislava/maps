@@ -3,7 +3,7 @@ name: Deploy prod cvicko-map
 on:
   push:
     tags:
-      - 'prod-cvicko-map-v*'
+      - "prod-cvicko-map-v*"
 
 jobs:
   Deploy:
@@ -21,6 +21,6 @@ jobs:
           endpoint: ${{ secrets.MINIO_ENDPOINT }}
           access_key: ${{ secrets.MINIO_ACCESS_KEY }}
           secret_key: ${{ secrets.MINIO_SECRET_KEY }}
-          bucket: 'static-pages'
-          source_dir: 'apps/cvicko-map/dist'
-          target_dir: '/cvicko-map'
+          bucket: "static-pages"
+          source_dir: "apps/cvicko-map/dist"
+          target_dir: "/cvicko-map"

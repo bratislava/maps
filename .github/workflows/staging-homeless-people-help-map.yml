@@ -20,6 +20,6 @@ jobs:
           endpoint: ${{ secrets.MINIO_ENDPOINT }}
           access_key: ${{ secrets.MINIO_ACCESS_KEY }}
           secret_key: ${{ secrets.MINIO_SECRET_KEY }}
-          bucket: 'static-pages'
-          source_dir: 'apps/homeless-people-help-map/dist'
-          target_dir: '/dev/homeless-people-help-map'
+          bucket: "static-pages"
+          source_dir: "apps/homeless-people-help-map/dist"
+          target_dir: "/dev/homeless-people-help-map"

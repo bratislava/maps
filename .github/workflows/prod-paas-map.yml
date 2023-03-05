@@ -3,7 +3,7 @@ name: Deploy prod paas-map
 on:
   push:
     tags:
-      - 'prod-paas-map-v*'
+      - "prod-paas-map-v*"
 
 jobs:
   Deploy:
@@ -21,6 +21,6 @@ jobs:
           endpoint: ${{ secrets.MINIO_ENDPOINT }}
           access_key: ${{ secrets.MINIO_ACCESS_KEY }}
           secret_key: ${{ secrets.MINIO_SECRET_KEY }}
-          bucket: 'static-pages'
-          source_dir: 'apps/paas-map/dist'
-          target_dir: '/paas-map'
+          bucket: "static-pages"
+          source_dir: "apps/paas-map/dist"
+          target_dir: "/paas-map"
