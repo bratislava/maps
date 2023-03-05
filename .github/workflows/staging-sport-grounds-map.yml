@@ -15,8 +15,9 @@ jobs:
           node-version: 16.x
           cache: "yarn"
       - run: yarn install --frozen-lockfile
-      - run: yarn workspace @bratislava/sport-grounds-map build 
+      - run: yarn workspace @bratislava/sport-grounds-map build
       - uses: lovellfelix/minio-deploy-action@v1
+        with:
           endpoint: ${{ secrets.MINIO_ENDPOINT }}
           access_key: ${{ secrets.MINIO_ACCESS_KEY }}
           secret_key: ${{ secrets.MINIO_SECRET_KEY }}
