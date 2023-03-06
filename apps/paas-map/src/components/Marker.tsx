@@ -40,6 +40,7 @@ export const Marker = ({ features, lat, lng, onClick, isSelected }: IMarkerProps
   return feature ? (
     <MapMarker
       baseZoom={14}
+      scalePercentMultiplier={0.1}
       isRelativeToZoom
       ignoreFilters
       onClick={onClickHandler}
