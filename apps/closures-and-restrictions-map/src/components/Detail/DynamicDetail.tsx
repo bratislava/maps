@@ -1,24 +1,25 @@
-import { Note } from '@bratislava/react-maps-ui';
-import React from 'react'
-import { DetailValue } from './DetailValue';
-import { Row } from './Row';
-import { ReactComponent as HintIcon } from "../../assets/icons/hint.svg";
-import { useTranslation } from "react-i18next";
+import { ImageLightBox, Note } from '@bratislava/react-maps-ui';
 import { useArcgisAttachments } from '@bratislava/react-use-arcgis';
-import { DIGUPS_URL } from '../../utils/urls';
+import React, { useState } from 'react';
+import { useTranslation } from "react-i18next";
 import { ReactComponent as ClosureIcon } from "../../assets/icons/closure.svg";
 import { ReactComponent as DigupIcon } from "../../assets/icons/digup.svg";
 import { ReactComponent as DisorderIcon } from "../../assets/icons/disorder.svg";
 import { ReactComponent as GoogleStreet } from "../../assets/icons/googlestreetview.svg";
+import { ReactComponent as HintIcon } from "../../assets/icons/hint.svg";
+import { ReactComponent as ImageIcon } from "../../assets/icons/imageicon.svg";
+import { DIGUPS_URL, DISORDERS_URL } from '../../utils/urls';
 import type { IFeatureProps } from '../../utils/utils';
+import { DetailValue } from './DetailValue';
+import { Row } from './Row';
 
 interface IDetail {
-    featureProps?: IFeatureProps;
+    featureProps: IFeatureProps;
     streetViewUrl: string;
 }
 
 export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl }) => {
-    if (!featureProps) return null;
+    const [isModalOpen, setModalOpen] = useState(false);
 
     const {
         objectId,
@@ -33,7 +34,8 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl }
         contractor,
         length,
         width,
-        layer
+        layer,
+        originalProperties
     } = featureProps;
 
     const {
@@ -47,6 +49,25 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl }
     const { t: mainT }: { t: (key: string) => string } = useTranslation();
 
     const { data: attachments } = useArcgisAttachments(DIGUPS_URL, objectId || 0);
+
+    const { data: disordersAttachments } = useArcgisAttachments(
+        DISORDERS_URL,
+        objectId || originalProperties?.objectid || 0,
+    );
+
+    const getDisorderImgUrlList = (): Array<string> => {
+        const urlList: Array<string> = [];
+        if (!disordersAttachments || disordersAttachments.length < 1) return urlList;
+        const validAttachments = disordersAttachments.filter(a => a?.keywords === 'foto_havarie');
+
+        validAttachments.forEach(a => {
+            urlList.push(`${DISORDERS_URL}/${objectId || originalProperties?.objectid}/attachment/${a.id}`)
+        })
+
+        return urlList
+    }
+
+    const imageUrlList = layer === 'disorders' ? getDisorderImgUrlList() : [];
 
     const displayLocaleDate = (timeStamp: number | null): string | null => {
         if (!timeStamp) return null;
@@ -90,6 +111,15 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl }
                     rel="noreferrer"
                 >
                     Google Street View <GoogleStreet width={18} height={13} />
+                </a>
+            }
+            {imageUrlList.length > 0 &&
+                <a
+                    className="underline flex gap-2 items-center cursor-pointer"
+                    rel="noreferrer"
+                    onClick={() => setModalOpen(true)}
+                >
+                    {t("photosOfPlace")} <ImageIcon width={18} height={18} />
                 </a>
             }
             <Row
@@ -150,6 +180,15 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl }
                     {t("reportProblem")}
                 </a>
             </Note>
+
+            {imageUrlList.length > 0 &&
+                <ImageLightBox
+                    onClose={() => setModalOpen(false)}
+                    isOpen={isModalOpen}
+                    images={imageUrlList}
+                    initialImageIndex={0}
+                />
+            }
         </div>
     );
 }

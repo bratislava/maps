@@ -90,6 +90,7 @@ export default {
         contractor: "Zhotoviteľ",
         permission: "Povolenie",
         showDocument: "Zobraziť dokument",
+        photosOfPlace: "fotografie miesta",
         problemHint:
           "Nastal kvôli poruche nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",
