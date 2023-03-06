@@ -1,6 +1,6 @@
 export default {
-  title: "Mapa rozkopávok a uzávierok",
-  tabTitle: "Mapa rozkopávok a uzávierok v Bratislave",
+  title: "Mapa uzávierok a porúch",
+  tabTitle: "Mapa uzávierok a porúch v Bratislave",
   search: "Hľadať podľa ulice",
   close: "Zavrieť",
   filters: {
