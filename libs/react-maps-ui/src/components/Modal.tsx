@@ -67,7 +67,7 @@ export const Modal = ({
                 <div className="w-full min-h-screen flex items-center justify-center p-8">
                   <Dialog.Panel
                     className={cx(
-                      "relative",
+                      "",
                       {
                         "bg-background-lightmode dark:bg-background-darkmode rounded-xl flex flex-col p-8 gap-4":
                           !noOverlayStyles,
