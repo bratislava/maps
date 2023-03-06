@@ -346,7 +346,7 @@ export const App = () => {
       }}
     >
       <Filter expression={markerFilter.keepOnEmptyExpression}>
-        <Cluster features={markersData?.features ?? []} radius={28}>
+        <Cluster features={markersData?.features ?? []} radius={44}>
           {({ features, lng, lat, key, clusterExpansionZoom }) => (
             <Marker
               isSelected={features[0].id === selectedMarker?.id}

@@ -3,7 +3,7 @@ name: Deploy prod greenary-care-map
 on:
   push:
     tags:
-      - 'prod-greenary-care-map-v*'
+      - "prod-greenary-care-map-v*"
 
 jobs:
   Deploy:
@@ -11,13 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: "yarn"
       - run: yarn install --frozen-lockfile
-      - run: yarn workspace @bratislava/greenary-care-map build 
+      - run: yarn workspace @bratislava/greenary-care-map build
       - uses: lovellfelix/minio-deploy-action@v1
         with:
           endpoint: ${{ secrets.MINIO_ENDPOINT }}
           access_key: ${{ secrets.MINIO_ACCESS_KEY }}
           secret_key: ${{ secrets.MINIO_SECRET_KEY }}
-          bucket: 'static-pages'
-          source_dir: 'apps/greenary-care-map/dist'
-          target_dir: '/greenary-care-map'
+          bucket: "static-pages"
+          source_dir: "apps/greenary-care-map/dist"
+          target_dir: "/greenary-care-map"

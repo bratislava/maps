@@ -19,6 +19,7 @@ export interface IMarkerProps {
   feature: Feature<Point>;
   isRelativeToZoom?: boolean;
   baseZoom?: number; // scale will be 1 at this zoom
+  scalePercentMultiplier?: number; // scale will be 1 + (zoom - baseZoom) * scalePercentMultiplier
   className?: string;
   onClick?: (e: MouseEvent<HTMLDivElement>) => void;
   ignoreFilters?: boolean;
@@ -31,6 +32,7 @@ export const Marker = ({
   feature,
   isRelativeToZoom = false,
   baseZoom = 12,
+  scalePercentMultiplier = 0.25,
   className,
   onClick,
   ignoreFilters = false,
@@ -51,7 +53,7 @@ export const Marker = ({
   const recalculateScale = useCallback(() => {
     if (isRelativeToZoom) {
       const zoom = map?.getZoom() ?? 0;
-      const scalePercent = 1 + (zoom - baseZoom) * 0.25;
+      const scalePercent = 1 + (zoom - baseZoom) * scalePercentMultiplier;
       setScale(Math.max(scalePercent, 0));
     } else {
       setScale(1);
