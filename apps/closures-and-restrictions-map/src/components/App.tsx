@@ -147,16 +147,19 @@ export const App = () => {
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
 
+  const [frameState, setFrameState] = useState<boolean>(false);
+  const [frameStateSideBar, setFrameStateSideBar] = useState<boolean>(isSidebarVisible);
+
   const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
   const [activeTooltip, setActiveTooltip] = useState<ITooltip | null>(null);
   const closeTooltipModal = () => setTooltipModalOpen(false);
 
-  const modalHandler = (tooltip: ITooltip | null) => {
+  const modalHandler = useCallback((tooltip: ITooltip | null) => {
     setActiveTooltip(tooltip);
-    tooltip && isMobile && setTooltipModalOpen(true);
+    (tooltip && isMobile) && setTooltipModalOpen(true);
 
     !tooltip && setTooltipModalOpen(false);
-  };
+  }, [isMobile])
 
   // close sidebar on mobile and open on desktop
   useEffect(() => {
@@ -169,13 +172,27 @@ export const App = () => {
       setSidebarVisible(false);
     }
 
-    modalHandler(null);
-  }, [isMobile, previousMobile]);
+    (window === window.parent || isMobile) ? setFrameState(false) : setFrameState(true);
 
-  const closeDetail = () => {
+    modalHandler(null);
+  }, [isMobile, previousMobile, modalHandler]);
+
+  const closeDetail = useCallback(() => {
     setSelectedFeature(null);
     setSelectedMarker(null);
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!frameState) return;
+
+    if (selectedMarker) {
+      setFrameStateSideBar(isSidebarVisible)
+      setSidebarVisible(false);
+    }
+    else {
+      setSidebarVisible(frameStateSideBar);
+    }
+  }, [frameState, selectedMarker, frameStateSideBar, isSidebarVisible])
 
   // close detailbox when sidebar is opened on mobile
   useEffect(() => {
