@@ -56,9 +56,9 @@ export const fetchAllFromArcgis = async (
 
     const ops = options
       ? {
-          ...DEFAULT_OPTIONS,
-          ...options,
-        }
+        ...DEFAULT_OPTIONS,
+        ...options,
+      }
       : DEFAULT_OPTIONS;
 
     if (ops.pagination) {
@@ -107,6 +107,7 @@ export interface Attachment {
   name: string;
   parentGlobalId: string;
   size: number;
+  keywords?: string;
 }
 
 export const fetchAttachmentsFromArcgis = async (

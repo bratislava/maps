@@ -712,7 +712,8 @@ export const data: FeatureCollection<Point> = {
         phone: "421 948 363 520",
         email: "kancelaria@krestaniavmeste.sk",
         web: "https://www.krestaniavmeste.sk/",
-        navigate: "https://www.google.sk/maps/place/48%C2%B008'40.3%22N+17%C2%B004'31.0%22E/@48.14452,17.0740828,17z/data=!3m1!4b1!4m6!3m5!1s0x0:0xa59e694f33ddd54e!7e2!8m2!3d48.1445179!4d17.0752884?hl=sk&authuser=0",
+        navigate:
+          "https://www.google.sk/maps/place/48%C2%B008'40.3%22N+17%C2%B004'31.0%22E/@48.14452,17.0740828,17z/data=!3m1!4b1!4m6!3m5!1s0x0:0xa59e694f33ddd54e!7e2!8m2!3d48.1445179!4d17.0752884?hl=sk&authuser=0",
       },
     },
     {

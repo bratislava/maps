@@ -3,7 +3,7 @@ name: Deploy prod non-residential-premises-map
 on:
   push:
     tags:
-      - 'prod-non-residential-premises-map-v*'
+      - "prod-non-residential-premises-map-v*"
 
 jobs:
   Deploy:
@@ -11,13 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: "yarn"
       - run: yarn install --frozen-lockfile
-      - run: yarn workspace @bratislava/non-residential-premises-map build 
+      - run: yarn workspace @bratislava/non-residential-premises-map build
       - uses: lovellfelix/minio-deploy-action@v1
         with:
           endpoint: ${{ secrets.MINIO_ENDPOINT }}
           access_key: ${{ secrets.MINIO_ACCESS_KEY }}
           secret_key: ${{ secrets.MINIO_SECRET_KEY }}
-          bucket: 'static-pages'
-          source_dir: 'apps/non-residential-premises-map/dist'
-          target_dir: '/non-residential-premises-map'
+          bucket: "static-pages"
+          source_dir: "apps/non-residential-premises-map/dist"
+          target_dir: "/non-residential-premises-map"

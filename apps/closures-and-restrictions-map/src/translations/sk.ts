@@ -1,6 +1,6 @@
 export default {
-  title: "Mapa rozkopávok a uzávierok",
-  tabTitle: "Mapa rozkopávok a uzávierok v Bratislave",
+  title: "Mapa uzávierok a porúch",
+  tabTitle: "Mapa uzávierok a porúch v Bratislave",
   search: "Hľadať podľa ulice",
   close: "Zavrieť",
   filters: {
@@ -90,6 +90,7 @@ export default {
         contractor: "Zhotoviteľ",
         permission: "Povolenie",
         showDocument: "Zobraziť dokument",
+        photosOfPlace: "fotografie miesta",
         problemHint:
           "Nastal kvôli poruche nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",

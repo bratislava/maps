@@ -69,11 +69,12 @@ export interface ITooltip {
 
 export const tooltips: Array<ITooltip> = [
   {
-    name: 'state',
-    title: '',
-    description: 'Stav plánované zobrazuje body, ktorých dátum začiatku realizácie je neskôr ako aktuálny čas. Stav aktuálne zobrazuje body, ktorých začiatok je skôr a zároveň koniec neskôr ako aktuálny čas.'
-  }
-]
+    name: "state",
+    title: "",
+    description:
+      "Stav plánované zobrazuje body, ktorých dátum začiatku realizácie je neskôr ako aktuálny čas. Stav aktuálne zobrazuje body, ktorých začiatok je skôr a zároveň koniec neskôr ako aktuálny čas.",
+  },
+];
 
 export const App = () => {
   const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
@@ -398,7 +399,7 @@ export const App = () => {
       }}
     >
       <Filter expression={finalCombinedFilter}>
-        <Cluster features={markersData?.features ?? []} radius={64}>
+        <Cluster features={markersData?.features ?? []} radius={44}>
           {({ features, lng, lat, key, clusterExpansionZoom }) => (
             <Marker
               isSelected={features[0].id === selectedMarker?.id}
