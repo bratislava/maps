@@ -148,7 +148,7 @@ export const App = () => {
   const previousMobile = usePrevious(isMobile);
 
   const [frameState, setFrameState] = useState<boolean>(false);
-  const [frameStateSideBar, setFrameStateSideBar] = useState<boolean>(isSidebarVisible);
+  const frameStateSideBar = useRef(isSidebarVisible);
 
   const [isTooltipModalOpen, setTooltipModalOpen] = useState<boolean>(false);
   const [activeTooltip, setActiveTooltip] = useState<ITooltip | null>(null);
@@ -161,21 +161,26 @@ export const App = () => {
     !tooltip && setTooltipModalOpen(false);
   }, [isMobile])
 
+  const handleSideBar = useCallback((value: boolean, changePrevious: boolean) => {
+    if (changePrevious) frameStateSideBar.current = value;
+    setSidebarVisible(value);
+  }, [])
+
   // close sidebar on mobile and open on desktop
   useEffect(() => {
     // from mobile to desktop
     if (previousMobile == true && !isMobile) {
-      setSidebarVisible(true);
+      handleSideBar(true, true);
     }
     // from desktop to mobile
     if (previousMobile == false && isMobile) {
-      setSidebarVisible(false);
+      handleSideBar(false, true);
     }
 
     (window === window.parent || isMobile) ? setFrameState(false) : setFrameState(true);
 
     modalHandler(null);
-  }, [isMobile, previousMobile, modalHandler]);
+  }, [isMobile, previousMobile, modalHandler, handleSideBar]);
 
   const closeDetail = useCallback(() => {
     setSelectedFeature(null);
@@ -186,13 +191,12 @@ export const App = () => {
     if (!frameState) return;
 
     if (selectedMarker) {
-      setFrameStateSideBar(isSidebarVisible)
-      setSidebarVisible(false);
+      handleSideBar(false, false)
     }
     else {
-      setSidebarVisible(frameStateSideBar);
+      handleSideBar(frameStateSideBar.current, true)
     }
-  }, [frameState, selectedMarker, frameStateSideBar, isSidebarVisible])
+  }, [frameState, selectedMarker, handleSideBar])
 
   // close detailbox when sidebar is opened on mobile
   useEffect(() => {
@@ -481,7 +485,7 @@ export const App = () => {
       <Layout isOnlyMobile>
         <Slot id="mobile-header">
           <MobileHeader
-            onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
+            onFunnelClick={() => handleSideBar(!isSidebarVisible, true)}
           />
         </Slot>
       </Layout>
@@ -491,7 +495,7 @@ export const App = () => {
       <Filters
         isMobile={isMobile ?? false}
         isVisible={isSidebarVisible}
-        setVisible={(isVisible) => setSidebarVisible(isVisible ?? false)}
+        setVisible={(isVisible) => handleSideBar(isVisible ?? false, true)}
         districtFilter={districtFilter}
         areFiltersDefault={combinedFilter.areDefault && dateFilterExpression === null}
         activeFilters={combinedFilter.active}
