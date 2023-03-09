@@ -1,6 +1,6 @@
-import cx from "classnames";
-import { Popover, Tag } from "@bratislava/react-maps-ui";
 import { Information } from "@bratislava/react-maps-icons";
+import { Popover, Tag } from "@bratislava/react-maps-ui";
+import cx from "classnames";
 import { ITooltip, tooltips } from "./App";
 
 interface IValue<T extends string> {
@@ -11,6 +11,7 @@ interface IValue<T extends string> {
 
 export interface ITagFilter<T extends string> {
   title?: string;
+  isMobile?: boolean;
   values?: IValue<T>[];
   onTagClick?: (key: T) => void;
   modalHandler: (arg1: ITooltip | null) => void;
@@ -18,14 +19,15 @@ export interface ITagFilter<T extends string> {
 
 export const TagFilter = <T extends string>({
   title,
+  isMobile,
   values = [],
   onTagClick = () => void 0,
   modalHandler,
 }: ITagFilter<T>) => {
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex">
-        <label className="px-6">{title}
+      <div className="flex items-center">
+        <label className="px-6 pt-[5px]">{title}
           <Popover
             button={({ toggle }) => (
               <div
@@ -33,11 +35,11 @@ export const TagFilter = <T extends string>({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  modalHandler(tooltips.find(t => t.name === 'state') || null)
-                  toggle();
+                  modalHandler(tooltips.find(t => t.name === 'state') || null);
+                  !isMobile && toggle();
                 }}
               >
-                <Information className="text-primary" size="sm" />
+                <Information className="text-text mt-[4px]" size="sm" />
               </div>
             )}
             panel={
