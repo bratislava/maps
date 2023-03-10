@@ -62,7 +62,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl }
     const filterAttachments = (
         attachments: Array<Attachment> | null,
         url: string,
-        attachementFilter: 'fotografie_miesta_poruchy' | "dokumenty"): Array<string> => {
+        attachementFilter: "fotografie_miesta_poruchy" | "dokumenty"): Array<string> => {
         const urlList: Array<string> = [];
         if (!attachments || attachments.length < 1) return urlList;
         const validAttachments = attachments.filter(a => a?.keywords === attachementFilter);
