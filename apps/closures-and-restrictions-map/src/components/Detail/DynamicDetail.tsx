@@ -16,9 +16,10 @@ import { Row } from './Row';
 interface IDetail {
     featureProps: IFeatureProps;
     streetViewUrl: string;
+    isMobile?: boolean;
 }
 
-export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl }) => {
+export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, isMobile }) => {
     const [isModalOpen, setModalOpen] = useState(false);
 
     const {
@@ -93,13 +94,12 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl }
 
     return (
         <div className="flex flex-col justify-end w-full gap-4">
-            <div className='flex gap-4 items-center'>
-                <>
+            {!isMobile &&
+                <div className='flex gap-4 items-center'>
                     {icon()}
                     <DetailValue>{t("title")}</DetailValue>
-                </>
-            </div>
-
+                </div>
+            }
             <DetailValue>{subject}</DetailValue>
             <div><p>{infoForResidents}</p></div>
             <Row label={t("address")} text={address} />
