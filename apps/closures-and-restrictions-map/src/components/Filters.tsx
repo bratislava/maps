@@ -8,14 +8,14 @@ import {
   IActiveFilter,
   Select,
   SelectOption,
-  Sidebar,
+  Sidebar
 } from "@bratislava/react-maps-ui";
+import { DateValue } from "@react-types/calendar";
 import cx from "classnames";
 import { useTranslation } from "react-i18next";
+import { ITooltip } from "./App";
 import { Layers } from "./Layers";
 import { SelectValueRenderer } from "./SelectValueRenderer";
-import { DateValue } from "@react-types/calendar";
-import { ITooltip } from "./App";
 import { TagFilter } from "./TagFilter";
 
 export interface IFiltersProps {
@@ -148,6 +148,7 @@ export const Filters = ({
         </div>
 
         <TagFilter
+          isMobile={isMobile}
           modalHandler={modalHandler}
           title={t("filters.status.title")}
           values={statusFilter.values

@@ -30,6 +30,7 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
         <div ref={forwardedRef} className="px-6 py-4">
           {feature?.properties &&
             < DynamicDetail
+              isMobile={isMobile}
               featureProps={feature.properties as IFeatureProps}
               streetViewUrl={getStreetViewUrl(feature)}
             />
