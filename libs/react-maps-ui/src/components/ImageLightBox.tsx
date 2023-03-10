@@ -1,9 +1,9 @@
 import { Chevron, X } from "@bratislava/react-maps-icons";
-import { useEffect, useRef } from "react";
 import cx from "classnames";
+import { useEffect, useRef } from "react";
 
 import IconButton from "./IconButton";
-import { Modal, IModalProps } from "./Modal";
+import { IModalProps, Modal } from "./Modal";
 import { Swiper } from "./Swiper";
 
 export type ImageLightBoxProps = {
@@ -62,13 +62,13 @@ export const ImageLightBox = (props: ImageLightBoxProps) => {
               {images.length > 1 && (
                 <>
                   <IconButton
-                    className="pointer-events-auto"
+                    className="pointer-events-auto !rounded-full"
                     onClick={goToPrevious}
                   >
                     <Chevron direction="left" />
                   </IconButton>
                   <IconButton
-                    className="pointer-events-auto"
+                    className="pointer-events-auto !rounded-full"
                     onClick={goToNext}
                   >
                     <Chevron direction="right" />
