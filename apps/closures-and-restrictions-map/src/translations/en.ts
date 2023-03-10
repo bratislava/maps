@@ -138,5 +138,7 @@ export default {
       "https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene",
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
+    reportProblem: "Report problem",
+    reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
   },
 };
