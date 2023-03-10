@@ -381,7 +381,7 @@ export const App = () => {
               <a
                 href={t("informationModal.reportProblemLink")}
                 target="_blank"
-                className="underline font-semibold"
+                className="underline font-semibold text-[#15254B]"
                 rel="noreferrer"
               >
                 {t("informationModal.reportProblem")}
