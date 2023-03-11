@@ -15,7 +15,7 @@ import {
   SearchBar,
   Slot,
   ThemeController,
-  ViewportController,
+  ViewportController
 } from "@bratislava/react-maps";
 
 import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
@@ -29,13 +29,13 @@ import { Feature, FeatureCollection } from "geojson";
 import { processData } from "../utils/utils";
 import { Filters } from "./Filters";
 
-import Detail from "./Detail";
-import { IconButton, Sidebar } from "@bratislava/react-maps-ui";
 import { Funnel } from "@bratislava/react-maps-icons";
-import { Marker } from "./Marker";
-import { Legend } from "./Legend";
+import { IconButton, Sidebar } from "@bratislava/react-maps-ui";
 import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
+import Detail from "./Detail";
+import { Legend } from "./Legend";
+import { Marker } from "./Marker";
 
 const isDevelopment = !!import.meta.env.DEV;
 
@@ -328,8 +328,6 @@ export const App = () => {
       isDevelopment={isDevelopment}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
-      disableBearing
-      disablePitch
       mapInformation={{
         title: t("informationModal.title"),
         description: (

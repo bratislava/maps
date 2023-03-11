@@ -1,21 +1,21 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import "../styles.css";
-import { LineString as TurfLineString, lineString } from "@turf/helpers";
+import { lineString, LineString as TurfLineString } from "@turf/helpers";
 import length from "@turf/length";
 import cx from "classnames";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useWindowSize } from "usehooks-ts";
+import "../styles.css";
 
 // maps
-import { Slot, MapHandle, Map, ThemeController, ViewportController } from "@bratislava/react-maps";
+import { Map, MapHandle, Slot, ThemeController, ViewportController } from "@bratislava/react-maps";
 
 import { AnimationChangeEvent, Cluster, LineString } from "@bratislava/react-mapbox";
 
 // utils
-import { getCvickoIdFromQuery, getIsHomepageFromQuery } from "../utils/utils";
-import { processFountainData } from "../utils/fountainUtil";
 import { Trans, useTranslation } from "react-i18next";
-import { CvickoMarker } from "./CvickoMarker";
 import DrinkingFountainMarker from "../components/DrinkingFountainMarker";
+import { processFountainData } from "../utils/fountainUtil";
+import { getCvickoIdFromQuery, getIsHomepageFromQuery } from "../utils/utils";
+import { CvickoMarker } from "./CvickoMarker";
 
 import { coordinates as apolloBasicCoordinates } from "../assets/layers/running-tracks/basic/apollo";
 import { coordinates as largeBasicCoordinates } from "../assets/layers/running-tracks/basic/large";
@@ -41,16 +41,16 @@ import oldDetailedStyles from "../assets/layers/running-tracks/detailed/old-styl
 import smallDetailedStyles from "../assets/layers/running-tracks/detailed/small-styles";
 import snpDetailedStyles from "../assets/layers/running-tracks/detailed/snp-styles";
 
-import { cvickoData } from "../assets/layers/cvicko/cvicko-data";
-import type { Feature, Point } from "geojson";
-import Detail from "./Detail";
-import { RunningTrackButtonMarker } from "./RunningTrackButtonMarker";
-import { colors } from "../utils/colors";
-import { IconButton } from "@bratislava/react-maps-ui";
 import { X } from "@bratislava/react-maps-icons";
-import { useQuery } from "../utils/useQuery";
+import { IconButton } from "@bratislava/react-maps-ui";
+import type { Feature, Point } from "geojson";
 import { useResizeDetector } from "react-resize-detector";
+import { cvickoData } from "../assets/layers/cvicko/cvicko-data";
+import { colors } from "../utils/colors";
+import { useQuery } from "../utils/useQuery";
+import Detail from "./Detail";
 import FountainDetail from "./FountainDetail";
+import { RunningTrackButtonMarker } from "./RunningTrackButtonMarker";
 
 export type TSelectedFeature = Feature<Point> | null;
 
@@ -246,8 +246,7 @@ export const App = () => {
         onMobileChange={setMobile}
         maxBounds={maxBounds}
         onMapClick={closeDetail}
-        disableBearing
-        disablePitch
+        disablePitch={false}
         mapInformation={{
           title: t("informationModal.title"),
           description: t("informationModal.description"),

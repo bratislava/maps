@@ -2,12 +2,11 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useResizeDetector } from "react-resize-detector";
-import "../styles.css";
 import { useWindowSize } from "usehooks-ts";
-import { point } from "@turf/helpers";
+import "../styles.css";
 
 // maps
-import { Layer, Marker, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
+import { Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 import {
   Layout,
   Map,
@@ -15,7 +14,7 @@ import {
   SearchBar,
   Slot,
   ThemeController,
-  ViewportController,
+  ViewportController
 } from "@bratislava/react-maps";
 import { Sidebar } from "@bratislava/react-maps-ui";
 import { useArcgis } from "@bratislava/react-use-arcgis";
@@ -280,8 +279,6 @@ export const App = () => {
       selectedFeatures={selectedFeatures}
       onFeaturesClick={onFeaturesClick}
       onMobileChange={setMobile}
-      disableBearing
-      disablePitch
       mapInformation={{
         title: t("informationModal.title"),
         description: (

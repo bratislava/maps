@@ -11,7 +11,7 @@ import {
   SearchBar,
   Slot,
   ThemeController,
-  ViewportController,
+  ViewportController
 } from "@bratislava/react-maps";
 
 // components
@@ -24,9 +24,9 @@ import { processData } from "../utils/utils";
 import { Modal, Sidebar } from "@bratislava/react-maps-ui";
 import { Trans, useTranslation } from "react-i18next";
 import { ReactComponent as BALogo } from "../assets/ba-logo.svg";
+import { colors } from "../utils/colors";
 import { Legend } from "./Legend";
 import { Marker } from "./Marker";
-import { colors } from "../utils/colors";
 
 const { data } = processData();
 
@@ -85,8 +85,6 @@ export const App = () => {
       isDevelopment={import.meta.env.DEV}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
-      disableBearing
-      disablePitch
       mapInformationButtonClassName="!top-20 sm:!top-6"
       mapInformation={{
         title: t("informationModal.title"),

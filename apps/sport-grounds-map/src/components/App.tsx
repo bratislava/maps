@@ -1,45 +1,40 @@
+import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import cx from "classnames";
-import "../styles.css";
 import { useResizeDetector } from "react-resize-detector";
+import "../styles.css";
 
 // maps
 import {
-  Slot,
-  Layout,
-  MapHandle,
-  Map,
-  ThemeController,
-  ViewportController,
-  SearchBar,
+  Layout, Map, MapHandle, SearchBar, Slot, ThemeController,
+  ViewportController
 } from "@bratislava/react-maps";
 
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 
 // maps
-import { Layer, useFilter, Cluster, Filter, useCombinedFilter } from "@bratislava/react-mapbox";
+import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
 
 // components
 import { Detail } from "./Detail";
 
 // utils
+import { Feature, FeatureCollection, Point } from "geojson";
 import { processData } from "../utils/utils";
-import { Feature, Point, FeatureCollection } from "geojson";
-import { MobileHeader } from "./mobile/MobileHeader";
-import { MobileFilters } from "./mobile/MobileFilters";
 import { DesktopFilters } from "./desktop/DesktopFilters";
+import { MobileFilters } from "./mobile/MobileFilters";
+import { MobileHeader } from "./mobile/MobileHeader";
 
-import RAW_DATA_SPORT_GROUNDS_FEATURES from "../data/sport-grounds/sport-grounds-data";
 import RAW_DATA_SPORT_GROUNDS_ALT_FEATURES from "../data/sport-grounds/sport-grounds-alt-data";
+import RAW_DATA_SPORT_GROUNDS_FEATURES from "../data/sport-grounds/sport-grounds-data";
 
+import { ILayerGroup, Modal, Sidebar } from "@bratislava/react-maps-ui";
+import { usePrevious } from "@bratislava/utils";
 import DISTRICTS_STYLE from "../data/districts/districts";
+import { Icon, IIconProps } from "./Icon";
+import { Legend } from "./Legend";
 import { Marker } from "./Marker";
 import { MultipleMarker } from "./MultipleMarker";
-import { Icon, IIconProps } from "./Icon";
-import { usePrevious } from "@bratislava/utils";
-import { ILayerGroup, Modal, Sidebar } from "@bratislava/react-maps-ui";
-import { Legend } from "./Legend";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -202,12 +197,12 @@ export const App = () => {
   useEffect(() => {
     districtFilter.activeKeys.length == 0
       ? mapRef.current?.changeViewport({
-          center: {
-            lat: 48.148598,
-            lng: 17.107748,
-          },
-          zoom: 10.75,
-        })
+        center: {
+          lat: 48.148598,
+          lng: 17.107748,
+        },
+        zoom: 10.75,
+      })
       : mapRef.current?.fitDistrict(districtFilter.activeKeys);
   }, [districtFilter.activeKeys, mapRef]);
 
@@ -271,8 +266,6 @@ export const App = () => {
       isDevelopment={import.meta.env.DEV}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
-      disableBearing
-      disablePitch
       mapInformation={{
         title: t("informationModal.title"),
         description: t("informationModal.description"),

@@ -11,7 +11,7 @@ import {
   SearchBar,
   Slot,
   ThemeController,
-  ViewportController,
+  ViewportController
 } from "@bratislava/react-maps";
 
 import { useResizeDetector } from "react-resize-detector";
@@ -21,32 +21,32 @@ import { Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-m
 
 // layer styles
 import DISTRICTS_STYLE from "../assets/layers/districts";
-import TERRAIN_SERVICES_POLYGON_STYLE from "../assets/layers/terrainServicesPolygon";
 import TERRAIN_SERVICES_POINT_STYLE from "../assets/layers/terrainServicesPoint";
+import TERRAIN_SERVICES_POLYGON_STYLE from "../assets/layers/terrainServicesPolygon";
 
 // utils
-import { usePrevious } from "@bratislava/utils";
-import { processData } from "../utils/utils";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
-import { Point, Feature } from "geojson";
-import { IconButton, Modal, Sidebar } from "@bratislava/react-maps-ui";
 import { Chevron, Funnel } from "@bratislava/react-maps-icons";
-import { Filters } from "./Filters";
-import { Detail } from "./Detail";
-import { PhoneLinksModal } from "./PhoneLinksModal";
-import { Marker } from "./Marker";
-import { mainColors, colors } from "../utils/colors";
+import { IconButton, Modal, Sidebar } from "@bratislava/react-maps-ui";
+import { usePrevious } from "@bratislava/utils";
 import { featureCollection } from "@turf/helpers";
-import { Legend } from "./Legend";
-import { BuildingMarker } from "./BuildingMarker";
+import { Feature, Point } from "geojson";
 import { buildingsData } from "../data/buildings";
-import { ITerrainService } from "./Layers";
-import { terrainServicesLocalDistrictsData } from "../data/terrain-services-local-districts";
 import { regions } from "../data/regions";
-import { Popup } from "./Popup";
-import { FixpointMarker } from "./FixpointMarker";
-import { SyringeExchangeMarker } from "./SyringeExchangeMarker";
+import { terrainServicesLocalDistrictsData } from "../data/terrain-services-local-districts";
+import { colors, mainColors } from "../utils/colors";
+import { processData } from "../utils/utils";
+import { BuildingMarker } from "./BuildingMarker";
+import { Detail } from "./Detail";
+import { Filters } from "./Filters";
 import { FixpointAndSyringeExchangeMarker } from "./FixpointAndSyringeExchangeMarker";
+import { FixpointMarker } from "./FixpointMarker";
+import { ITerrainService } from "./Layers";
+import { Legend } from "./Legend";
+import { Marker } from "./Marker";
+import { PhoneLinksModal } from "./PhoneLinksModal";
+import { Popup } from "./Popup";
+import { SyringeExchangeMarker } from "./SyringeExchangeMarker";
 
 const {
   data,
@@ -247,7 +247,7 @@ export const App = () => {
       layerFilter.setActiveOnly(rememberedActiveLayerKeys, true);
       setServiceDetail(false);
       return;
-    } 
+    }
     const features = activeTerrainService.geojson.features;
     // Fit terrain service features
     features && mapRef.current?.fitFeature(features);
@@ -304,8 +304,6 @@ export const App = () => {
       isDevelopment={import.meta.env.DEV}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
-      disablePitch
-      disableBearing
       mapInformation={{
         title: t("informationModal.title"),
         description: (
