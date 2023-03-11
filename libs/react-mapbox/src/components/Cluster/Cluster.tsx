@@ -4,7 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useState
 } from 'react';
 import Supercluster from 'supercluster';
 import { filterContext } from '../Filter/Filter';
@@ -49,14 +49,20 @@ export const Cluster = ({
       if (!map) return;
 
       const zoom: number = map.getZoom();
-      const bounds: mapboxgl.LngLatBounds = map.getBounds();
 
+      // Dynamic bbox
+      // const bounds: mapboxgl.LngLatBounds = map.getBounds();
+      // const bbox: [number, number, number, number] = [
+      //   bounds.getWest(),
+      //   bounds.getSouth(),
+      //   bounds.getEast(),
+      //   bounds.getNorth(),
+      // ];
+
+      // Static bbox
       const bbox: [number, number, number, number] = [
-        bounds.getWest(),
-        bounds.getSouth(),
-        bounds.getEast(),
-        bounds.getNorth(),
-      ];
+        16.847534, 47.734705, 18.400726, 48.841221
+      ]
 
       const supercluster: Supercluster<Supercluster.AnyProps, Supercluster.AnyProps> = new Supercluster({ radius, maxZoom: 30 });
       supercluster.load(
