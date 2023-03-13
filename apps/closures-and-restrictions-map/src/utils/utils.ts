@@ -1,52 +1,8 @@
 import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps";
 import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 import { featureCollection } from "@turf/helpers";
-import { Feature, FeatureCollection } from "geojson";
-
-export interface IProcessDataProps {
-  rawDisordersData: FeatureCollection;
-  rawDigupsAndClosuresData: FeatureCollection;
-  // rawRepairsPointsData: FeatureCollection;
-  // rawRepairsPolygonsData: FeatureCollection;
-}
-
-export type TLayer = 'disorders' | 'closures' | 'digups';
-export type TIcon = 'disorder' | 'closure' | 'digup';
-export type TStatus = 'planned' | 'active' | 'done';
-
-export interface IFeatureProps {
-  objectId?: number;
-  subject: string | null;
-  type: Array<string>;
-  address: string | null;
-  startTimestamp: number | null;
-  endTimestamp: number | null;
-  length: number | null;
-  width: number | null;
-  fullSize: number | null;
-  investor: string | null;
-  contractor: string | null;
-  layer: TLayer;
-  icon: TIcon;
-  infoForResidents?: string | null;
-  status: TStatus;
-  imageUrl?: string;
-  originalProperties: any;
-}
-
-const currentTimestamp = Date.now();
-
-const parseSlovakTypeToKey = (slovakType: string) => {
-  const slovakTypes = slovakType.split(",").map((t) => t.trim());
-  const mapSlovakTypeToKeyObject: { [index: string]: string } = {
-    Kanalizacia: "sewerage",
-    Optika: "optics",
-    Plyn: "gas",
-    VN: "highVoltage",
-    Voda: "sewerage",
-  };
-  return slovakTypes.map((t) => mapSlovakTypeToKeyObject[t] ?? "other").join(",");
-};
+import type { Feature, FeatureCollection } from "geojson";
+import type { IDigupsAndClosuresOriginalProps, IDisorderOriginalProps, IFeatureProps, IProcessDataProps, TStatus } from "../types/featureTypes";
 
 export const processData = ({
   rawDisordersData,
@@ -55,9 +11,9 @@ export const processData = ({
   // rawRepairsPolygonsData,
 }: IProcessDataProps) => {
 
-  let GLOBAL_ID = 0;
 
   const setStatus = (startTimestamp: number, endTimestamp: number): TStatus => {
+    const currentTimestamp = Date.now();
     return startTimestamp > currentTimestamp
       ? "planned"
       : startTimestamp < currentTimestamp && endTimestamp > currentTimestamp
@@ -65,40 +21,36 @@ export const processData = ({
         : "done";
   }
 
-  const setCommonFeatureProps = (feature: Feature): Omit<IFeatureProps, 'layer' | 'icon'> => {
-    const originalProperties = { ...feature.properties };
-    const startTimestamp = originalProperties?.d_tum_vzniku_poruchy || 0;
-    const endTimestamp = originalProperties?.term_n_fin_lnej_pravy_povrchu || 0;
-
-    return {
-      originalProperties,
-      startTimestamp,
-      endTimestamp,
-      status: setStatus(startTimestamp, endTimestamp),
-      type: parseSlovakTypeToKey(originalProperties?.druh_vedenia).split(","),
-      subject: originalProperties?.predmet_iadosti,
-      address: originalProperties?.adresa,
-      fullSize: originalProperties?.rozmery_vykopu,
-      width: originalProperties?._rka_v_kopu_m,
-      length: originalProperties?.velkost_vykopu,
-      investor: originalProperties?.investor,
-      contractor: originalProperties?.zhotovite_
-    }
-  }
-
   const disordersData: FeatureCollection = addDistrictPropertyToLayer({
     ...rawDisordersData,
     features: rawDisordersData.features.map((feature) => {
-      GLOBAL_ID++;
+      const originalProperties = { ...feature.properties as IDisorderOriginalProps };
+
+      const startTimestamp = originalProperties.datum_vzniku_poruchy;
+      const endTimestamp = originalProperties.datum_finalnej_upravy;
+
+      const properties: IFeatureProps = {
+        originalProperties,
+        objectId: originalProperties.objectid,
+        startTimestamp,
+        endTimestamp,
+        dateOfPassage: originalProperties.datum_sprejazdnenia,
+        status: setStatus(startTimestamp, endTimestamp),
+        subject: originalProperties?.predmet_nadpis,
+        address: originalProperties?.adresa,
+        fullSize: originalProperties?.rozmery_vykopu_v_m2,
+        width: originalProperties?.sirka_vykopu_m,
+        length: originalProperties?.dlzka_vykopu_m,
+        owner: originalProperties.ine_vlastnik || originalProperties?.vlastnik_spravca_vedenia,
+        type: originalProperties.druh_vedenia.split(','),
+        layer: "disorders",
+        icon: "disorder",
+      }
 
       return {
         ...feature,
-        id: GLOBAL_ID,
-        properties: {
-          ...setCommonFeatureProps(feature),
-          layer: "disorders",
-          icon: "disorder",
-        },
+        id: originalProperties.globalid,
+        properties,
       } as Feature;
     }),
   });
@@ -106,26 +58,37 @@ export const processData = ({
   const digupsAndClosuresData: FeatureCollection = addDistrictPropertyToLayer({
     ...rawDigupsAndClosuresData,
     features: rawDigupsAndClosuresData.features.map((feature) => {
-      GLOBAL_ID++;
-      const originalProperties = feature.properties;
-      const layer =
-        originalProperties?.["uz_vierka"] === "čiastočná" ||
-          originalProperties?.["uz_vierka"] === "úplná"
-          ? "closures"
-          : "digups";
+      const originalProperties = { ...feature.properties as IDigupsAndClosuresOriginalProps };
+      const layer = ["čiastočná", "úplná"].includes(originalProperties?.uzavierka) ? "closures" : "digups";
 
-      const icon = layer == "closures" ? "closure" : "digup";
+      const startTimestamp = originalProperties.datum_vzniku;
+      const endTimestamp = originalProperties.termin_finalnej_upravy;
+
+      const properties: IFeatureProps = {
+        originalProperties,
+        startTimestamp,
+        endTimestamp,
+        startTime: originalProperties.cas_vzniku,
+        endTime: originalProperties.cas_odstranenia,
+        status: setStatus(startTimestamp, endTimestamp),
+        type: originalProperties.druh_rozkopavky.split(','),
+        subject: originalProperties?.predmet_nadpis,
+        address: originalProperties?.adresa_rozkopavky,
+        fullSize: originalProperties?.rozmery_vykopu_v_m2,
+        width: originalProperties?.sirka_vykopu_m,
+        length: originalProperties?.dlzka_vykopu_m,
+        investor: originalProperties?.ine_investor || originalProperties?.investor,
+        contractor: originalProperties?.ine_zhotovitel || originalProperties?.zhotovitel,
+        layer,
+        icon: layer === "closures" ? "closure" : "digup",
+        objectId: originalProperties.objectid,
+        infoForResidents: originalProperties?.informacie,
+      }
 
       return {
         ...feature,
-        id: GLOBAL_ID,
-        properties: {
-          ...setCommonFeatureProps(feature),
-          layer,
-          icon,
-          objectId: originalProperties?.objectid,
-          infoForResidents: originalProperties?.inform_cie_pre_obyvate_ov,
-        },
+        id: originalProperties.globalid,
+        properties
       } as Feature;
     }),
   });

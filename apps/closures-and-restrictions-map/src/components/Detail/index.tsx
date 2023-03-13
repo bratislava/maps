@@ -2,7 +2,7 @@ import { Detail as MapDetail } from "@bratislava/react-maps";
 import { GeoJsonProperties, Geometry } from "@bratislava/utils/src/types";
 import { Feature } from "geojson";
 import { forwardRef } from "react";
-import type { IFeatureProps } from "../../utils/utils";
+import { IFeatureProps } from "../../types/featureTypes";
 import { DynamicDetail } from "./DynamicDetail";
 export interface DetailProps {
   isMobile: boolean;

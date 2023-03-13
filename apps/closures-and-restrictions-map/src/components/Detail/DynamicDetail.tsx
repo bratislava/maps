@@ -1,5 +1,5 @@
 import { ImageLightBox, Note } from '@bratislava/react-maps-ui';
-import { useArcgisAttachments } from '@bratislava/react-use-arcgis';
+import { Attachment, useArcgisAttachments } from '@bratislava/react-use-arcgis';
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { ReactComponent as ClosureIcon } from "../../assets/icons/closure.svg";
@@ -8,8 +8,8 @@ import { ReactComponent as DisorderIcon } from "../../assets/icons/disorder.svg"
 import { ReactComponent as GoogleStreet } from "../../assets/icons/googlestreetview.svg";
 import { ReactComponent as HintIcon } from "../../assets/icons/hint.svg";
 import { ReactComponent as ImageIcon } from "../../assets/icons/imageicon.svg";
+import { IFeatureProps } from '../../types/featureTypes';
 import { DIGUPS_URL, DISORDERS_URL } from '../../utils/urls';
-import type { IFeatureProps } from '../../utils/utils';
 import { DetailValue } from './DetailValue';
 import { Row } from './Row';
 
@@ -32,11 +32,15 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
         endTimestamp,
         fullSize,
         investor,
+        owner,
         contractor,
         length,
         width,
         layer,
-        originalProperties
+        originalProperties,
+        startTime,
+        endTime,
+        dateOfPassage
     } = featureProps;
 
     const {
@@ -56,28 +60,35 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
         objectId || originalProperties?.objectid || 0,
     );
 
-    const getDisorderImgUrlList = (): Array<string> => {
+    const filterAttachments = (
+        attachments: Array<Attachment> | null,
+        url: string,
+        attachementFilter: "fotografie_miesta_poruchy" | "dokumenty"): Array<string> => {
         const urlList: Array<string> = [];
-        if (!disordersAttachments || disordersAttachments.length < 1) return urlList;
-        const validAttachments = disordersAttachments.filter(a => a?.keywords === 'foto_havarie');
+        if (!attachments || attachments.length < 1) return urlList;
+        const validAttachments = attachments.filter(a => a?.keywords === attachementFilter);
 
         validAttachments.forEach(a => {
-            urlList.push(`${DISORDERS_URL}/${objectId || originalProperties?.objectid}/attachment/${a.id}`)
+            urlList.push(`${url}/${objectId || originalProperties?.objectid}/attachment/${a.id}`)
         })
 
         return urlList
     }
 
-    const imageUrlList = layer === 'disorders' ? getDisorderImgUrlList() : [];
+    const imageUrlList = layer === 'disorders' ? filterAttachments(disordersAttachments, DISORDERS_URL, 'fotografie_miesta_poruchy') : [];
+    const documentUrlList = layer === 'disorders' ? filterAttachments(disordersAttachments, DISORDERS_URL, 'dokumenty') : filterAttachments(attachments, DIGUPS_URL, 'dokumenty');
 
-    const displayLocaleDate = (timeStamp: number | null): string | null => {
-        if (!timeStamp) return null;
 
-        return new Date(timeStamp).toLocaleString(language, {
+    const displayLocaleDate = (timeStamp: number | null, time: string | null = null): string => {
+        if (!timeStamp) return '';
+
+        const dateFormat = new Date(timeStamp).toLocaleString(language, {
             day: "numeric",
             year: "numeric",
             month: "numeric",
         });
+
+        return !time ? dateFormat : `${dateFormat} - ${time}`;
     }
 
     const icon = () => {
@@ -101,7 +112,9 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
                 </div>
             }
             <DetailValue>{subject}</DetailValue>
-            <div><p>{infoForResidents}</p></div>
+            {infoForResidents &&
+                <div><p>{infoForResidents}</p></div>
+            }
             <Row label={t("address")} text={address} />
             {streetViewUrl &&
                 <a
@@ -126,8 +139,9 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
                 label={t("category")}
                 tags={type?.map((type) => mainT(`filters.type.types.${type}`)) ?? []}
             />
-            <Row label={t("startDate")} text={displayLocaleDate(startTimestamp)} />
-            <Row label={t("endDate")} text={displayLocaleDate(endTimestamp)} />
+            <Row label={t("startDate")} text={displayLocaleDate(startTimestamp, startTime)} />
+            <Row label={t('dateOfPassage')} text={displayLocaleDate(dateOfPassage || null)} />
+            <Row label={t("endDate")} text={displayLocaleDate(endTimestamp, endTime)} />
             {!!fullSize && (
                 <Row
                     label={t("fullSize")}
@@ -142,23 +156,23 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
             {!!length && <Row label={t("length")} text={`${length} m`} />}
             {!!width && <Row label={t("width")} text={`${width} m`} />}
             <Row label={t("investor")} text={investor} />
+            <Row label={t("owner")} text={owner} />
             <Row label={t("contractor")} text={contractor} />
 
-            {attachments && !!attachments.length && (
+            {documentUrlList && documentUrlList.length > 0 && (
                 <div>
                     <div>{t("permission")}</div>
                     <div>
-                        {attachments?.map((attachment, index) => {
-                            const attachmentUrl = `${DIGUPS_URL}/${objectId}/attachment/${attachment.id}`;
+                        {documentUrlList?.map((attachment, index) => {
                             return (
                                 <a
                                     className="font-bold flex underline"
                                     rel="noreferrer"
-                                    href={attachmentUrl}
+                                    href={attachment}
                                     target="_blank"
                                     key={index}
                                 >
-                                    {`${t("showDocument")} ${attachments.length > 1 ? index + 1 : ""}`}
+                                    {`${t("showDocument")} ${attachment.length > 1 ? index + 1 : ""}`}
                                 </a>
                             );
                         })}

@@ -1,8 +1,8 @@
 export const DISORDERS_URL =
-  "https://services8.arcgis.com/pRlN1m0su5BYaFAS/ArcGIS/rest/services/survey123_42a33d618acc4c23bee02bbe005402ca_stakeholder/FeatureServer/0";
+  "https://services8.arcgis.com/pRlN1m0su5BYaFAS/arcgis/rest/services/survey123_603d6cb3f848490c818062302c2c43a8_results/FeatureServer/0";
 
 export const DIGUPS_URL =
-  "https://services8.arcgis.com/pRlN1m0su5BYaFAS/ArcGIS/rest/services/survey123_d681e359eca84126824e7e074e7c3cba_stakeholder/FeatureServer/0";
+  "https://services8.arcgis.com/pRlN1m0su5BYaFAS/arcgis/rest/services/survey123_4344d68972e0484481b783afdcbe87f9_results/FeatureServer/0";
 
 export const REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL =
   "https://services8.arcgis.com/pRlN1m0su5BYaFAS/arcgis/rest/services/Plan_oprav_2022_Priechody_pre_chodcov_view/FeatureServer/18";
