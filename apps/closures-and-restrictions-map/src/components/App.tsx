@@ -49,6 +49,7 @@ import { Filters } from "./Filters";
 import { MobileHeader } from "./mobile/MobileHeader";
 
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
+import { Information } from "@bratislava/react-maps-icons";
 import { Modal } from "@bratislava/react-maps-ui";
 import { colors } from "../utils/colors";
 import { Marker } from "./Marker";
@@ -368,7 +369,24 @@ export const App = () => {
       onMapClick={closeDetail}
       mapInformation={{
         title: t("informationModal.title"),
-        description: null,
+        description: (
+          <>
+            <div className="flex gap-2">
+              <Information className="mt-[2px]" size="md" />
+              <p>{t("informationModal.info")}</p>
+            </div>
+            <div className="ml-[30px] mt-[12px]">
+              <a
+                href={t("informationModal.reportProblemLink")}
+                target="_blank"
+                className="underline font-semibold text-[#15254B]"
+                rel="noreferrer"
+              >
+                {t("informationModal.reportProblem")}
+              </a>
+            </div>
+          </>
+        ),
         partners: [
           {
             name: "bratislava",

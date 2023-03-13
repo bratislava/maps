@@ -131,11 +131,14 @@ export default {
   },
   informationModal: {
     title: "Map information",
+    info: "Let us know if there is a problem due to construction work in a public area",
     description:
       "Map of tree planting carried out by the City of Bratislava. You can find more information about planting and caring for trees on the pages <1>maintenance and creation of greenery</1>, which is the responsibility of the Department of Urban Greenery.",
     descriptionLink:
       "https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene",
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
+    reportProblem: "Report problem",
+    reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
   },
 };
