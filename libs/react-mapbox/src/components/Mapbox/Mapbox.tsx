@@ -10,23 +10,22 @@ import {
   useId,
   useImperativeHandle,
   useMemo,
-  useReducer,
-  useState,
+  useReducer, useState
 } from 'react';
+import { useDebounce } from 'usehooks-ts';
 import { PartialViewport, Viewport } from '../../types';
+import {
+  defaultInitialViewport,
+  defaultSatelliteSource
+} from '../../utils/constants';
 import { DevelopmentInfo } from '../DevelopmentInfo/DevelopmentInfo';
 import {
   areViewportsSame,
   mergePartialViewports,
   mergeViewports,
   ViewportActionKind,
-  viewportReducer,
+  viewportReducer
 } from './viewportReducer';
-import { useDebounce } from 'usehooks-ts';
-import {
-  defaultInitialViewport,
-  defaultSatelliteSource,
-} from '../../utils/constants';
 
 export interface MapboxGesturesOptions {
   disableBearing?: boolean;
@@ -113,7 +112,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
       onLoad,
       onClick,
       disableBearing = false,
-      disablePitch = false,
+      disablePitch = true,
       maxBounds,
       maxZoom = 30,
       minZoom = 10.8,
@@ -128,7 +127,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
     const [map, setMap] = useState<mapboxgl.Map | null>(null);
 
     useEffect(() => {
-     if(!map) return;
+      if (!map) return;
       map.setMaxZoom(maxZoom);
       map.setMinZoom(minZoom);
     }, [maxZoom, minZoom])
@@ -753,6 +752,7 @@ export const Mapbox = forwardRef<MapboxHandle, MapboxProps>(
           }
           if (disablePitch) {
             map.touchPitch.disable();
+            map.setMaxPitch(0);
           } else {
             map.touchPitch.enable();
           }

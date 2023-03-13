@@ -16,7 +16,7 @@ import {
   Slot,
   SlotType,
   ThemeController,
-  ViewportController,
+  ViewportController
 } from "@bratislava/react-maps";
 
 import { Cluster, Filter, IFilterResult, Layer, useFilter } from "@bratislava/react-mapbox";
@@ -32,10 +32,10 @@ import { MobileHeader } from "./mobile/MobileHeader";
 
 import { useArcgis } from "@bratislava/react-use-arcgis";
 import { usePrevious } from "@bratislava/utils";
+import { colors } from "../utils/colors";
 import { DesktopSearch } from "./desktop/DesktopSearch";
 import { Filters } from "./Filters";
 import { Marker } from "./Marker";
-import { colors } from "../utils/colors";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -307,8 +307,6 @@ export const App = () => {
         light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
         dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
       }}
-      disableBearing
-      disablePitch
       isDevelopment={import.meta.env.DEV}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
