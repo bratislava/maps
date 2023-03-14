@@ -1,4 +1,3 @@
-import '../../styles/mapbox-corrections.css';
 import { DISTRICTS_GEOJSON } from '@bratislava/geojson-data';
 import {
   LngLat,
@@ -7,14 +6,16 @@ import {
   Marker,
   mergeViewports,
   PartialViewport,
-  Viewport,
+  Viewport
 } from '@bratislava/react-mapbox';
 import {
   ArrowCounterclockwise,
   Feedback,
+  Information,
   InformationAlt,
+  X
 } from '@bratislava/react-maps-icons';
-import { IconButton, Modal } from '@bratislava/react-maps-ui';
+import { Divider, IconButton, Modal } from '@bratislava/react-maps-ui';
 import bbox from '@turf/bbox';
 import cx from 'classnames';
 import { Feature } from 'geojson';
@@ -31,17 +32,18 @@ import {
   useMemo,
   useReducer,
   useRef,
-  useState,
+  useState
 } from 'react';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import { useResizeDetector } from 'react-resize-detector';
+import '../../styles/mapbox-corrections.css';
 import i18n from '../../utils/i18n';
 
+import { defaultInitialViewport } from '@bratislava/react-mapbox/src/utils/constants';
 import { getFeatureDistrict } from '../../utils/districts';
 import { Slot } from '../Layout/Slot';
-import { IMapState, MapAction, MapActionKind, mapReducer } from './mapReducer';
 import { SearchMarker } from '../SearchMarker/SearchMarker';
-import { defaultInitialViewport } from '@bratislava/react-mapbox/src/utils/constants';
+import { IMapState, MapAction, MapActionKind, mapReducer } from './mapReducer';
 import { MapMethods, MapProps, SlotState } from './types';
 
 export type MapHandle = MapMethods;
@@ -114,6 +116,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
     });
 
     const [isDevInfoVisible, setDevInfoVisible] = useState(false);
+    const [isInfoNotificationVisible, setInfoNotificationVisible] = useState<boolean>(!!mapInformation.infoNotification);
 
     const [slotStates, setSlotStates] = useState<SlotState[]>([]);
 
@@ -548,6 +551,48 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
                   </IconButton>
                 </Slot>
 
+                {isInfoNotificationVisible &&
+                  <Slot id="infoNotification" position="top-right" className='z-50'>
+                    <div className={cx('bg-background-lightmode dark:bg-background-darkmode max-w-[480px] rounded p-[20px]',
+                      !isMobile ? 'mx-[20px] mt-[20px]' : 'mx-[12px] mt-[12px]')}>
+                      <div className='grid gap-2'>
+                        <div className="flex gap-2">
+                          <Information className="mt-[2px]" size="md" />
+                          <h5 className="text-md grow font-semibold">{mapInformation.infoNotification?.title}</h5>
+                          <div className='cursor-pointer pt-[2px]' onClick={() => setInfoNotificationVisible(false)}>
+                            <X size="sm" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="ml-[30px] mt-[12px]">
+                        <p style={{
+                          display: '-webkit-box',
+                          maxWidth: '450px',
+                          WebkitLineClamp: 4,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden'
+                        }}>
+                          {mapInformation.infoNotification?.txt}
+                        </p>
+                      </div>
+
+                      <div className="ml-[30px] mt-[12px]">
+                        <p
+                          onClick={() => {
+                            setInfoNotificationVisible(false);
+                            setInformationModalOpen(true);
+                          }}
+                          className="cursor-pointer font-semibold underline"
+                        >
+                          {mapInformation.infoNotification?.moreTxt}
+                        </p>
+                      </div>
+                    </div>
+                  </Slot>
+                }
+
+
                 <>{children}</>
 
                 {/* geolocation marker */}
@@ -612,9 +657,22 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
             onClose={() => setInformationModalOpen(false)}
           >
             <div className="flex flex-col gap-6 pt-6">
-              <div className="text-md px-6 font-medium">
+              <div className="text-md px-6 font-semibold">
                 {mapInformation.title}
               </div>
+              {mapInformation.infoNotification &&
+                <>
+                  <div className="px-6 font-semibold">
+                    {mapInformation.infoNotification.title}
+                  </div>
+                  <div className="px-6">
+                    {mapInformation.infoNotification.txt}
+                  </div>
+                  <Divider className="mx-6" />
+                </>
+
+
+              }
               <div className="px-6">{mapInformation.description}</div>
               <div className="flex flex-wrap items-center justify-center gap-4 px-6 py-2">
                 {mapInformation.partners.map((partner, index) => (

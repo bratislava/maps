@@ -1,14 +1,11 @@
 import {
-  MapboxGesturesOptions,
-  PartialViewport,
-  Viewport,
-  Padding,
-  LngLat,
+  LngLat, MapboxGesturesOptions, Padding, PartialViewport,
+  Viewport
 } from '@bratislava/react-mapbox';
 import { Feature } from 'geojson';
+import { i18n as i18nType } from 'i18next';
 import { EventData, MapboxGeoJSONFeature, MapMouseEvent } from 'mapbox-gl';
 import { ReactNode } from 'react';
-import { i18n as i18nType } from 'i18next';
 
 // State of one slot
 export interface SlotState {
@@ -54,11 +51,19 @@ interface IPartner {
   height?: number;
   width?: number;
 }
+
+export interface IMapInfoNotification {
+  title: string;
+  txt: ReactNode;
+  moreTxt: string;
+}
+
 interface IMapInformation {
   title: string;
   description: ReactNode;
   partners: Array<IPartner>;
   footer: ReactNode;
+  infoNotification?: IMapInfoNotification;
 }
 
 export interface MapProps extends MapboxGesturesOptions {
