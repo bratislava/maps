@@ -657,12 +657,12 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
             onClose={() => setInformationModalOpen(false)}
           >
             <div className="flex flex-col gap-6 pt-6">
-              <div className="text-md px-6 font-semibold">
+              <div className="text-md px-6 font-medium">
                 {mapInformation.title}
               </div>
               {mapInformation.infoNotification &&
                 <>
-                  <div className="px-6 font-semibold">
+                  <div className="px-6 font-medium">
                     {mapInformation.infoNotification.title}
                   </div>
                   <div className="px-6">
