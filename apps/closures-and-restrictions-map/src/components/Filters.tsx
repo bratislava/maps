@@ -55,6 +55,12 @@ export const Filters = ({
 }: IFiltersProps) => {
   const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
 
+  const statusTagHandler = (status: string) => {
+    const activeStatusKeys = statusFilter.activeKeys;
+    if (activeStatusKeys.length === 1 && activeStatusKeys.includes(status)) return;
+    statusFilter.toggleActive(status)
+  }
+
   const content = (
     <>
       {isMobile && (
@@ -158,7 +164,7 @@ export const Filters = ({
               isActive: status.isActive,
             }))
           }
-          onTagClick={(status: string) => statusFilter.toggleActive(status)
+          onTagClick={(status: string) => statusTagHandler(status)
           }
         />
 

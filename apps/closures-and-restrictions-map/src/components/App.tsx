@@ -252,7 +252,7 @@ export const App = () => {
     property: "status",
     combiner: "any",
     keys: useMemo(() => ["planned", "active", "done"], []),
-    defaultValues: useMemo(() => ({ planned: false, active: false, done: false }), []),
+    defaultValues: useMemo(() => ({ planned: false, active: true, done: false }), []),
   });
 
   const layerfilter = useFilter({
