@@ -1,11 +1,9 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
-import { Eye, Information } from "@bratislava/react-maps-icons";
-import { Accordion, AccordionItem, Checkbox, Modal, Popover } from "@bratislava/react-maps-ui";
+import { Eye } from "@bratislava/react-maps-icons";
+import { Accordion, AccordionItem, Checkbox } from "@bratislava/react-maps-ui";
 import cx from "classnames";
-import { ReactNode, useCallback, useState } from "react";
+import { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { capitalizeFirstLetter } from "../../../planting-map/src/utils/utils";
-import { ITooltip } from "./App";
 import { Icon } from "./Icon";
 
 export interface ILayerCategory {
@@ -20,7 +18,7 @@ export interface ILayerProps {
 }
 
 export const Layers = ({ filter }: ILayerProps) => {
-  const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
+  const { t }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
 
   const layers: Array<ILayerCategory> = [
     {
@@ -45,10 +43,23 @@ export const Layers = ({ filter }: ILayerProps) => {
     // },
   ];
 
+  const isDisabled = (layer: string) => {
+    const activeStatusKeys = filter.activeKeys;
+    const disabled = activeStatusKeys.length === 1 && activeStatusKeys.includes(layer);
+    return disabled;
+  }
+
+  const layerHandler = (layer: string) => {
+    if (isDisabled(layer)) return;
+    filter.toggleActive(layer);
+  }
+
+  const existingLayers = layers.filter(layer => filter.keys.includes(layer.subLayers[0]));
+
   return (
     <div className="flex flex-col w-full">
       <Accordion type="multiple">
-        {layers.map(({ label, icon, subLayers }, index) => {
+        {existingLayers.map(({ label, icon, subLayers }, index) => {
           return (
             <AccordionItem
               value={label}
@@ -72,13 +83,11 @@ export const Layers = ({ filter }: ILayerProps) => {
               rightSlot={
                 <button
                   className="cursor-pointer p-1"
-                  onClick={() =>
-                    filter.isAnyKeyActive(subLayers)
-                      ? filter.setActive(subLayers, false)
-                      : filter.setActive(subLayers, true)
-                  }
+                  onClick={() => layerHandler(subLayers[0])}
                 >
-                  <Eye size="sm" isCrossed={!filter.isAnyKeyActive(subLayers)} />
+                  <div style={{ opacity: isDisabled(subLayers[0]) ? '.5' : '1' }}>
+                    <Eye size="sm" isCrossed={!filter.isAnyKeyActive(subLayers)} />
+                  </div>
                 </button>
               }
             >
