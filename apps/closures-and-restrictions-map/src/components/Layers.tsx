@@ -43,16 +43,15 @@ export const Layers = ({ filter }: ILayerProps) => {
     // },
   ];
 
-  const layerHandler = (layer: string) => {
-    const activeStatusKeys = filter.activeKeys;
-    if (activeStatusKeys.length === 1 && activeStatusKeys.includes(layer)) return;
-    filter.toggleActive(layer);
-  }
-
   const isDisabled = (layer: string) => {
     const activeStatusKeys = filter.activeKeys;
     const disabled = activeStatusKeys.length === 1 && activeStatusKeys.includes(layer);
     return disabled;
+  }
+
+  const layerHandler = (layer: string) => {
+    if (isDisabled(layer)) return;
+    filter.toggleActive(layer);
   }
 
   const existingLayers = layers.filter(layer => filter.keys.includes(layer.subLayers[0]));
