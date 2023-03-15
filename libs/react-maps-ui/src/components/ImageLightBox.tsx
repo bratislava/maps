@@ -26,6 +26,7 @@ export const ImageLightBox = (props: ImageLightBoxProps) => {
 
   return (
     <Modal
+      closeButtonOut={true}
       noOverlayStyles
       underlayClassName="!p-0"
       overlayClassName="w-full h-[80vh] pointer-events-none"

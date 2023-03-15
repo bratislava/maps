@@ -51,6 +51,7 @@ import { MobileHeader } from "./mobile/MobileHeader";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { Information } from "@bratislava/react-maps-icons";
 import { Modal } from "@bratislava/react-maps-ui";
+import { IMapInfoNotification } from "@bratislava/react-maps/src/components/Map/types";
 import { colors } from "../utils/colors";
 import { Marker } from "./Marker";
 
@@ -251,7 +252,7 @@ export const App = () => {
     property: "status",
     combiner: "any",
     keys: useMemo(() => ["planned", "active", "done"], []),
-    defaultValues: useMemo(() => ({ planned: false, active: false, done: false }), []),
+    defaultValues: useMemo(() => ({ planned: false, active: true, done: false }), []),
   });
 
   const layerfilter = useFilter({
@@ -302,6 +303,17 @@ export const App = () => {
       setDateEnd(undefined);
     }
   }, [statusFilter.activeKeys.length, statusFilter.keys.length]);
+
+  const infoNotification: IMapInfoNotification = {
+    title: t("informationModal.infoNotificationTitle"),
+    txt: <Trans i18nKey="informationModal.infoNotificationContent">
+      before
+      <a href={t("informationModal.infoNotificationContentLink")} className="underline font-semibold" target="_blank" rel="noreferrer">
+        link
+      </a>
+    </Trans>,
+    moreTxt: t("informationModal.moreInfo")
+  }
 
   const combinedFilter = useCombinedFilter({
     combiner: "all",
@@ -372,6 +384,8 @@ export const App = () => {
       onMobileChange={setMobile}
       onMapClick={closeDetail}
       mapInformation={{
+        // Comment out/remove infoNotification attribute to remove notification 
+        infoNotification,
         title: t("informationModal.title"),
         description: (
           <>
@@ -383,7 +397,7 @@ export const App = () => {
               <a
                 href={t("informationModal.reportProblemLink")}
                 target="_blank"
-                className="underline font-semibold text-[#15254B]"
+                className="underline font-semibold text-[#15254B] dark:text-[#ffffff]"
                 rel="noreferrer"
               >
                 {t("informationModal.reportProblem")}
