@@ -26,33 +26,31 @@ export const TagFilter = <T extends string>({
 }: ITagFilter<T>) => {
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center">
-        <label className="px-6 pt-[5px]">{title}
-          <Popover
-            button={({ toggle }) => (
-              <div
-                className="cursor-pointer ml-[5px]"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  modalHandler(tooltips.find(t => t.name === 'state') || null);
-                  !isMobile && toggle();
-                }}
-              >
-                <Information className="text-text mt-[4px]" size="sm" />
+      <label className="px-6 pt-[5px] flex items-center">{title}
+        <Popover
+          button={({ toggle }) => (
+            <div
+              className="cursor-pointer ml-[5px]"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                modalHandler(tooltips.find(t => t.name === 'state') || null);
+                !isMobile && toggle();
+              }}
+            >
+              <Information className="text-text" size="default" />
+            </div>
+          )}
+          panel={
+            <div className="flex flex-col gap-2 max-w-sm">
+              <div className="text-md font-semibold">
+                {/* {t(`categories.${type}`)} */}
               </div>
-            )}
-            panel={
-              <div className="flex flex-col gap-2 max-w-sm">
-                <div className="text-md font-semibold">
-                  {/* {t(`categories.${type}`)} */}
-                </div>
-                <div className="">{tooltips.find(t => t.name === 'state')?.description}</div>
-              </div>
-            }
-          />
-        </label>
-      </div>
+              <div className="">{tooltips.find(t => t.name === 'state')?.description}</div>
+            </div>
+          }
+        />
+      </label>
 
       <div className="flex flex-wrap gap-2 px-6">
         {values.map(({ key, label, isActive = false }) => (

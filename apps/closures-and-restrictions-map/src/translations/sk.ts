@@ -95,7 +95,7 @@ export default {
         investor: "Investor",
         owner: "Vlastník / správca siete",
         contractor: "Zhotoviteľ",
-        permission: "Povolenie",
+        permission: "Dokument",
         showDocument: "Zobraziť dokument",
         photosOfPlace: "fotografie miesta",
         problemHint:
