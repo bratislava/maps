@@ -95,7 +95,7 @@ export default {
         investor: "Investor",
         owner: "Owner / Administrator",
         contractor: "Contractor",
-        permission: "Permission",
+        permission: "Document",
         showDocument: "Show document",
         photosOfPlace: "photos of place",
         problemHint:

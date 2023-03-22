@@ -553,11 +553,11 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
 
                 {isInfoNotificationVisible &&
                   <Slot id="infoNotification" position="top-right" className='z-50'>
-                    <div className={cx('bg-background-lightmode dark:bg-background-darkmode max-w-[480px] rounded p-[20px]',
+                    <div className={cx('bg-background-lightmode dark:bg-background-darkmode max-w-[480px] rounded-[8px] p-[20px] shadow-lg',
                       !isMobile ? 'mx-[20px] mt-[20px]' : 'mx-[12px] mt-[12px]')}>
                       <div className='grid gap-2'>
                         <div className="flex gap-2">
-                          <Information className="mt-[2px]" size="md" />
+                          {!isMobile && <Information className="mt-[2px]" size="md" />}
                           <h5 className="text-md grow font-semibold">{mapInformation.infoNotification?.title}</h5>
                           <div className='cursor-pointer pt-[2px]' onClick={() => setInfoNotificationVisible(false)}>
                             <X size="sm" />
@@ -565,7 +565,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
                         </div>
                       </div>
 
-                      <div className="ml-[30px] mt-[12px]">
+                      <div className={cx('mt-[12px]', !isMobile ? 'ml-[30px]' : '')}>
                         <p style={{
                           display: '-webkit-box',
                           maxWidth: '450px',
@@ -577,7 +577,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
                         </p>
                       </div>
 
-                      <div className="ml-[30px] mt-[12px]">
+                      <div className={cx('mt-[12px]', !isMobile ? 'ml-[30px]' : '')}>
                         <p
                           onClick={() => {
                             setInfoNotificationVisible(false);

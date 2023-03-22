@@ -51,7 +51,7 @@ export const ImageLightBox = (props: ImageLightBoxProps) => {
           >
             <img
               draggable="false"
-              className="pointer-events-auto h-auto max-h-[80vh] w-full select-none object-contain"
+              className="md:mb-[10%] pointer-events-auto h-auto max-h-[80vh] w-full select-none object-contain"
               src={image}
               alt={image}
             />
@@ -77,7 +77,7 @@ export const ImageLightBox = (props: ImageLightBoxProps) => {
                 </>
               )}
             </div>
-            <div className="absolute font-semibold bottom-9 bg-background-lightmode dark:bg-background-darkmode shadow rounded-full px-3 flex items-center">
+            <div className="absolute font-semibold z-50 bottom-9 md:bottom-0 bg-background-lightmode dark:bg-background-darkmode shadow rounded-full px-3 flex items-center">
               {activeIndex + 1} / {count}
             </div>
           </>

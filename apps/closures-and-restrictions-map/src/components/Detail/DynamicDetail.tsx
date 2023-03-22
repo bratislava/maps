@@ -172,7 +172,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
                                     target="_blank"
                                     key={index}
                                 >
-                                    {`${t("showDocument")} ${attachment.length > 1 ? index + 1 : ""}`}
+                                    {`${t("showDocument")} ${documentUrlList.length > 1 ? index + 1 : ""}`}
                                 </a>
                             );
                         })}

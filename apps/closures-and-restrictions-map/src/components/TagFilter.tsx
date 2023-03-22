@@ -38,7 +38,7 @@ export const TagFilter = <T extends string>({
                 !isMobile && toggle();
               }}
             >
-              <Information className="text-text" size="sm" />
+              <Information className="text-text" size="default" />
             </div>
           )}
           panel={
