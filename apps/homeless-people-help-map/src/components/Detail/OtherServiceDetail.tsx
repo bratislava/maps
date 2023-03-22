@@ -1,8 +1,9 @@
 /* eslint-disable camelcase */
-import { z } from "zod";
 import { DataDisplay, Tag } from "@bratislava/react-maps-ui";
-import { useTranslation } from "react-i18next";
 import cx from "classnames";
+import { useTranslation } from "react-i18next";
+import { z } from "zod";
+import DetailWebRow from "./DetailWebRow";
 
 export const otherServiceFeaturePropertiesSchema = z.object({
   name_sk: z.string(),
@@ -107,7 +108,7 @@ export const OtherServiceDetail = ({
         label={t("detail.otherService.description")}
         text={language === "sk" ? description_sk : description_en}
       />
-      <DataDisplay enableEnhancements label={t("detail.otherService.web")} text={web} />
+      <DetailWebRow href={web} label={t("detail.otherService.web")} />
       <DataDisplay
         label={t("detail.otherService.provider")}
         text={language === "sk" ? provider_sk : provider_en}

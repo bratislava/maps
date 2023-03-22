@@ -1,10 +1,11 @@
 /* eslint-disable camelcase */
 import { Accordion, AccordionItem, DataDisplay, Divider, Tag } from "@bratislava/react-maps-ui";
-import { useTranslation } from "react-i18next";
 import cx from "classnames";
-import { colors } from "../../utils/colors";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
+import { colors } from "../../utils/colors";
+import DetailWebRow from "./DetailWebRow";
 
 export const mainFeaturePropertiesSchema = z.object({
   layerName: z.string(),
@@ -235,7 +236,7 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
 
           <DataDisplay enableEnhancements label={detailT("phone")} text={properties.phone} />
 
-          <DataDisplay enableEnhancements label={detailT("web")} text={properties.web} />
+          <DetailWebRow href={properties.web} label={detailT("web")} />
 
           <DataDisplay
             label={detailT("provider")}
