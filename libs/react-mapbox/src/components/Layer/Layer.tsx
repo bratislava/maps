@@ -1,3 +1,8 @@
+import { usePrevious } from '@bratislava/utils';
+import { FeatureCollection } from '@bratislava/utils/src/types';
+import { feature } from '@turf/helpers';
+import { Feature, Geometry } from 'geojson';
+import { MapMouseEvent, Popup } from 'mapbox-gl';
 import {
   FC,
   ReactNode,
@@ -6,15 +11,11 @@ import {
   useEffect,
   useId,
   useMemo,
-  useState,
+  useState
 } from 'react';
-import { usePrevious } from '@bratislava/utils';
+import { createPortal } from 'react-dom';
 import { log } from '../../utils/log';
 import { mapboxContext } from '../Mapbox/Mapbox';
-import { FeatureCollection, Feature, Geometry } from 'geojson';
-import { MapMouseEvent, Popup } from 'mapbox-gl';
-import { createPortal } from 'react-dom';
-import { feature, point } from '@turf/helpers';
 
 type Filter = string | null | boolean | Filter[];
 
@@ -100,26 +101,21 @@ export const Layer = ({
       setRenderedPopupContent(
         typeof hoverPopup === 'function'
           ? hoverPopup({
-              feature: feature(
-                e.features?.[0].geometry as Geometry,
-                e.features?.[0].properties,
-              ),
-            })
+            feature: feature(
+              e.features?.[0].geometry as Geometry,
+              e.features?.[0].properties,
+            ),
+          })
           : hoverPopup,
       );
     },
     [hoverPopup],
   );
 
-  const onMouseEnter = useCallback(
-    (
-      e: MapMouseEvent & {
-        features?: mapboxgl.MapboxGeoJSONFeature[];
-      },
-    ) => {
-      setPopupVisible(true);
-    },
-    [hoverPopup],
+  const onMouseEnter = useCallback(() => {
+    setPopupVisible(true);
+  },
+    [],
   );
 
   const onMouseMove = useCallback(
@@ -130,7 +126,7 @@ export const Layer = ({
     [popup, renderPopupContent],
   );
 
-  const onMouseLeave = useCallback((e: MapMouseEvent) => {
+  const onMouseLeave = useCallback(() => {
     setPopupVisible(false);
   }, []);
 
@@ -156,7 +152,7 @@ export const Layer = ({
         });
       }
     };
-  }, [hoverPopup, map, styles, onMouseEnter, onMouseMove, onMouseLeave]);
+  }, [hoverPopup, map, styles, onMouseEnter, onMouseMove, onMouseLeave, getPrefixedLayer]);
 
   useEffect(() => {
     if (map && !isLoading && !isStyleLoading) {
@@ -193,8 +189,8 @@ export const Layer = ({
             style.type === 'line' || style.type === 'circle'
               ? layerId
               : style.type === 'fill'
-              ? bottomLayer?.id
-              : undefined,
+                ? bottomLayer?.id
+                : undefined,
           );
 
           if (!ignoreClick) {
@@ -263,6 +259,7 @@ export const Layer = ({
     addClickableLayer,
     previousLoading,
     layerPrefix,
+    previousStyleLoading
   ]);
 
   return createPortal(renderedPopupContent, popupElement);

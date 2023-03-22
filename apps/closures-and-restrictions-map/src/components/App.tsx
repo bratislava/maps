@@ -389,7 +389,26 @@ export const App = () => {
         title: t("informationModal.title"),
         description: (
           <>
-            <div className="flex gap-2">
+            <div className="mb-2">
+              {t("informationModal.descriptionPart1")}
+            </div>
+            <div className="mb-2">
+              <Trans i18nKey="informationModal.descriptionPart2">
+                before
+                <a href={t("informationModal.description2Link")} className="underline font-semibold">
+                  link
+                </a>
+              </Trans>
+            </div>
+            <div>
+              <Trans i18nKey="informationModal.descriptionPart3">
+                before
+                <a href={t("informationModal.description3Link")} className="underline font-semibold">
+                  link
+                </a>
+              </Trans>
+            </div>
+            <div className="flex gap-2 mt-[36px]">
               <Information className="mt-[2px]" size="md" />
               <p>{t("informationModal.info")}</p>
             </div>
