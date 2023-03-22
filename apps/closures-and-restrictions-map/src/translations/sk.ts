@@ -139,10 +139,13 @@ export default {
   informationModal: {
     title: "Informácie o mape",
     info: "Dajte nám vedieť, ak nastal kvôli stavebným prácam vo verejnom priestore problém",
-    description:
-      "Mapa výsadby drevín realizovanej Magistrátom mesta Bratislava. Viac informácií o výsadbe a starostlivosti o dreviny nájdete na stránkach <1>údržby a tvorby zelene</1>, za ktorú je zodpovedné Oddelenie tvorby mestskej zelene.",
-    descriptionLink:
-      "https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene",
+    descriptionPart1: "Mapa zobrazuje právoplatne povolené rozkopávky, uzávierky a nahlásené poruchy na miestnych cestách I. a II. triedy.",
+    descriptionPart2: "<1>Viac informácií</1> o dopravných povoleniach a cestnom správnom orgáne, ktorý povoluje rozkopávky a uzávierky.",
+    descriptionPart3: "<1>Viac informácií</1> o správe a údržbe komunikácií v hlavnom meste.",
+    description2Link:
+      "https://bratislava.sk/doprava-a-mapy/doprava/dopravne-povolenia",
+    description3Link:
+      "https://bratislava.sk/doprava-a-mapy/sprava-a-udrzba-komunikacii",
     footer: "Zanechajte nám spätnú väzbu na <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
     reportProblem: "Nahlásiť problém",
