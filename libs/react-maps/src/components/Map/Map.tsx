@@ -652,14 +652,21 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
 
           <Modal
             overlayClassName="max-w-xl !p-0"
+            hideCloseIconButton={true}
             isOpen={isInformationModalOpen}
             closeButtonInCorner
             onClose={() => setInformationModalOpen(false)}
           >
             <div className="flex flex-col gap-6 pt-6">
-              <div className="text-md px-6 font-medium">
-                {mapInformation.title}
+              <div className="mr-6 flex gap-2">
+                <div className="text-md grow px-6 font-medium">
+                  {mapInformation.title}
+                </div>
+                <div className='cursor-pointer pt-[2px]' onClick={() => setInformationModalOpen(false)}>
+                  <X size="sm" />
+                </div>
               </div>
+
               {mapInformation.infoNotification &&
                 <>
                   <div className="px-6 font-medium">
