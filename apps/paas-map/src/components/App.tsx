@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useResizeDetector } from "react-resize-detector";
 import odpStyles from "../layer-styles/residents";
 import udrStyles from "../layer-styles/visitors";
+import udrStyles2 from "../layer-styles/visitors2";
 import zoneStyles from "../layer-styles/zones";
 import "../styles.css";
 
@@ -90,6 +91,13 @@ export const App = () => {
   const [udrData, setUdrData] = useState<FeatureCollection | null>(null);
   const [odpData, setOdpData] = useState<FeatureCollection | null>(null);
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
+
+  const udrDataSplitedByPrice = useMemo(() => {
+    return {
+      udrDataRegular: { ...udrData, features: udrData?.features.filter(udr => udr.properties?.Zakladna_cena !== 2) } as FeatureCollection,
+      udrDataTwoEur: { ...udrData, features: udrData?.features.filter(udr => udr.properties?.Zakladna_cena === 2) } as FeatureCollection,
+    }
+  }, [udrData])
 
   useEffect(() => {
     if (
@@ -379,7 +387,9 @@ export const App = () => {
 
       <Layer filters={zoneFilter.keepOnEmptyExpression} geojson={zonesData} styles={zoneStyles} />
 
-      <Layer filters={layerFilter.keepOnEmptyExpression} geojson={udrData} styles={udrStyles} />
+      <Layer filters={layerFilter.keepOnEmptyExpression} geojson={udrDataSplitedByPrice.udrDataRegular} styles={udrStyles} />
+      <Layer filters={layerFilter.keepOnEmptyExpression} geojson={udrDataSplitedByPrice.udrDataTwoEur} styles={udrStyles2} />
+
       <Layer filters={layerFilter.keepOnEmptyExpression} geojson={odpData} styles={odpStyles} />
 
       <Slot id="controls">
