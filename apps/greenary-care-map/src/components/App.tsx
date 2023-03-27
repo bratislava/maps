@@ -210,7 +210,7 @@ export const App = () => {
       closeDetail();
     }
     if (!isMobile && previousMobile) {
-      setLegendVisible((isLegendVisible) => !isLegendVisible);
+      setTimeout(() => setLegendVisible(true), 2000);
     }
   }, [closeDetail, isMobile, isSidebarVisible, previousMobile, previousSidebarVisible]);
 
