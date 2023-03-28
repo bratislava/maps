@@ -13,12 +13,14 @@ export const InformationAlt = ({
       <svg
         width={24}
         height={24}
+        stroke="currentColor"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
+          stroke="currentColor"
           d="M12.001 8.61c-.62 0-1.13-.51-1.13-1.13 0-.62.51-1.13 1.13-1.13.62 0 1.13.51 1.13 1.13 0 .62-.51 1.13-1.13 1.13ZM12.75 10.26h-1.5v6.64h1.5v-6.64Z"
-          fill="#333"
+          fill="none"
         />
       </svg>
     </div>
