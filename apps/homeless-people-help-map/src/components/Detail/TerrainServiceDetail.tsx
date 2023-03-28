@@ -1,8 +1,9 @@
 import { DataDisplay, Tag } from "@bratislava/react-maps-ui";
 import { useMemo } from "react";
-import { ITerrainService } from "../Layers";
 import { useTranslation } from "react-i18next";
 import { colors } from "../../utils/colors";
+import { ITerrainService } from "../Layers";
+import DetailWebRow from "./DetailWebRow";
 
 export type TerrainServiceDetail = {
   service: ITerrainService;
@@ -25,7 +26,7 @@ export const TerrainServiceDetail = ({
       </Tag>
       <DataDisplay label={t("provider")} text={provider} />
       <DataDisplay enableEnhancements label={t("phone")} text={phone} />
-      <DataDisplay enableEnhancements label={t("web")} text={web} />
+      <DetailWebRow href={web} label={t("web")} />
       <DataDisplay label={t("openingHours")} text={openingHours} />
       <DataDisplay label={t("price")} text={price} />
       <DataDisplay label={t("areas")} text={areas} />

@@ -1,29 +1,28 @@
 import {
   arrow,
+  autoPlacement,
   FloatingPortal,
   offset,
   Placement,
-  useDismiss,
+  shift, useDismiss,
   useFloating,
-  useInteractions,
-  autoPlacement,
-  shift,
-} from "@floating-ui/react-dom-interactions";
+  useInteractions
+} from '@floating-ui/react';
 import cx from "classnames";
-import { FC, ReactNode, useRef, useState, useMemo } from "react";
+import { FC, ReactNode, useMemo, useRef, useState } from "react";
 import { PopoverArrow } from "./PopoverArrow";
 
 export interface IPopoverProps {
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   button:
-    | FC<{
-        isOpen: boolean;
-        open: () => void;
-        close: () => void;
-        toggle: () => void;
-      }>
-    | ReactNode;
+  | FC<{
+    isOpen: boolean;
+    open: () => void;
+    close: () => void;
+    toggle: () => void;
+  }>
+  | ReactNode;
   panel: ReactNode;
   isSmall?: boolean;
   allowedPlacements?: Placement[];
@@ -64,7 +63,7 @@ export const Popover = ({
     onOpenChange: setOpen,
     strategy: "fixed",
     middleware: [
-      offset(12),
+      offset(15),
       shift(),
       autoPlacement({ allowedPlacements }),
       arrow({ element: arrowRef }),

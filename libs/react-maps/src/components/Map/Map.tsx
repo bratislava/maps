@@ -9,7 +9,6 @@ import {
   Viewport
 } from '@bratislava/react-mapbox';
 import {
-  ArrowCounterclockwise,
   Feedback,
   Information,
   InformationAlt,
@@ -630,29 +629,35 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
           <Modal
             overlayClassName="max-w-xs"
             isOpen={isDisplayLandscapeModal}
-            closeButtonIcon={
-              <ArrowCounterclockwise size="lg" className="text-white" />
-            }
+            hideCloseButtonIcon={true}
           >
+            <div className="grid gap-2">
+              <div className="flex gap-2">
+                <div className="grow">
+                </div>
+                <div className="">
+                  <InformationAlt className="rounded-full border-[16px] border-solid border-[#EBEBEB] bg-[#333333] !text-[#ffffff]" size="default" />
+                </div>
+                <div className="grow">
+                </div>
+                <div className="cursor-pointer pt-[2px]" onClick={() => setDisplayLandscapeModal(false)}>
+                  <X size="sm" />
+                </div>
+              </div>
+            </div>
             <div className="flex flex-col gap-2 pb-4 text-center">
               <div>
-                Na mobilnom zariadení je mapu najlepšie používať na výšku
+                V niektorých prípadoch sa mapa nemusí zobraziť správne. Na mobilnom zariadení je mapu najlepšie používať na výšku.
               </div>
-              <div className="text-[14px]">
-                Zanechajte nám spätnú väzbu na adrese{' '}
-                <a
-                  href="mailto:mapy.inovacie@bratislava.sk"
-                  className="underline"
-                >
-                  mapy.inovacie@bratislava.sk
-                </a>
+              <div onClick={() => setDisplayLandscapeModal(false)} className="mt-[24px] cursor-pointer font-semibold">
+                Zrušiť
               </div>
             </div>
           </Modal>
 
           <Modal
             overlayClassName="max-w-xl !p-0"
-            hideCloseIconButton={true}
+            hideCloseButtonIcon={true}
             isOpen={isInformationModalOpen}
             closeButtonInCorner
             onClose={() => setInformationModalOpen(false)}
