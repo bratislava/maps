@@ -1,4 +1,4 @@
-import { Placement } from "@floating-ui/react-dom-interactions";
+import { Placement } from '@floating-ui/react';
 import cx from "classnames";
 import { forwardRef } from "react";
 interface IPopoverArrowProps {

@@ -1,6 +1,6 @@
 import { List } from '@bratislava/react-maps-icons';
 import { IconButton, Popover } from '@bratislava/react-maps-ui';
-import { ReactNode, useContext, useCallback, useMemo } from 'react';
+import { ReactNode, useCallback, useContext, useMemo } from 'react';
 import { mapContext } from '../Map/Map';
 
 export const LegendButton = ({
