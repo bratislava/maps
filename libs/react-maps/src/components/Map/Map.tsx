@@ -627,32 +627,33 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
           </mapContext.Provider>
 
           <Modal
-            overlayClassName="max-w-xs"
+            overlayClassName="max-w-xs !p-0"
             isOpen={isDisplayLandscapeModal}
             hideCloseButtonIcon={true}
           >
-            <div className="grid gap-2">
-              <div className="flex gap-2">
-                <div className="grow">
+            <div className="gap-6 p-6">
+              <div className="grid">
+                <div className="flex">
+                  <div className="grow">
+                  </div>
+                  <div className="mb-3 grow-0">
+                    <InformationAlt className="rounded-full border-[16px] border-solid border-[#EBEBEB] bg-[#333333] !text-[#ffffff]" size="default" />
+                  </div>
+                  <div className="relative grow cursor-pointer" onClick={() => setDisplayLandscapeModal(false)}>
+                    <X size="sm" className='absolute top-0 right-0 float-right grow' />
+                  </div>
                 </div>
-                <div className="">
-                  <InformationAlt className="rounded-full border-[16px] border-solid border-[#EBEBEB] bg-[#333333] !text-[#ffffff]" size="default" />
+              </div>
+              <div className="flex flex-col text-center">
+                <div>
+                  V niektorých prípadoch sa mapa nemusí zobraziť správne. Na mobilnom zariadení je mapu najlepšie používať na výšku.
                 </div>
-                <div className="grow">
-                </div>
-                <div className="cursor-pointer pt-[2px]" onClick={() => setDisplayLandscapeModal(false)}>
-                  <X size="sm" />
+                <div onClick={() => setDisplayLandscapeModal(false)} className="mt-[24px] cursor-pointer font-semibold">
+                  Zrušiť
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-2 pb-4 text-center">
-              <div>
-                V niektorých prípadoch sa mapa nemusí zobraziť správne. Na mobilnom zariadení je mapu najlepšie používať na výšku.
-              </div>
-              <div onClick={() => setDisplayLandscapeModal(false)} className="mt-[24px] cursor-pointer font-semibold">
-                Zrušiť
-              </div>
-            </div>
+
           </Modal>
 
           <Modal
