@@ -349,7 +349,7 @@ export const Layers = <LF extends string, MF extends string>({
               ] as MF[])}
               toggle={() =>
                 markerFilter.setActive(
-                  ["parking-lots"] as MF[],
+                  ["parking-lots", "garages", "p-plus-r"] as MF[],
                   !markerFilter.isAnyKeyActive(["parking-lots", "garages", "p-plus-r"] as MF[]),
                 )
               }
