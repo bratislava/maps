@@ -391,7 +391,7 @@ export const App = () => {
         <Slot id="mobile-detail" isVisible={isDetailOpen} position="bottom">
           <div className="h-full bg-background-lightmode dark:bg-background-darkmode text-foreground-lightmode dark:text-foreground-darkmode">
             <Detail
-              isMobile
+              isMobile={isMobile}
               arcgisServerUrl={URL}
               features={selectedFeatures ?? []}
               onClose={closeDetail}

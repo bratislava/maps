@@ -9,7 +9,7 @@ import { DataDisplay } from "@bratislava/react-maps-ui";
 export interface DetailProps {
   features: Feature[];
   onClose: () => void;
-  isMobile: boolean;
+  isMobile?: boolean | null;
   arcgisServerUrl: string;
 }
 
@@ -96,9 +96,8 @@ export const Detail = ({ features, onClose, isMobile, arcgisServerUrl }: DetailP
                     target="_blank"
                     key={index}
                   >
-                    {`${t("layers.esri.detail.showDocument")} ${
-                      attachments.length > 1 ? index + 1 : ""
-                    }`}
+                    {`${t("layers.esri.detail.showDocument")} ${attachments.length > 1 ? index + 1 : ""
+                      }`}
                   </a>
                 );
               })}
@@ -109,7 +108,7 @@ export const Detail = ({ features, onClose, isMobile, arcgisServerUrl }: DetailP
     </div>
   );
 
-  return isMobile ? (
+  return !isMobile ? (
     <BottomSheet
       ref={sheetRef}
       snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 84]}
