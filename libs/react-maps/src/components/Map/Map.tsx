@@ -39,6 +39,7 @@ import '../../styles/mapbox-corrections.css';
 import i18n from '../../utils/i18n';
 
 import { defaultInitialViewport } from '@bratislava/react-mapbox/src/utils/constants';
+import { isMobile as isMobileDevice } from 'react-device-detect';
 import { getFeatureDistrict } from '../../utils/districts';
 import { Slot } from '../Layout/Slot';
 import { SearchMarker } from '../SearchMarker/SearchMarker';
@@ -482,6 +483,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
     // DISPLAY/HIDE WARNING MODAL TO ROTATE DEVICE TO PORTRAIT MODE
     useEffect(() => {
       if (
+        isMobileDevice &&
         (containerWidth ?? 0) < 900 &&
         (containerWidth ?? 0) > (containerHeight ?? 0)
       ) {
