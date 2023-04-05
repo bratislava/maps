@@ -1,15 +1,16 @@
 import { useRef, useState, useEffect } from "react";
 import { Feature } from "geojson";
-import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
+import { BottomSheetRef } from "react-spring-bottom-sheet";
 import { useTranslation } from "react-i18next";
 import { useArcgisAttachments } from "@bratislava/react-use-arcgis";
-import { X } from "@bratislava/react-maps-icons";
 import { DataDisplay } from "@bratislava/react-maps-ui";
+import { Detail as MapDetail } from "@bratislava/react-maps";
+
 
 export interface DetailProps {
   features: Feature[];
   onClose: () => void;
-  isMobile?: boolean | null;
+  isMobile?: boolean;
   arcgisServerUrl: string;
 }
 
@@ -35,19 +36,10 @@ export const Detail = ({ features, onClose, isMobile, arcgisServerUrl }: DetailP
 
   const { data: attachments } = useArcgisAttachments(arcgisServerUrl, objectId);
 
-  // const [currentSnap, setCurrentSnap] = useState(0);
-
-  // const onSnapChange = useCallback(() => {
-  //   requestAnimationFrame(() => setCurrentSnap(sheetRef.current?.height === 84 ? 1 : 0));
-  // }, []);
-
   if (!feature) return null;
 
   const detail = (
     <div className="flex flex-col space-y-4 p-8 pt-0 sm:pt-4 overflow-auto">
-      <button className="hidden sm:block absolute right-4 top-8 p-2" onClick={onClose}>
-        <X />
-      </button>
       <div className="flex flex-col space-y-4">
         <div className="first-letter:uppercase font-bold font-md text-[20px]">
           {feature?.properties?.["TYP_VYKONU_1"]
@@ -108,21 +100,20 @@ export const Detail = ({ features, onClose, isMobile, arcgisServerUrl }: DetailP
     </div>
   );
 
-  return !isMobile ? (
-    <BottomSheet
-      ref={sheetRef}
-      snapPoints={({ maxHeight }) => [maxHeight, maxHeight / 2, 84]}
-      defaultSnap={({ snapPoints }) => snapPoints[1]}
-      blocking={false}
-      // onSpringStart={onSnapChange}
-      className="relative z-30"
-      open={true}
-      expandOnContentDrag
+  return (
+    <MapDetail
+      isBottomSheet={isMobile}
+      onClose={onClose}
+      isVisible={!!feature}
+      bottomSheetSnapPoints={[84, "50%", "100%"]}
+      bottomSheetInitialSnap={1}
     >
-      {detail}
-    </BottomSheet>
-  ) : (
-    detail
+      <div className="px-6 py-4">
+        {feature?.properties &&
+          detail
+        }
+      </div>
+    </MapDetail>
   );
 };
 
