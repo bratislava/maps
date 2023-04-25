@@ -2,6 +2,8 @@
 import { ReactComponent as CvickoIcon } from "../assets/icons/cvicko.svg";
 import { ReactComponent as OtherIcon } from "../assets/icons/other.svg";
 import { ReactComponent as PoolIcon } from "../assets/icons/pool.svg";
+import { ReactComponent as WaterIcon } from "../assets/icons/water.svg";
+
 
 export const icons = [
   {
@@ -11,6 +13,10 @@ export const icons = [
   {
     name: "pool",
     component: PoolIcon,
+  },
+  {
+    name: "water",
+    component: WaterIcon,
   },
 ] as const;
 
