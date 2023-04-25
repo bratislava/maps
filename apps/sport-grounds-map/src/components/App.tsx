@@ -69,7 +69,7 @@ export const App = () => {
 
   const layerFilter = useFilter({
     property: "layer",
-    keys: useMemo(() => ["cvicko", "swimmingPools"], []),
+    keys: useMemo(() => ["swimmingPools", "cvicko"], []),
     defaultValues: useMemo(
       () => ({
         cvicko: true,
