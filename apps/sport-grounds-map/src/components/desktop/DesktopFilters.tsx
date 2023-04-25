@@ -20,8 +20,6 @@ export interface IDesktopFiltersProps {
   onResetFiltersClick: () => void;
   districtFilter: IFilterResult<string>;
   layerFilter: IFilterResult<any>;
-  sportGroundFilter: IFilterResult<any>;
-  tagFilter: IFilterResult<string>;
   layerGroups: ILayerGroup<string>[];
 }
 
@@ -31,9 +29,7 @@ export const DesktopFilters = ({
   areFiltersDefault,
   onResetFiltersClick,
   layerFilter,
-  sportGroundFilter,
   districtFilter,
-  tagFilter,
   layerGroups,
 }: IDesktopFiltersProps) => {
   const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
@@ -84,45 +80,7 @@ export const DesktopFilters = ({
           ))}
         </Select>
 
-        <Select
-          className="w-full"
-          value={sportGroundFilter.activeKeys}
-          isMultiple
-          onChange={(value) => sportGroundFilter.setActiveOnly(value ?? [])}
-          onReset={() => sportGroundFilter.setActiveAll(false)}
-          renderValue={({ values }) => (
-            <SelectValueRenderer
-              values={values}
-              placeholder={t("filters.sportGround.placeholder")}
-              multiplePlaceholder={`${t("filters.sportGround.multipleDistricts")} (${
-                values.length
-              })`}
-            />
-          )}
-        >
-          {sportGroundFilter.keys.map((sportGround) => (
-            <SelectOption key={sportGround} value={sportGround}>
-              {sportGround}
-            </SelectOption>
-          ))}
-        </Select>
       </div>
-
-      <TagFilter
-        title={t("filters.tag.title")}
-        values={tagFilter.values.map((tag) => ({
-          key: tag.key,
-          label: t(`filters.tag.tags.${tag.key}`),
-          isActive: tag.isActive,
-        }))}
-        onTagClick={(tag) => {
-          if (tagFilter.activeKeys.length == tagFilter.values.length) {
-            tagFilter.setActiveOnly(tag);
-          } else if (!(tagFilter.activeKeys.length == 1 && tagFilter.activeKeys[0] == tag)) {
-            tagFilter.toggleActive(tag);
-          }
-        }}
-      />
 
       <Divider className="mx-6" />
 
