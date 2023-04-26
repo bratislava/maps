@@ -71,47 +71,11 @@ const getKind = (kind: string): Kind => {
   }
 };
 
-export const processData = (rawDataFeatures: Feature[], rawDataAltFeatures: Feature[]) => {
+export const processData = () => {
   let GLOBAL_ID = 0;
   const data: FeatureCollection = addDistrictPropertyToLayer({
     type: "FeatureCollection",
     features: [
-      ...rawDataFeatures.map((feature) => {
-        GLOBAL_ID++;
-        const layer = "sportGrounds";
-        const tags = [getKind(feature.properties?.kind ?? feature.properties?.type)];
-        const icon = getKind(feature.properties?.kind ?? feature.properties?.type);
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            tags,
-            layer,
-            icon,
-            id: GLOBAL_ID,
-          },
-        } as Feature;
-      }),
-      ...rawDataAltFeatures.map((feature) => {
-        GLOBAL_ID++;
-        const layer = "sportGrounds";
-        const oldKind = feature.properties?.kind;
-        const tags = [getKind(feature.properties?.kind ?? feature.properties?.type)];
-        const icon = getKind(feature.properties?.kind ?? feature.properties?.type);
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            tags,
-            layer,
-            icon,
-            oldKind,
-            id: GLOBAL_ID,
-          },
-        } as Feature;
-      }),
       ...rawDataCvicko.features.map((feature) => {
         GLOBAL_ID++;
         const layer = "cvicko";

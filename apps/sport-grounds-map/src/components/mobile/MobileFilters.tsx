@@ -21,9 +21,7 @@ export interface IMobileFiltersProps {
   activeFilters: IActiveFilter[];
   onResetFiltersClick: () => void;
   districtFilter: IFilterResult<string>;
-  tagFilter: IFilterResult<string>;
   layerFilter: IFilterResult<any>;
-  sportGroundFilter: IFilterResult<any>;
   layerGroups: ILayerGroup<string>[];
 }
 
@@ -34,8 +32,6 @@ export const MobileFilters = ({
   activeFilters,
   onResetFiltersClick,
   districtFilter,
-  sportGroundFilter,
-  tagFilter,
   layerGroups,
   layerFilter,
 }: IMobileFiltersProps) => {
@@ -83,9 +79,8 @@ export const MobileFilters = ({
               <SelectValueRenderer
                 values={values}
                 placeholder={t("filters.district.placeholder")}
-                multiplePlaceholder={`${t("filters.district.multipleDistricts")} (${
-                  values.length
-                })`}
+                multiplePlaceholder={`${t("filters.district.multipleDistricts")} (${values.length
+                  })`}
               />
             )}
           >
@@ -96,50 +91,8 @@ export const MobileFilters = ({
             ))}
           </Select>
 
-          <Select
-            noBorder
-            className="w-full"
-            buttonClassName="px-3"
-            placeholder={t("filters.sportGround.placeholder")}
-            value={sportGroundFilter.activeKeys}
-            isMultiple
-            onChange={(value) => sportGroundFilter.setActiveOnly(value ?? [])}
-            onReset={() => sportGroundFilter.setActiveAll(false)}
-            renderValue={({ values }) => (
-              <SelectValueRenderer
-                values={values}
-                placeholder={t("filters.sportGround.placeholder")}
-                multiplePlaceholder={`${t("filters.sportGround.multipleDistricts")} (${
-                  values.length
-                })`}
-              />
-            )}
-          >
-            {sportGroundFilter.keys.map((sportGround) => (
-              <SelectOption key={sportGround} value={sportGround}>
-                {sportGround}
-              </SelectOption>
-            ))}
-          </Select>
         </div>
 
-        <div className="mt-3">
-          <TagFilter
-            title={t("filters.tag.title")}
-            values={tagFilter.values.map((tag) => ({
-              key: tag.key,
-              label: t(`filters.tag.tags.${tag.key}`),
-              isActive: tag.isActive,
-            }))}
-            onTagClick={(tag) => {
-              if (tagFilter.activeKeys.length == tagFilter.values.length) {
-                tagFilter.setActiveOnly(tag);
-              } else if (!(tagFilter.activeKeys.length == 1 && tagFilter.activeKeys[0] == tag)) {
-                tagFilter.toggleActive(tag);
-              }
-            }}
-          />
-        </div>
       </div>
 
       <Divider className="mx-6" />

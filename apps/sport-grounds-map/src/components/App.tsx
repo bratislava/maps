@@ -25,9 +25,6 @@ import { DesktopFilters } from "./desktop/DesktopFilters";
 import { MobileFilters } from "./mobile/MobileFilters";
 import { MobileHeader } from "./mobile/MobileHeader";
 
-import RAW_DATA_SPORT_GROUNDS_ALT_FEATURES from "../data/sport-grounds/sport-grounds-alt-data";
-import RAW_DATA_SPORT_GROUNDS_FEATURES from "../data/sport-grounds/sport-grounds-data";
-
 import { ILayerGroup, Modal, Sidebar } from "@bratislava/react-maps-ui";
 import { usePrevious } from "@bratislava/utils";
 import DISTRICTS_STYLE from "../data/districts/districts";
@@ -46,20 +43,15 @@ export const App = () => {
   const [data, setData] = useState<FeatureCollection | null>(null);
 
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
-  const [uniqueTypes, setUniqueTypes] = useState<string[]>([]);
 
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
   const [isLegendOpen, setLegendOpen] = useState(false);
 
   useEffect(() => {
-    const { data, uniqueDistricts, uniqueTypes } = processData(
-      RAW_DATA_SPORT_GROUNDS_FEATURES,
-      RAW_DATA_SPORT_GROUNDS_ALT_FEATURES,
-    );
+    const { data, uniqueDistricts } = processData();
 
     setData(data);
     setUniqueDistricts(uniqueDistricts);
-    setUniqueTypes(uniqueTypes);
   }, []);
 
   const mapRef = useRef<MapHandle>(null);
@@ -75,64 +67,11 @@ export const App = () => {
     keys: uniqueDistricts,
   });
 
-  const tagFilter = useFilter({
-    property: "tags",
-    keys: uniqueTypes,
-    comparator: useCallback(({ value, property }: { value: string; property: string }) => {
-      return ["in", value, ["get", property]];
-    }, []),
-    defaultValues: useMemo(
-      () => uniqueTypes.reduce((prev, curr) => ({ ...prev, [curr]: true }), {}),
-      [uniqueTypes],
-    ),
-  });
-
-  const sportGroundFilter = useFilter({
-    property: "kind",
-    keys: useMemo(
-      () => [
-        "zimný štadión",
-        "športová hala",
-        "plaváreň",
-        "fitness",
-        "sauna",
-        "multifunkčný areál",
-        "kúpalisko",
-        "workoutové ihrisko",
-        "bežecká dráha",
-        "spevnená plocha",
-        "atletická dráha",
-        "basketbalové ihrisko",
-        "futbalové ihrisko",
-        "klzisko",
-        "lezecká stena",
-        "telocvičňa",
-        "športový areál",
-        "futbalový štadión",
-        "štadión",
-        "tenis",
-        "stolný tenis",
-        "petangové ihrisko",
-        "strelnica",
-        "volejbalové ihrisko",
-        "vodná plocha",
-        "pumptrack",
-        "skatepark",
-        "tanečné štúdio",
-        "dopravné ihrisko",
-        "wellness",
-        "jóga",
-      ],
-      [],
-    ),
-  });
-
   const layerFilter = useFilter({
     property: "layer",
-    keys: useMemo(() => ["sportGrounds", "cvicko", "swimmingPools"], []),
+    keys: useMemo(() => ["swimmingPools", "cvicko"], []),
     defaultValues: useMemo(
       () => ({
-        sportGrounds: false,
         cvicko: true,
         swimmingPools: true,
       }),
@@ -166,13 +105,6 @@ export const App = () => {
         mapToActive: (activeDistricts) => ({
           title: t("filters.district.title"),
           items: activeDistricts,
-        }),
-      },
-      {
-        filter: tagFilter,
-        mapToActive: (activeTypes) => ({
-          title: t("filters.tag.title"),
-          items: activeTypes,
         }),
       },
       {
@@ -221,7 +153,6 @@ export const App = () => {
 
   const layerToIconMappingObject: { [layer: string]: IIconProps["icon"] } = useMemo(
     () => ({
-      sportGrounds: "table-tennis",
       cvicko: "cvicko",
       swimmingPools: "pool",
     }),
@@ -365,8 +296,6 @@ export const App = () => {
             activeFilters={combinedFilter.active}
             onResetFiltersClick={combinedFilter.reset}
             districtFilter={districtFilter}
-            tagFilter={tagFilter}
-            sportGroundFilter={sportGroundFilter}
             layerFilter={layerFilter}
             layerGroups={layerGroups}
           />
@@ -407,8 +336,6 @@ export const App = () => {
             onResetFiltersClick={combinedFilter.reset}
             districtFilter={districtFilter}
             layerFilter={layerFilter}
-            sportGroundFilter={sportGroundFilter}
-            tagFilter={tagFilter}
             layerGroups={layerGroups}
           />
         </Slot>
