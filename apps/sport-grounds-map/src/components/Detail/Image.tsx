@@ -5,9 +5,10 @@ import cx from "classnames";
 export interface IImageProps {
   src?: string;
   alt?: string;
+  isMobile?: boolean;
 }
 
-export const Image = ({ src, alt }: IImageProps) => {
+export const Image = ({ src, alt, isMobile }: IImageProps) => {
   const { t } = useTranslation();
   const [isError, setError] = useState(false);
 
@@ -32,6 +33,11 @@ export const Image = ({ src, alt }: IImageProps) => {
         alt={alt}
         onError={() => setError(true)}
       />
+      {isMobile &&
+        <div className="fixed top-3 left-0 right-0 flex items-center justify-center z-20">
+          <div className="w-12 h-[4px] rounded-full bg-[#D9D9D9]"></div>
+        </div>
+      }
     </div>
   );
 };
