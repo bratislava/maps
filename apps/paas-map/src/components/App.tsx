@@ -324,6 +324,18 @@ export const App = () => {
       mapInformation={{
         title: t("informationModal.title"),
         description: t("informationModal.description"),
+        privatePartners: [
+          {
+            name: "tesco",
+            link: "https://tesco.sk/",
+            image: "logos/tesco.svg",
+          },
+          {
+            name: "palace",
+            link: "https://www.shoppingpalace.sk/",
+            image: "logos/palace.svg",
+          },
+        ],
         partners: [
           {
             name: "bratislava",
