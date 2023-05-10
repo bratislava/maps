@@ -45,7 +45,7 @@ export const CvickoDetail = ({ feature, isMobile }: CvickoDetailProps) => {
         </a>
       </div>
 
-      <div className="flex p-6 pt-12 pb-26 md:pb-8 md:pt-12 flex-col space-y-6">
+      <div className="flex pl-4 pr-4 pt-12 pb-5 md:pb-5 md:pt-12 flex-col space-y-6">
         <a
           className="text-primary dark:text-primary-soft underline font-semibold"
           href={feature.properties?.["navigate"]}
@@ -64,7 +64,7 @@ export const CvickoDetail = ({ feature, isMobile }: CvickoDetailProps) => {
           <div className="flex flex-wrap gap-2">
             {feature.properties?.["tags"]?.map((tag: unknown) => (
               <Tag
-                className="font-semibold bg-primary-soft dark:text-background-darkmode"
+                className="font-semibold bg-primary-azure dark:text-background-darkmode"
                 key={`${tag}`}
               >
                 {mainT(`filters.tag.tags.${tag}`)}

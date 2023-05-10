@@ -29,7 +29,7 @@ export interface IIconProps {
 export const Icon = ({ icon, size = 24, isActicve = false }: IIconProps) => {
   const IconSvgComponent = icons.find((i) => i.name === icon)?.component;
 
-  const svgBorder = !isActicve ? "" : 'border-8 border-primary-soft';
+  const svgBorder = !isActicve ? "" : 'border-[10px] border-primary-soft';
 
   const svgBackground: string = !isActicve
     ? `bg-primary text-primary`
