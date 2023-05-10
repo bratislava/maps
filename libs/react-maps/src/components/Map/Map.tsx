@@ -685,10 +685,36 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
                   </div>
                   <Divider className="mx-6" />
                 </>
-
-
               }
               <div className="px-6">{mapInformation.description}</div>
+
+              {mapInformation?.privatePartners && mapInformation?.privatePartners.length > 0 &&
+                <div>
+                  <div className="pl-6 font-medium">Partneri:</div>
+                  <div className="flex flex-wrap gap-4 px-6 py-2">
+                    {mapInformation.privatePartners.map((partner, index) => (
+                      <a
+                        key={index}
+                        target="_blank"
+                        href={partner.link}
+                        className="block"
+                        rel="noreferrer"
+                      >
+                        <img
+                          className="object-contain"
+                          style={{
+                            height: partner.height ?? 36,
+                            width: partner.width ?? 'auto',
+                          }}
+                          src={partner.image}
+                          alt={partner.name}
+                        />
+                      </a>
+                    ))}
+                  </div>
+                  <Divider className="mx-6" />
+                </div>
+              }
               <div className="flex flex-wrap items-center justify-center gap-4 px-6 py-2">
                 {mapInformation.partners.map((partner, index) => (
                   <a

@@ -62,6 +62,7 @@ interface IMapInformation {
   title: string;
   description: ReactNode;
   partners: Array<IPartner>;
+  privatePartners?: Array<IPartner>;
   footer: ReactNode;
   infoNotification?: IMapInfoNotification;
 }
