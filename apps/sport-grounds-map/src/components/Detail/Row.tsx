@@ -14,7 +14,7 @@ export const Row = ({
   } else {
     return (
       <motion.div className={className} layoutId={label}>
-        <div className="font-light text-[14px]">{label}</div>
+        <div className="font-semibold">{label}</div>
         {text.startsWith("http") ? (
           <a href={text} className="underline font-semibold" target="_blank" rel="noreferrer">
             {new URL(text).hostname.replace("www.", "")}
@@ -24,7 +24,7 @@ export const Row = ({
             {text}
           </a>
         ) : (
-          <div className="font-semibold">{text}</div>
+          <div className="">{text}</div>
         )}
       </motion.div>
     );

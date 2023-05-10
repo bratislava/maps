@@ -1,9 +1,8 @@
-import React, { useCallback, useRef, useState } from "react";
+import { forwardRef } from "react";
 import { Feature, Point } from "geojson";
-import SportGroundDetail from "./SportGroundDetail";
+import { Detail as MapDetail } from "@bratislava/react-maps";
 import SwimmingPoolDetail from "./SwimmingPoolDetail";
 import CvickoDetail from "./CvickoDetail";
-import { BottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
 
 export interface DetailProps {
   feature: Feature<Point> | null;
@@ -11,48 +10,44 @@ export interface DetailProps {
   isMobile: boolean;
 }
 
-export const Detail = ({ feature, onClose, isMobile }: DetailProps) => {
-  const sheetRef = useRef<BottomSheetRef>(null);
+export const Detail = forwardRef<HTMLDivElement, DetailProps>(
+  ({ feature, isMobile, onClose }, forwardedRef) => {
 
-  const [currentSnap, setCurrentSnap] = useState(0);
+    if (!feature) return null;
 
-  const onSnapChange = useCallback(() => {
-    requestAnimationFrame(() => setCurrentSnap(sheetRef.current?.height === 80 ? 1 : 0));
-  }, []);
+    const detail = (
+      <>
+        {feature?.properties?.layer === "swimmingPools" ? (
+          <SwimmingPoolDetail isMobile={isMobile} feature={feature} onClose={onClose} />
+        ) : feature?.properties?.layer === "cvicko" ? (
+          <CvickoDetail isMobile={isMobile} feature={feature} onClose={onClose} />
+        ) : null}
+      </>
+    );
 
-  if (!feature) return null;
+    return (
+      <MapDetail
+        isBottomSheet={isMobile}
+        hideBottomSheetHeader={true}
+        onClose={onClose}
+        isVisible={!!feature}
+        bottomSheetSnapPoints={[84, "100%", "100%"]}
+        bottomSheetInitialSnap={1}
+      >
+        <div ref={forwardedRef} >
+          {feature?.properties &&
+            detail
+          }
 
-  const detail = (
-    <>
-      {feature?.properties?.layer === "sportGrounds" ? (
-        <SportGroundDetail isExpanded={currentSnap === 0} feature={feature} onClose={onClose} />
-      ) : feature?.properties?.layer === "swimmingPools" ? (
-        <SwimmingPoolDetail isExpanded={currentSnap === 0} feature={feature} onClose={onClose} />
-      ) : feature?.properties?.layer === "cvicko" ? (
-        <CvickoDetail isExpanded={currentSnap === 0} feature={feature} onClose={onClose} />
-      ) : null}
-      {/* <pre className="p-2 h-72 bg-black text-white overflow-auto">
-        <code>{JSON.stringify(feature?.properties, null, 2)}</code>
-      </pre> */}
-    </>
-  );
+        </div>
+      </MapDetail>
+    )
+  });
 
-  return isMobile ? (
-    <BottomSheet
-      ref={sheetRef}
-      snapPoints={({ maxHeight }) => [maxHeight, 80]}
-      defaultSnap={({ snapPoints }) => snapPoints[0]}
-      blocking={false}
-      onSpringStart={onSnapChange}
-      className="relative z-30"
-      open={true}
-      expandOnContentDrag
-    >
-      {detail}
-    </BottomSheet>
-  ) : (
-    detail
-  );
-};
+Detail.displayName = "Detail";
 
 export default Detail;
+
+
+
+
