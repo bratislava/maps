@@ -13,6 +13,7 @@ export default {
         primary: {
           DEFAULT: colors.purple,
           soft: colors.purpleSoft,
+          azure: colors.azure,
         },
       },
     },

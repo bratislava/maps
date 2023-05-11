@@ -1,5 +1,6 @@
 export const colors = {
     purpleLight: "#5158D8",
-    purple: "#4349AA",
-    purpleSoft: "#C7CAFF",
+    purple: "#07038C",
+    purpleSoft: "#aeadcf",
+    azure: "#D0ECF8"
 }

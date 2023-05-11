@@ -1,18 +1,22 @@
 import { Feature, Point } from "geojson";
 import { useTranslation } from "react-i18next";
-import { Chevron, X } from "@bratislava/react-maps-icons";
+import { Chevron } from "@bratislava/react-maps-icons";
 import { Row } from "./Row";
 import { Tag } from "@bratislava/react-maps-ui";
 import { Image } from "./Image";
 
 import { ReactComponent as ToiletsIcon } from "../../assets/icons/toilets.svg";
 import { ReactComponent as ShowerIcon } from "../../assets/icons/shower.svg";
-import { ReactComponent as TransportIcon } from "../../assets/icons/tranport.svg";
+import { ReactComponent as TransportIcon } from "../../assets/icons/transport.svg";
 import { ReactComponent as BikeIcon } from "../../assets/icons/bike.svg";
 import { ReactComponent as ParkingIcon } from "../../assets/icons/parking.svg";
 import { ReactComponent as PlaygroundIcon } from "../../assets/icons/playground.svg";
 import { ReactComponent as BufetIcon } from "../../assets/icons/bufet.svg";
 import { ReactComponent as ChangingRoomIcon } from "../../assets/icons/changingroom.svg";
+import { ReactComponent as ChildrenPoolIcon } from "../../assets/icons/childenpool.svg";
+import { ReactComponent as WellnessIcon } from "../../assets/icons/wellness.svg";
+import { ReactComponent as RestaurantIcon } from "../../assets/icons/restauracia.svg";
+
 
 
 export interface SwimmingPoolDetailProps {
@@ -49,6 +53,12 @@ export const SwimmingPoolDetail = ({ feature, isMobile }: SwimmingPoolDetailProp
         return <BufetIcon width={iconSize} height={iconSize} />
       case "šatňa":
         return <ChangingRoomIcon width={iconSize} height={iconSize} />
+      case "reštaurácia":
+        return <RestaurantIcon width={iconSize} height={iconSize} />
+      case "wellness":
+        return <WellnessIcon width={iconSize} height={iconSize} />
+      case "detský bazén":
+        return <ChildrenPoolIcon width={iconSize} height={iconSize} />
       default: null
     }
   }
@@ -77,7 +87,7 @@ export const SwimmingPoolDetail = ({ feature, isMobile }: SwimmingPoolDetailProp
           </a>
         </div>
 
-        <div className="flex p-6 pt-12 pb-26 md:pb-8 md:pt-12 flex-col space-y-6">
+        <div className="flex pl-4 pr-4 pt-12 pb-5 md:pb-5 md:pt-12 flex-col space-y-6">
           <a
             className="text-primary dark:text-primary-soft underline font-bold"
             href={feature.properties?.["navigate"]}
@@ -103,7 +113,7 @@ export const SwimmingPoolDetail = ({ feature, isMobile }: SwimmingPoolDetailProp
             <div className="flex flex-wrap gap-2">
               {feature.properties?.tags?.map((tag: unknown) => (
                 <Tag
-                  className="font-semibold bg-primary-soft dark:text-background-darkmode"
+                  className="font-semibold bg-primary-azure dark:text-background-darkmode"
                   key={`${tag}`}
                 >
                   {mainT(`filters.tag.tags.${tag}`)}
