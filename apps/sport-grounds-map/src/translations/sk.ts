@@ -52,6 +52,7 @@ export default {
         "vodné aktivity": "vodné aktivity",
         gym: "posilňovňa",
         water: "voda",
+        pool: "bazén",
         cvicko: "cvičko",
       },
     },
