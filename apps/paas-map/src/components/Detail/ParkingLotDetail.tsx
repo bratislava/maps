@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Row } from "./Row";
-import { ReactComponent as WarningIcon } from "../../assets/icons/warning.svg";
 
 export const parkingLotPropertiesSchema = z.object({
   Nazov_sk: z.string(),
@@ -41,6 +40,8 @@ export const ParkingLotDetail = ({ properties }: ParkingLotDetailProps) => {
     i18n: { language },
   } = useTranslation("translation", { keyPrefix: "layers.parking-lots.detail" });
 
+  const infoColorClass = properties["Stav_en"] !== 'inactive' ? 'bg-primary/20 dark:bg-primary/20' : 'bg-[#FAE5E5] dark:bg-[#FAE5E5]'
+
   const title = useMemo(() => {
     return t(`title.${properties.icon}`);
   }, [t, properties.icon]);
@@ -62,7 +63,7 @@ export const ParkingLotDetail = ({ properties }: ParkingLotDetailProps) => {
       <Row label={t("toCentre")} text={properties["Dojazdova_doba"]} />
 
       {(properties["Informacia_RPK_sk"] || properties["Informacia_NPK_sk"]) && (
-        <Note className="bg-primary/20 dark:bg-primary/20">
+        <Note className={infoColorClass}>
           {properties["Informacia_RPK_sk"] && (
             <div className="font-light text-[14px]">
               {language === "sk"
