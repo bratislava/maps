@@ -6,8 +6,13 @@ import "../styles.css";
 
 // maps
 import {
-  Layout, Map, MapHandle, SearchBar, Slot, ThemeController,
-  ViewportController
+  Layout,
+  Map,
+  MapHandle,
+  SearchBar,
+  Slot,
+  ThemeController,
+  ViewportController,
 } from "@bratislava/react-maps";
 
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
@@ -129,12 +134,12 @@ export const App = () => {
   useEffect(() => {
     districtFilter.activeKeys.length == 0
       ? mapRef.current?.changeViewport({
-        center: {
-          lat: 48.148598,
-          lng: 17.107748,
-        },
-        zoom: 10.75,
-      })
+          center: {
+            lat: 48.1688598,
+            lng: 17.107748,
+          },
+          zoom: !isMobile ? 12 : 10.4,
+        })
       : mapRef.current?.fitDistrict(districtFilter.activeKeys);
   }, [districtFilter.activeKeys, mapRef]);
 
@@ -159,7 +164,7 @@ export const App = () => {
     [],
   );
 
-  const layerGroups: ILayerGroup<typeof layerFilter.keys[0]>[] = useMemo(
+  const layerGroups: ILayerGroup<(typeof layerFilter.keys)[0]>[] = useMemo(
     () =>
       layerFilter.keys.map((layerKey) => ({
         label: t(`layers.${layerKey}.title`),
@@ -230,7 +235,7 @@ export const App = () => {
       />
 
       <Filter expression={combinedFilter.expression}>
-        <Cluster features={data?.features ?? []} radius={48}>
+        <Cluster features={data?.features ?? []} radius={24}>
           {({ features, lng, lat, key, clusterExpansionZoom }) =>
             features.length === 1 ? (
               <Marker

@@ -20,7 +20,7 @@ export const Marker = ({ feature, onClick, isSelected }: IMarkerProps) => {
 
   return (
     <MapMarker ignoreFilters onClick={onClickHandler} feature={feature}>
-      <Icon isActicve={isSelected} size={64} icon={feature.properties?.icon ?? ""} />
+      <Icon isActicve={isSelected} size={48} icon={feature.properties?.icon ?? ""} />
     </MapMarker>
   );
 };
