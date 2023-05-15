@@ -16,8 +16,8 @@ export const Funnel = ({
     <div className={className}>
       <svg
         style={style}
-        width={size}
-        height={size}
+        width={22}
+        height={20}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
