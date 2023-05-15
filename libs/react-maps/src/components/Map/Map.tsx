@@ -39,6 +39,7 @@ import '../../styles/mapbox-corrections.css';
 import i18n from '../../utils/i18n';
 
 import { defaultInitialViewport } from '@bratislava/react-mapbox/src/utils/constants';
+import { isMobile as isMobileDevice } from 'react-device-detect';
 import { getFeatureDistrict } from '../../utils/districts';
 import { Slot } from '../Layout/Slot';
 import { SearchMarker } from '../SearchMarker/SearchMarker';
@@ -482,6 +483,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
     // DISPLAY/HIDE WARNING MODAL TO ROTATE DEVICE TO PORTRAIT MODE
     useEffect(() => {
       if (
+        isMobileDevice &&
         (containerWidth ?? 0) < 900 &&
         (containerWidth ?? 0) > (containerHeight ?? 0)
       ) {
@@ -627,32 +629,33 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
           </mapContext.Provider>
 
           <Modal
-            overlayClassName="max-w-xs"
+            overlayClassName="max-w-xs !p-0"
             isOpen={isDisplayLandscapeModal}
             hideCloseButtonIcon={true}
           >
-            <div className="grid gap-2">
-              <div className="flex gap-2">
-                <div className="grow">
+            <div className="gap-6 p-6">
+              <div className="grid">
+                <div className="flex">
+                  <div className="grow">
+                  </div>
+                  <div className="mb-3 grow-0">
+                    <InformationAlt className="rounded-full border-[16px] border-solid border-[#EBEBEB] bg-[#333333] !text-[#ffffff]" size="default" />
+                  </div>
+                  <div className="relative grow cursor-pointer" onClick={() => setDisplayLandscapeModal(false)}>
+                    <X size="sm" className='absolute top-0 right-0 float-right grow' />
+                  </div>
                 </div>
-                <div className="">
-                  <InformationAlt className="rounded-full border-[16px] border-solid border-[#EBEBEB] bg-[#333333] !text-[#ffffff]" size="default" />
+              </div>
+              <div className="flex flex-col text-center">
+                <div>
+                  V niektorých prípadoch sa mapa nemusí zobraziť správne. Na mobilnom zariadení je mapu najlepšie používať na výšku.
                 </div>
-                <div className="grow">
-                </div>
-                <div className="cursor-pointer pt-[2px]" onClick={() => setDisplayLandscapeModal(false)}>
-                  <X size="sm" />
+                <div onClick={() => setDisplayLandscapeModal(false)} className="mt-[24px] cursor-pointer font-semibold">
+                  Zrušiť
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-2 pb-4 text-center">
-              <div>
-                V niektorých prípadoch sa mapa nemusí zobraziť správne. Na mobilnom zariadení je mapu najlepšie používať na výšku.
-              </div>
-              <div onClick={() => setDisplayLandscapeModal(false)} className="mt-[24px] cursor-pointer font-semibold">
-                Zrušiť
-              </div>
-            </div>
+
           </Modal>
 
           <Modal
@@ -682,10 +685,36 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
                   </div>
                   <Divider className="mx-6" />
                 </>
-
-
               }
               <div className="px-6">{mapInformation.description}</div>
+
+              {mapInformation?.privatePartners && mapInformation?.privatePartners.length > 0 &&
+                <div>
+                  <div className="pl-6 font-medium">Partneri:</div>
+                  <div className="flex flex-wrap gap-4 px-6 py-2">
+                    {mapInformation.privatePartners.map((partner, index) => (
+                      <a
+                        key={index}
+                        target="_blank"
+                        href={partner.link}
+                        className="block"
+                        rel="noreferrer"
+                      >
+                        <img
+                          className="object-contain"
+                          style={{
+                            height: partner.height ?? 36,
+                            width: partner.width ?? 'auto',
+                          }}
+                          src={partner.image}
+                          alt={partner.name}
+                        />
+                      </a>
+                    ))}
+                  </div>
+                  <Divider className="mx-6" />
+                </div>
+              }
               <div className="flex flex-wrap items-center justify-center gap-4 px-6 py-2">
                 {mapInformation.partners.map((partner, index) => (
                   <a

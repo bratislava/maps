@@ -1,8 +1,7 @@
-import React, { MouseEvent, useCallback } from "react";
+import { MouseEvent, useCallback } from "react";
 import { Marker as MapMarker } from "@bratislava/react-mapbox";
 import { Feature, Point } from "geojson";
 import { Icon } from "./Icon";
-import cx from "classnames";
 
 export interface IMarkerProps {
   feature: Feature<Point>;
@@ -21,14 +20,7 @@ export const Marker = ({ feature, onClick, isSelected }: IMarkerProps) => {
 
   return (
     <MapMarker ignoreFilters onClick={onClickHandler} feature={feature}>
-      <div
-        className={cx(
-          "relative transform active:scale-75 transition-transform cursor-pointer w-12 h-12 rounded-full text-white flex items-center justify-center shadow-lg",
-          { "bg-white text-primary z-50": isSelected, "bg-primary text-white": !isSelected },
-        )}
-      >
-        <Icon size={48} icon={feature.properties?.icon ?? ""} />
-      </div>
+      <Icon isActicve={isSelected} size={48} icon={feature.properties?.icon ?? ""} />
     </MapMarker>
   );
 };
