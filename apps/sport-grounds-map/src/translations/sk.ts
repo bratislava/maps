@@ -1,6 +1,6 @@
 export default {
-  title: "Mapa športu v Bratislave",
-  tabTitle: "Mapa športu v Bratislave",
+  title: "Kúpaliská a Cvičko",
+  tabTitle: "Kúpaliská a Cvičko",
   search: "Hľadať",
   close: "Zavrieť",
   loading: "Načítavanie",
