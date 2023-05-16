@@ -11,7 +11,6 @@ export const processData = ({
   // rawRepairsPolygonsData,
 }: IProcessDataProps) => {
 
-
   const setStatus = (startTimestamp: number, endTimestamp: number): TStatus => {
     const currentTimestamp = Date.now();
     return startTimestamp > currentTimestamp
@@ -45,6 +44,7 @@ export const processData = ({
         type: originalProperties.druh_vedenia.split(','),
         layer: "disorders",
         icon: "disorder",
+        displayFeature: true,
       }
 
       return {
@@ -61,7 +61,7 @@ export const processData = ({
       const originalProperties = { ...feature.properties as IDigupsAndClosuresOriginalProps };
       const layer = ["čiastočná", "úplná"].includes(originalProperties?.uzavierka) ? "closures" : "digups";
 
-      const startTimestamp = originalProperties.datum_vzniku;
+      const startTimestamp = originalProperties.potvrdeny_termin_realizacie || originalProperties.datum_vzniku;
       const endTimestamp = originalProperties.termin_finalnej_upravy;
 
       const properties: IFeatureProps = {
@@ -83,6 +83,7 @@ export const processData = ({
         icon: layer === "closures" ? "closure" : "digup",
         objectId: originalProperties.objectid,
         infoForResidents: originalProperties?.informacie,
+        displayFeature: originalProperties.zobrazovanie === "Zobrazovat",
       }
 
       return {
@@ -96,14 +97,14 @@ export const processData = ({
   const digupsData: FeatureCollection = {
     ...digupsAndClosuresData,
     features: digupsAndClosuresData.features.filter(
-      (feature) => feature.properties?.layer === "digups",
+      (feature) => feature.properties?.layer === "digups" && feature.properties.displayFeature,
     ),
   };
 
   const closuresData: FeatureCollection = {
     ...digupsAndClosuresData,
     features: digupsAndClosuresData.features.filter(
-      (feature) => feature.properties?.layer === "closures",
+      (feature) => feature.properties?.layer === "closures" && feature.properties.displayFeature,
     ),
   };
 
