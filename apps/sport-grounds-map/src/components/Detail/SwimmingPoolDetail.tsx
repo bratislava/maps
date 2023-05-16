@@ -2,7 +2,7 @@ import { Feature, Point } from "geojson";
 import { useTranslation } from "react-i18next";
 import { Chevron } from "@bratislava/react-maps-icons";
 import { Row } from "./Row";
-import { Tag } from "@bratislava/react-maps-ui";
+import { Popover, Tag } from "@bratislava/react-maps-ui";
 import { Image } from "./Image";
 
 import { ReactComponent as ToiletsIcon } from "../../assets/icons/toilets.svg";
@@ -24,6 +24,19 @@ export interface SwimmingPoolDetailProps {
   onClose: () => void;
   isMobile: boolean;
 }
+
+type TService = "toalety"
+  | "sprcha"
+  | "šatňa"
+  | "ihrisko"
+  | "bufet"
+  | "parkovanie"
+  | "bicykel"
+  | "verejná doprava"
+  | "wellness"
+  | "reštaurácia"
+  | "prezliekareň"
+  | "detský bazén"
 
 export const SwimmingPoolDetail = ({ feature, isMobile }: SwimmingPoolDetailProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "layers.swimmingPools.detail" });
@@ -102,8 +115,26 @@ export const SwimmingPoolDetail = ({ feature, isMobile }: SwimmingPoolDetailProp
           <div>
             <div className="mb-1 font-semibold">{t(`services`)}</div>
             <div className="grid grid-cols-10 grid-rows-1">
-              {feature.properties?.services?.map((service: string) => {
-                return setServiceIcons(service)
+              {feature.properties?.services?.map((service: TService) => {
+                const icon = setServiceIcons(service);
+                return (icon &&
+                  <Popover
+                    isSmall={true}
+                    key={service}
+                    button={({ open, close }) => (
+                      <button
+                        onMouseEnter={open}
+                        onFocus={open}
+                        onMouseLeave={close}
+                        onMouseDown={() => close()}
+                      >
+                        {setServiceIcons(service)}
+                      </button>
+                    )}
+                    panel={<div>{mainT(service)}</div>}
+                    allowedPlacements={['top']}
+                  />
+                )
               })}
             </div>
           </div>
