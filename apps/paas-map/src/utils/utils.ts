@@ -3,7 +3,6 @@ import intersect from "@turf/intersect";
 import booleanIntersects from "@turf/boolean-intersects";
 import area from "@turf/area";
 import { Polygon, Point } from "@turf/helpers";
-import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 
 const zoneMapping = {
   SM1: "SM1",
@@ -189,8 +188,8 @@ export const processData = ({
               feature.properties?.["Typ_en"] == "P+R"
                 ? "p-plus-r"
                 : feature.properties?.["Typ_en"] == "garage"
-                ? "garage"
-                : "parking-lot";
+                  ? "garage"
+                  : "parking-lot";
 
             const kind =
               type == "p-plus-r" ? "p-plus-r" : type == "garage" ? "garages" : "parking-lots";
