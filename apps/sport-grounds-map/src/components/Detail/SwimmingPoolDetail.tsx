@@ -68,7 +68,7 @@ export const SwimmingPoolDetail = ({ feature, isMobile }: SwimmingPoolDetailProp
       <>
         <Image src={imgSrc} isMobile={isMobile} />
 
-        <div className="absolute top-[232px] left-6">
+        <div className="absolute top-[232px] left-4">
           <a
             href={feature.properties?.["buyOnline"]}
             target="_blank"
