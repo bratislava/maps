@@ -1,6 +1,6 @@
 export default {
-  title: "Mapa uzávierok a porúch",
-  tabTitle: "Mapa uzávierok a porúch v Bratislave",
+  title: "Mapa obmedzení a porúch",
+  tabTitle: "Mapa obmedzení a porúch v Bratislave",
   search: "Hľadať podľa ulice",
   close: "Zavrieť",
   filters: {
