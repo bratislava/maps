@@ -41,7 +41,6 @@ export const processData = () => {
       }),
     ],
   });
-}
 
   const uniqueDistricts: string[] = getUniqueValuesFromFeatures(data.features, "district");
   const uniqueTypes: string[] = getUniqueValuesFromFeatures(data.features, "tags");
