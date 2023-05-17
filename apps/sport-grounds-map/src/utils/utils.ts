@@ -27,7 +27,7 @@ export const processData = () => {
       ...rawDataPools.features.map((feature) => {
         GLOBAL_ID++;
         const layer = "swimmingPools";
-        const icon = "pool";
+        const icon = feature?.properties?.["Nazov_SK"] === "Areál zdravia Zlaté piesky" ? "water" : "pool";
         return {
           id: GLOBAL_ID,
           ...feature,
