@@ -73,6 +73,8 @@ export interface IDigupsAndClosuresOriginalProps extends ICommonOriginalProps {
     termin_finalnej_upravy_rozkop: number | null;
     uzavierka: TClosure;
     zhotovitel: string;
+    zobrazovanie: "Zobrazovat" | "Nezobrazovat";
+    potvrdeny_termin_realizacie?: number;
 }
 
 export interface IDisorderOriginalProps extends ICommonOriginalProps {
@@ -123,4 +125,5 @@ export interface IFeatureProps {
     status: TStatus;
     imageUrl?: string;
     originalProperties: IDigupsAndClosuresOriginalProps | IDisorderOriginalProps;
+    displayFeature: boolean;
 }

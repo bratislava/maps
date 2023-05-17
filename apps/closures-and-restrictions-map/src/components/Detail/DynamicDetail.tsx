@@ -19,6 +19,8 @@ interface IDetail {
     isMobile?: boolean;
 }
 
+type TAttachmentKeyword = "fotografie_miesta_poruchy" | "dokumenty" | "obchadzkove_trasy";
+
 export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, isMobile }) => {
     const [isModalOpen, setModalOpen] = useState(false);
 
@@ -53,7 +55,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
 
     const { t: mainT }: { t: (key: string) => string } = useTranslation();
 
-    const { data: attachments } = useArcgisAttachments(DIGUPS_URL, objectId || 0);
+    const { data: digupsAttachments } = useArcgisAttachments(DIGUPS_URL, objectId || 0);
 
     const { data: disordersAttachments } = useArcgisAttachments(
         DISORDERS_URL,
@@ -63,7 +65,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
     const filterAttachments = (
         attachments: Array<Attachment> | null,
         url: string,
-        attachementFilter: "fotografie_miesta_poruchy" | "dokumenty"): Array<string> => {
+        attachementFilter: TAttachmentKeyword): Array<string> => {
         const urlList: Array<string> = [];
         if (!attachments || attachments.length < 1) return urlList;
         const validAttachments = attachments.filter(a => a?.keywords === attachementFilter);
@@ -76,8 +78,11 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
     }
 
     const imageUrlList = layer === 'disorders' ? filterAttachments(disordersAttachments, DISORDERS_URL, 'fotografie_miesta_poruchy') : [];
-    const documentUrlList = layer === 'disorders' ? filterAttachments(disordersAttachments, DISORDERS_URL, 'dokumenty') : filterAttachments(attachments, DIGUPS_URL, 'dokumenty');
+    const documentUrlList = layer === 'disorders' ? filterAttachments(disordersAttachments, DISORDERS_URL, 'dokumenty') : filterAttachments(digupsAttachments, DIGUPS_URL, 'dokumenty');
+    const bypassRoutesUrlsList = layer !== 'disorders' && filterAttachments(digupsAttachments, DIGUPS_URL, 'obchadzkove_trasy') || [];
 
+    // TODO: IN TASK MP-162 REMOVE console log and display bypassRoutesUrlsList
+    console.log("bypassRoutesUrlsList", bypassRoutesUrlsList)
 
     const displayLocaleDate = (timeStamp: number | null, time: string | null = null): string => {
         if (!timeStamp) return '';
@@ -159,7 +164,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
             <Row label={t("owner")} text={owner} />
             <Row label={t("contractor")} text={contractor} />
 
-            {documentUrlList && documentUrlList.length > 0 && (
+            {layer !== 'disorders' && documentUrlList && documentUrlList.length > 0 && (
                 <div>
                     <div>{t("permission")}</div>
                     <div>
