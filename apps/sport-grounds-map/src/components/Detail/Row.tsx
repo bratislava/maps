@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-
 export const Row = ({
   label,
   text,
@@ -13,7 +11,7 @@ export const Row = ({
     return null;
   } else {
     return (
-      <motion.div className={className} layoutId={label}>
+      <div className={className}>
         <div className="font-semibold">{label}</div>
         {text.startsWith("http") ? (
           <a href={text} className="underline font-semibold" target="_blank" rel="noreferrer">
@@ -26,7 +24,7 @@ export const Row = ({
         ) : (
           <div className="">{text}</div>
         )}
-      </motion.div>
+      </div>
     );
   }
 };

@@ -15,14 +15,16 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
 
     const [snap, setSnap] = useState<number>(1)
 
+    const displayHeader = snap > 0 || !isMobile;
+
     if (!feature) return null;
 
     const detail = (
       <>
         {feature?.properties?.layer === "swimmingPools" ? (
-          <SwimmingPoolDetail isMobile={isMobile} feature={feature} onClose={onClose} displayHeader={snap > 0} />
+          <SwimmingPoolDetail isMobile={isMobile} feature={feature} onClose={onClose} displayHeader={displayHeader} />
         ) : feature?.properties?.layer === "cvicko" ? (
-          <CvickoDetail isMobile={isMobile} feature={feature} onClose={onClose} displayHeader={snap > 0} />
+          <CvickoDetail isMobile={isMobile} feature={feature} onClose={onClose} displayHeader={displayHeader} />
         ) : null}
       </>
     );
@@ -30,7 +32,7 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
     return (
       <MapDetail
         isBottomSheet={isMobile}
-        hideBottomSheetHeader={snap > 0}
+        hideBottomSheetHeader={displayHeader}
         onClose={onClose}
         isVisible={!!feature}
         bottomSheetSnapPoints={[84, "60%", "100%"]}
