@@ -6,12 +6,11 @@ import { ReactComponent as ClosureIcon } from "../../assets/icons/closure.svg";
 import { ReactComponent as DigupIcon } from "../../assets/icons/digup.svg";
 import { ReactComponent as DisorderIcon } from "../../assets/icons/disorder.svg";
 import { ReactComponent as GoogleStreet } from "../../assets/icons/googlestreetview.svg";
-import { ReactComponent as HintIcon } from "../../assets/icons/hint.svg";
 import { ReactComponent as ImageIcon } from "../../assets/icons/imageicon.svg";
 import { IFeatureProps } from '../../types/featureTypes';
 import { DIGUPS_URL, DISORDERS_URL } from '../../utils/urls';
-import { DetailValue } from './DetailValue';
 import { Row } from './Row';
+import RoundedIconButon from './RoundedIconButon';
 
 interface IDetail {
     featureProps: IFeatureProps;
@@ -22,7 +21,7 @@ interface IDetail {
 type TAttachmentKeyword = "fotografie_miesta_poruchy" | "dokumenty" | "obchadzkove_trasy";
 
 export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, isMobile }) => {
-    const [isModalOpen, setModalOpen] = useState(false);
+    const [imageModal, setImageModal] = useState({ isOpen: false, imgSrc: [] as Array<string> });
 
     const {
         objectId,
@@ -79,10 +78,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
 
     const imageUrlList = layer === 'disorders' ? filterAttachments(disordersAttachments, DISORDERS_URL, 'fotografie_miesta_poruchy') : [];
     const documentUrlList = layer === 'disorders' ? filterAttachments(disordersAttachments, DISORDERS_URL, 'dokumenty') : filterAttachments(digupsAttachments, DIGUPS_URL, 'dokumenty');
-    const bypassRoutesUrlsList = layer !== 'disorders' && filterAttachments(digupsAttachments, DIGUPS_URL, 'obchadzkove_trasy') || [];
-
-    // TODO: IN TASK MP-162 REMOVE console log and display bypassRoutesUrlsList
-    console.log("bypassRoutesUrlsList", bypassRoutesUrlsList)
+    const alternativeRouteUrlList = layer !== 'disorders' && filterAttachments(digupsAttachments, DIGUPS_URL, 'obchadzkove_trasy') || [];
 
     const displayLocaleDate = (timeStamp: number | null, time: string | null = null): string => {
         if (!timeStamp) return '';
@@ -108,41 +104,72 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
         }
     }
 
+    const handleThemeTxtColor = () => {
+        switch (layer) {
+            case 'closures':
+                return 'text-closure';
+            case 'digups':
+                return 'text-digup';
+            case 'disorders':
+                return 'text-disorder';
+            default: return '';
+        }
+    }
+
     return (
-        <div className="flex flex-col justify-end w-full gap-4">
+        <div className={`flex flex-col justify-end w-full gap-4 pl-4 pr-4 ${isMobile ? "pt-4" : "pt-5"} pb-4`}>
             {!isMobile &&
-                <div className='flex gap-4 items-center'>
+                <div className={`flex gap-4 items-center ${handleThemeTxtColor()}`}>
                     {icon()}
-                    <DetailValue>{t("title")}</DetailValue>
+                    <div className='font-semibold'>{t("title")}</div>
                 </div>
             }
-            <DetailValue>{subject}</DetailValue>
+            <div className='font-semibold'>{subject}</div>
+            <div className="flex flex-wrap">
+                {imageUrlList.length > 0 &&
+                    <RoundedIconButon icon={<ImageIcon width={20} height={20} />}>
+                        <a
+                            className="no-underline flex gap-2 items-center"
+                            rel="noreferrer"
+                            onClick={() => setImageModal({ isOpen: true, imgSrc: imageUrlList })}
+                        >
+                            {t("photosOfPlace")}
+                        </a>
+                    </RoundedIconButon>
+                }
+                {alternativeRouteUrlList.length > 0 &&
+                    <RoundedIconButon icon={<ImageIcon width={20} height={20} />}>
+                        <a
+                            className="no-underline flex gap-2 items-center"
+                            rel="noreferrer"
+                            onClick={() => setImageModal({ isOpen: true, imgSrc: alternativeRouteUrlList })}
+                        >
+                            {t("alternateRoute")}
+                        </a>
+                    </RoundedIconButon>
+                }
+                {streetViewUrl.length > 0 &&
+                    <RoundedIconButon icon={<GoogleStreet width={20} height={20} />}>
+                        <a
+                            href={streetViewUrl}
+                            target="_blank"
+                            className="no-underline flex gap-2 items-center"
+                            rel="noreferrer"
+                        >
+                            Street View
+                        </a>
+                    </RoundedIconButon>
+                }
+            </div>
+
             {infoForResidents &&
                 <div><p>{infoForResidents}</p></div>
             }
             <Row label={t("address")} text={address} />
-            {streetViewUrl &&
-                <a
-                    href={streetViewUrl}
-                    target="_blank"
-                    className="underline flex gap-2 items-center"
-                    rel="noreferrer"
-                >
-                    Google Street View <GoogleStreet width={18} height={13} />
-                </a>
-            }
-            {imageUrlList.length > 0 &&
-                <a
-                    className="underline flex gap-2 items-center cursor-pointer"
-                    rel="noreferrer"
-                    onClick={() => setModalOpen(true)}
-                >
-                    {t("photosOfPlace")} <ImageIcon width={18} height={18} />
-                </a>
-            }
+
             <Row
                 label={t("category")}
-                tags={type?.map((type) => mainT(`filters.type.types.${type}`)) ?? []}
+                text={type.join(', ')}
             />
             <Row label={t("startDate")} text={displayLocaleDate(startTimestamp, startTime)} />
             <Row label={t('dateOfPassage')} text={displayLocaleDate(dateOfPassage || null)} />
@@ -166,12 +193,12 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
 
             {layer !== 'disorders' && documentUrlList && documentUrlList.length > 0 && (
                 <div>
-                    <div>{t("permission")}</div>
+                    <div className='font-semibold'>{t("permission")}</div>
                     <div>
                         {documentUrlList?.map((attachment, index) => {
                             return (
                                 <a
-                                    className="font-bold flex underline"
+                                    className="flex underline"
                                     rel="noreferrer"
                                     href={attachment}
                                     target="_blank"
@@ -185,26 +212,23 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
                 </div>
             )}
 
-            <Note className="flex flex-col gap-3">
-                <div className="flex-shrink-0">
-                    <HintIcon />
-                </div>
+            <Note className={`flex flex-col gap-3 !bg-[#FCF2E6]`}>
                 <div className="flex-1">{t("problemHint")}</div>
                 <a
                     href={t("reportProblemLink")}
                     target="_blank"
-                    className="underline font-semibold"
+                    className="underline font-semibold text-[#E07B04]"
                     rel="noreferrer"
                 >
                     {t("reportProblem")}
                 </a>
             </Note>
 
-            {imageUrlList.length > 0 &&
+            {imageModal.imgSrc.length > 0 &&
                 <ImageLightBox
-                    onClose={() => setModalOpen(false)}
-                    isOpen={isModalOpen}
-                    images={imageUrlList}
+                    onClose={() => setImageModal({ isOpen: false, imgSrc: [] })}
+                    isOpen={imageModal.isOpen}
+                    images={imageModal.imgSrc}
                     initialImageIndex={0}
                 />
             }

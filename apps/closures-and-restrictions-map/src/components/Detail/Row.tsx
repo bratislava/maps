@@ -5,13 +5,13 @@ import { DetailValue } from "./DetailValue";
 
 type IRowConditionalPropsTextOrTags =
   | {
-      text?: string | ReactNode;
-      tags?: never;
-    }
+    text?: string | ReactNode;
+    tags?: never;
+  }
   | {
-      text?: never;
-      tags?: string[];
-    };
+    text?: never;
+    tags?: string[];
+  };
 
 export type IRowProps = {
   label: string;

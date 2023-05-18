@@ -3,5 +3,5 @@ export interface IDetailLabelProps {
 }
 
 export const DetailLabel = ({ children }: IDetailLabelProps) => {
-  return <div className="font-light text-[14px]">{children}</div>;
+  return <div className="font-semibold text-[14px]">{children}</div>;
 };

@@ -52,6 +52,8 @@ export default {
         contractor: "Contractor",
         permission: "Permission",
         showDocument: "Show document",
+        photosOfPlace: "Photos",
+        alternateRoute: "Alternate Route",
         problemHint:
           "Did the digup cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
         reportProblem: "Report problem",
@@ -74,6 +76,8 @@ export default {
         contractor: "Contractor",
         permission: "Permission",
         showDocument: "Show document",
+        photosOfPlace: "Photos",
+        alternateRoute: "Alternate Route",
         problemHint:
           "Did the closure cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
         reportProblem: "Report problem",
@@ -97,7 +101,8 @@ export default {
         contractor: "Contractor",
         permission: "Document",
         showDocument: "Show document",
-        photosOfPlace: "photos of place",
+        photosOfPlace: "Photos",
+        alternateRoute: "Alternate Route",
         problemHint:
           "Did the disorder cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
         reportProblem: "Report problem",

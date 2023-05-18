@@ -24,10 +24,10 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
         isBottomSheet={isMobile}
         onClose={onClose}
         isVisible={!!feature}
-        bottomSheetSnapPoints={[84, "50%", "100%"]}
+        bottomSheetSnapPoints={[84, "60%", "100%"]}
         bottomSheetInitialSnap={1}
       >
-        <div ref={forwardedRef} className="px-6 py-4">
+        <div ref={forwardedRef}>
           {feature?.properties &&
             < DynamicDetail
               isMobile={isMobile}

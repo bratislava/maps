@@ -5,5 +5,5 @@ export interface IDetailValueProps {
 }
 
 export const DetailValue = ({ children }: IDetailValueProps) => {
-  return children ? <div className="font-semibold">{children}</div> : null;
+  return children ? <div>{children}</div> : <></>;
 };
