@@ -18,11 +18,11 @@ import { ReactComponent as WellnessIcon } from "../../assets/icons/wellness.svg"
 import { ReactComponent as RestaurantIcon } from "../../assets/icons/restauracia.svg";
 
 
-
 export interface SwimmingPoolDetailProps {
   feature: Feature<Point>;
   onClose: () => void;
   isMobile: boolean;
+  displayHeader: boolean;
 }
 
 type TService = "toalety"
@@ -38,7 +38,7 @@ type TService = "toalety"
   | "prezliekareň"
   | "detský bazén"
 
-export const SwimmingPoolDetail = ({ feature, isMobile }: SwimmingPoolDetailProps) => {
+export const SwimmingPoolDetail = ({ feature, isMobile, displayHeader }: SwimmingPoolDetailProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "layers.swimmingPools.detail" });
   const { t: mainT }: { t: (key: string) => string } = useTranslation();
 
@@ -79,36 +79,43 @@ export const SwimmingPoolDetail = ({ feature, isMobile }: SwimmingPoolDetailProp
   return (
     <div className="flex relative flex-col justify-end text-foreground-lightmode dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode w-full">
       <>
-        <Image src={imgSrc} isMobile={isMobile} />
 
-        <div className="absolute top-[232px] left-4">
-          <a
-            href={feature.properties?.["buyOnline"]}
-            target="_blank"
-            rel="noreferrer"
-            className="group font-semibold select-none cursor-pointer flex items-center gap-4 bg-primary text-white w-fit px-6 h-12 rounded-lg"
-          >
-            <span>{t("purchaseTicket")}</span>
-            <div className="relative flex items-center">
-              <div className="absolute transition-all right-1 w-0 group-hover:w-5 group-hover:-right-1 h-[2px] rounded-full bg-white"></div>
-              <Chevron
-                className="group-hover:translate-x-2 transition-transform"
-                direction="right"
-                size="sm"
-              />
+        {displayHeader &&
+          <>
+            <Image src={imgSrc} isMobile={isMobile} />
+
+            <div className="absolute top-[232px] left-6">
+              <a
+                href={feature.properties?.["buyOnline"]}
+                target="_blank"
+                rel="noreferrer"
+                className="group font-semibold select-none cursor-pointer flex items-center gap-4 bg-primary text-white w-fit px-6 h-12 rounded-lg"
+              >
+                <span>{t("purchaseTicket")}</span>
+                <div className="relative flex items-center">
+                  <div className="absolute transition-all right-1 w-0 group-hover:w-5 group-hover:-right-1 h-[2px] rounded-full bg-white"></div>
+                  <Chevron
+                    className="group-hover:translate-x-2 transition-transform"
+                    direction="right"
+                    size="sm"
+                  />
+                </div>
+              </a>
             </div>
-          </a>
-        </div>
+          </>
+        }
 
-        <div className="flex pl-4 pr-4 pt-12 pb-5 md:pb-5 md:pt-12 flex-col space-y-6">
-          <a
-            className="text-primary dark:text-primary-soft underline font-bold"
-            href={feature.properties?.["navigate"]}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {t("navigate")}
-          </a>
+        <div className={`flex pl-4 pr-4 ${displayHeader ? 'pt-12' : 'pt-2'} pb-5 md:pb-5 md:pt-12 flex-col space-y-6`}>
+          {displayHeader &&
+            <a
+              className="text-primary dark:text-primary-soft underline font-bold"
+              href={feature.properties?.["navigate"]}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {t("navigate")}
+            </a>
+          }
 
           <Row label={feature.properties?.name} text={feature.properties?.description} />
 
