@@ -4,6 +4,8 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Row } from "./Row";
+import { ReactComponent as WarningIcon } from "../../assets/icons/warning-alt.svg";
+
 
 export const parkingLotPropertiesSchema = z.object({
   Nazov_sk: z.string(),
@@ -64,6 +66,7 @@ export const ParkingLotDetail = ({ properties }: ParkingLotDetailProps) => {
 
       {(properties["Informacia_RPK_sk"] || properties["Informacia_NPK_sk"]) && (
         <Note className={infoColorClass}>
+          {properties["Stav_en"] === 'inactive' && <WarningIcon className="right-0 z-[90] mb-2" width={22} height={22} />}
           {properties["Informacia_RPK_sk"] && (
             <div className="font-light text-[14px]">
               {language === "sk"
