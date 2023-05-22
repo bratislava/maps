@@ -134,12 +134,12 @@ export const App = () => {
   useEffect(() => {
     districtFilter.activeKeys.length == 0
       ? mapRef.current?.changeViewport({
-          center: {
-            lat: 48.1688598,
-            lng: 17.107748,
-          },
-          zoom: !isMobile ? 12 : 10.4,
-        })
+        center: {
+          lat: 48.1688598,
+          lng: 17.107748,
+        },
+        zoom: !isMobile ? 12 : 10.4,
+      })
       : mapRef.current?.fitDistrict(districtFilter.activeKeys);
   }, [districtFilter.activeKeys, mapRef]);
 
@@ -246,7 +246,7 @@ export const App = () => {
               />
             ) : (
               <MultipleMarker
-                isSelected={features[0].id === selectedFeature?.id}
+                isSelected={features.findIndex(f => f.id === selectedFeature?.id) > -1}
                 key={key}
                 features={features}
                 lat={lat}
