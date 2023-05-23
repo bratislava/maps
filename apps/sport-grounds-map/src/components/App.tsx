@@ -281,7 +281,7 @@ export const App = () => {
               />
             ) : (
               <MultipleMarker
-                isSelected={features[0].id === selectedFeature?.id}
+                isSelected={features.findIndex(f => f.id === selectedFeature?.id) > -1}
                 key={key}
                 features={features}
                 lat={lat}

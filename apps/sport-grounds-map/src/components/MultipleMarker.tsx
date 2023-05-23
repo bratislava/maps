@@ -43,7 +43,7 @@ export const MultipleMarker = ({
       <div
         className={cx(
           "relative transform active:scale-75 font-bold text-[16px] transition-transform cursor-pointer w-14 h-14 rounded-full text-white flex items-center justify-center shadow-lg",
-          { "bg-white text-primary z-50": isSelected, "bg-primary text-white": !isSelected },
+          { "bg-white text-[#07038C] z-50": isSelected, "bg-primary text-white": !isSelected },
         )}
       >
         {features.length}
