@@ -93,7 +93,7 @@ export default {
         bufet: "bufet",
         parkovanie: "parkovanie",
         bicykel: "bicykel",
-        "verejná doprava": "verejná doprava",
+        mhd: "verejná doprava",
         wellness: "wellness",
         reštaurácia: "reštaurácia",
         prezliekareň: "prezliekareň",

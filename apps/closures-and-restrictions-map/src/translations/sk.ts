@@ -24,7 +24,7 @@ export default {
         Horúcovod: "Horúcovod",
         "Verejné_Osvetlenie": "Verejné osvetlenie",
         Výstavba: "Výstavba",
-        iné: "Other",
+        Iné: "Iné",
       },
     },
     status: {
@@ -52,6 +52,8 @@ export default {
         contractor: "Zhotoviteľ",
         permission: "Povolenie",
         showDocument: "Zobraziť dokument",
+        photosOfPlace: "Fotografie",
+        alternateRoute: "Obchádzka",
         problemHint:
           "Nastal kvôli rozkopávke nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",
@@ -74,6 +76,8 @@ export default {
         contractor: "Zhotoviteľ",
         permission: "Povolenie",
         showDocument: "Zobraziť dokument",
+        photosOfPlace: "Fotografie",
+        alternateRoute: "Obchádzka",
         problemHint:
           "Nastal kvôli obmedzeniu nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",
@@ -97,7 +101,8 @@ export default {
         contractor: "Zhotoviteľ",
         permission: "Dokument",
         showDocument: "Zobraziť dokument",
-        photosOfPlace: "fotografie miesta",
+        photosOfPlace: "Fotografie",
+        alternateRoute: "Obchádzka",
         problemHint:
           "Nastal kvôli poruche nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",

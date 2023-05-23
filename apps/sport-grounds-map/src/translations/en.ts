@@ -91,7 +91,7 @@ export default {
         bufet: "buffet",
         parkovanie: "parking",
         bicykel: "bike",
-        "verejná doprava": "public transport",
+        mhd: "public transport",
         wellness: "wellness",
         reštaurácia: "restaurant",
         prezliekareň: "dressing room",
