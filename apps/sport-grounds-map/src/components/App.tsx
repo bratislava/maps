@@ -49,7 +49,7 @@ export const App = () => {
 
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
 
-  const [isSidebarVisible, setSidebarVisible] = useState<boolean>(true);
+  const [isSidebarVisible, setSidebarVisible] = useState<boolean>(false);
   const [isLegendOpen, setLegendOpen] = useState(false);
 
   const [frameState, setFrameState] = useState<boolean>(false);
