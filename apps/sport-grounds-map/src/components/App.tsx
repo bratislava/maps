@@ -211,6 +211,19 @@ export const App = () => {
     [],
   );
 
+  const [moveController, setMoveController] = useState(false);
+
+  useEffect(() => {
+
+    const controllerSpaceHandler = (): boolean => {
+      const windowHeight = window.innerHeight;
+      return (selectedFeature && windowHeight < 900 && !isMobile) || selectedFeature?.properties?.layer === "swimmingPools" && !isMobile;
+    }
+
+    setMoveController(controllerSpaceHandler());
+
+  }, [selectedFeature, isMobile])
+
   return (
     <Map
       ref={mapRef}
@@ -296,7 +309,8 @@ export const App = () => {
         />
         <ViewportController
           className={cx("fixed right-4 bottom-[88px] sm:bottom-8", {
-            "-translate-x-96": window.innerHeight <= (desktopDetailHeight ?? 0) + 200,
+            "-translate-x-96 delay-75": moveController,
+            "translate-x-0 delay-200": !moveController,
           })}
           slots={["legend", "compass", "zoom"]}
           desktopSlots={["legend", "geolocation", "compass", ["fullscreen", "zoom"]]}
