@@ -4,7 +4,6 @@ import { X } from "@bratislava/react-maps-icons";
 import {
   Divider,
   Select,
-  TagFilter,
   SelectOption,
   Sidebar,
   Layers,
@@ -15,7 +14,7 @@ import { SelectValueRenderer } from "../SelectValueRenderer";
 
 export interface IDesktopFiltersProps {
   isVisible?: boolean;
-  setVisible: (isVisible: boolean | undefined) => void;
+  setVisible: (isVisible: boolean) => void;
   areFiltersDefault: boolean;
   onResetFiltersClick: () => void;
   districtFilter: IFilterResult<string>;

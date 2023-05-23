@@ -3,7 +3,6 @@ import { Funnel } from "@bratislava/react-maps-icons";
 import {
   Divider,
   Select,
-  TagFilter,
   IActiveFilter,
   ActiveFilters,
   SelectOption,
@@ -16,7 +15,7 @@ import { SelectValueRenderer } from "../SelectValueRenderer";
 
 export interface IMobileFiltersProps {
   isVisible?: boolean;
-  setVisible: (isVisible: boolean | undefined) => void;
+  setVisible: (isVisible: boolean, changePrevious?: boolean) => void;
   areFiltersDefault: boolean;
   activeFilters: IActiveFilter[];
   onResetFiltersClick: () => void;
@@ -43,8 +42,8 @@ export const MobileFilters = ({
       title={t("title")}
       position="right"
       isVisible={isVisible ?? false}
-      onClose={() => setVisible(false)}
-      onOpen={() => setVisible(true)}
+      onClose={() => setVisible(false, false)}
+      onOpen={() => setVisible(true, false)}
       closeText={t("close")}
     >
       <div>

@@ -49,8 +49,11 @@ export const App = () => {
 
   const [uniqueDistricts, setUniqueDistricts] = useState<string[]>([]);
 
-  const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
+  const [isSidebarVisible, setSidebarVisible] = useState<boolean>(true);
   const [isLegendOpen, setLegendOpen] = useState(false);
+
+  const [frameState, setFrameState] = useState<boolean>(false);
+  const frameStateSideBar = useRef(isSidebarVisible);
 
   useEffect(() => {
     const { data, uniqueDistricts } = processData();
@@ -84,23 +87,42 @@ export const App = () => {
     ),
   });
 
+  const handleSideBar = useCallback((value: boolean, changePrevious: boolean) => {
+    if (changePrevious) frameStateSideBar.current = value;
+    setSidebarVisible(value);
+  }, [])
+
   // close sidebar on mobile and open on desktop
   useEffect(() => {
     // from mobile to desktop
-    if (previousMobile !== false && isMobile === false) {
-      setSidebarVisible(true);
+    if (previousMobile == true && !isMobile) {
+      handleSideBar(true, true);
     }
     // from desktop to mobile
-    if (previousMobile !== true && isMobile === true) {
-      setSidebarVisible(false);
+    if (previousMobile == false && isMobile) {
+      handleSideBar(false, true);
     }
-  }, [previousMobile, isMobile]);
+
+    (window === window.parent || isMobile) ? setFrameState(false) : setFrameState(true);
+
+  }, [previousMobile, isMobile, handleSideBar]);
 
   const isDetailOpen = useMemo(() => !!selectedFeature, [selectedFeature]);
 
   const closeDetail = useCallback(() => {
     setSelectedFeature(null);
   }, []);
+
+  useEffect(() => {
+    if (!frameState) return;
+
+    if (selectedFeature) {
+      handleSideBar(false, false)
+    }
+    else {
+      handleSideBar(frameStateSideBar.current, true)
+    }
+  }, [frameState, selectedFeature, handleSideBar])
 
   const combinedFilter = useCombinedFilter({
     combiner: "all",
@@ -134,14 +156,14 @@ export const App = () => {
   useEffect(() => {
     districtFilter.activeKeys.length == 0
       ? mapRef.current?.changeViewport({
-          center: {
-            lat: 48.1688598,
-            lng: 17.107748,
-          },
-          zoom: !isMobile ? 12 : 10.4,
-        })
+        center: {
+          lat: 48.1688598,
+          lng: 17.107748,
+        },
+        zoom: !isMobile ? 12 : 10.4,
+      })
       : mapRef.current?.fitDistrict(districtFilter.activeKeys);
-  }, [districtFilter.activeKeys, mapRef]);
+  }, [districtFilter.activeKeys, mapRef, isMobile]);
 
   const markerClickHandler = useCallback((feature: Feature<Point>) => {
     setSelectedFeature(feature);
@@ -289,14 +311,14 @@ export const App = () => {
       <Layout isOnlyMobile>
         <Slot id="mobile-header">
           <MobileHeader
-            onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
+            onFunnelClick={() => handleSideBar(!isSidebarVisible, true)}
           />
         </Slot>
 
         <Slot id="mobile-filter" isVisible={isSidebarVisible} position="top-right">
           <MobileFilters
             isVisible={isSidebarVisible}
-            setVisible={setSidebarVisible}
+            setVisible={(isVisible) => handleSideBar(isVisible, true)}
             areFiltersDefault={combinedFilter.areDefault}
             activeFilters={combinedFilter.active}
             onResetFiltersClick={combinedFilter.reset}
@@ -336,7 +358,7 @@ export const App = () => {
         >
           <DesktopFilters
             isVisible={isSidebarVisible}
-            setVisible={setSidebarVisible}
+            setVisible={(isVisible) => handleSideBar(isVisible, true)}
             areFiltersDefault={combinedFilter.areDefault}
             onResetFiltersClick={combinedFilter.reset}
             districtFilter={districtFilter}
