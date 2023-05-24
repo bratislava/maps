@@ -43,7 +43,7 @@ export const processData = (rawData: FeatureCollection) => {
             rentUntil: feature.properties?.["doba_najmu"],
             description: feature.properties?.["poznamka"],
             approximateArea: feature.properties?.["orientacna_vymera_m2"],
-            approximateRentPricePerYear: feature.properties?.["orientacna_cena_najmu_rok"],
+            approximateRentPricePerYear: feature.properties?.["cena"],
             color,
             street,
             competition,
