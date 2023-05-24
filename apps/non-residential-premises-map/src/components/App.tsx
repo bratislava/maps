@@ -40,7 +40,7 @@ import { Marker } from "./Marker";
 const isDevelopment = !!import.meta.env.DEV;
 
 const GEOPORTAL_LAYER_URL =
-  "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/majetok/N%C3%A1jom_nebytov%C3%BDch_priestorov_december_2022/MapServer/0";
+  "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/majetok/N%C3%A1jom_majetku_mesta_Bratislava_maj_2023/MapServer/0";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
