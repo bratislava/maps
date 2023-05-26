@@ -25,9 +25,9 @@ export const processData = (rawData: FeatureCollection) => {
         const locality = feature.properties?.["ulica"];
         const street = locality.replaceAll(/[0-9]/g, "").trim().split(",")[0];
         const competition =
-          feature.properties?.["OVS_aktualne"] === "neprebieha"
+          feature.properties?.["Ovs_aktualne"] === "neprebieha"
             ? false
-            : feature.properties?.["OVS_aktualne"];
+            : feature.properties?.["Ovs_aktualne"];
         return {
           ...feature,
           properties: {

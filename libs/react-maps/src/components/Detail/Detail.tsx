@@ -114,7 +114,7 @@ export const Detail = forwardRef<SheetHandle, DetailProps>(
           />
           <IconButton
             className={cx(
-              'hidden w-8 h-8 !rounded-full !border-0 !shadow-none absolute right-6 top-6 md:flex items-center justify-center z-50',
+              'hidden w-8 h-8 !rounded-full !border-0 !shadow-none absolute right-4 top-4 md:flex items-center justify-center z-50',
             )}
             onClick={onClose}
           >
