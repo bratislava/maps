@@ -14,14 +14,14 @@ export const processData = (rawData: FeatureCollection) => {
           originalOccupancy === "na prenájom"
             ? "forRent"
             : originalOccupancy === "obsadené"
-              ? "occupied"
-              : "free";
+            ? "occupied"
+            : "free";
         const color =
           occupancy === "forRent"
             ? colors.forRent
             : occupancy === "occupied"
-              ? colors.occupied
-              : colors.free;
+            ? colors.occupied
+            : colors.free;
         const locality = feature.properties?.["ulica"];
         const street = locality.replaceAll(/[0-9]/g, "").trim().split(",")[0];
         const competition =
@@ -38,7 +38,9 @@ export const processData = (rawData: FeatureCollection) => {
             locality,
             purpose: feature.properties?.["ucel_najmu"],
             lessee: feature.properties?.["najomca"],
-            picture: feature.properties?.["picture"],
+            // sometimes the picture urls come with a token in query string, which forces you to login even when the picture is public
+            // in such cases, getting rid of the entire query (which shouldn't contain anything else of value) solves the issue
+            picture: feature.properties?.["picture"]?.split("?")[0],
             occupancy,
             rentUntil: feature.properties?.["doba_najmu"],
             description: feature.properties?.["poznamka"],
