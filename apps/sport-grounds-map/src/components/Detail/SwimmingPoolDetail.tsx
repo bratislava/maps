@@ -2,7 +2,7 @@ import { Feature, Point } from "geojson";
 import { useTranslation } from "react-i18next";
 import { Chevron } from "@bratislava/react-maps-icons";
 import { Row } from "./Row";
-import { Popover, Tag } from "@bratislava/react-maps-ui";
+import { Note, Popover, Tag } from "@bratislava/react-maps-ui";
 import { Image } from "./Image";
 
 import { ReactComponent as ToiletsIcon } from "../../assets/icons/toilets.svg";
@@ -115,6 +115,15 @@ export const SwimmingPoolDetail = ({ feature, isMobile, displayHeader }: Swimmin
             >
               {t("navigate")}
             </a>
+          }
+
+          {feature.properties?.note &&
+            <Note className={`flex flex-col gap-3 !bg-[#D0ECF8]`}>
+              <div className="flex-1 font-semibold">Oznam</div>
+              <div className="!font-normal">
+                {feature.properties?.note}
+              </div>
+            </Note>
           }
 
           <Row label={feature.properties?.name} text={feature.properties?.description} />
