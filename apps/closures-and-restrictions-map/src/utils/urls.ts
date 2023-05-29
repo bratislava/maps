@@ -15,3 +15,5 @@ export const REPAIRS_2022_RECONSTRUCTION_DESIGN_POLYGONS_URL =
 
 export const REPAIRS_2022_POLYGONS_URL =
   "https://services8.arcgis.com/pRlN1m0su5BYaFAS/arcgis/rest/services/Plán_opráv_2022_view/FeatureServer/0";
+
+export const STRAPI_NOTIFICATIONS_URL = "https://general-strapi.bratislava.sk/api/rozkopavky?locale=sk";

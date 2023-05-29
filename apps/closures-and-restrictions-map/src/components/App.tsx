@@ -41,7 +41,8 @@ import { usePrevious } from "@bratislava/utils";
 import { Feature, FeatureCollection, Point } from "geojson";
 import {
   DIGUPS_URL,
-  DISORDERS_URL
+  DISORDERS_URL,
+  STRAPI_NOTIFICATIONS_URL
 } from "../utils/urls";
 import { processData } from "../utils/utils";
 import Detail from "./Detail";
@@ -54,6 +55,7 @@ import { Modal } from "@bratislava/react-maps-ui";
 import { IMapInfoNotification } from "@bratislava/react-maps/src/components/Map/types";
 import { colors } from "../utils/colors";
 import { Marker } from "./Marker";
+import TextWithAnchorLink from "./TextWithAnchorLink";
 
 // const REPAIRS_POINTS_URLS = [REPAIRS_2022_ZEBRA_CROSSING_POINTS_URL];
 
@@ -67,6 +69,15 @@ export interface ITooltip {
   name: string;
   title: string;
   description: string;
+}
+
+interface IStrapiNotification {
+  title: string;
+  description: string;
+  enabled: boolean;
+  cratedAt: Date;
+  updatedAt: Date;
+  locale: string;
 }
 
 export const tooltips: Array<ITooltip> = [
@@ -103,6 +114,19 @@ export const App = () => {
   const [uniqueDistricts, setUniqueDistricts] = useState<Array<string>>([]);
   const [uniqueLayers, setUniqueLayers] = useState<Array<string>>([]);
   const [uniqueTypes, setUniqueTypes] = useState<Array<string>>([]);
+
+  const [strapiNotification, setStrapiNotification] = useState<IStrapiNotification>({} as IStrapiNotification);
+
+  useEffect(() => {
+    fetch(STRAPI_NOTIFICATIONS_URL, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(response => JSON.stringify(setStrapiNotification(response.data.attributes)))
+  }, [])
 
   useEffect(() => {
     if (
@@ -304,16 +328,12 @@ export const App = () => {
     }
   }, [statusFilter.activeKeys.length, statusFilter.keys.length]);
 
-  const infoNotification: IMapInfoNotification = {
-    title: t("informationModal.infoNotificationTitle"),
-    txt: <Trans i18nKey="informationModal.infoNotificationContent">
-      before
-      <a href={t("informationModal.infoNotificationContentLink")} className="underline font-semibold" target="_blank" rel="noreferrer">
-        link
-      </a>
-    </Trans>,
-    moreTxt: t("informationModal.moreInfo")
-  }
+  const infoNotification: IMapInfoNotification | undefined =
+    strapiNotification.enabled && strapiNotification.description && strapiNotification.title ? {
+      title: strapiNotification?.title,
+      txt: <TextWithAnchorLink text={strapiNotification?.description} />,
+      moreTxt: t("informationModal.moreInfo")
+    } : undefined;
 
   const combinedFilter = useCombinedFilter({
     combiner: "all",
