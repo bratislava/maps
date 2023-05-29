@@ -7,7 +7,6 @@ import { ButtonLink } from "../ButtonLink";
 import { ReactComponent as ImageIcon } from "../../assets/icons/imageicon.svg";
 import RoundedIconButon from "./RoundedIconButon";
 import { useState } from "react";
-import useImageUrls from "../../hooks/useImageUrls";
 
 export interface IDetailDataDisplayProps {
   feature: Feature;
@@ -27,8 +26,6 @@ export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDeta
   const contractLink: string = feature.properties?.ORIGINAL_NZ_link || '';
   const groundPlanLink: string = feature.properties?.ORIGINAL_podorys || '';
   const txtClrByOccupacy = occupancy === 'forRent' ? 'black' : 'white';
-
-  const imageUrlList = useImageUrls(feature.id, feature?.properties?.ORIGINAL_picture);
 
   return (
     <div className={cx("relative flex flex-col space-y-4 p-4", className)}>
@@ -63,7 +60,7 @@ export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDeta
           </a>
         </RoundedIconButon>
 
-        {imageUrlList && imageUrlList.length > 0 && !isSingleFeature &&
+        {feature?.properties?.picture && !isSingleFeature &&
           <>
             <RoundedIconButon icon={<ImageIcon width={20} height={20} />} txtColor={txtClrByOccupacy} bgColor={colors[occupancy]}>
               <a
@@ -78,7 +75,7 @@ export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDeta
             <ImageLightBox
               onClose={() => setModalOpen(false)}
               isOpen={isModalOpen}
-              images={imageUrlList}
+              images={[feature?.properties?.picture]}
               initialImageIndex={0}
             />
           </>

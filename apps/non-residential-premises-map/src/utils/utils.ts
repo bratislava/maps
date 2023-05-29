@@ -38,7 +38,7 @@ export const processData = (rawData: FeatureCollection) => {
             locality,
             purpose: feature.properties?.["ucel_najmu"],
             lessee: feature.properties?.["najomca"],
-            picture: feature.properties?.["picture"],
+            picture: feature.properties?.["picture"]?.split("?")[0],
             occupancy,
             rentUntil: feature.properties?.["doba_najmu"],
             description: feature.properties?.["poznamka"],
