@@ -21,7 +21,7 @@ export const generateRawWorkoutData = (workouts: Array<IWorkout>): FeatureCollec
         location: workout.umiestnenie,
         website: workout.webLink,
         wantToWorkout: "https://cvicko.sk",
-        // photo: workout.Fotka,
+        photo: workout.fotka?.data?.attributes?.formats?.small.url,
         navigate: workout.navigovatLink,
       },
     }

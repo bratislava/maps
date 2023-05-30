@@ -44,8 +44,7 @@ export const SwimmingPoolDetail = ({ feature, isMobile, displayHeader }: Swimmin
 
   if (!feature) return null;
 
-  const imagePath = '../../../public/images/pools'
-  const imgSrc = `${imagePath}/${feature.properties?.photo}`;
+  const imgSrc = feature.properties?.photo as string;
 
   const setServiceIcons = (service: string) => {
     const iconSize = 24;

@@ -16,6 +16,7 @@ interface IPoolAttributes {
     longitude: number;
     createdAt: Date;
     oznam: string;
+    fotka: any;
 }
 
 export interface IPool {
@@ -32,6 +33,7 @@ interface IWorkoutAttributes {
     latitude: number;
     longitude: number;
     createdAt: Date;
+    fotka: any;
 }
 export interface IWorkout {
     attributes: IWorkoutAttributes;

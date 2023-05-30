@@ -39,6 +39,9 @@ import { Marker } from "./Marker";
 import { MultipleMarker } from "./MultipleMarker";
 import { IPool, IWorkout } from "../data/types";
 
+const querySwimmingPools = "https://general-strapi.bratislava.sk/api/kupaliskas?populate=*&pagination[limit]=-1";
+const queryWorkouts = "https://general-strapi.bratislava.sk/api/cvickas?populate=*&pagination[limit]=-1";
+
 export const App = () => {
   const { t, i18n } = useTranslation();
 
@@ -60,7 +63,7 @@ export const App = () => {
   const [rawDataCvicko, setRawDataCvicko] = useState<Array<IWorkout>>()
 
   useEffect(() => {
-    fetch("https://general-strapi.bratislava.sk/api/kupaliskas?pagination[limit]=-1", {
+    fetch(querySwimmingPools, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -69,7 +72,7 @@ export const App = () => {
       .then(response => response.json())
       .then(response => JSON.stringify(setRawDataPools(response.data)));
 
-    fetch("https://general-strapi.bratislava.sk/api/cvickas?pagination[limit]=-1", {
+    fetch(queryWorkouts, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

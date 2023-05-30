@@ -25,7 +25,7 @@ export const generateRawPoolData = (poolList: Array<IPool>): FeatureCollection =
         email: pool.email,
         website: pool.webLink,
         buyOnline: pool.listokLink,
-        photo: pool.Fotka,
+        photo: pool.fotka?.data?.attributes?.formats?.small.url,
         navigate: pool.navigovatLink,
         note: pool.oznam,
       },
