@@ -38,6 +38,8 @@ export const processData = (rawData: FeatureCollection) => {
             locality,
             purpose: feature.properties?.["ucel_najmu"],
             lessee: feature.properties?.["najomca"],
+            // sometimes the picture urls come with a token in query string, which forces you to login even when the picture is public
+            // in such cases, getting rid of the entire query (which shouldn't contain anything else of value) solves the issue
             picture: feature.properties?.["picture"]?.split("?")[0],
             occupancy,
             rentUntil: feature.properties?.["doba_najmu"],
