@@ -1,27 +1,35 @@
-import { DataDisplay, Tag } from "@bratislava/react-maps-ui";
+import { DataDisplay, ImageLightBox, Note } from "@bratislava/react-maps-ui";
 import { Feature } from "geojson";
 import { useTranslation } from "react-i18next";
 import { colors } from "../../utils/colors";
 import cx from "classnames";
 import { ButtonLink } from "../ButtonLink";
+import { ReactComponent as ImageIcon } from "../../assets/icons/imageicon.svg";
+import RoundedIconButon from "./RoundedIconButon";
+import { useState } from "react";
 
 export interface IDetailDataDisplayProps {
   feature: Feature;
   className?: string;
+  isSingleFeature?: boolean;
 }
 
 export type TOccupacy = "forRent" | "occupied" | "free";
 
-export const DetailDataDisplay = ({ feature, className }: IDetailDataDisplayProps) => {
+export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDetailDataDisplayProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "detail" });
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const switchFontWeights = true;
 
   const occupancy: TOccupacy = feature?.properties?.occupancy;
   const contractLink: string = feature.properties?.ORIGINAL_NZ_link || '';
+  const groundPlanLink: string = feature.properties?.ORIGINAL_podorys || '';
   const txtClrByOccupacy = occupancy === 'forRent' ? 'black' : 'white';
 
   return (
-    <div className={cx("relative flex flex-col space-y-4 p-6", className)}>
-      {feature.properties?.competition && occupancy === "forRent" && (
+    <div className={cx("relative flex flex-col space-y-4 p-4", className)}>
+      {feature.properties?.competition && occupancy === "forRent" && isSingleFeature && (
         <div className="absolute -translate-y-12">
           <ButtonLink occupancy={occupancy} href={feature.properties?.competition}>
             {t("ongoingCompetition")}
@@ -29,21 +37,58 @@ export const DetailDataDisplay = ({ feature, className }: IDetailDataDisplayProp
         </div>
       )}
 
-      <Tag
-        className={`w-fit text-${txtClrByOccupacy}`}
-        style={{
-          background: colors[occupancy],
-        }}
-      >
-        {t(occupancy)}
-      </Tag>
+      <div className="flex flex-wrap">
+        {feature.properties?.competition && occupancy === "forRent" && !isSingleFeature &&
+          <RoundedIconButon bgColor={colors[occupancy]} txtColor={txtClrByOccupacy}>
+            <a
+              href={feature.properties?.competition}
+              target="_blank"
+              className="no-underline flex gap-2 items-center"
+              rel="noreferrer"
+            >
+              {t("ongoingCompetition")}
+            </a>
+          </RoundedIconButon>
+        }
 
-      <DataDisplay label={t(`locality`)} text={feature?.properties?.locality} />
-      <DataDisplay label={t(`purpose`)} text={feature?.properties?.purpose} />
-      <DataDisplay label={t(`lessee`)} text={feature?.properties?.lessee} />
-      <DataDisplay label={t(`rentUntil`)} text={feature?.properties?.rentUntil} />
-      <DataDisplay label={t(`description`)} text={feature?.properties?.description} />
+        <RoundedIconButon bgColor={colors[occupancy]} txtColor={txtClrByOccupacy}>
+          <a
+            className="no-underline flex gap-2 items-center"
+            rel="noreferrer"
+          >
+            {t(occupancy).toLocaleLowerCase()}
+          </a>
+        </RoundedIconButon>
+
+        {feature?.properties?.picture && !isSingleFeature &&
+          <>
+            <RoundedIconButon icon={<ImageIcon width={20} height={20} />} txtColor={txtClrByOccupacy} bgColor={colors[occupancy]}>
+              <a
+                className="no-underline flex gap-2 items-center"
+                rel="noreferrer"
+                onClick={() => setModalOpen(true)}
+
+              >
+                {t("premisePhotos")}
+              </a>
+            </RoundedIconButon>
+            <ImageLightBox
+              onClose={() => setModalOpen(false)}
+              isOpen={isModalOpen}
+              images={[feature?.properties?.picture]}
+              initialImageIndex={0}
+            />
+          </>
+        }
+      </div>
+
+      <DataDisplay label={t(`locality`)} text={feature?.properties?.locality} switchFontWeights={switchFontWeights} />
+      <DataDisplay label={t(`purpose`)} text={feature?.properties?.purpose} switchFontWeights={switchFontWeights} />
+      <DataDisplay label={t(`lessee`)} text={feature?.properties?.lessee} switchFontWeights={switchFontWeights} />
+      <DataDisplay label={t(`rentUntil`)} text={feature?.properties?.rentUntil} switchFontWeights={switchFontWeights} />
+      <DataDisplay label={t(`description`)} text={feature?.properties?.description} switchFontWeights={switchFontWeights} />
       <DataDisplay
+        switchFontWeights={switchFontWeights}
         label={t(`approximateArea`)}
         text={
           typeof feature?.properties?.approximateArea === "number" && (
@@ -56,6 +101,7 @@ export const DetailDataDisplay = ({ feature, className }: IDetailDataDisplayProp
       />
       <DataDisplay
         label={t(`approximateRentPricePerYear`)}
+        switchFontWeights={switchFontWeights}
         text={
           typeof feature?.properties?.approximateRentPricePerYear === "number" && (
             <span>
@@ -69,19 +115,50 @@ export const DetailDataDisplay = ({ feature, className }: IDetailDataDisplayProp
       />
       {contractLink &&
         <DataDisplay
+          switchFontWeights={switchFontWeights}
           label={t(`contract`)}
           text={
-              <a
-                className="font-bold flex underline"
-                rel="noreferrer"
-                href={contractLink}
-                target="_blank"
-              >
-                {t("rentalContract")}
-              </a>
+            <a
+              className="flex underline"
+              rel="noreferrer"
+              href={contractLink}
+              target="_blank"
+            >
+              {t("rentalContract")}
+            </a>
           }
         />
       }
+      {groundPlanLink &&
+        <DataDisplay
+          switchFontWeights={switchFontWeights}
+          label={t(`groundPlan`)}
+          text={
+            <a
+              className="flex underline"
+              rel="noreferrer"
+              href={groundPlanLink}
+              target="_blank"
+            >
+              {t("spacePlan")}
+            </a>
+          }
+        />
+      }
+      {occupancy !== "forRent" &&
+        <Note className={`flex flex-col gap-3 !bg-[#ebebeb]`}>
+          <div className="flex-1">{t("contactUs")}</div>
+          <a
+            href={`mailto: spravanehnutelnosti@bratislava.sk?subject=${feature?.properties?.locality || ""}`}
+            target="_blank"
+            className="underline font-semibold"
+            rel="noreferrer"
+          >
+            spravanehnutelnosti@bratislava.sk
+          </a>
+        </Note>
+      }
+
     </div>
   );
 };

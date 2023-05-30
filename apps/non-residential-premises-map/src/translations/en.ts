@@ -54,9 +54,12 @@ export default {
     rentalContract: "rental contract",
     free: "Free",
     occupied: "Occupied",
-    premisePhotos: "Premise photos",
+    premisePhotos: "photos",
     forRent: "For rent",
     ongoingCompetition: "Ongoing competition",
+    contactUs: "Contact us for information about this space",
+    groundPlan: "Ground Plan",
+    spacePlan: "Floor plan of the space"
   },
   legend: {
     title: "Legend",
