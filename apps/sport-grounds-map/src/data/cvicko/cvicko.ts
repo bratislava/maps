@@ -1,34 +1,31 @@
 import { FeatureCollection } from "geojson";
-import workouts from "./cvicko.json"
 import { IWorkout } from "../types";
 
-const generateRawWorkoutData = (workouts: Array<IWorkout>): FeatureCollection => {
+export const generateRawWorkoutData = (workouts: Array<IWorkout>): FeatureCollection => {
   const poolData: FeatureCollection = {
     type: "FeatureCollection",
     features: []
   }
-  poolData.features = workouts.map(workout => {
+  poolData.features = workouts.map(w => {
+    const workout = w.attributes;
     return {
       type: "Feature",
       geometry: {
         type: "Point",
-        coordinates: [workout.Y, workout.X],
+        coordinates: [workout.longitude, workout.latitude],
       },
       properties: {
-        name: workout.Názov_SK,
-        category: workout["Kategória športoviska_SK"],
-        tags: workout.Sport_SK.split(', '),
-        location: workout.Umiestnenie_SK,
-        website: workout.Web,
-        email: workout?.Email_SK,
+        name: workout.nazov,
+        category: workout.kategoriaSportoviska,
+        tags: workout.sport.split(', '),
+        location: workout.umiestnenie,
+        website: workout.webLink,
         wantToWorkout: "https://cvicko.sk",
-        photo: workout.Fotka,
-        navigate: workout.Navigovať,
+        photo: workout.fotka?.data?.attributes?.formats?.small.url,
+        navigate: workout.navigovatLink,
       },
     }
   })
 
   return poolData;
 }
-
-export const rawDataCvicko: FeatureCollection = generateRawWorkoutData(workouts);

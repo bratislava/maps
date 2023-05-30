@@ -1,15 +1,24 @@
 import { addDistrictPropertyToLayer } from "@bratislava/react-maps";
 import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 import { FeatureCollection, Feature } from "geojson";
-import { rawDataCvicko } from "../data/cvicko/cvicko";
-import { rawDataPools } from "../data/pools/pools";
+import { generateRawWorkoutData } from "../data/cvicko/cvicko";
+import { generateRawPoolData } from "../data/pools/pools";
+import type { IPool, IWorkout } from "../../src/data/types"
 
-export const processData = () => {
+interface IProcessDataProps {
+  rawDataPools: Array<IPool>;
+  rawDataCvicko: Array<IWorkout>;
+}
+
+export const processData = ({ rawDataPools, rawDataCvicko }: IProcessDataProps) => {
+  const poolData = generateRawPoolData(rawDataPools);
+  const cvickoData = generateRawWorkoutData(rawDataCvicko);
+
   let GLOBAL_ID = 0;
   const data: FeatureCollection = addDistrictPropertyToLayer({
     type: "FeatureCollection",
     features: [
-      ...rawDataCvicko.features.map((feature) => {
+      ...cvickoData.features.map((feature) => {
         GLOBAL_ID++;
         const layer = "cvicko";
         const icon = "cvicko";
@@ -24,10 +33,10 @@ export const processData = () => {
           },
         } as Feature;
       }),
-      ...rawDataPools.features.map((feature) => {
+      ...poolData.features.map((feature) => {
         GLOBAL_ID++;
         const layer = "swimmingPools";
-        const icon = feature?.properties?.["Nazov_SK"] === "Areál zdravia Zlaté piesky" ? "water" : "pool";
+        const icon = feature.properties?.email === "zlatepiesky@starz.sk" ? "water" : "pool";
         return {
           id: GLOBAL_ID,
           ...feature,

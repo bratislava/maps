@@ -37,6 +37,10 @@ import { Icon, IIconProps } from "./Icon";
 import { Legend } from "./Legend";
 import { Marker } from "./Marker";
 import { MultipleMarker } from "./MultipleMarker";
+import { IPool, IWorkout } from "../data/types";
+
+const querySwimmingPools = "https://general-strapi.bratislava.sk/api/kupaliskas?populate=*&pagination[limit]=-1";
+const queryWorkouts = "https://general-strapi.bratislava.sk/api/cvickas?populate=*&pagination[limit]=-1";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -55,12 +59,39 @@ export const App = () => {
   const [frameState, setFrameState] = useState<boolean>(false);
   const frameStateSideBar = useRef(isSidebarVisible);
 
-  useEffect(() => {
-    const { data, uniqueDistricts } = processData();
+  const [rawDataPools, setRawDataPools] = useState<Array<IPool>>();
+  const [rawDataCvicko, setRawDataCvicko] = useState<Array<IWorkout>>()
 
-    setData(data);
-    setUniqueDistricts(uniqueDistricts);
+  useEffect(() => {
+    fetch(querySwimmingPools, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(response => JSON.stringify(setRawDataPools(response.data)));
+
+    fetch(queryWorkouts, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(response => JSON.stringify(setRawDataCvicko(response.data)))
   }, []);
+
+  useEffect(() => {
+    if (rawDataPools && rawDataCvicko) {
+      const { data, uniqueDistricts } = processData({ rawDataPools, rawDataCvicko });
+
+      setData(data);
+      setUniqueDistricts(uniqueDistricts);
+
+    }
+
+  }, [rawDataPools, rawDataCvicko]);
 
   const mapRef = useRef<MapHandle>(null);
 
