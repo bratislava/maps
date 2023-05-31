@@ -19,27 +19,26 @@ const cvickoIdToIconComponentObject: {
     }
   >;
 } = {
-  apollo: CvickoApolloIcon,
-  lanfranconi: CvickoLanfranconiIcon,
-  "most-snp": CvickoMostSnpIcon,
-  nabrezie: CvickoNabreziecon,
-  promenada: CvickoPromenadaIcon,
-  tyrsak: CvickoTyrsakIcon,
+  "Cvičko Apollo": CvickoApolloIcon,
+  "Cvičko Lafranconi": CvickoLanfranconiIcon,
+  "Cvičko Most SNP": CvickoMostSnpIcon,
+  "Cvičko Nábrežie": CvickoNabreziecon,
+  "Cvičko Promenáda": CvickoPromenadaIcon,
+  "Cvičko Tyršák": CvickoTyrsakIcon,
 };
 
 const cvickoIdToOffsetMappingObject: {
   [cvickoId: string]: { top?: number; right?: number; bottom?: number; left?: number };
 } = {
-  apollo: { bottom: 80 },
-  lanfranconi: { top: 90, left: 30 },
-  "most-snp": { bottom: 80 },
-  nabrezie: { top: 90, right: 40 },
-  promenada: { top: 90 },
-  tyrsak: { bottom: 80 },
+  "Cvičko Apollo": { bottom: 80 },
+  "Cvičko Lafranconi": { top: 90, left: 30 },
+  "Cvičko Most SNP": { bottom: 80 },
+  "Cvičko Nábrežie": { top: 90, right: 40 },
+  "Cvičko Promenáda": { top: 90 },
+  "Cvičko Tyršák": { bottom: 80 },
 };
 
 export interface ICvickoMarkerProps extends IMarkerProps {
-  cvickoId: string;
   isSelected: boolean;
   isInQuery: boolean;
   onClick: () => void;
@@ -47,7 +46,6 @@ export interface ICvickoMarkerProps extends IMarkerProps {
 }
 
 export const CvickoMarker = ({
-  cvickoId,
   feature,
   isHomepage,
   isInQuery,
@@ -58,17 +56,20 @@ export const CvickoMarker = ({
 
   const [isHovered, setHovered] = useState(false);
 
+  const featureName = feature?.properties?.name || "Cvicko";
+
   const isLargeIcon = useMemo(() => {
     return isSelected || isHomepage || isInQuery;
   }, [isHomepage, isSelected, isInQuery]);
 
   const offsetObject = useMemo(() => {
-    return cvickoIdToOffsetMappingObject[cvickoId] ?? {};
-  }, [cvickoId]);
+    return cvickoIdToOffsetMappingObject[featureName] ?? {};
+  }, [featureName]);
 
   const IconComponent = useMemo(() => {
-    return cvickoIdToIconComponentObject[cvickoId] ?? {};
-  }, [cvickoId]);
+    return cvickoIdToIconComponentObject[featureName] ?? {};
+  }, [featureName]);
+
 
   return (
     <>
@@ -106,7 +107,7 @@ export const CvickoMarker = ({
               className="absolute flex flex-col items-center justify-center pointer-events-none"
             >
               <span className="bg-[#BDEBFF] p-4 rounded text-[#D54127] whitespace-nowrap font-semibold text-[20px] shadow-lg">
-                Cvičko {t(`cvicko.${cvickoId}`)}
+                {featureName}
               </span>
             </motion.div>
           </div>

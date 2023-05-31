@@ -14,7 +14,7 @@ import { AnimationChangeEvent, Cluster, LineString } from "@bratislava/react-map
 import { Trans, useTranslation } from "react-i18next";
 import DrinkingFountainMarker from "../components/DrinkingFountainMarker";
 import { processFountainData } from "../utils/fountainUtil";
-import { getCvickoIdFromQuery, getIsHomepageFromQuery } from "../utils/utils";
+import { generateRawWorkoutData, getCvickoIdFromQuery, getIsHomepageFromQuery, IWorkout } from "../utils/utils";
 import { CvickoMarker } from "./CvickoMarker";
 
 import { coordinates as apolloBasicCoordinates } from "../assets/layers/running-tracks/basic/apollo";
@@ -45,29 +45,65 @@ import { X } from "@bratislava/react-maps-icons";
 import { IconButton } from "@bratislava/react-maps-ui";
 import type { Feature, Point } from "geojson";
 import { useResizeDetector } from "react-resize-detector";
-import { cvickoData } from "../assets/layers/cvicko/cvicko-data";
 import { colors } from "../utils/colors";
 import { useQuery } from "../utils/useQuery";
-import Detail from "./Detail";
-import FountainDetail from "./FountainDetail";
 import { RunningTrackButtonMarker } from "./RunningTrackButtonMarker";
+import Detail from "./Detail";
+import { FeatureCollection } from "@bratislava/utils/src/types";
+
+import { runningTracks } from "../assets/layers/running-tracks/data/running-tacks";
 
 export type TSelectedFeature = Feature<Point> | null;
+
+
+const queryWorkouts = "https://general-strapi.bratislava.sk/api/cvickas?populate=*&pagination[limit]=-1";
+
 
 export const App = () => {
   const mapRef = useRef<MapHandle>(null);
 
   const { t } = useTranslation();
 
+  const [cvickoData, setCvickoData] = useState<FeatureCollection<Point> | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<TSelectedFeature>(null);
+
   const currentCvickoId = useQuery("cvicko", getCvickoIdFromQuery);
   const isHomepage = useQuery("homepage", getIsHomepageFromQuery);
 
   const [isLoading, setLoading] = useState(true);
-  const [selectedFeature, setSelectedFeature] = useState<TSelectedFeature>(null);
   const [isMobile, setMobile] = useState<boolean | null>(null);
 
   const [selectedFountain, setSelectedFountain] = useState<TSelectedFeature>(null);
   const { data } = processFountainData();
+
+  const [rawDataCvicko, setRawDataCvicko] = useState<Array<IWorkout>>();
+
+  const [isDetailOpened, setIsDetailOpened] = useState(false);
+
+  useEffect(() => {
+    setIsDetailOpened(selectedFeature !== null || selectedFountain !== null);
+  }, [selectedFeature, selectedFountain])
+
+  useEffect(() => {
+    fetch(queryWorkouts, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(response => JSON.stringify(setRawDataCvicko(response.data)))
+
+  }, []);
+
+  useEffect(() => {
+    if (rawDataCvicko) {
+      const data = generateRawWorkoutData(rawDataCvicko);
+
+      setCvickoData(data);
+    }
+  }, [rawDataCvicko]);
+
 
   const featureClickHandler = (
     feature: TSelectedFeature = null,
@@ -92,19 +128,11 @@ export const App = () => {
       : `Cvičko | ${t("title")}`;
   }, [t, currentCvickoId]);
 
-  const closeDetail = () => {
+  const closeDetail = useCallback(() => {
     setSelectedFeature(null);
     setSelectedFountain(null);
-  };
+  }, []);
 
-  // set selected feature based on query
-  useEffect(() => {
-    const selectedFeature =
-      cvickoData.features.find((f) => f.properties?.id === currentCvickoId) ?? null;
-    setTimeout(() => {
-      setSelectedFeature(selectedFeature);
-    }, 4000);
-  }, [currentCvickoId]);
 
   useEffect(() => {
     if (selectedFeature) {
@@ -176,10 +204,10 @@ export const App = () => {
     [closeDetail],
   );
 
-  const stopAnimation = () => {
+  const stopAnimation = useCallback(() => {
     setAnimating(false);
     mapRef.current?.fitFeature(lineString(apolloBasicCoordinates));
-  };
+  }, []);
 
   const handleAnimationChange = (event: AnimationChangeEvent) => {
     mapRef.current?.changeViewport({ center: event.center, pitch: 20, bearing: 25, zoom: 15 }, 200);
@@ -313,57 +341,21 @@ export const App = () => {
           }
         </Cluster>
 
-        {/* Apollo running track animation button */}
-        <RunningTrackButtonMarker
-          isVisible={!isAnimating}
-          lat={48.13781218517968}
-          lng={17.122609073972086}
-          onClick={() => animateLine("apollo-rt")}
-          color={colors.red}
-          length="10 km"
-        />
-
-        {/* Old bridge running track animation button */}
-        <RunningTrackButtonMarker
-          isVisible={!isAnimating}
-          lat={48.13829323226889}
-          lng={17.110750156057293}
-          onClick={() => animateLine("old-bridge-rt")}
-          color={colors.violet}
-          length="8 km"
-        />
-
-        {/* SNP running track animation button */}
-        <RunningTrackButtonMarker
-          isVisible={!isAnimating}
-          lat={48.14075397693506}
-          lng={17.079605067162618}
-          onClick={() => animateLine("snp-rt")}
-          color={colors.orange}
-          length="6 km"
-        />
-
-        {/* small running track animation button */}
-        <RunningTrackButtonMarker
-          isSmall
-          isVisible={!isAnimating}
-          lat={48.1317443849081}
-          lng={17.10715026913175}
-          onClick={() => animateLine("small-rt")}
-          color={colors.blue}
-          length="800 m"
-        />
-
-        {/* large running track animation button */}
-        <RunningTrackButtonMarker
-          isSmall
-          isVisible={!isAnimating}
-          lat={48.13153408900732}
-          lng={17.11424132548811}
-          onClick={() => animateLine("large-rt")}
-          color={colors.brown}
-          length="1700 m"
-        />
+        {runningTracks.map((track) => {
+          return (
+            <>
+              <RunningTrackButtonMarker
+                isVisible={!isAnimating}
+                lat={track.lat}
+                lng={track.lng}
+                onClick={() => animateLine("apollo-rt")}
+                color={track.color}
+                length={track.length}
+              />
+            </>
+          )
+        })
+        }
 
         {/* Cvicko icons */}
         {cvickoData?.features.map((cvickoFeature) => (
@@ -373,7 +365,6 @@ export const App = () => {
             isSelected={cvickoFeature.properties?.id === selectedFeature?.properties?.id}
             key={cvickoFeature.properties?.id}
             feature={cvickoFeature}
-            cvickoId={cvickoFeature.properties?.id}
             onClick={() => featureClickHandler(cvickoFeature)}
           />
         ))}
@@ -429,7 +420,7 @@ export const App = () => {
 
         <Slot
           id="controls"
-          position="bottom"
+          position={isAnimating ? "top" : "bottom"}
           className="p-4 pb-9 flex justify-between items-end w-screen pointer-events-none"
         >
           {isAnimating ? (
@@ -455,6 +446,10 @@ export const App = () => {
           )}
         </Slot>
 
+        <Slot id="mobile-detail" isVisible={isDetailOpened && isMobile !== null && isMobile}>
+          <Detail isMobile={isMobile !== null && isMobile} feature={selectedFeature} fountain={selectedFountain} onClose={closeDetail} />
+        </Slot>
+
         <Slot
           id="desktop-detail"
           position="top-right"
@@ -464,19 +459,16 @@ export const App = () => {
           isVisible={!!selectedFeature || !!selectedFountain}
         >
 
-          {selectedFeature &&
-            <Detail
+          <Slot id="desktop-detail" isVisible={isDetailOpened && !isMobile} position="top-right" autoPadding>
+            <div
               ref={detailRef}
-              currentCvickoId={currentCvickoId}
-              onClose={closeDetail}
-              isMobile={isMobile ?? false}
-              feature={selectedFeature}
-            />
-          }
-
-          {selectedFountain &&
-            <FountainDetail isMobile={isMobile ?? false} feature={selectedFountain} onClose={closeDetail} />
-          }
+              className={cx("w-96", {
+                "shadow-lg": isDetailOpened,
+              })}
+            >
+              <Detail isMobile={false} feature={selectedFeature} fountain={selectedFountain} onClose={closeDetail} />
+            </div>
+          </Slot>
 
         </Slot>
       </Map>

@@ -1,5 +1,5 @@
 import type { FeatureCollection, Feature } from "geojson";
-import { rawData } from "../data/drinking-fountains";
+import { rawData } from "../assets/layers/drinking-fountains/drinking-fountains";
 
 export const processFountainData = () => {
   const data: FeatureCollection = {
