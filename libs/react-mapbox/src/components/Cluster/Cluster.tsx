@@ -40,10 +40,10 @@ export const Cluster = ({
     [features],
   );
 
-  const adjustCoordinates = () => {
+  const adjustCoordinates = (featuresToFilter: Supercluster.PointFeature<Supercluster.AnyProps>[]) => {
     const updatedFeatures: Array<Supercluster.PointFeature<Supercluster.AnyProps>> = [];
 
-    pointFeatures.forEach((f, index) => {
+    featuresToFilter.forEach((f, index) => {
       const sameIndexPoint = updatedFeatures.findIndex(pf => pf.geometry.coordinates[0] === f.geometry.coordinates[0] && pf.geometry.coordinates[1] === f.geometry.coordinates[1]);
 
       let offset = 0.0001;
@@ -61,8 +61,8 @@ export const Cluster = ({
     return updatedFeatures;
   }
 
-
-  const pointFeaturesUpdated = adjustCoordinates();
+  // This filter is workeround to prevent unselectable multiple features with exact coordinates
+  const pointFeaturesUpdated = useMemo(() => adjustCoordinates(pointFeatures), [pointFeatures]);
 
   const { map } = useContext(mapboxContext);
 
@@ -138,7 +138,7 @@ export const Cluster = ({
       map?.off('move', recalculate);
       clearTimeout(timer);
     };
-  }, [map, isFeatureVisible, pointFeatures, radius]);
+  }, [map, isFeatureVisible, radius, pointFeaturesUpdated]);
 
   return <>{clusters.map((cluster) => children(cluster))}</>;
 };
