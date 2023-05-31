@@ -27,6 +27,8 @@ export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDeta
   const groundPlanLink: string = feature.properties?.ORIGINAL_podorys || '';
   const txtClrByOccupacy = occupancy === 'forRent' ? 'black' : 'white';
 
+  const emailSubjectPrefix = occupancy === "free" ? "Informácie o priestore: " : "Záujem o priestor: ";
+
   return (
     <div className={cx("relative flex flex-col space-y-4 p-4", className)}>
       {feature.properties?.competition && occupancy === "forRent" && isSingleFeature && (
@@ -149,7 +151,7 @@ export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDeta
         <Note className={`flex flex-col gap-3 !bg-[#ebebeb]`}>
           <div className="flex-1">{t("contactUs")}</div>
           <a
-            href={`mailto: spravanehnutelnosti@bratislava.sk?subject=${feature?.properties?.locality || ""}`}
+            href={`mailto: spravanehnutelnosti@bratislava.sk?subject=${emailSubjectPrefix}${feature?.properties?.locality || ""}`}
             target="_blank"
             className="underline font-semibold"
             rel="noreferrer"
