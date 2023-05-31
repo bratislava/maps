@@ -39,8 +39,8 @@ import { Marker } from "./Marker";
 
 const isDevelopment = !!import.meta.env.DEV;
 
-const GEOPORTAL_LAYER_URL =
-  "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/majetok/N%C3%A1jom_nebytov%C3%BDch_priestorov_december_2022/MapServer/0";
+export const GEOPORTAL_LAYER_URL =
+  "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/majetok/N%C3%A1jom_majetku_mesta_Bratislava_maj_2023/MapServer/0";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -73,7 +73,7 @@ export const App = () => {
     }
   }, [rawData]);
 
-  const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
+  const [isSidebarVisible, setSidebarVisible] = useState<boolean>(true);
 
   const mapRef = useRef<MapHandle>(null);
 
@@ -82,6 +82,14 @@ export const App = () => {
 
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
+
+  const [frameState, setFrameState] = useState<boolean>(false);
+  const frameStateSideBar = useRef(isSidebarVisible);
+
+  const handleSideBar = useCallback((value: boolean, changePrevious: boolean) => {
+    if (changePrevious) frameStateSideBar.current = value;
+    setSidebarVisible(value);
+  }, [])
 
   const districtFilter = useFilter({
     property: "district",
@@ -126,6 +134,17 @@ export const App = () => {
       },
     ],
   });
+
+  useEffect(() => {
+    if (!frameState) return;
+
+    if (selectedFeatures.length > 0) {
+      handleSideBar(false, false)
+    }
+    else {
+      handleSideBar(frameStateSideBar.current, true)
+    }
+  }, [frameState, selectedFeatures, handleSideBar])
 
   const minAreaDefault = 0;
   const [minArea, setMinArea] = useState(minAreaDefault);
@@ -182,13 +201,16 @@ export const App = () => {
   useEffect(() => {
     // from mobile to desktop
     if (previousMobile !== false && isMobile === false) {
-      setSidebarVisible(true);
+      handleSideBar(true, true);
     }
     // from desktop to mobile
     if (previousMobile !== true && isMobile === true) {
-      setSidebarVisible(false);
+      handleSideBar(false, true);
     }
-  }, [previousMobile, isMobile]);
+
+    (window === window.parent || isMobile) ? setFrameState(false) : setFrameState(true);
+
+  }, [isMobile, previousMobile, handleSideBar]);
 
   // fit to district
   useEffect(() => {
@@ -450,7 +472,7 @@ export const App = () => {
 
       <Layout isOnlyMobile>
         <Slot id="mobile-header" position="top-right">
-          <IconButton className="m-4" onClick={() => setSidebarVisible(true)}>
+          <IconButton className="m-4" onClick={() => handleSideBar(!isSidebarVisible, true)}>
             <Funnel size="md" />
           </IconButton>
         </Slot>
@@ -479,7 +501,7 @@ export const App = () => {
       >
         <Filters
           isVisible={isSidebarVisible}
-          setVisible={setSidebarVisible}
+          setVisible={(isVisible) => handleSideBar(isVisible ?? false, true)}
           areFiltersDefault={areFiltersDefault}
           activeFilters={combinedFilter.active}
           onResetFiltersClick={handleResetFilters}

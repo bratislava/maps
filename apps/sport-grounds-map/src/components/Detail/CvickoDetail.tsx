@@ -18,8 +18,7 @@ export const CvickoDetail = ({ feature, isMobile, displayHeader }: CvickoDetailP
 
   if (!feature) return null;
 
-  const imagePath = '../../../public/images/workouts'
-  const imgSrc = `${imagePath}/${feature.properties?.photo}`;
+  const imgSrc = feature.properties?.photo as string;
 
   return (
     <div

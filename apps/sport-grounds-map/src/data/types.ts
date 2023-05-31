@@ -1,32 +1,42 @@
 
-export interface IPool {
-    "Nazov_SK": string;
-    "Popis": string;
-    "Kategoria sportoviska_SK": string;
-    "Sport_SK": string;
-    "Sluzby_SK": string;
-    "Otvaracie hodiny_SK": string;
-    "Adresa_SK": string;
-    "Email_SK": string;
-    "Web": string;
-    "Listok": string;
-    "Fotka": string;
-    "Navigovat": string;
-    "X": number;
-    "Y": number;
+interface IPoolAttributes {
+    nazov: string;
+    popis: string;
+    kategoriaSportoviska: string;
+    sport: string;
+    sluzby: string;
+    otvaracieHodiny: string;
+    adresa: string;
+    email: string;
+    webLink: string;
+    listokLink: string;
+    Fotka: string;
+    navigovatLink: string;
+    latitude: number;
+    longitude: number;
+    createdAt: Date;
+    oznam: string;
+    fotka: any;
 }
 
+export interface IPool {
+    attributes: IPoolAttributes;
+}
+
+interface IWorkoutAttributes {
+    nazov: string;
+    kategoriaSportoviska: string;
+    sport: string;
+    umiestnenie: string;
+    webLink: string;
+    navigovatLink: string;
+    latitude: number;
+    longitude: number;
+    createdAt: Date;
+    fotka: any;
+}
 export interface IWorkout {
-    "Názov_SK": string;
-    "Kategória športoviska_SK": string;
-    "Sport_SK": string;
-    "Umiestnenie_SK": string;
-    "Email_SK"?: string;
-    "Web": string;
-    "Navigovať": string;
-    "Fotka": string;
-    "X": number;
-    "Y": number;
+    attributes: IWorkoutAttributes;
 }
 
 export type TSportGround = "zimný štadión"

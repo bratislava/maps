@@ -14,28 +14,37 @@ export const SingleFeatureDetail = ({ feature, isExpanded }: ISingleFeatureDetai
   const [isModalOpen, setModalOpen] = useState(false);
   const { t } = useTranslation("translation", { keyPrefix: "detail" });
 
+  const alternativeImage = !feature?.properties?.picture && feature?.properties?.occupancy === "forRent" ? "placeholder.png" : "";
+  const image = feature?.properties?.picture || alternativeImage;
   return (
     <div className="flex flex-col">
-      <AnimateHeight isVisible={isExpanded && feature.properties?.occupancy === "forRent"}>
-        <button className="w-full" onClick={() => setModalOpen(true)}>
-          <Image object="cover" src={feature?.properties?.picture ?? "placeholder.png"} />
-        </button>
-      </AnimateHeight>
-      {feature?.properties?.picture && (
-        <ImageLightBox
-          onClose={() => setModalOpen(false)}
-          isOpen={isModalOpen}
-          images={[feature?.properties?.picture ?? "placeholder.png"]}
-          initialImageIndex={0}
-        />
-      )}
+      {image &&
+        (<AnimateHeight isVisible={isExpanded}>
+          <button className="w-full" onClick={() => setModalOpen(true)}>
+            <Image object="cover" src={image} />
+          </button>
+        </AnimateHeight>)
+      }
 
-      {!isExpanded && (
-        <div className="py-4 px-6">
-          <DataDisplay label={t("lessee")} text={feature.properties?.lessee} />
-        </div>
-      )}
-      {isExpanded && <DetailDataDisplay feature={feature} />}
-    </div>
+      {
+        feature?.properties?.picture && (
+          <ImageLightBox
+            onClose={() => setModalOpen(false)}
+            isOpen={isModalOpen}
+            images={[feature?.properties?.picture]}
+            initialImageIndex={0}
+          />
+        )
+      }
+
+      {
+        !isExpanded && (
+          <div className="py-4 px-6">
+            <DataDisplay label={t("locality")} text={feature.properties?.lessee} />
+          </div>
+        )
+      }
+      {isExpanded && <DetailDataDisplay isSingleFeature={true} feature={feature} />}
+    </div >
   );
 };

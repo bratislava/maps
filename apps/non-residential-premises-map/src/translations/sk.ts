@@ -54,9 +54,12 @@ export default {
     rentalContract: "nájomná zmluva",
     free: "Voľné",
     occupied: "Obsadené",
-    premisePhotos: "Fotografie priestoru",
+    premisePhotos: "Fotografie",
     forRent: "Na prenájom",
     ongoingCompetition: "Prebiehajúca súťaž",
+    contactUs: "Kontaktujte nás pre informácie o tomto priestore",
+    groundPlan: "Pôdorys",
+    spacePlan: "Pôdorys priestoru"
   },
   legend: {
     title: "Legenda",
