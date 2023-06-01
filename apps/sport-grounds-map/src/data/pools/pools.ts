@@ -20,7 +20,7 @@ export const generateRawPoolData = (poolList: Array<IPool>): FeatureCollection =
         category: pool.kategoriaSportoviska,
         tags: pool.sport.split(', '),
         services: pool.sluzby.split(', '),
-        openingHours: pool.otvaracieHodiny,
+        openingHours: pool.otvaracieHodiny && pool.otvaracieHodiny.replace('\n', '<br>'),
         address: pool.adresa,
         email: pool.email,
         website: pool.webLink,

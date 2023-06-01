@@ -124,8 +124,12 @@ export const SwimmingPoolDetail = ({ feature, isMobile, displayHeader }: Swimmin
               </div>
             </Note>
           }
-
           <Row label={feature.properties?.name} text={feature.properties?.description} />
+
+          <div>
+            <div className="font-semibold">{t("openingHours")}</div>
+            <div dangerouslySetInnerHTML={{ __html: feature.properties?.openingHours }} />
+          </div>
 
           <div>
             <div className="mb-1 font-semibold">{t(`services`)}</div>
@@ -169,7 +173,6 @@ export const SwimmingPoolDetail = ({ feature, isMobile, displayHeader }: Swimmin
             </div>
           </div>
 
-          <Row label={t("openingHours")} text={feature.properties?.openingHours} />
           <Row label={t("sportGroundCategory")} text={feature.properties?.category} />
           <Row label={t("address")} text={feature.properties?.address} />
           <Row label={t("email")} text={feature.properties?.email} />
