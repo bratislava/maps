@@ -12,7 +12,7 @@ export interface IButtonProps {
 }
 
 export const ButtonLink = ({ href, children, occupancy, noShadow = false }: IButtonProps) => {
-  const background = occupancy === 'forRent' ? colors.forRent : 'black'; 
+  const background = occupancy === 'forRent' ? colors.forRent : 'black';
   const txtColor = occupancy === 'forRent' ? 'black' : 'white';
   return (
     <a
@@ -27,7 +27,7 @@ export const ButtonLink = ({ href, children, occupancy, noShadow = false }: IBut
       )}
       style={{ background }}
     >
-      <span>{children}</span>
+      <span style={{ color: txtColor }}>{children}</span>
       <div className="relative flex items-center">
         <div
           className={classnames(
