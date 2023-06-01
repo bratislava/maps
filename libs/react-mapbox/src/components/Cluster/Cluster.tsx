@@ -40,6 +40,30 @@ export const Cluster = ({
     [features],
   );
 
+  const adjustCoordinates = (featuresToFilter: Supercluster.PointFeature<Supercluster.AnyProps>[]) => {
+    const updatedFeatures: Array<Supercluster.PointFeature<Supercluster.AnyProps>> = [];
+
+    featuresToFilter.forEach((f, index) => {
+      const sameIndexPoint = updatedFeatures.findIndex(pf => pf.geometry.coordinates[0] === f.geometry.coordinates[0] && pf.geometry.coordinates[1] === f.geometry.coordinates[1]);
+
+      let offset = 0.0001;
+
+      if (sameIndexPoint > -1 && sameIndexPoint !== index) {
+        const updatedFeature = { ...f };
+        updatedFeature.geometry.coordinates[0] = updatedFeature.geometry.coordinates[0] - offset;
+        offset += 0.0001;
+
+        updatedFeatures.push(updatedFeature);
+      }
+      else updatedFeatures.push(f);
+    })
+
+    return updatedFeatures;
+  }
+
+  // This filter is workeround to prevent unselectable multiple features with exact coordinates
+  const pointFeaturesUpdated = useMemo(() => adjustCoordinates(pointFeatures), [pointFeatures]);
+
   const { map } = useContext(mapboxContext);
 
   const [clusters, setClusters] = useState<Array<IClusterChildProps>>([]);
@@ -66,7 +90,7 @@ export const Cluster = ({
 
       const supercluster: Supercluster<Supercluster.AnyProps, Supercluster.AnyProps> = new Supercluster({ radius, maxZoom: 30 });
       supercluster.load(
-        pointFeatures.filter((f) =>
+        pointFeaturesUpdated.filter((f) =>
           isFeatureVisible === undefined ? true : isFeatureVisible(f),
         ),
       );
@@ -114,7 +138,7 @@ export const Cluster = ({
       map?.off('move', recalculate);
       clearTimeout(timer);
     };
-  }, [map, isFeatureVisible, pointFeatures, radius]);
+  }, [map, isFeatureVisible, radius, pointFeaturesUpdated]);
 
   return <>{clusters.map((cluster) => children(cluster))}</>;
 };

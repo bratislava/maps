@@ -139,14 +139,15 @@ export const SwimmingPoolDetail = ({ feature, isMobile, displayHeader }: Swimmin
                     button={({ open, close }) => (
                       <button
                         onMouseEnter={open}
-                        onFocus={open}
+                        onTouchStart={open}
+                        onTouchEnd={close}
                         onMouseLeave={close}
                         onMouseDown={() => close()}
                       >
                         {setServiceIcons(service)}
                       </button>
                     )}
-                    panel={<div>{mainT(service)}</div>}
+                    panel={<div>{t(service as any)}</div>}
                     allowedPlacements={['top']}
                   />
                 )
