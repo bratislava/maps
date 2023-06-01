@@ -143,6 +143,7 @@ export const SwimmingPoolDetail = ({ feature, isMobile, displayHeader }: Swimmin
                     button={({ open, close }) => (
                       <button
                         onMouseEnter={open}
+                        onFocus={open}
                         onTouchStart={open}
                         onTouchEnd={close}
                         onMouseLeave={close}
