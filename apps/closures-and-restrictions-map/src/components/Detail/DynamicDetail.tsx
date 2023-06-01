@@ -213,7 +213,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
             )}
 
             <Note className={`flex flex-col gap-3 !bg-[#FCF2E6]`}>
-                <div className="flex-1">{t("problemHint")}</div>
+                <div className="flex-1 dark:text-text">{t("problemHint")}</div>
                 <a
                     href={t("reportProblemLink")}
                     target="_blank"

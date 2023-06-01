@@ -51,7 +51,7 @@ export const Sidebar = ({
               <div className="flex p-2">
                 <Chevron direction="left" className="text-primary" />
               </div>
-              <h1 className="relative font-medium text-headers">{title}</h1>
+              <h1 className="relative font-medium text-headers dark:text-[white]">{title}</h1>
             </button>
           </div>
         ) : (
@@ -116,7 +116,7 @@ export const Sidebar = ({
               )}
             >
               {!isMobile && title && (
-                <h1 className="text-lg font-semibold relative z-30 px-6 pt-6 pb-3 text-headers">
+                <h1 className="text-lg font-semibold relative z-30 px-6 pt-6 pb-3 text-headers dark:text-[white]">
                   {title}
                 </h1>
               )}
