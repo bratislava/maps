@@ -1,9 +1,9 @@
-name: Deploy staging drinking-fountains-map
+name: Test build drinking-fountains-map
 
 on: [pull_request]
 jobs:
   Deploy:
-    name: Deploy staging drinking-fountains-map
+    name: Test build drinking-fountains-map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

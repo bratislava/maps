@@ -1,9 +1,9 @@
-name: Deploy staging closures-and-restrictions
+name: Test build closures-and-restrictions
 
 on: [pull_request]
 jobs:
   Deploy:
-    name: Deploy staging closures-and-restrictions-map
+    name: Test build closures-and-restrictions-map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

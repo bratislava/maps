@@ -1,9 +1,9 @@
-name: Deploy staging greenary-care-map
+name: Test build greenary-care-map
 
 on: [pull_request]
 jobs:
   Deploy:
-    name: Deploy staging greenary-care-map
+    name: Test build greenary-care-map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

@@ -1,9 +1,9 @@
-name: Deploy staging paas-map
+name: Test build paas-map
 
 on: [pull_request]
 jobs:
   Deploy:
-    name: Deploy staging paas-map
+    name: Test build paas-map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

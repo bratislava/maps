@@ -1,9 +1,9 @@
-name: Deploy staging sport-grounds-map
+name: Test build sport-grounds-map
 
 on: [pull_request]
 jobs:
   Deploy:
-    name: Deploy staging sport-grounds-map
+    name: Test build sport-grounds-map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

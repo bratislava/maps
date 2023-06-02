@@ -1,9 +1,9 @@
-name: Deploy staging non-residential-premises-map
+name: Test build non-residential-premises-map
 
 on: [pull_request]
 jobs:
   Deploy:
-    name: Deploy staging non-residential-premises-map
+    name: Test build non-residential-premises-map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

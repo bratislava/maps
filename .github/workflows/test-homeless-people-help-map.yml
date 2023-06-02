@@ -1,9 +1,9 @@
-name: Deploy staging homeless-people-help-map
+name: Test build homeless-people-help-map
 
 on: [pull_request]
 jobs:
   Deploy:
-    name: Deploy staging homeless-people-help-map
+    name: Test build homeless-people-help-map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
