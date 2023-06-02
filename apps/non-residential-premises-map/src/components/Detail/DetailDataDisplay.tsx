@@ -148,7 +148,7 @@ export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDeta
         />
       }
       {occupancy !== "forRent" &&
-        <Note className={`flex flex-col gap-3 !bg-[#ebebeb]`}>
+        <Note className={`flex flex-col gap-3 !bg-[#ebebeb] dark:text-[black]`}>
           <div className="flex-1">{t("contactUs")}</div>
           <a
             href={`mailto: spravanehnutelnosti@bratislava.sk?subject=${emailSubjectPrefix}${feature?.properties?.locality || ""}`}
