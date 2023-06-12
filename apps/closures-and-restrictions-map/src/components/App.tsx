@@ -16,7 +16,7 @@ import {
   IFilterResult,
   Layer,
   useCombinedFilter,
-  useFilter
+  useFilter,
 } from "@bratislava/react-mapbox";
 import {
   Layout,
@@ -25,7 +25,7 @@ import {
   SearchBar,
   Slot,
   ThemeController,
-  ViewportController
+  ViewportController,
 } from "@bratislava/react-maps";
 import { useArcgis } from "@bratislava/react-use-arcgis";
 import { MapboxGeoJSONFeature } from "mapbox-gl";
@@ -39,11 +39,7 @@ import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 // utils
 import { usePrevious } from "@bratislava/utils";
 import { Feature, FeatureCollection, Point } from "geojson";
-import {
-  DIGUPS_URL,
-  DISORDERS_URL,
-  STRAPI_NOTIFICATIONS_URL
-} from "../utils/urls";
+import { DIGUPS_URL, DISORDERS_URL, STRAPI_NOTIFICATIONS_URL } from "../utils/urls";
 import { processData } from "../utils/utils";
 import Detail from "./Detail";
 import { Filters } from "./Filters";
@@ -115,18 +111,20 @@ export const App = () => {
   const [uniqueLayers, setUniqueLayers] = useState<Array<string>>([]);
   const [uniqueTypes, setUniqueTypes] = useState<Array<string>>([]);
 
-  const [strapiNotification, setStrapiNotification] = useState<IStrapiNotification>({} as IStrapiNotification);
+  const [strapiNotification, setStrapiNotification] = useState<IStrapiNotification>(
+    {} as IStrapiNotification,
+  );
 
   useEffect(() => {
     fetch(STRAPI_NOTIFICATIONS_URL, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Accept': 'application/json',
+        Accept: "application/json",
       },
     })
-      .then(response => response.json())
-      .then(response => JSON.stringify(setStrapiNotification(response.data.attributes)))
-  }, [])
+      .then((response) => response.json())
+      .then((response) => JSON.stringify(setStrapiNotification(response.data.attributes)));
+  }, []);
 
   useEffect(() => {
     if (
@@ -180,17 +178,20 @@ export const App = () => {
   const [activeTooltip, setActiveTooltip] = useState<ITooltip | null>(null);
   const closeTooltipModal = () => setTooltipModalOpen(false);
 
-  const modalHandler = useCallback((tooltip: ITooltip | null) => {
-    setActiveTooltip(tooltip);
-    (tooltip && isMobile) && setTooltipModalOpen(true);
+  const modalHandler = useCallback(
+    (tooltip: ITooltip | null) => {
+      setActiveTooltip(tooltip);
+      tooltip && isMobile && setTooltipModalOpen(true);
 
-    !tooltip && setTooltipModalOpen(false);
-  }, [isMobile])
+      !tooltip && setTooltipModalOpen(false);
+    },
+    [isMobile],
+  );
 
   const handleSideBar = useCallback((value: boolean, changePrevious: boolean) => {
     if (changePrevious) frameStateSideBar.current = value;
     setSidebarVisible(value);
-  }, [])
+  }, []);
 
   // close sidebar on mobile and open on desktop
   useEffect(() => {
@@ -203,7 +204,7 @@ export const App = () => {
       handleSideBar(false, true);
     }
 
-    (window === window.parent || isMobile) ? setFrameState(false) : setFrameState(true);
+    window === window.parent || isMobile ? setFrameState(false) : setFrameState(true);
 
     modalHandler(null);
   }, [isMobile, previousMobile, modalHandler, handleSideBar]);
@@ -217,12 +218,11 @@ export const App = () => {
     if (!frameState) return;
 
     if (selectedMarker) {
-      handleSideBar(false, false)
+      handleSideBar(false, false);
+    } else {
+      handleSideBar(frameStateSideBar.current, true);
     }
-    else {
-      handleSideBar(frameStateSideBar.current, true)
-    }
-  }, [frameState, selectedMarker, handleSideBar])
+  }, [frameState, selectedMarker, handleSideBar]);
 
   // close detailbox when sidebar is opened on mobile
   useEffect(() => {
@@ -231,6 +231,7 @@ export const App = () => {
     }
   }, [closeDetail, isMobile, isSidebarVisible, previousSidebarVisible]);
 
+  // TODO wrong viewport, change to the center of BA
   const initialViewport = {
     zoom: 12.229005488986582,
     center: {
@@ -329,11 +330,13 @@ export const App = () => {
   }, [statusFilter.activeKeys.length, statusFilter.keys.length]);
 
   const infoNotification: IMapInfoNotification | undefined =
-    strapiNotification.enabled && strapiNotification.description && strapiNotification.title ? {
-      title: strapiNotification?.title,
-      txt: <TextWithAnchorLink text={strapiNotification?.description} />,
-      moreTxt: t("informationModal.moreInfo")
-    } : undefined;
+    strapiNotification.enabled && strapiNotification.description && strapiNotification.title
+      ? {
+          title: strapiNotification?.title,
+          txt: <TextWithAnchorLink text={strapiNotification?.description} />,
+          moreTxt: t("informationModal.moreInfo"),
+        }
+      : undefined;
 
   const combinedFilter = useCombinedFilter({
     combiner: "all",
@@ -404,18 +407,20 @@ export const App = () => {
       onMobileChange={setMobile}
       onMapClick={closeDetail}
       mapInformation={{
-        // Comment out/remove infoNotification attribute to remove notification 
+        // Comment out/remove infoNotification attribute to remove notification
         infoNotification,
         title: t("informationModal.title"),
         description: (
           <>
-            <div className="mb-2">
-              {t("informationModal.descriptionPart1")}
-            </div>
+            <div className="mb-2">{t("informationModal.descriptionPart1")}</div>
             <div className="mb-2">
               <Trans i18nKey="informationModal.descriptionPart2">
-                before
-                <a href={t("informationModal.description2Link")} className="underline font-semibold">
+                <a
+                  href={t("informationModal.description2Link")}
+                  className="underline font-semibold"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   link
                 </a>
               </Trans>
@@ -423,7 +428,12 @@ export const App = () => {
             <div>
               <Trans i18nKey="informationModal.descriptionPart3">
                 before
-                <a href={t("informationModal.description3Link")} className="underline font-semibold">
+                <a
+                  href={t("informationModal.description3Link")}
+                  className="underline font-semibold"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   link
                 </a>
               </Trans>
@@ -553,9 +563,7 @@ export const App = () => {
 
       <Layout isOnlyMobile>
         <Slot id="mobile-header">
-          <MobileHeader
-            onFunnelClick={() => handleSideBar(!isSidebarVisible, true)}
-          />
+          <MobileHeader onFunnelClick={() => handleSideBar(!isSidebarVisible, true)} />
         </Slot>
       </Layout>
 

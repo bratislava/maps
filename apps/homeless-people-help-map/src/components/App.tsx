@@ -11,7 +11,7 @@ import {
   SearchBar,
   Slot,
   ThemeController,
-  ViewportController
+  ViewportController,
 } from "@bratislava/react-maps";
 
 import { useResizeDetector } from "react-resize-detector";
@@ -48,12 +48,7 @@ import { PhoneLinksModal } from "./PhoneLinksModal";
 import { Popup } from "./Popup";
 import { SyringeExchangeMarker } from "./SyringeExchangeMarker";
 
-const {
-  data,
-  otherServicesData,
-  uniqueDistricts,
-  fixpointAndSyringeExchangeData,
-} = processData();
+const { data, otherServicesData, uniqueDistricts, fixpointAndSyringeExchangeData } = processData();
 const uniqueLayers = Object.keys(colors).filter((key) => key !== "terrainServices");
 const defaultLayersValues = uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {});
 
@@ -259,8 +254,7 @@ export const App = () => {
     setTimeout(() => {
       setServiceDetail(true);
     }, 500);
-
-  }, [activeTerrainService])
+  }, [activeTerrainService]);
 
   // Disable terrain service if
   useEffect(() => {
