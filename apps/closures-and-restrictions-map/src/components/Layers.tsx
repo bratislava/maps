@@ -22,14 +22,14 @@ export const Layers = ({ filter }: ILayerProps) => {
 
   const layers: Array<ILayerCategory> = [
     {
-      label: t("layers.digups.title"),
-      icon: <Icon icon="digup" size={40} />,
-      subLayers: ["digups"],
-    },
-    {
       label: t("layers.closures.title"),
       icon: <Icon icon="closure" size={40} />,
       subLayers: ["closures"],
+    },
+    {
+      label: t("layers.digups.title"),
+      icon: <Icon icon="digup" size={40} />,
+      subLayers: ["digups"],
     },
     {
       label: t("layers.disorders.title"),
@@ -47,14 +47,14 @@ export const Layers = ({ filter }: ILayerProps) => {
     const activeStatusKeys = filter.activeKeys;
     const disabled = activeStatusKeys.length === 1 && activeStatusKeys.includes(layer);
     return disabled;
-  }
+  };
 
   const layerHandler = (layer: string) => {
     if (isDisabled(layer)) return;
     filter.toggleActive(layer);
-  }
+  };
 
-  const existingLayers = layers.filter(layer => filter.keys.includes(layer.subLayers[0]));
+  const existingLayers = layers.filter((layer) => filter.keys.includes(layer.subLayers[0]));
 
   return (
     <div className="flex flex-col w-full">
@@ -81,11 +81,8 @@ export const Layers = ({ filter }: ILayerProps) => {
                 </div>
               }
               rightSlot={
-                <button
-                  className="cursor-pointer p-1"
-                  onClick={() => layerHandler(subLayers[0])}
-                >
-                  <div style={{ opacity: isDisabled(subLayers[0]) ? '.5' : '1' }}>
+                <button className="cursor-pointer p-1" onClick={() => layerHandler(subLayers[0])}>
+                  <div style={{ opacity: isDisabled(subLayers[0]) ? ".5" : "1" }}>
                     <Eye size="sm" isCrossed={!filter.isAnyKeyActive(subLayers)} />
                   </div>
                 </button>
@@ -112,7 +109,6 @@ export const Layers = ({ filter }: ILayerProps) => {
           );
         })}
       </Accordion>
-
     </div>
   );
 };

@@ -12,8 +12,8 @@ export interface IButtonProps {
 }
 
 export const ButtonLink = ({ href, children, occupancy, noShadow = false }: IButtonProps) => {
-  const background = occupancy === 'forRent' ? colors.forRent : 'black';
-  const txtColor = occupancy === 'forRent' ? 'black' : 'white';
+  const background = occupancy === "forRent" ? colors.forRent : "black";
+  const txtColor = "black";
   return (
     <a
       href={href}

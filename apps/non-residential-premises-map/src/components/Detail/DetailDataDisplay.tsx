@@ -16,18 +16,23 @@ export interface IDetailDataDisplayProps {
 
 export type TOccupacy = "forRent" | "occupied" | "free";
 
-export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDetailDataDisplayProps) => {
+export const DetailDataDisplay = ({
+  feature,
+  className,
+  isSingleFeature,
+}: IDetailDataDisplayProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "detail" });
 
   const [isModalOpen, setModalOpen] = useState(false);
   const switchFontWeights = true;
 
   const occupancy: TOccupacy = feature?.properties?.occupancy;
-  const contractLink: string = feature.properties?.ORIGINAL_NZ_link || '';
-  const groundPlanLink: string = feature.properties?.ORIGINAL_podorys || '';
-  const txtClrByOccupacy = occupancy === 'forRent' ? 'black' : 'white';
+  const contractLink: string = feature.properties?.ORIGINAL_NZ_link || "";
+  const groundPlanLink: string = feature.properties?.ORIGINAL_podorys || "";
+  const txtClrByOccupacy = occupancy === "forRent" ? "black" : "white";
 
-  const emailSubjectPrefix = occupancy === "free" ? "Informácie o priestore: " : "Záujem o priestor: ";
+  const emailSubjectPrefix =
+    occupancy === "free" ? "Informácie o priestore: " : "Záujem o priestor: ";
 
   return (
     <div className={cx("relative flex flex-col space-y-4 p-4", className)}>
@@ -40,7 +45,7 @@ export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDeta
       )}
 
       <div className="flex flex-wrap">
-        {feature.properties?.competition && occupancy === "forRent" && !isSingleFeature &&
+        {feature.properties?.competition && occupancy === "forRent" && !isSingleFeature && (
           <RoundedIconButon bgColor={colors[occupancy]} txtColor={txtClrByOccupacy}>
             <a
               href={feature.properties?.competition}
@@ -51,25 +56,28 @@ export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDeta
               {t("ongoingCompetition")}
             </a>
           </RoundedIconButon>
-        }
+        )}
 
-        <RoundedIconButon bgColor={colors[occupancy]} txtColor={txtClrByOccupacy}>
-          <a
-            className="no-underline flex gap-2 items-center"
-            rel="noreferrer"
-          >
-            {t(occupancy).toLocaleLowerCase()}
-          </a>
-        </RoundedIconButon>
+        <div
+          style={{ backgroundColor: colors[occupancy], color: txtClrByOccupacy }}
+          className={
+            "flex gap-2 text-[white] rounded-full font-semibold h-9 items-center justify-center pl-4 pr-4 mr-2 mb-2 select-none"
+          }
+        >
+          {t(occupancy)}
+        </div>
 
-        {feature?.properties?.picture && !isSingleFeature &&
+        {feature?.properties?.picture && !isSingleFeature && (
           <>
-            <RoundedIconButon icon={<ImageIcon width={20} height={20} />} txtColor={txtClrByOccupacy} bgColor={colors[occupancy]}>
+            <RoundedIconButon
+              icon={<ImageIcon width={20} height={20} />}
+              txtColor={txtClrByOccupacy}
+              bgColor={colors[occupancy]}
+            >
               <a
                 className="no-underline flex gap-2 items-center"
                 rel="noreferrer"
                 onClick={() => setModalOpen(true)}
-
               >
                 {t("premisePhotos")}
               </a>
@@ -81,14 +89,34 @@ export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDeta
               initialImageIndex={0}
             />
           </>
-        }
+        )}
       </div>
 
-      <DataDisplay label={t(`locality`)} text={feature?.properties?.locality} switchFontWeights={switchFontWeights} />
-      <DataDisplay label={t(`purpose`)} text={feature?.properties?.purpose} switchFontWeights={switchFontWeights} />
-      <DataDisplay label={t(`lessee`)} text={feature?.properties?.lessee} switchFontWeights={switchFontWeights} />
-      <DataDisplay label={t(`rentUntil`)} text={feature?.properties?.rentUntil} switchFontWeights={switchFontWeights} />
-      <DataDisplay label={t(`description`)} text={feature?.properties?.description} switchFontWeights={switchFontWeights} />
+      <DataDisplay
+        label={t(`locality`)}
+        text={feature?.properties?.locality}
+        switchFontWeights={switchFontWeights}
+      />
+      <DataDisplay
+        label={t(`purpose`)}
+        text={feature?.properties?.purpose}
+        switchFontWeights={switchFontWeights}
+      />
+      <DataDisplay
+        label={t(`lessee`)}
+        text={feature?.properties?.lessee}
+        switchFontWeights={switchFontWeights}
+      />
+      <DataDisplay
+        label={t(`rentUntil`)}
+        text={feature?.properties?.rentUntil}
+        switchFontWeights={switchFontWeights}
+      />
+      <DataDisplay
+        label={t(`description`)}
+        text={feature?.properties?.description}
+        switchFontWeights={switchFontWeights}
+      />
       <DataDisplay
         switchFontWeights={switchFontWeights}
         label={t(`approximateArea`)}
@@ -115,43 +143,35 @@ export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDeta
           )
         }
       />
-      {contractLink &&
+      {contractLink && (
         <DataDisplay
           switchFontWeights={switchFontWeights}
           label={t(`contract`)}
           text={
-            <a
-              className="flex underline"
-              rel="noreferrer"
-              href={contractLink}
-              target="_blank"
-            >
+            <a className="flex underline" rel="noreferrer" href={contractLink} target="_blank">
               {t("rentalContract")}
             </a>
           }
         />
-      }
-      {groundPlanLink &&
+      )}
+      {groundPlanLink && (
         <DataDisplay
           switchFontWeights={switchFontWeights}
           label={t(`groundPlan`)}
           text={
-            <a
-              className="flex underline"
-              rel="noreferrer"
-              href={groundPlanLink}
-              target="_blank"
-            >
+            <a className="flex underline" rel="noreferrer" href={groundPlanLink} target="_blank">
               {t("spacePlan")}
             </a>
           }
         />
-      }
-      {occupancy !== "forRent" &&
+      )}
+      {occupancy !== "forRent" && (
         <Note className={`flex flex-col gap-3 !bg-[#ebebeb] dark:text-[black]`}>
           <div className="flex-1">{t("contactUs")}</div>
           <a
-            href={`mailto: spravanehnutelnosti@bratislava.sk?subject=${emailSubjectPrefix}${feature?.properties?.locality || ""}`}
+            href={`mailto: spravanehnutelnosti@bratislava.sk?subject=${emailSubjectPrefix}${
+              feature?.properties?.locality || ""
+            }`}
             target="_blank"
             className="underline font-semibold"
             rel="noreferrer"
@@ -159,8 +179,7 @@ export const DetailDataDisplay = ({ feature, className, isSingleFeature }: IDeta
             spravanehnutelnosti@bratislava.sk
           </a>
         </Note>
-      }
-
+      )}
     </div>
   );
 };

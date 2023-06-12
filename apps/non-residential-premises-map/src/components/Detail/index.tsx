@@ -15,6 +15,7 @@ export interface DetailProps {
 
 export const Detail: ForwardRefRenderFunction<HTMLDivElement, DetailProps> =
   ({ features, onClose, isMobile, avoidMapboxControls = false, ref }) => {
+    // TODO check here use defailRef to control unrolling of bottomSheet
     const detailRef = useRef<SheetHandle>(null);
 
     const [feature, setFeature] = useState<Feature | null>(null);

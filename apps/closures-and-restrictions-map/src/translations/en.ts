@@ -18,11 +18,11 @@ export default {
       types: {
         Kanalizácia: "Sewerage",
         Plyn: "Gas",
-        "Optické_siete": "Optics",
-        "Elektrina_(VN_NN_a_pod.)": "Electricity",
+        Optické_siete: "Optics",
+        Elektrina: "Electricity",
         Voda: "Water",
         Horúcovod: "Hot Water",
-        "Verejné_Osvetlenie": "Street lighting",
+        Verejné_Osvetlenie: "Street lighting",
         Výstavba: "Construction",
         iné: "Other",
       },
@@ -144,13 +144,14 @@ export default {
   informationModal: {
     title: "Map information",
     info: "Let us know if there is a problem due to construction work in a public area",
-    descriptionPart1: "The map shows legally permitted excavations, closures and reported faults on local roads I. and II. classes.",
-    descriptionPart2: "<1>More information</1> about traffic permits and the road authority that authorizes excavations and closures.",
-    descriptionPart3: "<1>More information</1> about the management and maintenance of roads in the capital.",
-    description2Link:
-      "https://bratislava.sk/doprava-a-mapy/doprava/dopravne-povolenia",
-    description3Link:
-      "https://bratislava.sk/doprava-a-mapy/sprava-a-udrzba-komunikacii",
+    descriptionPart1:
+      "The map shows legally permitted excavations, closures and reported faults on local roads I. and II. classes.",
+    descriptionPart2:
+      "<1>More information</1> about traffic permits and the road authority that authorizes excavations and closures.",
+    descriptionPart3:
+      "<1>More information</1> about the management and maintenance of roads in the capital.",
+    description2Link: "https://bratislava.sk/doprava-a-mapy/doprava/dopravne-povolenia",
+    description3Link: "https://bratislava.sk/doprava-a-mapy/sprava-a-udrzba-komunikacii",
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
     reportProblem: "Report problem",
