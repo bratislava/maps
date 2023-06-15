@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "prod-cvicko-map-v*"
+      - "prod-all-v*"
 
 jobs:
   Deploy:

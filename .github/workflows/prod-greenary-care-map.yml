@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "prod-greenary-care-map-v*"
+      - "prod-all-v*"
 
 jobs:
   Deploy:
