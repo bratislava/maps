@@ -11,7 +11,7 @@ import {
   SearchBar,
   Slot,
   ThemeController,
-  ViewportController
+  ViewportController,
 } from "@bratislava/react-maps";
 
 // components
@@ -38,7 +38,7 @@ export const App = () => {
   }, [t]);
 
   const [selectedFeature, setSelectedFeature] = useState<Feature<Point> | null>(null);
-  const [isLegendVisible, setLegendVisible] = useState<boolean | undefined>(undefined);
+  const [isLegendVisible, setLegendVisible] = useState<boolean | undefined>(false);
 
   const mapRef = useRef<MapHandle>(null);
 

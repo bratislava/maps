@@ -1,11 +1,7 @@
 import { Feature, Point } from 'geojson';
-import {
-  FC,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import groupBy from 'lodash.groupby';
+import cloneDeep from 'lodash.clonedeep';
 import Supercluster from 'supercluster';
 import { filterContext } from '../Filter/Filter';
 import { mapboxContext } from '../Mapbox/Mapbox';
@@ -40,29 +36,37 @@ export const Cluster = ({
     [features],
   );
 
-  const adjustCoordinates = (featuresToFilter: Supercluster.PointFeature<Supercluster.AnyProps>[]) => {
-    const updatedFeatures: Array<Supercluster.PointFeature<Supercluster.AnyProps>> = [];
+  const adjustCoordinates = (
+    featuresToFilter: Supercluster.PointFeature<Supercluster.AnyProps>[],
+  ) => {
+    // group features with same coordinates
+    const groupedFeatures = groupBy(featuresToFilter, (f) =>
+      // pragmatic identity, should not be problematic on the 'numbers' used in point coordinates
+      f.geometry.coordinates.join(','),
+    );
 
-    featuresToFilter.forEach((f, index) => {
-      const sameIndexPoint = updatedFeatures.findIndex(pf => pf.geometry.coordinates[0] === f.geometry.coordinates[0] && pf.geometry.coordinates[1] === f.geometry.coordinates[1]);
+    console.log('original: ', featuresToFilter);
+    console.log('grouped: ', groupedFeatures);
 
-      let offset = 0.0001;
-
-      if (sameIndexPoint > -1 && sameIndexPoint !== index) {
-        const updatedFeature = { ...f };
-        updatedFeature.geometry.coordinates[0] = updatedFeature.geometry.coordinates[0] - offset;
-        offset += 0.0001;
-
-        updatedFeatures.push(updatedFeature);
-      }
-      else updatedFeatures.push(f);
-    })
-
-    return updatedFeatures;
-  }
+    // split the features with same coordinates into a line side-by-side
+    return Object.values(groupedFeatures).reduce((acc, curr) => {
+      return [
+        ...acc,
+        ...curr.map((feature, index) => {
+          const updatedFeature = cloneDeep(feature);
+          updatedFeature.geometry.coordinates[0] =
+            updatedFeature.geometry.coordinates[0] + index * 0.0001;
+          return updatedFeature;
+        }),
+      ];
+    }, []);
+  };
 
   // This filter is workeround to prevent unselectable multiple features with exact coordinates
-  const pointFeaturesUpdated = useMemo(() => adjustCoordinates(pointFeatures), [pointFeatures]);
+  const pointFeaturesUpdated = useMemo(
+    () => adjustCoordinates(pointFeatures),
+    [pointFeatures],
+  );
 
   const { map } = useContext(mapboxContext);
 
@@ -85,10 +89,13 @@ export const Cluster = ({
 
       // Static bbox
       const bbox: [number, number, number, number] = [
-        16.847534, 47.734705, 18.400726, 48.841221
-      ]
+        16.847534, 47.734705, 18.400726, 48.841221,
+      ];
 
-      const supercluster: Supercluster<Supercluster.AnyProps, Supercluster.AnyProps> = new Supercluster({ radius, maxZoom: 30 });
+      const supercluster: Supercluster<
+        Supercluster.AnyProps,
+        Supercluster.AnyProps
+      > = new Supercluster({ radius, maxZoom: 30 });
       supercluster.load(
         pointFeaturesUpdated.filter((f) =>
           isFeatureVisible === undefined ? true : isFeatureVisible(f),
@@ -98,7 +105,8 @@ export const Cluster = ({
       const newClusters: Array<IClusterChildProps> = supercluster
         .getClusters(bbox, zoom ?? 0)
         .map((cluster, key) => {
-          const isCluster: boolean = cluster.properties.cluster_id !== undefined;
+          const isCluster: boolean =
+            cluster.properties.cluster_id !== undefined;
 
           if (isCluster) {
             const features = supercluster.getLeaves(
