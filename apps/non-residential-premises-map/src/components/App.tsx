@@ -15,7 +15,7 @@ import {
   SearchBar,
   Slot,
   ThemeController,
-  ViewportController
+  ViewportController,
 } from "@bratislava/react-maps";
 
 import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
@@ -36,11 +36,9 @@ import { useWindowSize } from "usehooks-ts";
 import Detail from "./Detail";
 import { Legend } from "./Legend";
 import { Marker } from "./Marker";
+import { GEOPORTAL_LAYER_URL } from "../utils/const";
 
 const isDevelopment = !!import.meta.env.DEV;
-
-export const GEOPORTAL_LAYER_URL =
-  "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/majetok/N%C3%A1jom_majetku_mesta_Bratislava_maj_2023/MapServer/0";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -89,7 +87,7 @@ export const App = () => {
   const handleSideBar = useCallback((value: boolean, changePrevious: boolean) => {
     if (changePrevious) frameStateSideBar.current = value;
     setSidebarVisible(value);
-  }, [])
+  }, []);
 
   const districtFilter = useFilter({
     property: "district",
@@ -139,12 +137,11 @@ export const App = () => {
     if (!frameState) return;
 
     if (selectedFeatures.length > 0) {
-      handleSideBar(false, false)
+      handleSideBar(false, false);
+    } else {
+      handleSideBar(frameStateSideBar.current, true);
     }
-    else {
-      handleSideBar(frameStateSideBar.current, true)
-    }
-  }, [frameState, selectedFeatures, handleSideBar])
+  }, [frameState, selectedFeatures, handleSideBar]);
 
   const minAreaDefault = 0;
   const [minArea, setMinArea] = useState(minAreaDefault);
@@ -208,8 +205,7 @@ export const App = () => {
       handleSideBar(false, true);
     }
 
-    (window === window.parent || isMobile) ? setFrameState(false) : setFrameState(true);
-
+    window === window.parent || isMobile ? setFrameState(false) : setFrameState(true);
   }, [isMobile, previousMobile, handleSideBar]);
 
   // fit to district

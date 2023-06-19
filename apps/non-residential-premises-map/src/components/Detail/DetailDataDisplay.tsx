@@ -1,4 +1,5 @@
 import { DataDisplay, ImageLightBox, Note } from "@bratislava/react-maps-ui";
+// import { Attachment, useArcgisAttachments } from "@bratislava/react-use-arcgis";
 import { Feature } from "geojson";
 import { useTranslation } from "react-i18next";
 import { colors } from "../../utils/colors";
@@ -7,6 +8,7 @@ import { ButtonLink } from "../ButtonLink";
 import { ReactComponent as ImageIcon } from "../../assets/icons/imageicon.svg";
 import RoundedIconButon from "./RoundedIconButon";
 import { useState } from "react";
+// import { GEOPORTAL_LAYER_URL } from "../../utils/const";
 
 export interface IDetailDataDisplayProps {
   feature: Feature;
@@ -32,7 +34,24 @@ export const DetailDataDisplay = ({
   const txtClrByOccupacy = occupancy === "forRent" ? "black" : "white";
 
   const emailSubjectPrefix =
-    occupancy === "free" ? "Informácie o priestore: " : "Záujem o priestor: ";
+    occupancy === "forRent"
+      ? "Informácie o obchodnej súťaži: "
+      : occupancy === "free"
+      ? "Informácie o priestore: "
+      : "Záujem o priestor: ";
+
+  // TODO continue here - attachments
+  // const { data: featureAttachments } = useArcgisAttachments(GEOPORTAL_LAYER_URL, feature?.id || 0);
+
+  // console.log("feature", feature);
+  // console.log("attachments", featureAttachments);
+
+  // const images = featureAttachments?.length
+  //   ? featureAttachments.map(
+  //       (attachment) => `${GEOPORTAL_LAYER_URL}/${feature?.id}/attachments/${attachment.id}`,
+  //     )
+  //   : [feature?.properties?.picture];
+  // console.log("images", images);
 
   return (
     <div className={cx("relative flex flex-col space-y-4 p-4", className)}>
@@ -165,21 +184,19 @@ export const DetailDataDisplay = ({
           }
         />
       )}
-      {occupancy !== "forRent" && (
-        <Note className={`flex flex-col gap-3 !bg-[#ebebeb] dark:text-[black]`}>
-          <div className="flex-1">{t("contactUs")}</div>
-          <a
-            href={`mailto: spravanehnutelnosti@bratislava.sk?subject=${emailSubjectPrefix}${
-              feature?.properties?.locality || ""
-            }`}
-            target="_blank"
-            className="underline font-semibold"
-            rel="noreferrer"
-          >
-            spravanehnutelnosti@bratislava.sk
-          </a>
-        </Note>
-      )}
+      <Note className={`flex flex-col gap-3 !bg-[#ebebeb] dark:text-[black]`}>
+        <div className="flex-1">{t("contactUs")}</div>
+        <a
+          href={`mailto: spravanehnutelnosti@bratislava.sk?subject=${emailSubjectPrefix}${
+            feature?.properties?.locality || ""
+          }`}
+          target="_blank"
+          className="underline font-semibold"
+          rel="noreferrer"
+        >
+          spravanehnutelnosti@bratislava.sk
+        </a>
+      </Note>
     </div>
   );
 };
