@@ -415,6 +415,7 @@ export const App = () => {
             <div className="mb-2">{t("informationModal.descriptionPart1")}</div>
             <div className="mb-2">
               <Trans i18nKey="informationModal.descriptionPart2">
+                before
                 <a
                   href={t("informationModal.description2Link")}
                   className="underline font-semibold"
