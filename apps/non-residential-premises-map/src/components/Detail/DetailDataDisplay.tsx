@@ -1,5 +1,5 @@
 import { DataDisplay, ImageLightBox, Note } from "@bratislava/react-maps-ui";
-// import { Attachment, useArcgisAttachments } from "@bratislava/react-use-arcgis";
+import { Attachment, useArcgisAttachments } from "@bratislava/react-use-arcgis";
 import { Feature } from "geojson";
 import { useTranslation } from "react-i18next";
 import { colors } from "../../utils/colors";
@@ -8,7 +8,7 @@ import { ButtonLink } from "../ButtonLink";
 import { ReactComponent as ImageIcon } from "../../assets/icons/imageicon.svg";
 import RoundedIconButon from "./RoundedIconButon";
 import { useState } from "react";
-// import { GEOPORTAL_LAYER_URL } from "../../utils/const";
+import { GEOPORTAL_LAYER_URL } from "../../utils/const";
 
 export interface IDetailDataDisplayProps {
   feature: Feature;
@@ -40,18 +40,12 @@ export const DetailDataDisplay = ({
       ? "Informácie o priestore: "
       : "Záujem o priestor: ";
 
-  // TODO continue here - attachments
-  // const { data: featureAttachments } = useArcgisAttachments(GEOPORTAL_LAYER_URL, feature?.id || 0);
-
-  // console.log("feature", feature);
-  // console.log("attachments", featureAttachments);
-
-  // const images = featureAttachments?.length
-  //   ? featureAttachments.map(
-  //       (attachment) => `${GEOPORTAL_LAYER_URL}/${feature?.id}/attachments/${attachment.id}`,
-  //     )
-  //   : [feature?.properties?.picture];
-  // console.log("images", images);
+  const { data: featureAttachments } = useArcgisAttachments(GEOPORTAL_LAYER_URL, feature?.id || 0);
+  const images = featureAttachments?.length
+    ? featureAttachments.map(
+        (attachment) => `${GEOPORTAL_LAYER_URL}/${feature?.id}/attachments/${attachment.id}`,
+      )
+    : [feature?.properties?.picture];
 
   return (
     <div className={cx("relative flex flex-col space-y-4 p-4", className)}>
@@ -86,7 +80,7 @@ export const DetailDataDisplay = ({
           {t(occupancy)}
         </div>
 
-        {feature?.properties?.picture && !isSingleFeature && (
+        {images[0] && !isSingleFeature && (
           <>
             <RoundedIconButon
               icon={<ImageIcon width={20} height={20} />}
@@ -104,7 +98,7 @@ export const DetailDataDisplay = ({
             <ImageLightBox
               onClose={() => setModalOpen(false)}
               isOpen={isModalOpen}
-              images={[feature?.properties?.picture]}
+              images={images}
               initialImageIndex={0}
             />
           </>
