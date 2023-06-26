@@ -24,6 +24,7 @@ export default {
         Horúcovod: "Horúcovod",
         Verejné_Osvetlenie: "Verejné osvetlenie",
         Výstavba: "Výstavba",
+        Úprava_povrchu: "Úprava povrchu",
         Iné: "Iné",
       },
     },

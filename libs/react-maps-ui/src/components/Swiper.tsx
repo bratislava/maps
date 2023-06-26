@@ -92,12 +92,16 @@ export const Swiper = forwardRef<HTMLDivElement, SwiperProps>(
           goToPrevious();
         }
         setDragging(false);
+        // TODO test - keep the event, should allow mobile to open context menu
+        return true;
       },
       [goToNext, goToPrevious]
     );
 
     const dragStartHandler = useCallback(() => {
       setDragging(true);
+      // TODO test - keep the event, should allow mobile to open context menu
+      return true;
     }, []);
 
     useEffect(() => {

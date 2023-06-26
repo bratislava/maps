@@ -23,7 +23,7 @@ export const Image = ({ src, alt, object = "cover" }: IImageProps) => {
   return (
     <div className="relative w-full h-64 z-0">
       <div className="flex items-center justify-center absolute top-0 right-0 bottom-0 left-0">
-        {t("noImage")}
+        {t("loadingImage")}
       </div>
       <img
         draggable="false"

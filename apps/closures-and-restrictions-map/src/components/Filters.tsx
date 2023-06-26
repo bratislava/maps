@@ -8,7 +8,7 @@ import {
   IActiveFilter,
   Select,
   SelectOption,
-  Sidebar
+  Sidebar,
 } from "@bratislava/react-maps-ui";
 import { DateValue } from "@react-types/calendar";
 import cx from "classnames";
@@ -58,8 +58,8 @@ export const Filters = ({
   const statusTagHandler = (status: string) => {
     const activeStatusKeys = statusFilter.activeKeys;
     if (activeStatusKeys.length === 1 && activeStatusKeys.includes(status)) return;
-    statusFilter.toggleActive(status)
-  }
+    statusFilter.toggleActive(status);
+  };
 
   const content = (
     <>
@@ -85,7 +85,9 @@ export const Filters = ({
         <div className="flex justify-between px-6 items-center">
           <div className="flex gap-2 items-center">
             {isMobile && <Funnel />}
-            <h2 className="font-semibold text-md py-1 text-headers dark:text-[white]">{t("filters.title")}</h2>
+            <h2 className="font-semibold text-md py-1 text-headers dark:text-[white]">
+              {t("filters.title")}
+            </h2>
           </div>
           {!areFiltersDefault && (
             <button
@@ -116,8 +118,9 @@ export const Filters = ({
               <SelectValueRenderer
                 values={values}
                 placeholder={t("filters.district.placeholder")}
-                multiplePlaceholder={`${t("filters.district.multipleDistricts")} (${values.length
-                  })`}
+                multiplePlaceholder={`${t("filters.district.multipleDistricts")} (${
+                  values.length
+                })`}
               />
             )}
           >
@@ -145,11 +148,13 @@ export const Filters = ({
               />
             )}
           >
-            {typeFilter.keys.map((type) => (
-              <SelectOption key={type} value={type}>
-                {t(`filters.type.types.${type}`)}
-              </SelectOption>
-            ))}
+            {typeFilter.keys
+              .sort((a, b) => (a === "Iné" ? 1 : b === "Iné" ? -1 : a.localeCompare(b)))
+              .map((type) => (
+                <SelectOption key={type} value={type}>
+                  {t(`filters.type.types.${type}`)}
+                </SelectOption>
+              ))}
           </Select>
         </div>
 
@@ -157,15 +162,12 @@ export const Filters = ({
           isMobile={isMobile}
           modalHandler={modalHandler}
           title={t("filters.status.title")}
-          values={statusFilter.values
-            .map((status) => ({
-              key: status.key,
-              label: t(`filters.status.${status.key}`),
-              isActive: status.isActive,
-            }))
-          }
-          onTagClick={(status: string) => statusTagHandler(status)
-          }
+          values={statusFilter.values.map((status) => ({
+            key: status.key,
+            label: t(`filters.status.${status.key}`),
+            isActive: status.isActive,
+          }))}
+          onTagClick={(status: string) => statusTagHandler(status)}
         />
 
         <div className="mx-6 flex flex-col gap-2">
@@ -187,7 +189,9 @@ export const Filters = ({
 
       <Divider className="mx-6" />
 
-      <h2 className="font-semibold px-6 text-md text-headers dark:text-[white]">{t("layers.title")}</h2>
+      <h2 className="font-semibold px-6 text-md text-headers dark:text-[white]">
+        {t("layers.title")}
+      </h2>
 
       <Layers filter={layerFilter} />
     </>

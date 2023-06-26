@@ -7,6 +7,7 @@ export default {
   loading: "Loading",
   layersLabel: "Layers",
   noImage: "No image",
+  loadingImage: "Loading image",
   filters: {
     title: "Filtering",
     reset: "Reset",
@@ -59,7 +60,7 @@ export default {
     ongoingCompetition: "Ongoing competition",
     contactUs: "Contact us for information about this space",
     groundPlan: "Ground Plan",
-    spacePlan: "Floor plan of the space"
+    spacePlan: "Floor plan of the space",
   },
   legend: {
     title: "Legend",

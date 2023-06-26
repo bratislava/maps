@@ -24,7 +24,8 @@ export default {
         Horúcovod: "Hot Water",
         Verejné_Osvetlenie: "Street lighting",
         Výstavba: "Construction",
-        iné: "Other",
+        Úprava_povrchu: "Surface works",
+        Iné: "Other",
       },
     },
     status: {

@@ -16,6 +16,7 @@ export interface IClusterChildProps {
 }
 
 export interface IClusterProps {
+  splitPoints?: boolean;
   features: Feature[];
   children: FC<IClusterChildProps>;
   radius?: number;
@@ -25,6 +26,7 @@ export const Cluster = ({
   children,
   features,
   radius = 100,
+  splitPoints = false,
 }: IClusterProps) => {
   const { isFeatureVisible } = useContext(filterContext);
 
@@ -64,8 +66,8 @@ export const Cluster = ({
 
   // This filter is workeround to prevent unselectable multiple features with exact coordinates
   const pointFeaturesUpdated = useMemo(
-    () => adjustCoordinates(pointFeatures),
-    [pointFeatures],
+    () => (splitPoints ? adjustCoordinates(pointFeatures) : pointFeatures),
+    [pointFeatures, splitPoints],
   );
 
   const { map } = useContext(mapboxContext);

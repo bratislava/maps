@@ -233,10 +233,10 @@ export const App = () => {
 
   // TODO wrong viewport, change to the center of BA
   const initialViewport = {
-    zoom: 12.229005488986582,
+    zoom: !isMobile ? 12 : 10.4,
     center: {
-      lat: 48.16290360284438,
-      lng: 17.125377342563297,
+      lat: 48.1688598,
+      lng: 17.107748,
     },
   };
 
@@ -483,7 +483,7 @@ export const App = () => {
       }}
     >
       <Filter expression={finalCombinedFilter}>
-        <Cluster features={markersData?.features ?? []} radius={44}>
+        <Cluster features={markersData?.features ?? []} radius={44} splitPoints>
           {({ features, lng, lat, key, clusterExpansionZoom }) => (
             <Marker
               isSelected={features[0].id === selectedMarker?.id}

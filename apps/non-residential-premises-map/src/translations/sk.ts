@@ -7,6 +7,7 @@ export default {
   loading: "Načítavanie",
   layersLabel: "Vrstvy",
   noImage: "Žiaden obrázok",
+  loadingImage: "Načítava sa obrázok",
   filters: {
     title: "Filter",
     reset: "Zrušiť",
@@ -59,7 +60,7 @@ export default {
     ongoingCompetition: "Prebiehajúca súťaž",
     contactUs: "Kontaktujte nás pre informácie o tomto priestore",
     groundPlan: "Pôdorys",
-    spacePlan: "Pôdorys priestoru"
+    spacePlan: "Pôdorys priestoru",
   },
   legend: {
     title: "Legenda",

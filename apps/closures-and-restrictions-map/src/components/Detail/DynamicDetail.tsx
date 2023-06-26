@@ -51,6 +51,11 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
     keyPrefix: `layers.${layer as "digups" | "closures" | "disorders" | "repairs"}.detail`,
   });
 
+  // single source of truth for all available categories live in layer filter translation
+  const { t: categoryTranslation } = useTranslation("translation", {
+    keyPrefix: "filters.type.types",
+  });
+
   const { t: mainT }: { t: (key: string) => string } = useTranslation();
 
   const { data: digupsAttachments } = useArcgisAttachments(DIGUPS_URL, objectId || 0);
@@ -188,7 +193,10 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
       )}
       <Row label={t("address")} text={address} />
 
-      <Row label={t("category")} text={type.join(", ")} />
+      <Row
+        label={t("category")}
+        text={type.map((categoryType) => categoryTranslation(categoryType as any)).join(", ")}
+      />
       {layer === "disorders" && <Row label={t("owner")} text={owner} />}
       <Row label={t("startDate")} text={displayLocaleDate(startTimestamp, startTime)} />
       <Row label={t("dateOfPassage")} text={displayLocaleDate(dateOfPassage || null)} />
