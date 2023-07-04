@@ -17,7 +17,7 @@ import {
   Slot,
   SlotType,
   ThemeController,
-  ViewportController
+  ViewportController,
 } from "@bratislava/react-maps";
 
 import { Cluster, Filter, IFilterResult, Layer, useFilter } from "@bratislava/react-mapbox";
@@ -94,10 +94,16 @@ export const App = () => {
 
   const udrDataSplitedByPrice = useMemo(() => {
     return {
-      udrDataRegular: { ...udrData, features: udrData?.features.filter(udr => udr.properties?.Zakladna_cena !== 2) } as FeatureCollection,
-      udrDataTwoEur: { ...udrData, features: udrData?.features.filter(udr => udr.properties?.Zakladna_cena === 2) } as FeatureCollection,
-    }
-  }, [udrData])
+      udrDataRegular: {
+        ...udrData,
+        features: udrData?.features.filter((udr) => udr.properties?.Zakladna_cena !== 2),
+      } as FeatureCollection,
+      udrDataTwoEur: {
+        ...udrData,
+        features: udrData?.features.filter((udr) => udr.properties?.Zakladna_cena === 2),
+      } as FeatureCollection,
+    };
+  }, [udrData]);
 
   useEffect(() => {
     if (
@@ -330,14 +336,14 @@ export const App = () => {
             link: "https://tesco.sk/",
             image: "logos/tesco.svg",
             width: 100,
-            height: 50
+            height: 50,
           },
           {
             name: "palace",
             link: "https://www.shoppingpalace.sk/",
             image: "logos/palace.svg",
             width: 100,
-            height: 50
+            height: 50,
           },
         ],
         partners: [
@@ -403,8 +409,16 @@ export const App = () => {
 
       <Layer filters={zoneFilter.keepOnEmptyExpression} geojson={zonesData} styles={zoneStyles} />
 
-      <Layer filters={layerFilter.keepOnEmptyExpression} geojson={udrDataSplitedByPrice.udrDataRegular} styles={udrStyles} />
-      <Layer filters={layerFilter.keepOnEmptyExpression} geojson={udrDataSplitedByPrice.udrDataTwoEur} styles={udrStyles2} />
+      <Layer
+        filters={layerFilter.keepOnEmptyExpression}
+        geojson={udrDataSplitedByPrice.udrDataRegular}
+        styles={udrStyles}
+      />
+      <Layer
+        filters={layerFilter.keepOnEmptyExpression}
+        geojson={udrDataSplitedByPrice.udrDataTwoEur}
+        styles={udrStyles2}
+      />
 
       <Layer filters={layerFilter.keepOnEmptyExpression} geojson={odpData} styles={odpStyles} />
 
