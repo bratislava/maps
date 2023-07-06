@@ -4,5 +4,5 @@ export const colors = {
     forRent: "#F1B830",
     occupied: "#D83728",
     free: "#005F88",
-    disctrictBorder: "#000000"
+    disctrictBorder: "#D83728"
 }
