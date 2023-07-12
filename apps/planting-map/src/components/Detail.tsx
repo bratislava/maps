@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Feature } from "geojson";
 import { useState, useEffect, useRef } from "react";
-import { X } from "@bratislava/react-maps-icons";
 import { Detail as MapDetail } from "@bratislava/react-maps";
 import { SheetHandle } from "@bratislava/react-maps-ui";
 

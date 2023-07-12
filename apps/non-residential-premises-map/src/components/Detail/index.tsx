@@ -1,5 +1,5 @@
 import { Feature } from "geojson";
-import { useState, useEffect, useRef, useMemo, ForwardRefRenderFunction, MutableRefObject } from "react";
+import { useState, useEffect, useRef, useMemo, MutableRefObject, forwardRef } from "react";
 import { SingleFeatureDetail } from "./SingleFeatureDetail";
 import { MultiFeatureDetail } from "./MultiFeatureDetail";
 import { Detail as MapDetail } from "@bratislava/react-maps";
@@ -13,8 +13,8 @@ export interface DetailProps {
   ref: MutableRefObject<any>;
 }
 
-export const Detail: ForwardRefRenderFunction<HTMLDivElement, DetailProps> =
-  ({ features, onClose, isMobile, avoidMapboxControls = false, ref }) => {
+export const Detail = forwardRef<HTMLDivElement, DetailProps>(
+  ({ features, onClose, isMobile }, forwardedRef) => {
     // TODO check here use defailRef to control unrolling of bottomSheet
     const detailRef = useRef<SheetHandle>(null);
 
@@ -58,12 +58,12 @@ export const Detail: ForwardRefRenderFunction<HTMLDivElement, DetailProps> =
         bottomSheetInitialSnap={1}
         onBottomSheetSnapChange={setCurrentSnap}
         hideBottomSheetHeader
-        avoidMapboxControls={avoidMapboxControls}
       >
-        <div ref={ref}>{detail}</div>
+        <div ref={forwardedRef}>{detail}</div>
       </MapDetail>
     );
-  };
+  },
+);
 
 Detail.displayName = "Detail";
 
