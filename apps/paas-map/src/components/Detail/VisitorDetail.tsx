@@ -76,67 +76,73 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
           {properties["Doplnkova_informacia_sk"] && language === "sk" && (
             <div className="font-light">
               {properties["Doplnkova_informacia_sk"]}{" "}
-              <Popover
-                allowedPlacements={["bottom", "top", "left"]}
-                button={({ toggle }) => (
-                  <span className="cursor-pointer transform" onClick={toggle}>
-                    <Information
-                      className="inline-block text-primary translate-y-1"
-                      size="default"
-                    />
-                  </span>
-                )}
-                panel={
-                  <div className="flex flex-col gap-2 w-[248px]">
-                    <span>
-                      <Trans t={t} i18nKey="additionalInfo">
-                        before
-                        <a
-                          className="underline text-secondary font-semibold dark:text-primary"
-                          href={t("additionalInfoUrl")}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          link text
-                        </a>
-                      </Trans>
+              {(properties["Doplnkova_informacia_sk"]?.includes("bonus") ||
+                properties["Doplnkova_informacia_sk"]?.includes("Bonus")) && (
+                <Popover
+                  allowedPlacements={["bottom", "top", "left"]}
+                  button={({ toggle }) => (
+                    <span className="cursor-pointer transform" onClick={toggle}>
+                      <Information
+                        className="inline-block text-primary translate-y-1"
+                        size="default"
+                      />
                     </span>
-                  </div>
-                }
-              />
+                  )}
+                  panel={
+                    <div className="flex flex-col gap-2 w-[248px]">
+                      <span>
+                        <Trans t={t} i18nKey="additionalInfo">
+                          before
+                          <a
+                            className="underline text-secondary font-semibold dark:text-primary"
+                            href={t("additionalInfoUrl")}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            link text
+                          </a>
+                        </Trans>
+                      </span>
+                    </div>
+                  }
+                />
+              )}
             </div>
           )}
           {properties["Doplnkova_informacia_en"] && language === "en" && (
             <div className="font-light">
               {properties["Doplnkova_informacia_en"]}{" "}
-              <Popover
-                allowedPlacements={["bottom", "top", "left"]}
-                button={({ toggle }) => (
-                  <span className="cursor-pointer transform" onClick={toggle}>
-                    <Information
-                      className="inline-block text-primary translate-y-1 dark:text-primary"
-                      size="default"
-                    />
-                  </span>
-                )}
-                panel={
-                  <div className="flex flex-col gap-2 w-[248px]">
-                    <span>
-                      <Trans t={t} i18nKey="additionalInfo">
-                        before
-                        <a
-                          className="underline text-secondary font-semibold"
-                          href={t("additionalInfoUrl")}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          link text
-                        </a>
-                      </Trans>
+              {(properties["Doplnkova_informacia_en"]?.includes("bonus") ||
+                properties["Doplnkova_informacia_en"]?.includes("Bonus")) && (
+                <Popover
+                  allowedPlacements={["bottom", "top", "left"]}
+                  button={({ toggle }) => (
+                    <span className="cursor-pointer transform" onClick={toggle}>
+                      <Information
+                        className="inline-block text-primary translate-y-1 dark:text-primary"
+                        size="default"
+                      />
                     </span>
-                  </div>
-                }
-              />
+                  )}
+                  panel={
+                    <div className="flex flex-col gap-2 w-[248px]">
+                      <span>
+                        <Trans t={t} i18nKey="additionalInfo">
+                          before
+                          <a
+                            className="underline text-secondary font-semibold"
+                            href={t("additionalInfoUrl")}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            link text
+                          </a>
+                        </Trans>
+                      </span>
+                    </div>
+                  }
+                />
+              )}
             </div>
           )}
         </Note>
