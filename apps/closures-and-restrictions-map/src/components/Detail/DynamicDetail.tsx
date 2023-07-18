@@ -151,38 +151,38 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
       <div className="font-semibold">{subject}</div>
       <div className="flex flex-wrap">
         {imageUrlList.length > 0 && (
-          <RoundedIconButon icon={<ImageIcon width={20} height={20} />}>
-            <a
-              className="no-underline flex gap-2 items-center"
-              rel="noreferrer"
-              onClick={() => setImageModal({ isOpen: true, imgSrc: imageUrlList })}
-            >
+          <a
+            className="no-underline flex gap-2 items-center"
+            rel="noreferrer"
+            onClick={() => setImageModal({ isOpen: true, imgSrc: imageUrlList })}
+          >
+            <RoundedIconButon icon={<ImageIcon width={20} height={20} />}>
               {t("photosOfPlace")}
-            </a>
-          </RoundedIconButon>
+            </RoundedIconButon>
+          </a>
         )}
         {alternativeRouteUrlList.length > 0 && (
-          <RoundedIconButon icon={<ImageIcon width={20} height={20} />}>
-            <a
-              className="no-underline flex gap-2 items-center"
-              rel="noreferrer"
-              onClick={() => setImageModal({ isOpen: true, imgSrc: alternativeRouteUrlList })}
-            >
+          <a
+            className="no-underline flex gap-2 items-center"
+            rel="noreferrer"
+            onClick={() => setImageModal({ isOpen: true, imgSrc: alternativeRouteUrlList })}
+          >
+            <RoundedIconButon icon={<ImageIcon width={20} height={20} />}>
               {t("alternateRoute")}
-            </a>
-          </RoundedIconButon>
+            </RoundedIconButon>
+          </a>
         )}
         {streetViewUrl.length > 0 && (
-          <RoundedIconButon icon={<GoogleStreet width={20} height={20} />}>
-            <a
-              href={streetViewUrl}
-              target="_blank"
-              className="no-underline flex gap-2 items-center"
-              rel="noreferrer"
-            >
+          <a
+            href={streetViewUrl}
+            target="_blank"
+            className="no-underline flex gap-2 items-center"
+            rel="noreferrer"
+          >
+            <RoundedIconButon icon={<GoogleStreet width={20} height={20} />}>
               Street View
-            </a>
-          </RoundedIconButon>
+            </RoundedIconButon>
+          </a>
         )}
       </div>
 
