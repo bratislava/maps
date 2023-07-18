@@ -8,8 +8,9 @@ export const processData = (rawData: FeatureCollection) => {
   const data: FeatureCollection = addDistrictPropertyToLayer(
     featureCollection(
       rawData.features.map((feature) => {
+        console.log(feature);
         const originalPropertiesKeys = Object.keys(feature.properties ?? {});
-        const originalOccupancy = feature.properties?.["obsadenost"];
+        const originalOccupancy = feature.properties?.["Obsadenosť"];
         const occupancy =
           originalOccupancy === "na prenájom"
             ? "forRent"
@@ -22,12 +23,16 @@ export const processData = (rawData: FeatureCollection) => {
             : occupancy === "occupied"
             ? colors.occupied
             : colors.free;
-        const locality = feature.properties?.["ulica"];
+        const locality = feature.properties?.["Ulica_a_číslo_vchodu"];
         const street = locality.replaceAll(/[0-9]/g, "").trim().split(",")[0];
         const competition =
-          feature.properties?.["Ovs_aktualne"] === "neprebieha"
+          feature.properties?.["Aktuálne_prebiehajúca_súťaž"] === "neprebieha"
             ? false
-            : feature.properties?.["Ovs_aktualne"];
+            : feature.properties?.["Aktuálne_prebiehajúca_súťaž"];
+
+        if (feature.properties?.["ID"] === 96) {
+          console.log("hura!", feature);
+        }
         return {
           ...feature,
           properties: {
@@ -36,16 +41,17 @@ export const processData = (rawData: FeatureCollection) => {
               {},
             ),
             locality,
-            purpose: feature.properties?.["ucel_najmu"],
-            lessee: feature.properties?.["najomca"],
+            purpose: feature.properties?.["Účel_nájmu"],
+            lessee: feature.properties?.["Nájomca"],
             // sometimes the picture urls come with a token in query string, which forces you to login even when the picture is public
             // in such cases, getting rid of the entire query (which shouldn't contain anything else of value) solves the issue
             picture: feature.properties?.["picture"]?.split("?")[0],
             occupancy,
-            rentUntil: feature.properties?.["doba_najmu"],
-            description: feature.properties?.["poznamka"],
-            approximateArea: feature.properties?.["orientacna_vymera_m2"],
-            approximateRentPricePerYear: feature.properties?.["cena"],
+            rentUntil: feature.properties?.["Doba_nájmu"],
+            description: feature.properties?.["Poznámka"],
+            approximateArea: feature.properties?.["Orientačná_výmera_v_m2"],
+            approximateRentPricePerYear: feature.properties?.["Orientačná_cena_nájmu_za_rok"],
+            linkNZ: feature.properties?.["Odkaz_NZ"],
             color,
             street,
             competition,

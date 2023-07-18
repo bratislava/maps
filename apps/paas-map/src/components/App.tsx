@@ -92,7 +92,7 @@ export const App = () => {
   const [odpData, setOdpData] = useState<FeatureCollection | null>(null);
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
 
-  const udrDataSplitedByPrice = useMemo(() => {
+  const udrDataByPrice = useMemo(() => {
     return {
       udrDataRegular: {
         ...udrData,
@@ -411,12 +411,12 @@ export const App = () => {
 
       <Layer
         filters={layerFilter.keepOnEmptyExpression}
-        geojson={udrDataSplitedByPrice.udrDataRegular}
+        geojson={udrDataByPrice.udrDataRegular}
         styles={udrStyles}
       />
       <Layer
         filters={layerFilter.keepOnEmptyExpression}
-        geojson={udrDataSplitedByPrice.udrDataTwoEur}
+        geojson={udrDataByPrice.udrDataTwoEur}
         styles={udrStyles2}
       />
 

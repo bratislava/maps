@@ -28,8 +28,10 @@ export const DetailDataDisplay = ({
   const [isModalOpen, setModalOpen] = useState(false);
   const switchFontWeights = true;
 
+  console.log(feature.properties);
+
   const occupancy: TOccupacy = feature?.properties?.occupancy;
-  const contractLink: string = feature.properties?.ORIGINAL_NZ_link || "";
+  const contractLink: string = feature.properties?.linkNZ || "";
   const groundPlanLink: string = feature.properties?.ORIGINAL_podorys || "";
   const txtClrByOccupacy = occupancy === "forRent" ? "black" : "white";
 
@@ -59,16 +61,16 @@ export const DetailDataDisplay = ({
 
       <div className="flex flex-wrap">
         {feature.properties?.competition && occupancy === "forRent" && !isSingleFeature && (
-          <RoundedIconButon bgColor={colors[occupancy]} txtColor={txtClrByOccupacy}>
-            <a
-              href={feature.properties?.competition}
-              target="_blank"
-              className="no-underline flex gap-2 items-center"
-              rel="noreferrer"
-            >
+          <a
+            href={feature.properties?.competition}
+            target="_blank"
+            className="no-underline flex gap-2 items-center"
+            rel="noreferrer"
+          >
+            <RoundedIconButon bgColor={colors[occupancy]} txtColor={txtClrByOccupacy}>
               {t("ongoingCompetition")}
-            </a>
-          </RoundedIconButon>
+            </RoundedIconButon>
+          </a>
         )}
 
         <div
@@ -82,19 +84,19 @@ export const DetailDataDisplay = ({
 
         {images[0] && !isSingleFeature && (
           <>
-            <RoundedIconButon
-              icon={<ImageIcon width={20} height={20} />}
-              txtColor={txtClrByOccupacy}
-              bgColor={colors[occupancy]}
+            <a
+              className="no-underline flex gap-2 items-center"
+              rel="noreferrer"
+              onClick={() => setModalOpen(true)}
             >
-              <a
-                className="no-underline flex gap-2 items-center"
-                rel="noreferrer"
-                onClick={() => setModalOpen(true)}
+              <RoundedIconButon
+                icon={<ImageIcon width={20} height={20} />}
+                txtColor={txtClrByOccupacy}
+                bgColor={colors[occupancy]}
               >
                 {t("premisePhotos")}
-              </a>
-            </RoundedIconButon>
+              </RoundedIconButon>
+            </a>
             <ImageLightBox
               onClose={() => setModalOpen(false)}
               isOpen={isModalOpen}
