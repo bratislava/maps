@@ -28,8 +28,10 @@ export const DetailDataDisplay = ({
   const [isModalOpen, setModalOpen] = useState(false);
   const switchFontWeights = true;
 
+  console.log(feature.properties);
+
   const occupancy: TOccupacy = feature?.properties?.occupancy;
-  const contractLink: string = feature.properties?.ORIGINAL_NZ_link || "";
+  const contractLink: string = feature.properties?.linkNZ || "";
   const groundPlanLink: string = feature.properties?.ORIGINAL_podorys || "";
   const txtClrByOccupacy = occupancy === "forRent" ? "black" : "white";
 

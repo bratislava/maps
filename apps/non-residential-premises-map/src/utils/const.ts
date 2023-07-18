@@ -1,2 +1,2 @@
 export const GEOPORTAL_LAYER_URL =
-  "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/majetok/N%C3%A1jom_majetku_mesta_Bratislava_maj_2023/MapServer/0";
+  "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/majetok/N%C3%A1jom_nebytov%C3%BDch_priestorov_j%C3%BAl_2023/MapServer/3";
