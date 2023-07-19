@@ -6,6 +6,7 @@ export default {
   filters: {
     title: "Filter",
     reset: "Reset",
+    date: "Date",
     zone: {
       placeholder: "Zone",
       multipleZones: "Selected",

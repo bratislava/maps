@@ -171,7 +171,7 @@ export const Filters = ({
         />
 
         <div className="mx-6 flex flex-col gap-2">
-          <div>Dátum</div>
+          <div>{t("filters.date")}</div>
           <DateRangePickerFixed
             label="Date range"
             value={dateStart && dateEnd ? { start: dateStart, end: dateEnd } : undefined}

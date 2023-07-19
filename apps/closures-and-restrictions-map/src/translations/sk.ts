@@ -6,6 +6,7 @@ export default {
   filters: {
     title: "Filter",
     reset: "Zrušiť",
+    date: "Dátum",
     district: {
       title: "Mestská časť",
       placeholder: "Mestská časť",
