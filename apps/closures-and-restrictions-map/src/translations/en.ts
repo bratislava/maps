@@ -1,6 +1,6 @@
 export default {
-  title: "Closures and restrictions map",
-  tabTitle: "Closures and restrictions map in Bratislave",
+  title: "Restrictions and Disorders map",
+  tabTitle: "Restrictions and Disorders map in Bratislava",
   search: "Search by street",
   close: "Close",
   filters: {
@@ -38,9 +38,9 @@ export default {
   layers: {
     title: "Layers",
     digups: {
-      title: "Digups",
+      title: "Excavations",
       detail: {
-        title: "Digup",
+        title: "Excavation",
         startDate: "Start of implementation",
         endDate: "End of implementation",
         category: "Category",
@@ -56,15 +56,15 @@ export default {
         photosOfPlace: "Photos",
         alternateRoute: "Alternate Route",
         problemHint:
-          "Did the digup cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
-        reportProblem: "Report problem",
+          "Did the excavation cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
+        reportProblem: "Report a problem",
         reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
     },
     closures: {
-      title: "Closures",
+      title: "Restrictions",
       detail: {
-        title: "Closure",
+        title: "Restriction",
         startDate: "Start of implementation",
         endDate: "End of implementation",
         category: "Category",
@@ -80,8 +80,8 @@ export default {
         photosOfPlace: "Photos",
         alternateRoute: "Alternate Route",
         problemHint:
-          "Did the closure cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
-        reportProblem: "Report problem",
+          "Did the restriction cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
+        reportProblem: "Report a problem",
         reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
     },
@@ -106,7 +106,7 @@ export default {
         alternateRoute: "Alternate Route",
         problemHint:
           "Did the disorder cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
-        reportProblem: "Report problem",
+        reportProblem: "Report a problem",
         reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
     },
@@ -121,7 +121,7 @@ export default {
         description: "Description",
         fullSize: "Total area",
         problemHint:
-          "Did the digup cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
+          "Did the repair cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
         reportProblem: "Report problem",
         reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
@@ -146,16 +146,16 @@ export default {
     title: "Map information",
     info: "Let us know if there is a problem due to construction work in a public area",
     descriptionPart1:
-      "The map shows legally permitted excavations, closures and reported faults on local roads I. and II. classes.",
+      "The map shows legally permitted excavations, restrictions and reported disorders on local roads I. and II. classes.",
     descriptionPart2:
-      "<1>More information</1> about traffic permits and the road authority that authorizes excavations and closures.",
+      "<1>More information</1> about traffic permits and the road authority that authorizes excavations and restrictions.",
     descriptionPart3:
       "<1>More information</1> about the management and maintenance of roads in the capital.",
     description2Link: "https://bratislava.sk/doprava-a-mapy/doprava/dopravne-povolenia",
     description3Link: "https://bratislava.sk/doprava-a-mapy/sprava-a-udrzba-komunikacii",
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
-    reportProblem: "Report problem",
+    reportProblem: "Report a problem",
     reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
     // moreInfo -  apear as text to more info - text to open modal/ close notification
     moreInfo: "Show more info",
