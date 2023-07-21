@@ -48,6 +48,7 @@ export default {
     purpose: "Účel priestoru",
     lessee: "Nájomca",
     rentUntil: "Doba nájmu",
+    indefinite: "Neurčitá",
     approximateArea: "Orientačná výmera",
     approximateRentPricePerYear: "Orientačná ročná cena nájmu",
     description: "Detailný popis",

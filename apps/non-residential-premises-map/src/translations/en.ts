@@ -48,6 +48,7 @@ export default {
     purpose: "Purpose",
     lessee: "Lessee",
     rentUntil: "Rent until",
+    indefinite: "Indefinite",
     approximateArea: "Approximate area",
     approximateRentPricePerYear: "Approximate rent price per year",
     description: "Description",

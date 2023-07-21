@@ -6,6 +6,7 @@ export default {
   filters: {
     title: "Filtering",
     reset: "Reset",
+    date: "Date",
     district: {
       title: "District",
       placeholder: "District",

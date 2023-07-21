@@ -1,5 +1,5 @@
 import { DataDisplay, ImageLightBox, Note } from "@bratislava/react-maps-ui";
-import { Attachment, useArcgisAttachments } from "@bratislava/react-use-arcgis";
+import { useArcgisAttachments } from "@bratislava/react-use-arcgis";
 import { Feature } from "geojson";
 import { useTranslation } from "react-i18next";
 import { colors } from "../../utils/colors";
@@ -28,8 +28,6 @@ export const DetailDataDisplay = ({
   const [isModalOpen, setModalOpen] = useState(false);
   const switchFontWeights = true;
 
-  console.log(feature.properties);
-
   const occupancy: TOccupacy = feature?.properties?.occupancy;
   const contractLink: string = feature.properties?.linkNZ || "";
   const groundPlanLink: string = feature.properties?.ORIGINAL_podorys || "";
@@ -48,6 +46,11 @@ export const DetailDataDisplay = ({
         (attachment) => `${GEOPORTAL_LAYER_URL}/${feature?.id}/attachments/${attachment.id}`,
       )
     : [feature?.properties?.picture];
+
+  // indefinite rents have date of 1.1.2100
+  const rentUntil = feature?.properties?.rentUntil?.includes("2100")
+    ? t("indefinite")
+    : feature?.properties?.rentUntil;
 
   return (
     <div className={cx("relative flex flex-col space-y-4 p-4", className)}>
@@ -122,11 +125,7 @@ export const DetailDataDisplay = ({
         text={feature?.properties?.lessee}
         switchFontWeights={switchFontWeights}
       />
-      <DataDisplay
-        label={t(`rentUntil`)}
-        text={feature?.properties?.rentUntil}
-        switchFontWeights={switchFontWeights}
-      />
+      <DataDisplay label={t(`rentUntil`)} text={rentUntil} switchFontWeights={switchFontWeights} />
       <DataDisplay
         label={t(`description`)}
         text={feature?.properties?.description}
