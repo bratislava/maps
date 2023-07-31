@@ -307,6 +307,10 @@ export const App = () => {
             color: colors.occupied,
           },
           {
+            title: t("legend.other"),
+            color: colors.other,
+          },
+          {
             title: t("legend.districtBorder"),
             color: colors.disctrictBorder,
             type: "line",

@@ -23,6 +23,7 @@ export default {
       types: {
         free: "Free",
         forRent: "For rent",
+        other: "Not available",
         occupied: "Occupied",
       },
     },
@@ -58,6 +59,7 @@ export default {
     occupied: "Occupied",
     premisePhotos: "photos",
     forRent: "For rent",
+    other: "Not available",
     ongoingCompetition: "Ongoing competition",
     contactUs: "Contact us for information about this space",
     groundPlan: "Ground Plan",
@@ -67,6 +69,7 @@ export default {
     title: "Legend",
     free: "Free",
     forRent: "For rent",
+    other: "Not available",
     occupied: "Occupied",
     districtBorder: "Disctrict border",
   },

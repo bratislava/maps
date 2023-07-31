@@ -23,6 +23,7 @@ export default {
       types: {
         free: "Voľné",
         forRent: "Na prenájom",
+        other: "Nie je k dispozícii",
         occupied: "Obsadené",
       },
     },
@@ -58,6 +59,7 @@ export default {
     occupied: "Obsadené",
     premisePhotos: "Fotografie",
     forRent: "Na prenájom",
+    other: "Nie je k dispozícii",
     ongoingCompetition: "Prebiehajúca súťaž",
     contactUs: "Kontaktujte nás pre informácie o tomto priestore",
     groundPlan: "Pôdorys",
@@ -67,6 +69,7 @@ export default {
     title: "Legenda",
     free: "Voľné",
     forRent: "Na prenájom",
+    other: "Nie je k dispozícii",
     occupied: "Obsadené",
     districtBorder: "Hranica mestskej časti",
   },

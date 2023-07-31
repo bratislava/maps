@@ -16,7 +16,7 @@ export interface IDetailDataDisplayProps {
   isSingleFeature?: boolean;
 }
 
-export type TOccupacy = "forRent" | "occupied" | "free";
+export type TOccupacy = "forRent" | "occupied" | "free" | "other";
 
 export const DetailDataDisplay = ({
   feature,
@@ -36,9 +36,9 @@ export const DetailDataDisplay = ({
   const emailSubjectPrefix =
     occupancy === "forRent"
       ? "Informácie o obchodnej súťaži: "
-      : occupancy === "free"
-      ? "Informácie o priestore: "
-      : "Záujem o priestor: ";
+      : occupancy === "occupied"
+      ? "Záujem o priestor: "
+      : "Informácie o priestore: ";
 
   const { data: featureAttachments } = useArcgisAttachments(GEOPORTAL_LAYER_URL, feature?.id || 0);
   const images = featureAttachments?.length

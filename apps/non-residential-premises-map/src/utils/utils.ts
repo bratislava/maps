@@ -8,7 +8,6 @@ export const processData = (rawData: FeatureCollection) => {
   const data: FeatureCollection = addDistrictPropertyToLayer(
     featureCollection(
       rawData.features.map((feature) => {
-        console.log(feature);
         const originalPropertiesKeys = Object.keys(feature.properties ?? {});
         const originalOccupancy = feature.properties?.["Obsadenosť"];
         const occupancy =
@@ -30,9 +29,6 @@ export const processData = (rawData: FeatureCollection) => {
             ? false
             : feature.properties?.["Aktuálne_prebiehajúca_súťaž"];
 
-        if (feature.properties?.["ID"] === 96) {
-          console.log("hura!", feature);
-        }
         return {
           ...feature,
           properties: {
