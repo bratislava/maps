@@ -16,6 +16,7 @@ export const visitorPropertiesSchema = z.object({
   Cas_spoplatnenia_sk: z.string().nullable().optional(),
   Cas_spoplatnenia_en: z.string().nullable().optional(),
   Zakladna_cena: z.number().nullable().optional(),
+  vikendy_a_sviatky: z.number().nullable().optional(),
   Doplnkova_informacia_sk: z.string().nullable().optional(),
   Doplnkova_informacia_en: z.string().nullable().optional(),
   Vyhradene_sk: z.string().nullable().optional(),
@@ -43,14 +44,23 @@ export const VisitorDetail = ({ properties }: VisitorDetailProps) => {
       <Row label={t("location")} text={properties["Nazov"]} />
       <Row label={t("parkingSectionCode")} text={`${properties["UDR_ID"]}`} />
       <Row
-        label={t("price")}
-        text={properties["Zakladna_cena"] ? `${properties["Zakladna_cena"]?.toFixed(2)} €` : null}
-      />
-
-      <Row
         label={t("chargingTime")}
         text={
           language === "sk" ? properties["Cas_spoplatnenia_sk"] : properties["Cas_spoplatnenia_en"]
+        }
+      />
+      <Row
+        label={t("price")}
+        text={
+          properties["Zakladna_cena"] ? `${properties["Zakladna_cena"]?.toFixed(2)} € / h` : null
+        }
+      />
+      <Row
+        label={t("priceWeekend")}
+        text={
+          properties["vikendy_a_sviatky"]
+            ? `${properties["vikendy_a_sviatky"]?.toFixed(2)} € / h`
+            : null
         }
       />
 
