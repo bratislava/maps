@@ -1,8 +1,4 @@
-import {
-  Accordion,
-  AccordionItem,
-  Divider,
-} from "@bratislava/react-maps-ui";
+import { Accordion, AccordionItem, Divider } from "@bratislava/react-maps-ui";
 import { Feature } from "geojson";
 import { useEffect, useMemo, useState, Fragment } from "react";
 import { useTranslation } from "react-i18next";
@@ -28,6 +24,7 @@ const CustomAccordionItem = ({
       headerClassName={cx("text-left border-l-[4px]", {
         "border-[#F1B830]": feature.properties?.occupancy === "forRent",
         "border-[#D83728]": feature.properties?.occupancy === "occupied",
+        "border-[#985403]": feature.properties?.occupancy === "other",
         "border-[#005F88]": feature.properties?.occupancy === "free",
       })}
     >
@@ -35,6 +32,7 @@ const CustomAccordionItem = ({
         className={cx("border-l-[4px]", {
           "border-[#F1B830]": feature.properties?.occupancy === "forRent",
           "border-[#D83728]": feature.properties?.occupancy === "occupied",
+          "border-[#985403]": feature.properties?.occupancy === "other",
           "border-[#005F88]": feature.properties?.occupancy === "free",
           "pb-3": isLastFromCluster,
         })}

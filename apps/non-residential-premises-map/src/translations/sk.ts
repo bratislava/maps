@@ -64,6 +64,7 @@ export default {
     contactUs: "Kontaktujte nás pre informácie o tomto priestore",
     groundPlan: "Pôdorys",
     spacePlan: "Pôdorys priestoru",
+    streetView: "Street view",
   },
   legend: {
     title: "Legenda",

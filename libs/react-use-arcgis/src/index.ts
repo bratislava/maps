@@ -56,9 +56,9 @@ export const fetchAllFromArcgis = async (
 
     const ops = options
       ? {
-        ...DEFAULT_OPTIONS,
-        ...options,
-      }
+          ...DEFAULT_OPTIONS,
+          ...options,
+        }
       : DEFAULT_OPTIONS;
 
     if (ops.pagination) {

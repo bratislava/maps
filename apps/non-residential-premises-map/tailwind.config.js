@@ -17,6 +17,7 @@ export default {
         },
         free: colors.free,
         occupied: colors.occupied,
+        other: colors.other,
         "for-rent": colors.forRent,
       },
     },

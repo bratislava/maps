@@ -16,6 +16,7 @@ export const SingleFeatureMarker = ({ feature, isSelected }: ISingleFeatureMarke
             "bg-occupied": feature.properties?.occupancy === "occupied",
             "bg-free": feature.properties?.occupancy === "free",
             "bg-for-rent": feature.properties?.occupancy === "forRent",
+            "bg-other": feature.properties?.occupancy === "other",
           },
         )}
       >
@@ -26,6 +27,7 @@ export const SingleFeatureMarker = ({ feature, isSelected }: ISingleFeatureMarke
               "!border-occupied": isSelected && feature.properties?.occupancy === "occupied",
               "!border-free": isSelected && feature.properties?.occupancy === "free",
               "!border-for-rent": isSelected && feature.properties?.occupancy === "forRent",
+              "!border-other": isSelected && feature.properties?.occupancy === "other",
             },
           )}
         ></div>

@@ -64,6 +64,7 @@ export default {
     contactUs: "Contact us for information about this space",
     groundPlan: "Ground Plan",
     spacePlan: "Floor plan of the space",
+    streetView: "Street view",
   },
   legend: {
     title: "Legend",

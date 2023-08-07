@@ -15,12 +15,16 @@ export const processData = (rawData: FeatureCollection) => {
             ? "forRent"
             : originalOccupancy === "obsadené"
             ? "occupied"
+            : originalOccupancy === "nie je k dispozícii"
+            ? "other"
             : "free";
         const color =
           occupancy === "forRent"
             ? colors.forRent
             : occupancy === "occupied"
             ? colors.occupied
+            : occupancy === "other"
+            ? colors.other
             : colors.free;
         const locality = feature.properties?.["Ulica_a_číslo_vchodu"];
         const street = locality.replaceAll(/[0-9]/g, "").trim().split(",")[0];
@@ -42,6 +46,7 @@ export const processData = (rawData: FeatureCollection) => {
             // sometimes the picture urls come with a token in query string, which forces you to login even when the picture is public
             // in such cases, getting rid of the entire query (which shouldn't contain anything else of value) solves the issue
             picture: feature.properties?.["picture"]?.split("?")[0],
+            streetView: feature.properties?.["GOOGLE_odkaz"],
             occupancy,
             rentUntil: feature.properties?.["Doba_nájmu"],
             description: feature.properties?.["Poznámka"],

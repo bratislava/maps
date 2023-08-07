@@ -6,6 +6,7 @@ import { colors } from "../../utils/colors";
 import cx from "classnames";
 import { ButtonLink } from "../ButtonLink";
 import { ReactComponent as ImageIcon } from "../../assets/icons/imageicon.svg";
+import { ReactComponent as GoogleStreetIcon } from "../../assets/icons/googlestreetview.svg";
 import RoundedIconButon from "./RoundedIconButon";
 import { useState } from "react";
 import { GEOPORTAL_LAYER_URL } from "../../utils/const";
@@ -107,6 +108,23 @@ export const DetailDataDisplay = ({
               initialImageIndex={0}
             />
           </>
+        )}
+
+        {feature.properties?.streetView && (
+          <a
+            href={feature.properties.streetView}
+            target="_blank"
+            className="no-underline flex gap-2 items-center"
+            rel="noreferrer"
+          >
+            <RoundedIconButon
+              icon={<GoogleStreetIcon width={20} height={20} />}
+              bgColor={colors[occupancy]}
+              txtColor={txtClrByOccupacy}
+            >
+              {t("streetView")}
+            </RoundedIconButon>
+          </a>
         )}
       </div>
 
