@@ -46,7 +46,7 @@ export const DetailDataDisplay = ({
     ? featureAttachments.map(
         (attachment) => `${GEOPORTAL_LAYER_URL}/${feature?.id}/attachments/${attachment.id}`,
       )
-    : [feature?.properties?.picture];
+    : [feature?.properties?.picture || feature?.properties?.foto];
 
   // indefinite rents have date of 1.1.2100
   const rentUntil = feature?.properties?.rentUntil?.includes("2100")
@@ -86,7 +86,7 @@ export const DetailDataDisplay = ({
           {t(occupancy)}
         </div>
 
-        {images[0] && !isSingleFeature && (
+        {images[0] && (
           <>
             <a
               className="no-underline flex gap-2 items-center"
