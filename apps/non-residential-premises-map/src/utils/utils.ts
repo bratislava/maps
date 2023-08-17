@@ -27,7 +27,7 @@ export const processData = (rawData: FeatureCollection) => {
             ? colors.other
             : colors.free;
         const locality = feature.properties?.["Ulica_a_číslo_vchodu"];
-        const street = locality.replaceAll(/[0-9]/g, "").trim().split(",")[0];
+        const street = locality?.replaceAll(/[0-9]/g, "").trim().split(",")[0];
         const competition =
           feature.properties?.["Aktuálne_prebiehajúca_súťaž"] === "neprebieha"
             ? false
