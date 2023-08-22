@@ -26,12 +26,12 @@ export const processData = (rawData: FeatureCollection) => {
             : occupancy === "other"
             ? colors.other
             : colors.free;
-        const locality = feature.properties?.["Ulica_a_číslo_vchodu"];
+        const locality = feature.properties?.["Ulica_a_cislo_vchodu"];
         const street = locality?.replaceAll(/[0-9]/g, "").trim().split(",")[0];
         const competition =
-          feature.properties?.["Aktuálne_prebiehajúca_súťaž"] === "neprebieha"
+          feature.properties?.["aktualne_prebiehajuca_sutaz"] === "neprebieha"
             ? false
-            : feature.properties?.["Aktuálne_prebiehajúca_súťaž"];
+            : feature.properties?.["aktualne_prebiehajuca_sutaz"];
 
         return {
           ...feature,
@@ -41,17 +41,17 @@ export const processData = (rawData: FeatureCollection) => {
               {},
             ),
             locality,
-            purpose: feature.properties?.["Účel_nájmu"],
-            lessee: feature.properties?.["Nájomca"],
+            purpose: feature.properties?.["ucel_najmu"],
+            lessee: feature.properties?.["najomca"],
             // sometimes the picture urls come with a token in query string, which forces you to login even when the picture is public
             // in such cases, getting rid of the entire query (which shouldn't contain anything else of value) solves the issue
             picture: feature.properties?.["picture"]?.split("?")[0],
             streetView: feature.properties?.["GOOGLE_odkaz"],
             occupancy,
-            rentUntil: feature.properties?.["Doba_nájmu"],
-            description: feature.properties?.["Poznámka"],
-            approximateArea: feature.properties?.["Orientačná_výmera_v_m2"],
-            approximateRentPricePerYear: feature.properties?.["Orientačná_cena_nájmu_za_rok"],
+            rentUntil: feature.properties?.["Doba_najmu"],
+            description: feature.properties?.["Poznamka"],
+            approximateArea: feature.properties?.["Orientacna_vymera_v_m2"],
+            approximateRentPricePerYear: feature.properties?.["orientacna_cena_najmu_za_rok"],
             linkNZ: feature.properties?.["Odkaz_NZ"],
             color,
             street,
