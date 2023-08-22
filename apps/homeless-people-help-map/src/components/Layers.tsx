@@ -10,8 +10,8 @@ export interface ITerrainService {
   title: string;
   provider: string;
   phone: string;
-  web: string;
-  openingHours: string;
+  // web: string;
+  // openingHours: string;
   price: string;
   geojson: FeatureCollection;
 }

@@ -9,20 +9,13 @@ import DetailWebRow from "./DetailWebRow";
 
 export const mainFeaturePropertiesSchema = z.object({
   layerName: z.string(),
-  counseling_en: z.string(),
-  counseling_sk: z.string(),
-  hygiene_en: z.string(),
-  hygiene_sk: z.string(),
-  overnight_en: z.string(),
-  overnight_sk: z.string(),
-  drugsAndSex_en: z.string(),
-  drugsAndSex_sk: z.string(),
-  meals_en: z.string(),
-  meals_sk: z.string(),
-  medicalTreatment_en: z.string(),
-  medicalTreatment_sk: z.string(),
-  culture_en: z.string(),
-  culture_sk: z.string(),
+  counseling: z.string(),
+  hygiene: z.string(),
+  overnight: z.string(),
+  drugsAndSex: z.string(),
+  meals: z.string(),
+  medicalTreatment: z.string(),
+  culture: z.string(),
   isCounseling: z.boolean(),
   isHygiene: z.boolean(),
   isOvernight: z.boolean(),
@@ -30,14 +23,10 @@ export const mainFeaturePropertiesSchema = z.object({
   isMeals: z.boolean(),
   isMedicalTreatment: z.boolean(),
   isCulture: z.boolean(),
-  name_en: z.string(),
-  name_sk: z.string(),
-  provider_en: z.string(),
-  provider_sk: z.string(),
-  address_en: z.string(),
-  address_sk: z.string(),
-  howToGetThere_en: z.string(),
-  howToGetThere_sk: z.string(),
+  name: z.string(),
+  provider: z.string(),
+  address: z.string(),
+  howToGetThere: z.string(),
   phone: z.string(),
   email: z.string(),
   web: z.string(),
@@ -54,10 +43,7 @@ export interface IMainDetailProps {
 }
 
 export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMainDetailProps) => {
-  const {
-    t: detailT,
-    i18n: { language },
-  } = useTranslation("translation", { keyPrefix: "detail.main" });
+  const { t: detailT } = useTranslation("translation", { keyPrefix: "detail.main" });
   const { t: layersT } = useTranslation("translation", { keyPrefix: "layers" });
   const { t: mainT } = useTranslation();
 
@@ -80,66 +66,59 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
           <DataDisplay
             switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`counseling`)}</div>}
-            text={language === "sk" ? properties.counseling_sk : properties.counseling_en}
+            text={properties.counseling}
           />
         )}
         {properties.isHygiene && (
           <DataDisplay
             switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`hygiene`)}</div>}
-            text={language === "sk" ? properties.hygiene_sk : properties.hygiene_en}
+            text={properties.hygiene}
           />
         )}
         {properties.isOvernight && (
           <DataDisplay
             switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`overnight`)}</div>}
-            text={language === "sk" ? properties.overnight_sk : properties.overnight_en}
+            text={properties.overnight}
           />
         )}
         {properties.isMeals && (
           <DataDisplay
             switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`meals`)}</div>}
-            text={language === "sk" ? properties.meals_sk : properties.meals_en}
+            text={properties.meals}
           />
         )}
         {properties.isMedicalTreatment && (
           <DataDisplay
             switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`medicalTreatment`)}</div>}
-            text={
-              language === "sk" ? properties.medicalTreatment_sk : properties.medicalTreatment_en
-            }
+            text={properties.medicalTreatment}
           />
         )}
         {properties.isCulture && (
           <DataDisplay
             switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`culture`)}</div>}
-            text={language === "sk" ? properties.culture_sk : properties.culture_en}
+            text={properties.culture}
           />
         )}
         {properties.isDrugsAndSex && (
           <DataDisplay
             switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`drugsAndSex`)}</div>}
-            text={language === "sk" ? properties.drugsAndSex_sk : properties.drugsAndSex_en}
+            text={properties.drugsAndSex}
           />
         )}
       </>
     );
   }, [
-    language,
     layersT,
-    properties.counseling_en,
-    properties.counseling_sk,
-    properties.culture_en,
-    properties.culture_sk,
-    properties.drugsAndSex_en,
-    properties.drugsAndSex_sk,
-    properties.hygiene_en,
-    properties.hygiene_sk,
+    properties.counseling,
+    properties.culture,
+    properties.drugsAndSex,
+    properties.hygiene,
     properties.isCounseling,
     properties.isCulture,
     properties.isDrugsAndSex,
@@ -147,21 +126,16 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
     properties.isMeals,
     properties.isMedicalTreatment,
     properties.isOvernight,
-    properties.meals_en,
-    properties.meals_sk,
-    properties.medicalTreatment_en,
-    properties.medicalTreatment_sk,
-    properties.overnight_en,
-    properties.overnight_sk,
+    properties.meals,
+    properties.medicalTreatment,
+    properties.overnight,
   ]);
 
   return (
     <div>
       <div className="flex flex-col p-6">
         <div className={cx("flex flex-col space-y-4", className)}>
-          <div className="font-semibold pt-1 pr-12">
-            {language === "sk" ? properties.name_sk : properties.name_en}
-          </div>
+          <div className="font-semibold pt-1 pr-12">{properties.name}</div>
 
           {isSomeService && (
             <div className="flex flex-col gap-2">
@@ -212,14 +186,8 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
             </div>
           )}
 
-          <DataDisplay
-            label={detailT("address")}
-            text={language === "sk" ? properties.address_sk : properties.address_en}
-          />
-          <DataDisplay
-            label={detailT("route")}
-            text={language === "sk" ? properties.howToGetThere_sk : properties.howToGetThere_en}
-          />
+          <DataDisplay label={detailT("address")} text={properties.address} />
+          <DataDisplay label={detailT("route")} text={properties.howToGetThere} />
 
           {properties.navigate && (
             <a
@@ -238,10 +206,7 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
 
           <DetailWebRow href={properties.web} label={detailT("web")} />
 
-          <DataDisplay
-            label={detailT("provider")}
-            text={language === "sk" ? properties.provider_sk : properties.provider_en}
-          />
+          <DataDisplay label={detailT("provider")} text={properties.provider} />
 
           {isSomeService && (
             <>

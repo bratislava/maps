@@ -9,8 +9,9 @@ export type TerrainServiceDetail = {
   service: ITerrainService;
 };
 
+// TODO fix missing web and openingHours,
 export const TerrainServiceDetail = ({
-  service: { title, provider, phone, web, openingHours, price, geojson },
+  service: { title, provider, phone, price, geojson },
 }: TerrainServiceDetail) => {
   const { t } = useTranslation("translation", { keyPrefix: "detail.terrainService" });
 
@@ -26,8 +27,8 @@ export const TerrainServiceDetail = ({
       </Tag>
       <DataDisplay label={t("provider")} text={provider} />
       <DataDisplay enableEnhancements label={t("phone")} text={phone} />
-      <DetailWebRow href={web} label={t("web")} />
-      <DataDisplay label={t("openingHours")} text={openingHours} />
+      {/* <DetailWebRow href={web} label={t("web")} />
+      <DataDisplay label={t("openingHours")} text={openingHours} /> */}
       <DataDisplay label={t("price")} text={price} />
       <DataDisplay label={t("areas")} text={areas} />
     </div>

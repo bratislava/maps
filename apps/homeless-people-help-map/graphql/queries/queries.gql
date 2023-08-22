@@ -1,0 +1,92 @@
+query LinkyPomoci($locale: I18NLocaleCode!) {
+  linkyPomocis(locale: $locale) {
+    data {
+      id
+      attributes {
+        Cena
+        Email
+        Nazov
+        Popis
+        Prevadzka
+        Prevadzkovatel
+        Telefon
+        createdAt
+        locale
+        publishedAt
+        updatedAt
+      }
+    }
+  }
+}
+
+query Fixpointy($locale: I18NLocaleCode!) {
+  fixpoints(locale: $locale) {
+    data {
+      id
+      attributes {
+        Adresa
+        Latitude
+        Longitude
+        Nazov
+        createdAt
+      }
+    }
+  }
+}
+
+query TerenneSluzby($locale: I18NLocaleCode!) {
+  terenneSluzbies(locale: $locale) {
+    data {
+      id
+      attributes {
+        Cena_kapacita
+        Dostupnost
+        Lokalita_posobnosti
+        Nazov
+        Poskytovatel
+        Sluzba
+        Telefon
+      }
+    }
+  }
+}
+
+query SluzbyPreLudiBezDomova($locale: I18NLocaleCode!) {
+  sluzbyPreLudiBezDomovas(locale: $locale) {
+    data {
+      id
+      attributes {
+        Adresa
+        Cas
+        Email
+        Kontaktne_centrum
+        Hygiena_osatenie
+        Kultura
+        Latitude
+        Longitude
+        Mestska_cast
+        Navigacia
+        Navigovat
+        Nazov
+        Noclah_ubytovanie
+        Popis
+        Poskytovatel
+        Socialne_pravne_poradenstvo
+        Strava
+        Subor {
+          data {
+            id
+            attributes {
+              url
+            }
+          }
+        }
+        Tagy
+        Telefon
+        Telefon_popis
+        Web
+        Zdravotne_osetrenie
+      }
+    }
+  }
+}

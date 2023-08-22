@@ -1,4 +1,5 @@
 import { ReactComponent as HelpPhoneLinksIcon } from "./help-phone-links.svg";
+import { useLinkyPomociQuery } from "../../../graphql";
 import cx from "classnames";
 import {
   Accordion,
@@ -6,10 +7,12 @@ import {
   DataDisplay,
   Divider,
   IconButton,
+  LoadingSpinner,
   Modal,
 } from "@bratislava/react-maps-ui";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { mainColors } from "../../utils/colors";
 
 export interface IPhoneLinksModal {
   className?: string;
@@ -17,7 +20,8 @@ export interface IPhoneLinksModal {
 
 export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { data } = useLinkyPomociQuery({ locale: i18n.language });
 
   return (
     <>
@@ -38,52 +42,54 @@ export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
         onClose={() => setModalOpen(false)}
       >
         <div className="flex flex-col gap-4">
-          <Accordion type="single" collapsible className="font-semibold">
-            {(["womenViolence", "homelessPeople", "humanTrafficking"] as const).map(
-              (type, index) => (
-                <div key={type} className="flex gap-4">
+          {!data?.linkyPomocis?.data ? (
+            <LoadingSpinner color={mainColors.yellow} />
+          ) : (
+            <Accordion type="single" collapsible className="font-semibold">
+              {data.linkyPomocis?.data.map((type, index) => (
+                <div key={type.id} className="flex gap-4">
                   <IconButton
-                    onClick={() => window.open(`tel:${t(`helpPhoneLinks.${type}.phone`)}`, "_self")}
+                    onClick={() => window.open(`tel:${type.attributes?.Telefon}`, "_self")}
                     className="!bg-primary !border-primary text-foreground-lightmode !rounded-full shrink-0"
                   >
                     <HelpPhoneLinksIcon width={32} height={32} />
                   </IconButton>
                   <div className="flex flex-1 flex-col shrink font-medium">
-                    <a href={`tel:${t(`helpPhoneLinks.${type}.phone`)}`} className="py-2">
-                      {t(`helpPhoneLinks.${type}.phone`)}
+                    <a href={`tel:${type.attributes?.Telefon}`} className="py-2">
+                      {type.attributes?.Telefon}
                     </a>
-                    <div>{t(`helpPhoneLinks.${type}.title`)}</div>
+                    <div>{type.attributes?.Nazov}</div>
                     <AccordionItem
                       className="w-full"
                       headerIsTrigger
-                      value={type}
+                      value={type.attributes?.Nazov || ""}
                       title={<div className="underline">{t("helpPhoneLinks.labels.showMore")}</div>}
                     >
                       <div className="flex flex-col gap-3">
                         <DataDisplay
                           label={t("helpPhoneLinks.labels.description")}
-                          text={t(`helpPhoneLinks.${type}.description`)}
+                          text={type.attributes?.Popis}
                         />
                         <DataDisplay
                           label={t("helpPhoneLinks.labels.operator")}
-                          text={t(`helpPhoneLinks.${type}.operator`)}
+                          text={type.attributes?.Prevadzkovatel}
                         />
                         <DataDisplay
                           label={t("helpPhoneLinks.labels.operation")}
-                          text={t(`helpPhoneLinks.${type}.operation`)}
+                          text={type.attributes?.Prevadzka}
                         />
                         <DataDisplay
                           label={t("helpPhoneLinks.labels.price")}
-                          text={t(`helpPhoneLinks.${type}.price`)}
+                          text={type.attributes?.Cena}
                         />
                       </div>
                       {index !== 2 && <Divider className="my-4 mr-6" />}
                     </AccordionItem>
                   </div>
                 </div>
-              ),
-            )}
-          </Accordion>
+              ))}
+            </Accordion>
+          )}
         </div>
       </Modal>
     </>
