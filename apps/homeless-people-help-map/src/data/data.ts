@@ -1,6 +1,65 @@
 /* eslint-disable camelcase */
 import { FeatureCollection, Point } from "geojson";
+import { useTranslation } from "react-i18next";
+import { useSluzbyPreLudiBezDomovaQuery } from "../../graphql";
 
+export const useServicesData = () => {
+  const { i18n } = useTranslation();
+  const { data, isLoading, error } = useSluzbyPreLudiBezDomovaQuery({ locale: i18n.language });
+
+  const processedFeatures = data?.sluzbyPreLudiBezDomovas?.data.map((service) => {
+    return {
+      id: service.id,
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [service.attributes?.Longitude, service.attributes?.Latitude],
+      },
+      properties: {
+        layerName:
+          service.attributes?.Tagy === "Ďaľšie služby"
+            ? "Ďaľšie služby"
+            : "Služby pre ľudí bez domova",
+        counseling: service.attributes?.Socialne_pravne_poradenstvo || "",
+        drugsAndSex: service.attributes?.Kontaktne_centrum || "",
+        hygiene: service.attributes?.Hygiena_osatenie || "",
+        overnight: service.attributes?.Noclah_ubytovanie || "",
+        meals: service.attributes?.Strava || "",
+        medicalTreatment: service.attributes?.Zdravotne_osetrenie || "",
+        culture: service.attributes?.Kultura || "",
+        isCounseling: !!service.attributes?.Socialne_pravne_poradenstvo?.length,
+        isHygiene: !!service.attributes?.Hygiena_osatenie?.length,
+        isOvernight: !!service.attributes?.Noclah_ubytovanie?.length,
+        isMeals: !!service.attributes?.Strava?.length,
+        isMedicalTreatment: !!service.attributes?.Zdravotne_osetrenie?.length,
+        isCulture: !!service.attributes?.Kultura,
+        isDrugsAndSex: !!service.attributes?.Kontaktne_centrum,
+        name: service.attributes?.Nazov || "",
+        provider: service.attributes?.Poskytovatel || "",
+        address: service.attributes?.Adresa || "",
+        district: service.attributes?.Mestska_cast,
+        howToGetThere: service.attributes?.Navigacia || "",
+        phone: service.attributes?.Telefon ? `${service.attributes?.Telefon}` : "",
+        phoneDescription: service.attributes?.Telefon_popis,
+        email: service.attributes?.Email || "",
+        web: service.attributes?.Web || "",
+        navigate: service.attributes?.Navigovat || "",
+      },
+    };
+  });
+  return {
+    data:
+      data &&
+      ({
+        type: "FeatureCollection",
+        features: processedFeatures,
+      } as FeatureCollection<Point>),
+    isLoading,
+    error,
+  };
+};
+
+// old static data, todo remove
 export const data: FeatureCollection<Point> = {
   type: "FeatureCollection",
   features: [
@@ -1285,18 +1344,20 @@ export const data: FeatureCollection<Point> = {
         email: "",
         web: "http://primaoz.sk/streetwork/",
         navigate: "",
-       },
-     },
-     {
+      },
+    },
+    {
       id: 30,
       type: "Feature",
       geometry: { type: "Point", coordinates: [17.10608264037747, 48.14554355374314] },
       properties: {
         layerName: "Služby pre ľudí bez domova",
-        counseling_sk: "právne, ekonomické a psychologické poradenstvo dlžníkom, zdarma, pondelok - piatok 8.00 - 16.00",
-        counseling_en: "legal, economic and psychological counseling for debtors, free of charge, Monday - Friday 8:00 - 16:00",
+        counseling_sk:
+          "právne, ekonomické a psychologické poradenstvo dlžníkom, zdarma, pondelok - piatok 8.00 - 16.00",
+        counseling_en:
+          "legal, economic and psychological counseling for debtors, free of charge, Monday - Friday 8:00 - 16:00",
         drugsAndSex_sk: "",
-        drugsAndSex_en:  "",
+        drugsAndSex_en: "",
         hygiene_sk: "",
         hygiene_en: "",
         overnight_sk: "",

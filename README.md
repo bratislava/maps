@@ -87,3 +87,101 @@ yarn workspace <app-name> build:suppress
 3. Rename app in its `package.json` file.
 6. Develeop.
 7. It is recomended to create new mapbox styles for each new map and replace urls in `.env` files.
+
+## Add Strapi integration to an existing app
+
+> Before beginning - you may also choose to follow [this guide](https://the-guild.dev/graphql/codegen/docs/guides/react-vue) which may be more up to date. Prefer React Query integration.
+
+Install dependencies
+
+```bash
+cd ./apps/your-map
+yarn -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-react-query
+yarn @tanstack/react-query graphql graphql-tag
+```
+
+Add codegen.yml to the root of the maps/apps/your-map app:
+
+```yml
+schema: https://general-strapi.bratislava.sk/graphql
+documents: "./graphql/queries/**/*.{gql,graphql}"
+generates:
+  graphql/index.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-query
+    config:
+      fetcher:
+        endpoint: "https://general-strapi.bratislava.sk/graphql"
+        fetchParams:
+          headers:
+            Content-Type: "application/json"
+```
+
+Add at least 1 query to file matching `./graphql/queries/**/*.{gql,graphql}` - i.e. /maps/apps/your-map/graphql/queries/queries.gql, the following should work against 'general-strapi' endpoint:
+
+```
+query Fixpointy($locale: I18NLocaleCode!) {
+  fixpoints(locale: $locale) {
+    data {
+      id
+      attributes {
+        Adresa
+        Latitude
+        Longitude
+        Nazov
+        createdAt
+      }
+    }
+  }
+}
+```
+
+Wrap your application in Query provider (additional config can be left empty)
+
+```
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// ...
+
+const queryClient = new QueryClient();
+
+// ...
+
+  ReactDOM.render(
+    // ...
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+    // ...
+    rootElement,
+  );
+}
+
+```
+
+Add following to package.json `"scripts"` (or use `npx` in next step like so - `npx graphql-codegen`):
+
+```
+"codegen": "graphql-codegen",
+```
+
+Run codegen, you shouldn't see any errors:
+
+```
+yarn codegen
+```
+
+You can now import `useXQuery` hooks from `./graphql/index.ts` like so:
+
+```
+import { useFixpointyQuery } from "../../graphql";
+
+// ... 
+
+// example usage with i18n and localized content
+const { i18n } = useTranslation();
+const { data, isLoading, error } = useFixpointyQuery({ locale: i18n.language });
+```

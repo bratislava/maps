@@ -20,7 +20,6 @@ export const FixpointMarker = ({ feature, onClick, isSelected = false }: IFixpoi
     },
     [feature, onClick],
   );
-  console.log("hereee");
   return (
     <Marker zIndex={1} onClick={onClickHandler} feature={feature}>
       <div

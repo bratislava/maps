@@ -29,11 +29,8 @@ import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { Chevron, Funnel } from "@bratislava/react-maps-icons";
 import { IconButton, Modal, Sidebar } from "@bratislava/react-maps-ui";
 import { usePrevious } from "@bratislava/utils";
-import { featureCollection } from "@turf/helpers";
 import { Feature, Point } from "geojson";
 import { buildingsData } from "../data/buildings";
-import { regions } from "../data/regions";
-import { terrainServicesLocalDistrictsData } from "../data/terrain-services-local-districts";
 import { colors, mainColors } from "../utils/colors";
 import { processData } from "../utils/utils";
 import { BuildingMarker } from "./BuildingMarker";
@@ -47,8 +44,11 @@ import { Marker } from "./Marker";
 import { PhoneLinksModal } from "./PhoneLinksModal";
 import { Popup } from "./Popup";
 import { SyringeExchangeMarker } from "./SyringeExchangeMarker";
+import { useFixpointAndSyringeExchange } from "../data/fixpointAndSyringeExchange";
+import { useTerrainServices } from "../data/terrainServices";
+import { useServicesData } from "../data/data";
 
-const { data, otherServicesData, uniqueDistricts, fixpointAndSyringeExchangeData } = processData();
+const { otherServicesData, uniqueDistricts } = processData();
 const uniqueLayers = Object.keys(colors).filter((key) => key !== "terrainServices");
 const defaultLayersValues = uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {});
 
@@ -64,6 +64,10 @@ export const App = () => {
   const [isMobile, setMobile] = useState(false);
 
   const previousMobile = usePrevious(isMobile);
+
+  const { data: fixpointAndSyringeExchangeData } = useFixpointAndSyringeExchange();
+  const { data: terrainServices } = useTerrainServices();
+  const { data } = useServicesData();
 
   const districtFilter = useFilter({
     property: "district",
@@ -137,71 +141,6 @@ export const App = () => {
       }, 0);
     }
   }, [selectedMarker]);
-
-  const terrainServices: ITerrainService[] = useMemo(
-    () => [
-      {
-        key: "city-terrain-team",
-        title: t("terrainServices.cityTerrainService.title"),
-        provider: t("terrainServices.cityTerrainService.provider"),
-        phone: t("terrainServices.cityTerrainService.phone"),
-        web: "https://bratislava.sk/socialne-sluzby-a-byvanie/aktivity-v-socialnej-oblasti/mestsky-terenny-tim",
-        openingHours: t("terrainServices.cityTerrainService.openingHours"),
-        price: t("terrainServices.cityTerrainService.price"),
-        geojson: featureCollection(
-          DISTRICTS_GEOJSON.features.filter((feature) => feature.properties.name === "Staré Mesto"),
-        ),
-      },
-      {
-        key: "vagus",
-        title: t("terrainServices.vagus.title"),
-        provider: t("terrainServices.vagus.provider"),
-        phone: t("terrainServices.vagus.phone"),
-        web: "https://www.vagus.sk/streetwork/2/o-projekte-2/",
-        openingHours: t("terrainServices.vagus.openingHours"),
-        price: t("terrainServices.vagus.price"),
-        geojson: featureCollection(
-          regions.features.filter((feature) =>
-            ["Bratislava I", "Bratislava II", "Bratislava III", "Bratislava V"].includes(
-              feature.properties?.name,
-            ),
-          ),
-        ),
-      },
-      {
-        key: "rozalie",
-        title: t("terrainServices.rozalie.title"),
-        provider: t("terrainServices.rozalie.provider"),
-        phone: t("terrainServices.rozalie.phone"),
-        web: "https://depaul.sk/terenna-praca-bl-rozalie-rendu/",
-        openingHours: t("terrainServices.rozalie.openingHours"),
-        price: t("terrainServices.rozalie.price"),
-        geojson: featureCollection(
-          DISTRICTS_GEOJSON.features.filter((feature) =>
-            ["Karlova Ves", "Dúbravka", "Lamač", "Devínska Nová Ves"].includes(
-              feature.properties.name,
-            ),
-          ),
-        ),
-      },
-      {
-        key: "stopa",
-        title: t("terrainServices.stopa.title"),
-        provider: t("terrainServices.stopa.provider"),
-        phone: t("terrainServices.stopa.phone"),
-        web: "https://www.stopaslovensko.sk/streetwork/",
-        openingHours: t("terrainServices.stopa.openingHours"),
-        price: t("terrainServices.stopa.price"),
-        geojson: featureCollection([
-          ...DISTRICTS_GEOJSON.features.filter((feature) =>
-            ["Staré Mesto", "Nové Mesto", "Petržalka"].includes(feature.properties.name),
-          ),
-          ...terrainServicesLocalDistrictsData.features,
-        ]),
-      },
-    ],
-    [t],
-  );
 
   const [rememberedActiveLayerKeys, setRememberedActiveLayerKeys] = useState<string[]>([]);
   const [activeTerrainService, setActiveTerrainService] = useState<ITerrainService | null>(null);
@@ -337,7 +276,7 @@ export const App = () => {
         styles={DISTRICTS_STYLE}
       />
 
-      {terrainServices.map(({ key, geojson }, index) => (
+      {terrainServices?.map(({ key, geojson }, index) => (
         <Layer
           key={index}
           geojson={geojson}
@@ -356,9 +295,9 @@ export const App = () => {
         <BuildingMarker key={index} feature={feature} icon={feature.properties.icon} />,
       ])}
 
-      {/* FIXPOINT AND SYRINGE EXCHANGE MARKERS */}
+      {/* FIXPOINT AND SYRINGE EXCHANGE MARKERS  TODO CONTINUE HERE*/}
       <Filter expression={activeTerrainService?.key ? ["any", false] : districtFilter.expression}>
-        {fixpointAndSyringeExchangeData.features.map((feature, index) =>
+        {fixpointAndSyringeExchangeData?.features.map((feature, index) =>
           feature.properties?.icon === "fixpoint" ? (
             <FixpointMarker
               isSelected={!!(selectedMarker && feature.id === selectedMarker.id)}
@@ -480,7 +419,7 @@ export const App = () => {
             onResetFiltersClick={combinedFilter.reset}
             districtFilter={districtFilter}
             layerFilter={layerFilter}
-            terrainServices={terrainServices}
+            terrainServices={terrainServices || []}
             activeTerrainService={activeTerrainService?.key || null}
             onActiveTerrainServiceChange={handleActiveTerrainServiceChange}
           />
@@ -520,7 +459,7 @@ export const App = () => {
             districtFilter={districtFilter}
             activeFilters={combinedFilter.active}
             layerFilter={layerFilter}
-            terrainServices={terrainServices}
+            terrainServices={terrainServices || []}
             activeTerrainService={activeTerrainService?.key || null}
             onActiveTerrainServiceChange={handleActiveTerrainServiceChange}
           />

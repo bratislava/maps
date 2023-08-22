@@ -1,0 +1,14 @@
+schema: https://general-strapi.bratislava.sk/graphql
+documents: "./graphql/queries/**/*.{gql,graphql}"
+generates:
+  graphql/index.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-query
+    config:
+      fetcher:
+        endpoint: "https://general-strapi.bratislava.sk/graphql"
+        fetchParams:
+          headers:
+            Content-Type: "application/json"
