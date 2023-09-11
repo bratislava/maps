@@ -10,6 +10,7 @@ export * from './components/LineString/LineString';
 
 // Hooks
 export * from './hooks/useFilter';
+export * from './hooks/useMarkerInQuery';
 export * from './hooks/useCombinedFilter';
 
 // Types

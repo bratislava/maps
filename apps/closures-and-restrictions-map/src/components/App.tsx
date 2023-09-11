@@ -17,6 +17,7 @@ import {
   Layer,
   useCombinedFilter,
   useFilter,
+  useMarkerInQuery,
 } from "@bratislava/react-mapbox";
 import {
   Layout,
@@ -106,6 +107,7 @@ export const App = () => {
 
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
   const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
+  // const [clusterExpansionZoom, setClusterExpansionZoom] = useState<number | null>(null);
 
   const [uniqueDistricts, setUniqueDistricts] = useState<Array<string>>([]);
   const [uniqueLayers, setUniqueLayers] = useState<Array<string>>([]);
@@ -114,6 +116,22 @@ export const App = () => {
   const [strapiNotification, setStrapiNotification] = useState<IStrapiNotification>(
     {} as IStrapiNotification,
   );
+
+  useMarkerInQuery({
+    markersData,
+    selectedMarker,
+    // zoom: clusterExpansionZoom,
+    setSelectedMarker: (feature) => {
+      setSelectedMarker(feature);
+      const f = feature as Feature<Point>;
+      mapRef.current?.changeViewport({
+        center: {
+          lng: f?.geometry?.coordinates[0],
+          lat: f?.geometry?.coordinates[1],
+        },
+      });
+    },
+  });
 
   useEffect(() => {
     fetch(STRAPI_NOTIFICATIONS_URL, {
@@ -212,6 +230,7 @@ export const App = () => {
   const closeDetail = useCallback(() => {
     setSelectedFeature(null);
     setSelectedMarker(null);
+    // setClusterExpansionZoom(null);
   }, []);
 
   useEffect(() => {
@@ -253,6 +272,7 @@ export const App = () => {
     mapRef.current?.moveToFeatures(features);
     setSelectedFeature(features[0] ?? null);
     setSelectedMarker(null);
+    // setClusterExpansionZoom(null);
   };
 
   const districtFilter = useFilter({
@@ -502,6 +522,7 @@ export const App = () => {
                   });
                 } else {
                   setSelectedMarker(feature);
+                  // setClusterExpansionZoom(clusterExpansionZoom);
                   setSelectedFeature(null);
                   mapRef.current?.changeViewport({
                     center: {

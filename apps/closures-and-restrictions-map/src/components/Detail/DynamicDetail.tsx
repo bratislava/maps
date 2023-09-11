@@ -187,8 +187,10 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
       </div>
 
       {infoForResidents && (
-        <div>
-          <p>{infoForResidents}</p>
+        <div className="flex flex-col gap-2">
+          {infoForResidents.split("\n").map((paragraph) => (
+            <p key={paragraph.slice(-10)}>{paragraph}</p>
+          ))}
         </div>
       )}
       <Row label={t("address")} text={address} />
