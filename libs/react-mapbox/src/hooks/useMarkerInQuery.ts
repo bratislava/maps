@@ -1,49 +1,45 @@
 import { GeoJsonProperties } from '@bratislava/utils/src/types';
 import { Feature, FeatureCollection, Point } from 'geojson';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export type UseMarkerInQueryOptions = {
   markersData: FeatureCollection | null;
   selectedMarker: Feature<Point> | null;
-  setSelectedMarker: Dispatch<
-    SetStateAction<Feature<Point, GeoJsonProperties> | null>
-  >;
-  // TODO some points are visible only at certain zoom levels (because of clustering) - passing in zoom to display them correctly
-  // zoom: number | null;
-  // (
-  //   feature: Feature<Point, GeoJsonProperties> | null,
-  //   zoom: number | null,
-  // ) => void;
+  zoomAtWhichMarkerWasSelected: number | null;
+  setSelectedMarkerAndZoom: (
+    feature: Feature<Point, GeoJsonProperties> | null,
+    zoom: number | null,
+  ) => void;
 };
 
 export const useMarkerInQuery = ({
   markersData,
   selectedMarker,
-  setSelectedMarker,
-}: // zoom,
-UseMarkerInQueryOptions) => {
+  // setSelectedMarker,
+  setSelectedMarkerAndZoom,
+  zoomAtWhichMarkerWasSelected,
+}: UseMarkerInQueryOptions) => {
   const [isInitialMarkerSet, setIsInitialMarkerSet] = useState(false);
 
   // sets marker from query on initial markersData load
   useEffect(() => {
     if (isInitialMarkerSet || !markersData?.features?.length) return;
     setIsInitialMarkerSet(true);
-    console.log('going to set marker');
     try {
       const urlParams = new URLSearchParams(window.location.hash.substring(1));
       const markerId = urlParams.get('marker');
-      // const parsedZoom = Number.parseInt(urlParams.get('zoom') || '') || null;
+      const parsedZoom = Number.parseInt(urlParams.get('zoom') || '') || null;
       if (typeof markerId === 'string') {
         const marker = markersData.features.find(
           (marker) => marker.id === markerId,
         );
         if (
           marker &&
-          (marker.geometry.type === 'Point' || marker.geometry.type) ===
-            'MultiPoint'
-        )
-          console.log('gonna set');
-        setSelectedMarker(marker as Feature<Point>);
+          (marker.geometry.type === 'Point' ||
+            marker.geometry.type === 'MultiPoint')
+        ) {
+          setSelectedMarkerAndZoom(marker as Feature<Point>, parsedZoom);
+        }
       }
     } catch (error) {
       console.error(
@@ -51,7 +47,7 @@ UseMarkerInQueryOptions) => {
       );
       console.error(error);
     }
-  }, [isInitialMarkerSet, markersData?.features, setSelectedMarker]);
+  }, [isInitialMarkerSet, markersData?.features, setSelectedMarkerAndZoom]);
 
   // puts selected marker's id into url query
   useEffect(() => {
@@ -59,13 +55,13 @@ UseMarkerInQueryOptions) => {
     const urlParams = new URLSearchParams(window.location.hash.substring(1));
     if (selectedMarker?.id) {
       urlParams.set('marker', selectedMarker.id.toString());
-      // if (zoom) {
-      //   urlParams.set('zoom', zoom.toString());
-      // }
+      if (zoomAtWhichMarkerWasSelected) {
+        urlParams.set('zoom', zoomAtWhichMarkerWasSelected.toString());
+      }
     } else {
       urlParams.delete('marker');
-      // urlParams.delete('zoom');
+      urlParams.delete('zoom');
     }
     window.location.hash = urlParams.toString();
-  }, [isInitialMarkerSet, selectedMarker?.id]);
+  }, [isInitialMarkerSet, selectedMarker?.id, zoomAtWhichMarkerWasSelected]);
 };

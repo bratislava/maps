@@ -107,7 +107,7 @@ export const App = () => {
 
   const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
   const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
-  // const [clusterExpansionZoom, setClusterExpansionZoom] = useState<number | null>(null);
+  const [zoom, setZoom] = useState<number | null>(null);
 
   const [uniqueDistricts, setUniqueDistricts] = useState<Array<string>>([]);
   const [uniqueLayers, setUniqueLayers] = useState<Array<string>>([]);
@@ -120,11 +120,12 @@ export const App = () => {
   useMarkerInQuery({
     markersData,
     selectedMarker,
-    // zoom: clusterExpansionZoom,
-    setSelectedMarker: (feature) => {
+    zoomAtWhichMarkerWasSelected: zoom,
+    setSelectedMarkerAndZoom: (feature, requiredZoom) => {
       setSelectedMarker(feature);
       const f = feature as Feature<Point>;
       mapRef.current?.changeViewport({
+        zoom: Math.max(requiredZoom ?? 0, 14),
         center: {
           lng: f?.geometry?.coordinates[0],
           lat: f?.geometry?.coordinates[1],
@@ -426,6 +427,9 @@ export const App = () => {
       selectedFeatures={selectedFeatures}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
+      onViewportChangeDebounced={(viewport) => {
+        setZoom(viewport.zoom);
+      }}
       mapInformation={{
         // Comment out/remove infoNotification attribute to remove notification
         infoNotification,
@@ -522,7 +526,6 @@ export const App = () => {
                   });
                 } else {
                   setSelectedMarker(feature);
-                  // setClusterExpansionZoom(clusterExpansionZoom);
                   setSelectedFeature(null);
                   mapRef.current?.changeViewport({
                     center: {
