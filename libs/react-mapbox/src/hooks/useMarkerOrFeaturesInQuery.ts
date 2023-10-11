@@ -31,7 +31,6 @@ export const useMarkerOrFeaturesInQuery = ({
   useEffect(() => {
     if (isInitialMarkerSet || !markersData?.features?.length) return;
     setIsInitialMarkerSet(true);
-    console.log('setting initial');
     try {
       const urlParams = new URLSearchParams(window.location.hash.substring(1));
       const markerId = urlParams.get('marker');
