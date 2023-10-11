@@ -18,7 +18,14 @@ import {
   ViewportController,
 } from "@bratislava/react-maps";
 
-import { Cluster, Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
+import {
+  Cluster,
+  Filter,
+  Layer,
+  useCombinedFilter,
+  useFilter,
+  useMarkerOrFeaturesInQuery,
+} from "@bratislava/react-mapbox";
 
 // layer styles
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
@@ -37,6 +44,7 @@ import Detail from "./Detail";
 import { Legend } from "./Legend";
 import { Marker } from "./Marker";
 import { GEOPORTAL_LAYER_URL } from "../utils/const";
+import { Point } from "@bratislava/utils/src/types";
 
 const isDevelopment = !!import.meta.env.DEV;
 
@@ -77,6 +85,7 @@ export const App = () => {
 
   const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>([]);
   const [isMobile, setMobile] = useState<boolean | null>(null);
+  const [zoom, setZoom] = useState<number | null>(null);
 
   const previousSidebarVisible = usePrevious(isSidebarVisible);
   const previousMobile = usePrevious(isMobile);
@@ -131,6 +140,29 @@ export const App = () => {
         }),
       },
     ],
+  });
+
+  useMarkerOrFeaturesInQuery({
+    markersData: data,
+    selectedFeatures: selectedFeatures,
+    zoomAtWhichMarkerWasSelected: zoom,
+    setSelectedFeaturesAndZoom: (features, requiredZoom) => {
+      // frameState is not set in the beginning - setTimeout as a lazy solution
+      setTimeout(() => {
+        setSelectedFeatures(features || []);
+        const f = features?.[0] as Feature<Point>;
+        if (f) {
+          mapRef.current?.changeViewport({
+            zoom: Math.max(requiredZoom ?? 0, 14),
+            center: {
+              // TODO continue here
+              lng: f?.geometry?.coordinates[0],
+              lat: f?.geometry?.coordinates[1],
+            },
+          });
+        }
+      }, 300);
+    },
   });
 
   useEffect(() => {
@@ -350,6 +382,9 @@ export const App = () => {
       isDevelopment={isDevelopment}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
+      onViewportChangeDebounced={(viewport) => {
+        setZoom(viewport.zoom);
+      }}
       mapInformation={{
         title: t("informationModal.title"),
         description: (

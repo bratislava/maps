@@ -17,7 +17,7 @@ import {
   Layer,
   useCombinedFilter,
   useFilter,
-  useMarkerInQuery,
+  useMarkerOrFeaturesInQuery,
 } from "@bratislava/react-mapbox";
 import {
   Layout,
@@ -117,7 +117,7 @@ export const App = () => {
     {} as IStrapiNotification,
   );
 
-  useMarkerInQuery({
+  useMarkerOrFeaturesInQuery({
     markersData,
     selectedMarker,
     zoomAtWhichMarkerWasSelected: zoom,
