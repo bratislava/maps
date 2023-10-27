@@ -2,28 +2,31 @@ import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps";
 import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 import { featureCollection } from "@turf/helpers";
 import type { Feature, FeatureCollection } from "geojson";
-import type { IDigupsAndClosuresOriginalProps, IDisorderOriginalProps, IFeatureProps, IProcessDataProps, TStatus } from "../types/featureTypes";
+import type {
+  IDigupsAndClosuresOriginalProps,
+  IDisorderOriginalProps,
+  IFeatureProps,
+  IProcessDataProps,
+  TStatus,
+} from "../types/featureTypes";
 
-export const processData = ({
-  rawDisordersData,
-  rawDigupsAndClosuresData,
-  // rawRepairsPointsData,
-  // rawRepairsPolygonsData,
-}: IProcessDataProps) => {
-
+// removed from params at some point were the following:
+// rawRepairsPointsData,
+// rawRepairsPolygonsData,
+export const processData = ({ rawDisordersData, rawDigupsAndClosuresData }: IProcessDataProps) => {
   const setStatus = (startTimestamp: number, endTimestamp: number): TStatus => {
     const currentTimestamp = Date.now();
     return startTimestamp > currentTimestamp
       ? "planned"
       : startTimestamp < currentTimestamp && endTimestamp > currentTimestamp
-        ? "active"
-        : "done";
-  }
+      ? "active"
+      : "done";
+  };
 
   const disordersData: FeatureCollection = addDistrictPropertyToLayer({
     ...rawDisordersData,
     features: rawDisordersData.features.map((feature) => {
-      const originalProperties = { ...feature.properties as IDisorderOriginalProps };
+      const originalProperties = { ...(feature.properties as IDisorderOriginalProps) };
 
       const startTimestamp = originalProperties.datum_vzniku_poruchy;
       const endTimestamp = originalProperties.datum_finalnej_upravy;
@@ -41,11 +44,11 @@ export const processData = ({
         width: originalProperties?.sirka_vykopu_m,
         length: originalProperties?.dlzka_vykopu_m,
         owner: originalProperties.ine_vlastnik || originalProperties?.vlastnik_spravca_vedenia,
-        type: originalProperties.druh_vedenia.split(','),
+        type: originalProperties.druh_vedenia.split(","),
         layer: "disorders",
         icon: "disorder",
         displayFeature: true,
-      }
+      };
 
       return {
         ...feature,
@@ -58,10 +61,13 @@ export const processData = ({
   const digupsAndClosuresData: FeatureCollection = addDistrictPropertyToLayer({
     ...rawDigupsAndClosuresData,
     features: rawDigupsAndClosuresData.features.map((feature) => {
-      const originalProperties = { ...feature.properties as IDigupsAndClosuresOriginalProps };
-      const layer = ["čiastočná", "úplná"].includes(originalProperties?.uzavierka) ? "closures" : "digups";
+      const originalProperties = { ...(feature.properties as IDigupsAndClosuresOriginalProps) };
+      const layer = ["čiastočná", "úplná"].includes(originalProperties?.uzavierka)
+        ? "closures"
+        : "digups";
 
-      const startTimestamp = originalProperties.potvrdeny_termin_realizacie || originalProperties.datum_vzniku;
+      const startTimestamp =
+        originalProperties.potvrdeny_termin_realizacie || originalProperties.datum_vzniku;
       const endTimestamp = originalProperties.termin_finalnej_upravy;
 
       const properties: IFeatureProps = {
@@ -71,7 +77,7 @@ export const processData = ({
         startTime: originalProperties.cas_vzniku,
         endTime: originalProperties.cas_odstranenia,
         status: setStatus(startTimestamp, endTimestamp),
-        type: originalProperties.druh_rozkopavky.split(','),
+        type: originalProperties.druh_rozkopavky.split(","),
         subject: originalProperties?.predmet_nadpis,
         address: originalProperties?.adresa_rozkopavky,
         fullSize: originalProperties?.rozmery_vykopu_v_m2,
@@ -84,12 +90,12 @@ export const processData = ({
         objectId: originalProperties.objectid,
         infoForResidents: originalProperties?.informacie,
         displayFeature: originalProperties.zobrazovanie === "Zobrazovat",
-      }
+      };
 
       return {
         ...feature,
         id: originalProperties.globalid,
-        properties
+        properties,
       } as Feature;
     }),
   });

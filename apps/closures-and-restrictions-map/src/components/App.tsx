@@ -40,7 +40,12 @@ import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 // utils
 import { usePrevious } from "@bratislava/utils";
 import { Feature, FeatureCollection, Point } from "geojson";
-import { DIGUPS_URL, DISORDERS_URL, STRAPI_NOTIFICATIONS_URL } from "../utils/urls";
+import {
+  DIGUPS_URL,
+  DISORDERS_URL,
+  OLD_TOWN_DATA_URL,
+  STRAPI_NOTIFICATIONS_URL,
+} from "../utils/urls";
 import { processData } from "../utils/utils";
 import Detail from "./Detail";
 import { Filters } from "./Filters";
@@ -101,6 +106,7 @@ export const App = () => {
 
   const { data: rawDisordersData } = useArcgis(DISORDERS_URL);
   const { data: rawDigupsAndClosuresData } = useArcgis(DIGUPS_URL);
+  const { data: rawOldTownData } = useArcgis(OLD_TOWN_DATA_URL);
 
   // const { data: rawRepairsPointsData } = useArcgis(REPAIRS_POINTS_URLS);
   // const { data: rawRepairsPolygonsData } = useArcgis(REPAIRS_POLYGONS_URLS);
@@ -148,10 +154,18 @@ export const App = () => {
   useEffect(() => {
     if (
       rawDisordersData &&
-      rawDigupsAndClosuresData
+      rawDigupsAndClosuresData &&
+      rawOldTownData
       // rawRepairsPointsData &&
       // rawRepairsPolygonsData
     ) {
+      const mergedDigupsAndClosuresData = {
+        ...rawDigupsAndClosuresData,
+        features: [
+          ...(rawDigupsAndClosuresData?.features || []),
+          ...(rawOldTownData?.features || []),
+        ],
+      };
       const {
         markersData,
         // repairsPolygonsData,
@@ -160,7 +174,7 @@ export const App = () => {
         uniqueTypes,
       } = processData({
         rawDisordersData,
-        rawDigupsAndClosuresData,
+        rawDigupsAndClosuresData: mergedDigupsAndClosuresData,
         // rawRepairsPointsData,
         // rawRepairsPolygonsData,
       });
@@ -177,6 +191,7 @@ export const App = () => {
   }, [
     rawDisordersData,
     rawDigupsAndClosuresData,
+    rawOldTownData,
     // rawRepairsPointsData,
     // rawRepairsPolygonsData,
     t,
