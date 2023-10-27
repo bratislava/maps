@@ -136,6 +136,9 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
     }
   };
 
+  const contractorTextValue =
+    !contractor || contractor === "other" ? t("missingContractorFallback") : contractor;
+
   return (
     <div
       className={`flex flex-col justify-end w-full gap-4 pl-4 pr-4 ${
@@ -218,7 +221,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
       {!!width && <Row label={t("width")} text={`${width} m`} />}
       <Row label={t("investor")} text={investor} />
       {layer !== "disorders" && <Row label={t("owner")} text={owner} />}
-      <Row label={t("contractor")} text={contractor} />
+      <Row label={t("contractor")} text={contractorTextValue} />
 
       {layer !== "disorders" && documentUrlList && documentUrlList.length > 0 && (
         <div>
