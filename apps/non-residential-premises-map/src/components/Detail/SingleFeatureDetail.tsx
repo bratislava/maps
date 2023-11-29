@@ -51,7 +51,7 @@ export const SingleFeatureDetail = ({ feature, isExpanded }: ISingleFeatureDetai
 
       {!isExpanded && (
         <div className="py-4 px-6">
-          <DataDisplay label={t("locality")} text={feature.properties?.lessee} />
+          <DataDisplay label={t("locality")} text={feature.properties?.locality} />
         </div>
       )}
       {isExpanded && <DetailDataDisplay isSingleFeature={true} feature={feature} />}
