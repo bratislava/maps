@@ -58,3 +58,4 @@ export const SingleFeatureDetail = ({ feature, isExpanded }: ISingleFeatureDetai
     </div>
   );
 };
+
