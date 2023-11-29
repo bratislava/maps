@@ -17,26 +17,32 @@ export const SingleFeatureDetail = ({ feature, isExpanded }: ISingleFeatureDetai
   const { t } = useTranslation("translation", { keyPrefix: "detail" });
 
   const { data: featureAttachments } = useArcgisAttachments(GEOPORTAL_LAYER_URL, feature?.id || 0);
-
+  const featureImages = featureAttachments?.length
+  ? featureAttachments.map(
+    (attachment) => `${GEOPORTAL_LAYER_URL}/${feature?.id}/attachments/${attachment.id}`,
+  )
+  : undefined;
   const alternativeImage =
-    !feature?.properties?.picture && feature?.properties?.occupancy === "forRent"
+    !featureImages && !feature?.properties?.picture && feature?.properties?.occupancy === "forRent"
       ? "placeholder.png"
       : "";
-  const image = feature?.properties?.picture || alternativeImage;
-
-  const images = featureAttachments?.length
-    ? featureAttachments.map(
-        (attachment) => `${GEOPORTAL_LAYER_URL}/${feature?.id}/attachments/${attachment.id}`,
-      )
-    : [image];
+  const firstFeatureImage = featureImages ? featureImages[0] : undefined
+  const image =  feature?.properties?.picture || firstFeatureImage || alternativeImage;
+  const images = featureImages || [image]
 
   return (
     <div className="flex flex-col">
       {image && (
         <AnimateHeight isVisible={isExpanded}>
-          <button className="w-full" onClick={() => setModalOpen(true)}>
-            <Image object="cover" src={image} />
-          </button>
+          {alternativeImage ? (
+            <button className="w-full">
+              <Image object="cover" src={image} />
+            </button>
+          ) : (
+            <button className="w-full" onClick={() => setModalOpen(true)}>
+              <Image object="cover" src={image} />
+            </button>
+          )}
         </AnimateHeight>
       )}
 
@@ -51,7 +57,7 @@ export const SingleFeatureDetail = ({ feature, isExpanded }: ISingleFeatureDetai
 
       {!isExpanded && (
         <div className="py-4 px-6">
-          <DataDisplay label={t("locality")} text={feature.properties?.lessee} />
+          <DataDisplay label={t("locality")} text={feature.properties?.locality} />
         </div>
       )}
       {isExpanded && <DetailDataDisplay isSingleFeature={true} feature={feature} />}
