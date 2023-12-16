@@ -8,7 +8,7 @@ import { ReactComponent as DisorderIcon } from "../../assets/icons/disorder.svg"
 import { ReactComponent as GoogleStreet } from "../../assets/icons/googlestreetview.svg";
 import { ReactComponent as ImageIcon } from "../../assets/icons/imageicon.svg";
 import { IFeatureProps } from "../../types/featureTypes";
-import { DIGUPS_URL, DISORDERS_URL } from "../../utils/urls";
+import { DIGUPS_URL, DISORDERS_URL, OLD_TOWN_DATA_URL } from "../../utils/urls";
 import { Row } from "./Row";
 import RoundedIconButon from "./RoundedIconButon";
 
@@ -60,6 +60,11 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
 
   const { data: digupsAttachments } = useArcgisAttachments(DIGUPS_URL, objectId || 0);
 
+  const { data: oldTownAttachments } = useArcgisAttachments(
+    OLD_TOWN_DATA_URL,
+    objectId || originalProperties?.objectid || 0,
+  );
+
   const { data: disordersAttachments } = useArcgisAttachments(
     DISORDERS_URL,
     objectId || originalProperties?.objectid || 0,
@@ -88,11 +93,13 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
   const documentUrlList =
     layer === "disorders"
       ? filterAttachments(disordersAttachments, DISORDERS_URL, "dokumenty")
+      : originalProperties?.__oldTownMarker
+      ? filterAttachments(oldTownAttachments, OLD_TOWN_DATA_URL, "dokumenty")
       : filterAttachments(digupsAttachments, DIGUPS_URL, "dokumenty");
   const alternativeRouteUrlList =
-    (layer !== "disorders" &&
-      filterAttachments(digupsAttachments, DIGUPS_URL, "obchadzkove_trasy")) ||
-    [];
+    layer !== "disorders" && originalProperties?.__oldTownMarker
+      ? filterAttachments(oldTownAttachments, OLD_TOWN_DATA_URL, "obchadzkove_trasy")
+      : filterAttachments(digupsAttachments, DIGUPS_URL, "obchadzkove_trasy") || [];
 
   const displayLocaleDate = (timeStamp: number | null, time: string | null = null): string => {
     if (!timeStamp) return "";

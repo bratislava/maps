@@ -58,6 +58,8 @@ export interface ICommonOriginalProps {
   predmet_nadpis: string;
   rozmery_vykopu_v_m2: number;
   sirka_vykopu_m: number;
+  // TODO remove
+  __oldTownMarker?: boolean;
 }
 
 export interface IDigupsAndClosuresOriginalProps extends ICommonOriginalProps {
