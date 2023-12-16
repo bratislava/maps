@@ -161,9 +161,17 @@ export const App = () => {
     ) {
       const mergedDigupsAndClosuresData = {
         ...rawDigupsAndClosuresData,
+        // TODO originally it seemed we can treat oldTownData the same as digups and closures, but we need to be concious of their gis origin when we later request documents for feature details
+        // TODO rewrite the process data, abstract digups/closures mapping and use it separately 0on mergedDigupsAndCLosuresData and oldTownData, indead of using oldTownMarker in feature detail
         features: [
           ...(rawDigupsAndClosuresData?.features || []),
-          ...(rawOldTownData?.features || []),
+          ...(rawOldTownData?.features?.map((f) => ({
+            ...f,
+            properties: {
+              ...f.properties,
+              __oldTownMarker: true,
+            },
+          })) || []),
         ],
       };
       const {
