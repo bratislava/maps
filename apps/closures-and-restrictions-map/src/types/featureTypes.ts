@@ -12,7 +12,7 @@ type TNetworkType =
   | "Elektrina"
   | "Horúcovod"
   | "Voda"
-  | "Verejné_Osvetlenie"
+  | "Verejné_osvetlenie"
   | "Výstavba"
   | "Iné";
 

@@ -31,6 +31,14 @@ export const processData = ({ rawDisordersData, rawDigupsAndClosuresData }: IPro
       const startTimestamp = originalProperties.datum_vzniku_poruchy;
       const endTimestamp = originalProperties.datum_finalnej_upravy;
 
+      // long names shortned by gis, there's no nice way currently so using this hack
+      let owner = originalProperties.ine_vlastnik || originalProperties?.vlastnik_spravca_vedenia;
+      if (owner.startsWith("Bratislavská vodárenská")) {
+        owner = "Bratislavská vodárenská spoločnosť, a.s.";
+      } else if (owner.startsWith("Západoslovenská distribučná")) {
+        owner = "Západoslovenská distribučná, a.s.";
+      }
+
       const properties: IFeatureProps = {
         originalProperties,
         objectId: originalProperties.objectid,
@@ -43,7 +51,7 @@ export const processData = ({ rawDisordersData, rawDigupsAndClosuresData }: IPro
         fullSize: originalProperties?.rozmery_vykopu_v_m2,
         width: originalProperties?.sirka_vykopu_m,
         length: originalProperties?.dlzka_vykopu_m,
-        owner: originalProperties.ine_vlastnik || originalProperties?.vlastnik_spravca_vedenia,
+        owner,
         type: originalProperties.druh_vedenia.split(","),
         layer: "disorders",
         icon: "disorder",

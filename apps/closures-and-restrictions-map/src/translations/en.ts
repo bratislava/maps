@@ -23,7 +23,7 @@ export default {
         Elektrina: "Electricity",
         Voda: "Water",
         Horúcovod: "Hot Water",
-        Verejné_Osvetlenie: "Street lighting",
+        Verejné_osvetlenie: "Street lighting",
         Výstavba: "Construction",
         Úprava_povrchu: "Surface works",
         Iné: "Other",

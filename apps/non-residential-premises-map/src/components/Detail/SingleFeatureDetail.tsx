@@ -18,26 +18,26 @@ export const SingleFeatureDetail = ({ feature, isExpanded }: ISingleFeatureDetai
 
   const { data: featureAttachments } = useArcgisAttachments(GEOPORTAL_LAYER_URL, feature?.id || 0);
   const featureImages = featureAttachments?.length
-  ? featureAttachments.map(
-    (attachment) => `${GEOPORTAL_LAYER_URL}/${feature?.id}/attachments/${attachment.id}`,
-  )
-  : undefined;
+    ? featureAttachments.map(
+        (attachment) => `${GEOPORTAL_LAYER_URL}/${feature?.id}/attachments/${attachment.id}`,
+      )
+    : undefined;
   const alternativeImage =
     !featureImages && !feature?.properties?.picture && feature?.properties?.occupancy === "forRent"
       ? "placeholder.png"
       : "";
-  const firstFeatureImage = featureImages ? featureImages[0] : undefined
-  const image =  feature?.properties?.picture || firstFeatureImage || alternativeImage;
-  const images = featureImages || [image]
+  const firstFeatureImage = featureImages ? featureImages[0] : undefined;
+  const image = feature?.properties?.picture || firstFeatureImage || alternativeImage;
+  const images = featureImages || [image];
 
   return (
     <div className="flex flex-col">
       {image && (
         <AnimateHeight isVisible={isExpanded}>
           {alternativeImage ? (
-            <button className="w-full">
+            <div className="w-full">
               <Image object="cover" src={image} />
-            </button>
+            </div>
           ) : (
             <button className="w-full" onClick={() => setModalOpen(true)}>
               <Image object="cover" src={image} />

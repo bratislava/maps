@@ -23,7 +23,7 @@ export default {
         Elektrina: "Elektrina",
         Voda: "Voda",
         Horúcovod: "Horúcovod",
-        Verejné_Osvetlenie: "Verejné osvetlenie",
+        Verejné_osvetlenie: "Verejné osvetlenie",
         Výstavba: "Výstavba",
         Úprava_povrchu: "Úprava povrchu",
         Iné: "Iné",
