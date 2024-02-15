@@ -97,8 +97,10 @@ export const processData = (rawData: FeatureCollection) => {
     ...rawData,
     features: rawData.features.map((feature) => {
       const originalProperties = feature.properties;
-      const nameSk = feature.properties?.Drevina_SK?.toLowerCase().trim();
-      const nameLat = feature.properties?.DrevinaLAT?.toLowerCase().trim();
+
+      console.log(originalProperties);
+      const nameSk = feature.properties?.drevina_sk?.toLowerCase().trim() || "";
+      const nameLat = feature.properties?.drevina_lat?.toLowerCase().trim() || "";
 
       const kind = nameSk
         .trim()
@@ -108,28 +110,29 @@ export const processData = (rawData: FeatureCollection) => {
         .replace(/(_| )/g, "-")
         .replace(/(´|"|\u00ad)/g, "");
 
-      const kindSimple = kind.split("-")[0];
+      const kindSimple = kind.split("-")[0] || "";
 
-      const { season, year } = getSeasonAndYear(feature);
+      const season = feature.properties?.obdobie || "";
+      const year = feature.properties?.vysadba_rok || "";
 
       // pick the exact color from mapping or use specific color for conifer / deciduous tree
       const color =
         treeKindColorMappingObject[kind] ??
         (CONIFERS.includes(kind) ? CONIFER_COLOR : DECIDUOUS_COLOR);
 
-      // pick the layer based on PROJEKT property
+      // pick the layer based on projekt property
       const layer =
-        feature.properties?.PROJEKT === "10 000"
+        feature.properties?.projekt === "10 000"
           ? "planting"
-          : feature.properties?.PROJEKT === "NAHRADKA"
+          : feature.properties?.projekt === "NAHRADKA"
           ? "replacement-planting"
           : null;
 
-      const donor = feature.properties?.Donor?.trim();
-      const cultivar = feature.properties?.Kultivar?.trim();
+      const donor = feature.properties?.donor?.trim();
+      const cultivar = feature.properties?.kultivar?.trim();
       const height = getHeight(feature);
       const log = getLog(feature);
-      const cadastralArea = feature.properties?.Nazov_KU?.trim();
+      const cadastralArea = feature.properties?.nazov_ku?.trim();
 
       return {
         ...feature,
@@ -177,24 +180,8 @@ export const capitalizeFirstLetter = (text: string) => {
   return text.charAt(0).toUpperCase() + text.slice(1);
 };
 
-// format: 2022 JAR
-const getSeasonAndYear = (feature: Feature) => {
-  if (feature.properties?.OBDOBIE_VY) {
-    const [inputYear, inputSeason] = feature.properties.OBDOBIE_VY.split(" ");
-    return {
-      year: inputYear,
-      season: seasonMapping[inputSeason as "JAR" | "LETO" | "JESEŇ" | "ZIMA"],
-    };
-  } else {
-    return {
-      year: null,
-      season: null,
-    };
-  }
-};
-
 const getLog = (feature: Feature) => {
-  let logText: string | undefined = feature?.properties?.Kmeň?.trim();
+  let logText: string | undefined = feature?.properties?.kmen?.trim() || "";
 
   if (logText) {
     if (logText.includes("/")) {
@@ -220,7 +207,7 @@ const getLog = (feature: Feature) => {
 };
 
 const getHeight = (feature: Feature) => {
-  let heightText: string | undefined = feature?.properties?.Výška?.trim();
+  let heightText: string | undefined = feature?.properties?.vyska?.trim() || "";
 
   if (heightText) {
     if (heightText.includes("/")) {
