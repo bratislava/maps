@@ -11,7 +11,7 @@ import {
   SearchBar,
   Slot,
   ThemeController,
-  ViewportController
+  ViewportController,
 } from "@bratislava/react-maps";
 
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
@@ -38,7 +38,8 @@ import { Legend } from "./Legend";
 import { MobileFilters } from "./mobile/MobileFilters";
 import { MobileHeader } from "./mobile/MobileHeader";
 
-const URL = "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/zp/STROMY/MapServer/0";
+const URL =
+  "https://nest-proxy.bratislava.sk/geoportal/hSite/rest/services/Hosted/STROMY_Public/FeatureServer/13";
 
 export const App = () => {
   const { t, i18n } = useTranslation();
