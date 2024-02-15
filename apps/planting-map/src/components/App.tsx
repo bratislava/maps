@@ -52,7 +52,10 @@ export const App = () => {
 
   const [data, setData] = useState<FeatureCollection | null>(null);
 
-  const { data: rawData } = useArcgis(URL, { pagination: false, format: "geojson" });
+  const { data: rawData } = useArcgis(URL, {
+    pagination: true,
+    format: "geojson",
+  });
 
   // USE STATE
   const [uniqueYears, setUniqueYears] = useState<string[]>([]);

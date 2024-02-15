@@ -98,7 +98,6 @@ export const processData = (rawData: FeatureCollection) => {
     features: rawData.features.map((feature) => {
       const originalProperties = feature.properties;
 
-      console.log(originalProperties);
       const nameSk = feature.properties?.drevina_sk?.toLowerCase().trim() || "";
       const nameLat = feature.properties?.drevina_lat?.toLowerCase().trim() || "";
 
