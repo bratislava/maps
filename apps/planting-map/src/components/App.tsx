@@ -39,7 +39,7 @@ import { MobileFilters } from "./mobile/MobileFilters";
 import { MobileHeader } from "./mobile/MobileHeader";
 
 const URL =
-  "https://nest-proxy.bratislava.sk/geoportal/hSite/rest/services/Hosted/STROMY_Public/FeatureServer/13";
+  "https://nest-proxy.bratislava.sk/geoportal/hSite/rest/services/STROMY_Public_/MapServer/13";
 
 export const App = () => {
   const { t, i18n } = useTranslation();

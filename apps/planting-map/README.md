@@ -1,6 +1,6 @@
 # Planting map
 
-Data comes from our Arcgis server: https://nest-proxy.bratislava.sk/geoportal/hSite/rest/services/Hosted/STROMY_Public/FeatureServer/13
+Data comes from our Arcgis server: https://nest-proxy.bratislava.sk/geoportal/hSite/rest/services/STROMY_Public_/MapServer/13
 
 # Deployment
 
