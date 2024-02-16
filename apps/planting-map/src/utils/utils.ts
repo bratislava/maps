@@ -112,7 +112,7 @@ export const processData = (rawData: FeatureCollection) => {
       const kindSimple = kind.split("-")[0] || "";
 
       const season = feature.properties?.obdobie || "";
-      const year = feature.properties?.vysadba_rok || "";
+      const year = feature.properties?.Vysadba_rok || "";
 
       // pick the exact color from mapping or use specific color for conifer / deciduous tree
       const color =
