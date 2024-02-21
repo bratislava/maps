@@ -429,6 +429,10 @@ export const App = () => {
 
   const { height: windowHeight } = useWindowSize();
 
+  useEffect(() => {
+    detailRef.current?.scrollIntoView();
+  }, [detailRef, selectedFeature, selectedMarker]);
+
   const shouldBeViewportControlsMoved = useMemo(() => {
     return !isMobile && windowHeight < viewportControlsHeight + detailHeight + 40;
   }, [windowHeight, detailHeight, viewportControlsHeight, isMobile]);

@@ -355,6 +355,10 @@ export const App = () => {
   const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
   const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
 
+  useEffect(() => {
+    detailRef.current?.scrollIntoView();
+  }, [detailRef, selectedFeatures]);
+
   const { height: windowHeight } = useWindowSize();
 
   const shouldBeViewportControlsMoved = useMemo(() => {
