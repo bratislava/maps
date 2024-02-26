@@ -24,7 +24,7 @@ export const LayerButton = ({ color, isVisible, title, onClick }: LayerButtonPro
       onClick={onClick}
     >
       <div>{title}</div>
-      <div className="cursor-pointer p-1">
+      <div className="cursor-pointer p-1 pl-10">
         <Eye isCrossed={!isVisible} size="default" />
       </div>
     </button>
