@@ -79,6 +79,7 @@ export default {
       web: "Web",
       email: "E-mail",
       navigate: "Navigovať",
+      description: "Popis",
     },
     drinkingFountain: {
       drinkingFountain: "Pitná fontánka",

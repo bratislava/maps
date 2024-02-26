@@ -31,6 +31,7 @@ export const mainFeaturePropertiesSchema = z.object({
   email: z.string(),
   web: z.string(),
   navigate: z.string(),
+  description: z.string(),
 });
 
 type MainProperties = z.infer<typeof mainFeaturePropertiesSchema>;
@@ -130,6 +131,7 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
     properties.medicalTreatment,
     properties.overnight,
   ]);
+  console.log(isSomeService);
 
   return (
     <div>
@@ -188,6 +190,7 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
 
           <DataDisplay label={detailT("address")} text={properties.address} />
           <DataDisplay label={detailT("route")} text={properties.howToGetThere} />
+          <DataDisplay label={detailT("description")} text={properties.description} />
 
           {properties.navigate && (
             <a

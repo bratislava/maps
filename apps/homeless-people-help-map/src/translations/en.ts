@@ -79,6 +79,7 @@ export default {
       web: "Web",
       email: "E-mail",
       navigate: "Navigate",
+      description: "Description",
     },
     drinkingFountain: {
       drinkingFountain: "Drinking fountain",

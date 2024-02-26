@@ -34,6 +34,8 @@ export const useServicesData = () => {
         isMedicalTreatment: !!service.attributes?.Zdravotne_osetrenie?.length,
         isCulture: !!service.attributes?.Kultura,
         isDrugsAndSex: !!service.attributes?.Kontaktne_centrum,
+        // KOLO in slovak strapi has id 5 and in english 6
+        isKolo: service.id === "5" || service.id === "6",
         name: service.attributes?.Nazov || "",
         provider: service.attributes?.Poskytovatel || "",
         address: service.attributes?.Adresa || "",
@@ -41,6 +43,7 @@ export const useServicesData = () => {
         howToGetThere: service.attributes?.Navigacia || "",
         phone: service.attributes?.Telefon ? `${service.attributes?.Telefon}` : "",
         phoneDescription: service.attributes?.Telefon_popis,
+        description: service.attributes?.Popis || "",
         email: service.attributes?.Email || "",
         web: service.attributes?.Web || "",
         navigate: service.attributes?.Navigovat || "",
