@@ -44,6 +44,7 @@ export const useServicesData = () => {
         phone: service.attributes?.Telefon ? `${service.attributes?.Telefon}` : "",
         phoneDescription: service.attributes?.Telefon_popis,
         description: service.attributes?.Popis || "",
+        openingHours: service.attributes?.Cas || "",
         email: service.attributes?.Email || "",
         web: service.attributes?.Web || "",
         navigate: service.attributes?.Navigovat || "",
