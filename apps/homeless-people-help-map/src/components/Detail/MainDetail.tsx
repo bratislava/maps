@@ -131,7 +131,6 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
     properties.medicalTreatment,
     properties.overnight,
   ]);
-  console.log(isSomeService);
 
   return (
     <div>
@@ -188,9 +187,9 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
             </div>
           )}
 
+          <DataDisplay label={detailT("description")} text={properties.description} />
           <DataDisplay label={detailT("address")} text={properties.address} />
           <DataDisplay label={detailT("route")} text={properties.howToGetThere} />
-          <DataDisplay label={detailT("description")} text={properties.description} />
 
           {properties.navigate && (
             <a
