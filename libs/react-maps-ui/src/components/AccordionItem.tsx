@@ -60,7 +60,7 @@ export const AccordionItem = ({
       className={cx("text-left w-full justify-between items-center", className)}
       style={style}
     >
-      <Header className="flex flex-col">
+      <Header className="flex flex-col mb-3">
         {headerIsTrigger ? (
           <Trigger
             className={cx(
@@ -73,7 +73,7 @@ export const AccordionItem = ({
           >
             <div>{title}</div>
             <div
-              className={cx("flex gap-4 h-12 px-6 items-center", {
+              className={cx("flex gap-4 items-center", {
                 "bg-primary-soft text-foreground-lightmode":
                   paasDesign && isActive,
               })}
