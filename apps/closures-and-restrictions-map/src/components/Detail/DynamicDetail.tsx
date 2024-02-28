@@ -1,4 +1,5 @@
 import { ImageLightBox, Note } from "@bratislava/react-maps-ui";
+import RoundedIconButon from "@bratislava/react-maps/src/components/Detail/RoundedIconButon";
 import { Attachment, useArcgisAttachments } from "@bratislava/react-use-arcgis";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,7 +11,6 @@ import { ReactComponent as ImageIcon } from "../../assets/icons/imageicon.svg";
 import { IFeatureProps } from "../../types/featureTypes";
 import { DIGUPS_URL, DISORDERS_URL, OLD_TOWN_DATA_URL } from "../../utils/urls";
 import { Row } from "./Row";
-import RoundedIconButon from "./RoundedIconButon";
 
 interface IDetail {
   featureProps: IFeatureProps;
@@ -161,15 +161,18 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
       <div className="font-semibold">{subject}</div>
       <div className="flex flex-wrap">
         {imageUrlList.length > 0 && (
-          <a
+          <button
             className="no-underline flex gap-2 items-center"
-            rel="noreferrer"
             onClick={() => setImageModal({ isOpen: true, imgSrc: imageUrlList })}
           >
-            <RoundedIconButon icon={<ImageIcon width={20} height={20} />}>
+            <RoundedIconButon
+              icon={<ImageIcon width={20} height={20} />}
+              bgColor="#E5EFF3"
+              txtColor="#005F88"
+            >
               {t("photosOfPlace")}
             </RoundedIconButon>
-          </a>
+          </button>
         )}
         {alternativeRouteUrlList.length > 0 && (
           <a
@@ -177,7 +180,11 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
             rel="noreferrer"
             onClick={() => setImageModal({ isOpen: true, imgSrc: alternativeRouteUrlList })}
           >
-            <RoundedIconButon icon={<ImageIcon width={20} height={20} />}>
+            <RoundedIconButon
+              icon={<ImageIcon width={20} height={20} />}
+              bgColor="#E5EFF3"
+              txtColor="#005F88"
+            >
               {t("alternateRoute")}
             </RoundedIconButon>
           </a>
@@ -189,8 +196,12 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
             className="no-underline flex gap-2 items-center"
             rel="noreferrer"
           >
-            <RoundedIconButon icon={<GoogleStreet width={20} height={20} />}>
-              Street View
+            <RoundedIconButon
+              icon={<GoogleStreet width={20} height={20} />}
+              bgColor="#E5EFF3"
+              txtColor="#005F88"
+            >
+              {t("streetView")}
             </RoundedIconButon>
           </a>
         )}

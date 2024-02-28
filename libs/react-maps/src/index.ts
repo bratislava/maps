@@ -11,6 +11,7 @@ export * from './components/ThemeController/ThemeController';
 export * from './components/ViewportController/ViewportController';
 export * from './components/SearchMarker/SearchMarker';
 export * from './components/Detail/Detail';
+export * from './components/Detail/RoundedIconButon';
 
 // hooks
 export * from './hooks/useMapboxSearch';

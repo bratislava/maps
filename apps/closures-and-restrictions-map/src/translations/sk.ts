@@ -56,6 +56,7 @@ export default {
         permission: "Situačný nákres",
         showDocument: "Zobraziť dokument",
         photosOfPlace: "Fotografie",
+        streetView: "Street View",
         alternateRoute: "Obchádzka",
         problemHint:
           "Nastal kvôli rozkopávke nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
@@ -81,6 +82,7 @@ export default {
         permission: "Situačný nákres",
         showDocument: "Zobraziť dokument",
         photosOfPlace: "Fotografie",
+        streetView: "Street View",
         alternateRoute: "Obchádzka",
         problemHint:
           "Nastal kvôli obmedzeniu nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
@@ -107,6 +109,7 @@ export default {
         permission: "Dokument",
         showDocument: "Zobraziť dokument",
         photosOfPlace: "Fotografie",
+        streetView: "Street View",
         alternateRoute: "Obchádzka",
         problemHint:
           "Nastal kvôli poruche nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",

@@ -56,6 +56,7 @@ export default {
         permission: "Permission",
         showDocument: "Show document",
         photosOfPlace: "Photos",
+        streetView: "Street View",
         alternateRoute: "Alternate Route",
         problemHint:
           "Did the excavation cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
@@ -81,6 +82,7 @@ export default {
         permission: "Permission",
         showDocument: "Show document",
         photosOfPlace: "Photos",
+        streetView: "Street View",
         alternateRoute: "Alternate Route",
         problemHint:
           "Did the restriction cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",
@@ -107,6 +109,7 @@ export default {
         permission: "Document",
         showDocument: "Show document",
         photosOfPlace: "Photos",
+        streetView: "Street View",
         alternateRoute: "Alternate Route",
         problemHint:
           "Did the disorder cause any problems? Were the obligations not complied with, does the risk arise in public space or on the road?",

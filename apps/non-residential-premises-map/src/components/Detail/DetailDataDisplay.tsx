@@ -7,9 +7,9 @@ import cx from "classnames";
 import { ButtonLink } from "../ButtonLink";
 import { ReactComponent as ImageIcon } from "../../assets/icons/imageicon.svg";
 import { ReactComponent as GoogleStreetIcon } from "../../assets/icons/googlestreetview.svg";
-import RoundedIconButon from "./RoundedIconButon";
 import { useState } from "react";
 import { GEOPORTAL_LAYER_URL } from "../../utils/const";
+import RoundedIconButon from "@bratislava/react-maps/src/components/Detail/RoundedIconButon";
 
 export interface IDetailDataDisplayProps {
   feature: Feature;
