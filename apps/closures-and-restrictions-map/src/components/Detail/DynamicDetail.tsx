@@ -239,7 +239,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
       {!!width && <Row label={t("width")} text={`${width} m`} />}
       <Row label={t("investor")} text={investor} />
       {layer !== "disorders" && <Row label={t("owner")} text={owner} />}
-      <Row label={t("contractor")} text={contractorTextValue} />
+      {layer !== "disorders" && <Row label={t("contractor")} text={contractorTextValue} />}
 
       {layer !== "disorders" && documentUrlList && documentUrlList.length > 0 && (
         <div>
