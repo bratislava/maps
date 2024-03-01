@@ -4,6 +4,10 @@ export default {
   close: "Zavrieť",
   loading: "Načítavanie",
   moreInformation: "Viac informácií",
+  reportProblemLink: "mailto:sekciasocialnychveci@bratislava.sk",
+  reportProblem: "sekciasocialnychveci@bratislava.sk",
+  problemHint:
+    "Našli ste neaktuálnu informáciu alebo niečo na mape chýba? Napíšte nám a pomôžte mapu zlepšovať.",
   legend: {
     title: "Legenda",
     point: "Bod",

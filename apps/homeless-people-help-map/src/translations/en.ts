@@ -4,6 +4,10 @@ export default {
   close: "Close",
   loading: "Loading",
   moreInformation: "More information",
+  reportProblemLink: "mailto:sekciasocialnychveci@bratislava.sk",
+  reportProblem: "sekciasocialnychveci@bratislava.sk",
+  problemHint:
+    "Did you find stale information or map is missing something? Write us and help us improving map.",
   legend: {
     title: "Legend",
     point: "Point",

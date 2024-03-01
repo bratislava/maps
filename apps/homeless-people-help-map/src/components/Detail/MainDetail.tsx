@@ -1,11 +1,20 @@
 /* eslint-disable camelcase */
-import { Accordion, AccordionItem, DataDisplay, Divider, Tag } from "@bratislava/react-maps-ui";
+import {
+  Accordion,
+  AccordionItem,
+  DataDisplay,
+  Divider,
+  Note,
+  Tag,
+} from "@bratislava/react-maps-ui";
+import RoundedIconButon from "@bratislava/react-maps/src/components/Detail/RoundedIconButon";
 import cx from "classnames";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { colors } from "../../utils/colors";
-import DetailWebRow from "./DetailWebRow";
+import { ReactComponent as NavigationIcon } from "../../assets/icons/common/assistant-navigation.svg";
+import { ReactComponent as WebIcon } from "../../assets/icons/common/web-portal.svg";
 
 export const mainFeaturePropertiesSchema = z.object({
   layerName: z.string(),
@@ -135,34 +144,77 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
 
   return (
     <div>
-      <div className="flex flex-col p-6">
-        <div className={cx("flex flex-col space-y-4", className)}>
+      <div className="flex flex-col p-4">
+        <div className={cx("flex flex-col gap-y-3", className)}>
           <div className="font-semibold pt-1 pr-12">{properties.name}</div>
 
+          <div className="flex flex-wrap">
+            {properties.navigate && (
+              <a
+                href={properties.navigate}
+                target="_blank"
+                className="no-underline flex gap-2 items-center"
+                rel="noreferrer"
+              >
+                <RoundedIconButon
+                  icon={<NavigationIcon width={20} height={20} />}
+                  bgColor="#FCF1D6"
+                  txtColor="#1C1B1F"
+                >
+                  {detailT("navigate")}
+                </RoundedIconButon>
+              </a>
+            )}
+
+            <a
+              href={properties.web}
+              target="_blank"
+              className="no-underline flex gap-2 items-center"
+              rel="noreferrer"
+            >
+              <RoundedIconButon
+                icon={<WebIcon width={20} height={20} />}
+                bgColor="#FCF1D6"
+                txtColor="#1C1B1F"
+              >
+                {detailT("web")}
+              </RoundedIconButon>
+            </a>
+          </div>
+
           {isSomeService && (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
               <div className="font-light text-[14px]">{detailT("services")}</div>
               <div className="flex flex-wrap gap-2">
                 {properties.isCounseling && (
                   <Tag
                     style={{ background: colors.counseling }}
                     className="text-foreground-lightmode"
+                    isSmall
                   >
                     {layersT(`counseling`)}
                   </Tag>
                 )}
                 {properties.isHygiene && (
-                  <Tag style={{ background: colors.hygiene }} className="text-foreground-lightmode">
+                  <Tag
+                    style={{ background: colors.hygiene }}
+                    className="text-foreground-lightmode"
+                    isSmall
+                  >
                     {layersT(`hygiene`)}
                   </Tag>
                 )}
                 {properties.isOvernight && (
-                  <Tag style={{ background: colors.overnight }} className="text-white">
+                  <Tag style={{ background: colors.overnight }} className="text-white" isSmall>
                     {layersT(`overnight`)}
                   </Tag>
                 )}
                 {properties.isMeals && (
-                  <Tag style={{ background: colors.meals }} className="text-foreground-lightmode">
+                  <Tag
+                    style={{ background: colors.meals }}
+                    className="text-foreground-lightmode"
+                    isSmall
+                  >
                     {layersT(`meals`)}
                   </Tag>
                 )}
@@ -170,17 +222,18 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
                   <Tag
                     style={{ background: colors.medicalTreatment }}
                     className="text-foreground-lightmode"
+                    isSmall
                   >
                     {layersT(`medicalTreatment`)}
                   </Tag>
                 )}
                 {properties.isCulture && (
-                  <Tag style={{ background: colors.culture }} className="text-white">
+                  <Tag style={{ background: colors.culture }} className="text-white" isSmall>
                     {layersT(`culture`)}
                   </Tag>
                 )}
                 {properties.isDrugsAndSex && (
-                  <Tag style={{ background: colors.drugsAndSex }} className="text-white">
+                  <Tag style={{ background: colors.drugsAndSex }} className="text-white" isSmall>
                     {layersT(`drugsAndSex`)}
                   </Tag>
                 )}
@@ -193,28 +246,15 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
           <DataDisplay label={detailT("address")} text={properties.address} />
           <DataDisplay label={detailT("route")} text={properties.howToGetThere} />
 
-          {properties.navigate && (
-            <a
-              className="underline font-semibold"
-              href={properties.navigate}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {detailT("navigate")}
-            </a>
-          )}
-
           <DataDisplay enableEnhancements label={detailT("email")} text={properties.email} />
 
           <DataDisplay enableEnhancements label={detailT("phone")} text={properties.phone} />
-
-          <DetailWebRow href={properties.web} label={detailT("web")} />
 
           <DataDisplay label={detailT("provider")} text={properties.provider} />
 
           {isSomeService && (
             <>
-              <Divider />
+              <Divider className="mt-2" />
 
               {isMobile ? (
                 moreInformation
@@ -225,12 +265,23 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
                     value="value"
                     title={<div className="font-semibold">{mainT("moreInformation")}</div>}
                   >
-                    <div className="flex flex-col gap-4">{moreInformation}</div>
+                    <div className="flex flex-col gap-3">{moreInformation}</div>
                   </AccordionItem>
                 </Accordion>
               )}
             </>
           )}
+          <Note className={`flex flex-col gap-3 !bg-[#FCF2E6]`}>
+            <div className="flex-1 dark:text-text">{mainT("problemHint")}</div>
+            <a
+              href={mainT("reportProblemLink")}
+              target="_blank"
+              className="underline font-semibold text-[#E07B04]"
+              rel="noreferrer"
+            >
+              {mainT("reportProblem")}
+            </a>
+          </Note>
         </div>
       </div>
     </div>
