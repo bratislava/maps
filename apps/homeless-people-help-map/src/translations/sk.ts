@@ -79,6 +79,8 @@ export default {
       web: "Web",
       email: "E-mail",
       navigate: "Navigovať",
+      description: "Popis",
+      openingHoursDataField: "Otváracia doba",
     },
     drinkingFountain: {
       drinkingFountain: "Pitná fontánka",

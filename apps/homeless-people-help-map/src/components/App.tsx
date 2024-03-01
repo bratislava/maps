@@ -48,7 +48,7 @@ import { useFixpointAndSyringeExchange } from "../data/fixpointAndSyringeExchang
 import { useTerrainServices } from "../data/terrainServices";
 import { useServicesData } from "../data/data";
 
-const { otherServicesData, uniqueDistricts } = processData();
+const { uniqueDistricts } = processData();
 const uniqueLayers = Object.keys(colors).filter((key) => key !== "terrainServices");
 const defaultLayersValues = uniqueLayers.reduce((prev, curr) => ({ ...prev, [curr]: true }), {});
 
@@ -325,16 +325,6 @@ export const App = () => {
 
       <Filter expression={fullFilterExpression}>
         {data?.features.map((feature, index) => (
-          <Marker
-            key={index}
-            feature={feature}
-            onClick={() => setSelectedMarker(feature)}
-            activeKeys={layerFilter.activeKeys}
-            isSelected={selectedMarker?.id === feature.id}
-          />
-        ))}
-
-        {otherServicesData?.features.map((feature, index) => (
           <Marker
             key={index}
             feature={feature}

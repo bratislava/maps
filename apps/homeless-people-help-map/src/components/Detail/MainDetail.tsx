@@ -31,6 +31,8 @@ export const mainFeaturePropertiesSchema = z.object({
   email: z.string(),
   web: z.string(),
   navigate: z.string(),
+  description: z.string(),
+  openingHours: z.string(),
 });
 
 type MainProperties = z.infer<typeof mainFeaturePropertiesSchema>;
@@ -186,6 +188,8 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
             </div>
           )}
 
+          <DataDisplay label={detailT("description")} text={properties.description} />
+          <DataDisplay label={detailT("openingHoursDataField")} text={properties.openingHours} />
           <DataDisplay label={detailT("address")} text={properties.address} />
           <DataDisplay label={detailT("route")} text={properties.howToGetThere} />
 

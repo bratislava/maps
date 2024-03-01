@@ -79,6 +79,8 @@ export default {
       web: "Web",
       email: "E-mail",
       navigate: "Navigate",
+      description: "Description",
+      openingHoursDataField: "Opening hours",
     },
     drinkingFountain: {
       drinkingFountain: "Drinking fountain",

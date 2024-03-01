@@ -2,7 +2,6 @@ import { addDistrictPropertyToLayer, DISTRICTS } from "@bratislava/react-maps";
 import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 import { FeatureCollection, Point } from "geojson";
 import { data as rawData } from "../data/data";
-import { otherServices as rawOtherServices } from "../data/otherServices";
 import { featureCollection } from "@turf/helpers";
 import { fixpointAndSyringeExchangeData as rawFixpointAndSyringeExchangeData } from "../data/fixpointAndSyringeExchange";
 import { drinkingFountainsData as rawDrinkingFountainsData } from "../data/drinking-fountains";
@@ -13,21 +12,6 @@ export const processData = () => {
   const data: FeatureCollection<Point> = addDistrictPropertyToLayer(
     featureCollection(
       rawData.features.map((f) => {
-        GLOBAL_ID++;
-        return {
-          ...f,
-          id: GLOBAL_ID,
-          properties: {
-            ...f.properties,
-          },
-        };
-      }),
-    ),
-  );
-
-  const otherServicesData: FeatureCollection<Point> = addDistrictPropertyToLayer(
-    featureCollection(
-      rawOtherServices.features.map((f) => {
         GLOBAL_ID++;
         return {
           ...f,
@@ -77,7 +61,6 @@ export const processData = () => {
   return {
     data,
     uniqueDistricts,
-    otherServicesData,
     fixpointAndSyringeExchangeData,
     drinkingFountainsData,
   };
