@@ -40,6 +40,7 @@ After upploading, app is available at: `https://cdn-api.bratislava.sk/static-pag
 Those deployments are currently embeded through iframes on several places:
 
 bratislava.sk:
+
 - https://bratislava.sk/doprava-a-mapy/mapy - vysadba a starostlivost
 - https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/stromy-v-meste - vysadba zelene
 - https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/stromy-v-meste/vysadba-stromov - vysadba zelene
@@ -47,12 +48,15 @@ bratislava.sk:
 - https://bratislava.sk/doprava-a-mapy/pitne-fontany - pitné fontány (zatial pod doprava a mapy, neskor sa mozno presunie na inu podstranku)
 
 gmb.sk:
+
 - https://www.gmb.sk/navstivte - navštívte galériu
 
 10000stromov.sk:
+
 - https://10000stromov.sk/zelena-mapa - vysadba zelene “zelena mapa” (historicky nazov)
 
 cvicko.sk:
+
 - https://cvicko.sk/ - homepage mapa
 - https://cvicko.sk/most-snp/ - most snp (mapy pre jednotlive cvicka maju upravene zobrazenie)
 - https://cvicko.sk/tyrsak/ - tyrsak
@@ -62,11 +66,21 @@ cvicko.sk:
 - https://cvicko.sk/lanfranconi/ - lanfranconi
 
 paas.sk:
+
 - https://paas.sk/mapa-zon/ - mapa zón
 
 ## Developing
 
+Install dependencies:
+
+```bash
+cd ./apps/<your-map>
+yarn install
 ```
+
+After successful installation you can start developing using:
+
+```bash
 yarn workspace <app-name> dev
 ```
 
@@ -84,9 +98,9 @@ yarn workspace <app-name> build:suppress
 ## How to add new app
 
 1. Duplicate folder of any existing app in `/apps` folder. You should choose app which is similar to your requirements.
-3. Rename app in its `package.json` file.
-6. Develeop.
-7. It is recomended to create new mapbox styles for each new map and replace urls in `.env` files.
+2. Rename app in its `package.json` file.
+3. Develeop.
+4. It is recomended to create new mapbox styles for each new map and replace urls in `.env` files.
 
 ## Add Strapi integration to an existing app
 
@@ -179,7 +193,7 @@ You can now import `useXQuery` hooks from `./graphql/index.ts` like so:
 ```
 import { useFixpointyQuery } from "../../graphql";
 
-// ... 
+// ...
 
 // example usage with i18n and localized content
 const { i18n } = useTranslation();

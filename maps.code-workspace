@@ -1,0 +1,19 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "workbench.colorCustomizations": {
+      "sideBar.border": "#FFCC00",
+      "statusBar.background": "#FFCC00",
+      "statusBar.foreground": "#15202b",
+      "statusBarItem.hoverBackground": "#D83728",
+      "statusBarItem.remoteBackground": "#FFCC00",
+      "statusBarItem.remoteForeground": "#15202b"
+    },
+    "peacock.color": "#FFCC00",
+    "typescript.tsdk": "node_modules/typescript/lib"
+  }
+}
