@@ -317,7 +317,7 @@ export const App = () => {
             styles={(geojson.features[0]?.geometry.type === "Polygon"
               ? TERRAIN_SERVICES_POLYGON_STYLE
               : TERRAIN_SERVICES_POINT_STYLE
-            ).map((style) => ({ ...style, id: `${style.id}-${index}` }))}
+            ).map((style) => ({ ...style, id: `terrainServices-${style.id}-${index}` }))}
             isVisible={key === activeTerrainService?.key}
             // isVisible={false}
             // isVisible={true}
@@ -342,8 +342,8 @@ export const App = () => {
               ? TERRAIN_SERVICES_POLYGON_STYLE
               : TERRAIN_SERVICES_POINT_STYLE
             ).map((style) => ({ ...style, id: `${style.id}-${index}` }))}
-            // isVisible={!activeTerrainService}
-            isVisible={true}
+            isVisible={!activeTerrainService}
+            // isVisible={true}
             hoverPopup={
               <Popup
                 name={feature.properties.name}
