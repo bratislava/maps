@@ -1,18 +1,31 @@
 import { DataDisplay, Tag } from "@bratislava/react-maps-ui";
+import { FeatureCollection } from "@bratislava/utils/src/types";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { colors } from "../../utils/colors";
-import { ITerrainService } from "../Layers";
-import DetailWebRow from "./DetailWebRow";
 
 export type TerrainServiceDetail = {
+  service: ITerrainService;
+};
+export interface ITerrainService {
+  key: string;
+  title: string;
+  provider: string;
+  phone: string;
+  // web: string;
+  // openingHours: string;
+  price: string;
+  geojson: FeatureCollection;
+}
+
+type TerrainServiceDetailType = {
   service: ITerrainService;
 };
 
 // TODO fix missing web and openingHours,
 export const TerrainServiceDetail = ({
   service: { title, provider, phone, price, geojson },
-}: TerrainServiceDetail) => {
+}: TerrainServiceDetailType) => {
   const { t } = useTranslation("translation", { keyPrefix: "detail.terrainService" });
 
   const areas = useMemo(() => {

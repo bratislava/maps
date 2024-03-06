@@ -2,7 +2,7 @@ import { Accordion, AccordionItem, Checkbox } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { colors } from "../utils/colors";
 import cx from "classnames";
-import { ITerrainService } from "./Layers";
+import { ITerrainService } from "./Detail/TerrainServiceDetail";
 
 const COLOR = colors.terrainServices;
 

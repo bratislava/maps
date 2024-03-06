@@ -11,7 +11,7 @@ import {
   useEffect,
   useId,
   useMemo,
-  useState
+  useState,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { log } from '../../utils/log';
@@ -20,13 +20,13 @@ import { mapboxContext } from '../Mapbox/Mapbox';
 type Filter = string | null | boolean | Filter[];
 
 export interface ILayerProps {
-  geojson: FeatureCollection | null;
+  geojson: FeatureCollection | Feature | null;
   styles: any;
   isVisible?: boolean;
   filters?: Filter[];
   ignoreFilters?: boolean;
   ignoreClick?: boolean;
-  hoverPopup?: FC<{ feature: Feature }> | ReactNode;
+  hoverPopup?: ReactNode;
 }
 
 export const Layer = ({
@@ -60,6 +60,9 @@ export const Layer = ({
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [renderedPopupContent, setRenderedPopupContent] =
     useState<ReactNode>(null);
+
+  // console.log('Layer geojson');
+  // console.log(geojson);
 
   const popupElement = useMemo(() => {
     return document.createElement('div');
@@ -98,25 +101,14 @@ export const Layer = ({
         features?: mapboxgl.MapboxGeoJSONFeature[];
       },
     ) => {
-      setRenderedPopupContent(
-        typeof hoverPopup === 'function'
-          ? hoverPopup({
-            feature: feature(
-              e.features?.[0].geometry as Geometry,
-              e.features?.[0].properties,
-            ),
-          })
-          : hoverPopup,
-      );
+      setRenderedPopupContent(hoverPopup);
     },
     [hoverPopup],
   );
 
   const onMouseEnter = useCallback(() => {
     setPopupVisible(true);
-  },
-    [],
-  );
+  }, []);
 
   const onMouseMove = useCallback(
     (e: MapMouseEvent) => {
@@ -152,7 +144,15 @@ export const Layer = ({
         });
       }
     };
-  }, [hoverPopup, map, styles, onMouseEnter, onMouseMove, onMouseLeave, getPrefixedLayer]);
+  }, [
+    hoverPopup,
+    map,
+    styles,
+    onMouseEnter,
+    onMouseMove,
+    onMouseLeave,
+    getPrefixedLayer,
+  ]);
 
   useEffect(() => {
     if (map && !isLoading && !isStyleLoading) {
@@ -189,8 +189,8 @@ export const Layer = ({
             style.type === 'line' || style.type === 'circle'
               ? layerId
               : style.type === 'fill'
-                ? bottomLayer?.id
-                : undefined,
+              ? bottomLayer?.id
+              : undefined,
           );
 
           if (!ignoreClick) {
@@ -259,7 +259,7 @@ export const Layer = ({
     addClickableLayer,
     previousLoading,
     layerPrefix,
-    previousStyleLoading
+    previousStyleLoading,
   ]);
 
   return createPortal(renderedPopupContent, popupElement);

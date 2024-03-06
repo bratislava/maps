@@ -10,7 +10,8 @@ import {
   Sidebar,
 } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
-import { ITerrainService, Layers } from "./Layers";
+import { ITerrainService } from "./Detail/TerrainServiceDetail";
+import { Layers } from "./Layers";
 import { SelectValueRenderer } from "./SelectValueRenderer";
 import { TerrainServices } from "./TerrainServices";
 

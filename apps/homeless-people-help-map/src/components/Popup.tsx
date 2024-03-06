@@ -1,7 +1,15 @@
-import { Feature } from "geojson";
-
 export type PopupProps = {
-  feature: Feature;
+  name: string;
+  workingGroups?: string[];
 };
 
-export const Popup = ({ feature }: PopupProps) => <div>{feature.properties?.name}</div>;
+export const Popup = ({ name, workingGroups }: PopupProps) => (
+  <div>
+    <div className="flex">{name}</div>
+    <div>
+      {workingGroups?.map((workingGroup, index) => (
+        <div key={index}>{workingGroup}</div>
+      ))}
+    </div>
+  </div>
+);

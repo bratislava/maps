@@ -1,6 +1,6 @@
 import { FeatureCollection, Polygon } from "geojson";
 
-export const regions: FeatureCollection<Polygon> = {
+export const REGIONS: FeatureCollection<Polygon> = {
   type: "FeatureCollection",
   features: [
     {

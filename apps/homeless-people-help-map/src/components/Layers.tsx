@@ -5,17 +5,6 @@ import { useTranslation } from "react-i18next";
 import { FeatureCollection } from "geojson";
 import { LayerButton } from "./LayerButton";
 
-export interface ITerrainService {
-  key: string;
-  title: string;
-  provider: string;
-  phone: string;
-  // web: string;
-  // openingHours: string;
-  price: string;
-  geojson: FeatureCollection;
-}
-
 export type LayersProps = {
   filter: IFilterResult<string>;
   layers: string[];

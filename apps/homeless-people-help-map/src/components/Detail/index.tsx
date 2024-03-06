@@ -15,8 +15,11 @@ import { OtherServiceDetail, otherServiceFeaturePropertiesSchema } from "./Other
 
 import { Detail as MapDetail } from "@bratislava/react-maps";
 import { MainDetail, mainFeaturePropertiesSchema } from "./MainDetail";
-import { ITerrainService } from "../Layers";
-import { TerrainServiceDetail } from "./TerrainServiceDetail";
+import { ITerrainService, TerrainServiceDetail } from "./TerrainServiceDetail";
+import {
+  terrainServicesDetailsPropertiesSchema,
+  TerrainServiceDetails,
+} from "./TerrainServiceDetails";
 import { SheetHandle } from "@bratislava/react-maps-ui";
 
 export interface DetailProps {
@@ -29,6 +32,14 @@ export interface DetailProps {
 
 export const Detail = forwardRef<HTMLDivElement, DetailProps>(
   ({ feature, onClose, isMobile, activeTerrainService, isVisible }, forwardedRef) => {
+    // console.log("-----------------");
+    // console.log("-----------------");
+    // console.log("-----------------");
+    // console.log("-----------------");
+    // console.log("-----------------");
+    // console.log(activeTerrainService);
+    // console.log(feature);
+
     const detailRef = useRef<SheetHandle>(null);
 
     const [currentHeight, setCurrentHeight] = useState(0);
@@ -79,6 +90,17 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
         const props = drinkingFountainFeaturePropertiesSchema.parse(feature?.properties);
         return <DrinkingFountainDetail {...props} />;
       } catch {
+        // Who cares?
+      }
+
+      try {
+        const workingGroups = feature?.properties
+          ? terrainServicesDetailsPropertiesSchema.parse(
+              JSON.parse(feature?.properties.workingGroups),
+            )
+          : [];
+        return <TerrainServiceDetails workingGroups={workingGroups} />;
+      } catch (e) {
         // Who cares?
       }
 
