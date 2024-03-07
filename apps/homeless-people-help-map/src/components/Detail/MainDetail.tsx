@@ -4,7 +4,7 @@ import {
   AccordionItem,
   DataDisplay,
   Divider,
-  Note,
+  Feedback,
   Tag,
 } from "@bratislava/react-maps-ui";
 import RoundedIconButon from "@bratislava/react-maps/src/components/Detail/RoundedIconButon";
@@ -270,17 +270,11 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
             )}
           </>
         )}
-        <Note className={`flex flex-col gap-3 !bg-[#FCF2E6]`}>
-          <div className="flex-1 dark:text-text">{mainT("problemHint")}</div>
-          <a
-            href={mainT("reportProblemLink")}
-            target="_blank"
-            className="underline font-semibold text-[#E07B04]"
-            rel="noreferrer"
-          >
-            {mainT("reportProblem")}
-          </a>
-        </Note>
+        <Feedback
+          problemHint={mainT("problemHint")}
+          reportProblemLink={mainT("reportProblemLink")}
+          reportProblem={mainT("reportProblem")}
+        />
       </div>
     </div>
   );

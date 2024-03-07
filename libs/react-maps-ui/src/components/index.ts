@@ -11,6 +11,7 @@ export * from "./Divider";
 export * from "./Dropdown";
 export * from "./DataDisplay";
 export * from "./DropdownArrow";
+export * from "./Feedback";
 export * from "./IconButton";
 export * from "./IconButtonGroup";
 export * from "./LoadingSpinner";

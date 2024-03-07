@@ -1,4 +1,11 @@
-import { Accordion, AccordionItem, DataDisplay, Divider, Tag } from "@bratislava/react-maps-ui";
+import {
+  Accordion,
+  AccordionItem,
+  DataDisplay,
+  Divider,
+  Feedback,
+  Tag,
+} from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { colors } from "../../utils/colors";
 import cx from "classnames";
@@ -59,6 +66,7 @@ export const TerrainServiceDetails = ({
   terrainServices,
   name,
 }: TerrainServicesDetailsProperties) => {
+  const { t } = useTranslation();
   const [openedValue, setOpenedValue] = useState("0");
 
   return (
@@ -97,6 +105,11 @@ export const TerrainServiceDetails = ({
             );
           })}
         </Accordion>
+        <Feedback
+          problemHint={t("problemHint")}
+          reportProblemLink={t("reportProblemLink")}
+          reportProblem={t("reportProblem")}
+        />
       </div>
     </div>
   );

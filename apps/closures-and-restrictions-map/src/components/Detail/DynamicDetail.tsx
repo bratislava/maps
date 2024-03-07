@@ -1,4 +1,4 @@
-import { ImageLightBox, Note } from "@bratislava/react-maps-ui";
+import { Feedback, ImageLightBox } from "@bratislava/react-maps-ui";
 import RoundedIconButon from "@bratislava/react-maps/src/components/Detail/RoundedIconButon";
 import { Attachment, useArcgisAttachments } from "@bratislava/react-use-arcgis";
 import React, { useState } from "react";
@@ -262,17 +262,11 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
         </div>
       )}
 
-      <Note className={`flex flex-col gap-3 !bg-[#FCF2E6]`}>
-        <div className="flex-1 dark:text-text">{t("problemHint")}</div>
-        <a
-          href={t("reportProblemLink")}
-          target="_blank"
-          className="underline font-semibold text-[#E07B04]"
-          rel="noreferrer"
-        >
-          {t("reportProblem")}
-        </a>
-      </Note>
+      <Feedback
+        problemHint={t("problemHint")}
+        reportProblemLink={t("reportProblemLink")}
+        reportProblem={t("reportProblem")}
+      />
 
       {imageModal.imgSrc.length > 0 && (
         <ImageLightBox
