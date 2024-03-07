@@ -1,4 +1,4 @@
-import { DataDisplay, Tag } from "@bratislava/react-maps-ui";
+import { DataDisplay, Feedback, Tag } from "@bratislava/react-maps-ui";
 import { FeatureCollection } from "@bratislava/utils/src/types";
 import { useTranslation } from "react-i18next";
 import { colors } from "../../utils/colors";
@@ -27,6 +27,7 @@ export const TerrainServiceDetail = ({
   service: { title, provider, phone, price, areas },
 }: TerrainServiceDetailType) => {
   const { t } = useTranslation("translation", { keyPrefix: "detail.terrainService" });
+  const { t: mainT } = useTranslation();
 
   return (
     <div className="p-6 flex flex-col gap-4">
@@ -40,6 +41,11 @@ export const TerrainServiceDetail = ({
       <DataDisplay label={t("openingHours")} text={openingHours} /> */}
       <DataDisplay label={t("price")} text={price} />
       <DataDisplay label={t("areas")} text={areas} />
+      <Feedback
+        problemHint={mainT("problemHint")}
+        reportProblemLink={mainT("reportProblemLink")}
+        reportProblem={mainT("reportProblem")}
+      />
     </div>
   );
 };
