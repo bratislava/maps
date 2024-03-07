@@ -60,7 +60,7 @@ export const AccordionItem = ({
       className={cx("text-left w-full justify-between items-center", className)}
       style={style}
     >
-      <Header className="flex flex-col mb-3">
+      <Header className="flex flex-col">
         {headerIsTrigger ? (
           <Trigger
             className={cx(

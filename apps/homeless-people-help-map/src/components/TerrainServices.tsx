@@ -34,7 +34,7 @@ export const TerrainServices = ({
       <Accordion type="multiple">
         <AccordionItem
           headerIsTrigger
-          headerClassName="pl-[22px] pr-[2px]"
+          headerClassName="pl-6 pr-6 py-3"
           value="terrainServices"
           title={t("terrainServices.title")}
         >
