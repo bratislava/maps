@@ -222,7 +222,7 @@ export const App = () => {
   const closeDetail = useCallback(() => {
     setSelectedMarker(null);
     if (activeTerrainService) {
-      // handleActiveTerrainServiceChange(null);
+      handleActiveTerrainServiceChange(null);
     }
     setSelectedFeature(null);
   }, [handleActiveTerrainServiceChange, activeTerrainService]);
@@ -239,18 +239,25 @@ export const App = () => {
 
   const shouldBeViewportControlsMoved = useMemo(() => {
     return (
-      windowHeight < viewportControlsHeight + detailHeight + 40 && !!selectedMarker && !isMobile
+      windowHeight < viewportControlsHeight + detailHeight + 40 &&
+      (!!selectedMarker || !!selectedFeature || !!activeTerrainService) &&
+      !isMobile
     );
-  }, [windowHeight, detailHeight, viewportControlsHeight, selectedMarker, isMobile]);
+  }, [
+    windowHeight,
+    viewportControlsHeight,
+    detailHeight,
+    selectedMarker,
+    selectedFeature,
+    activeTerrainService,
+    isMobile,
+  ]);
 
   const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
     setSelectedFeature(features[0] ?? null);
     setSelectedMarker(null);
     setActiveTerrainService(null);
   }, []);
-
-  console.log(activeTerrainService);
-  console.log(`show data ${!activeTerrainService}`);
 
   return (
     <Map
@@ -306,8 +313,6 @@ export const App = () => {
       />
 
       {terrainServices?.map(({ key, geojson }, index) => {
-        console.log(`terrainServices ${key}`);
-        console.log(`isVisible ${key === activeTerrainService?.key}`);
         return (
           <Layer
             ignoreClick
@@ -319,20 +324,12 @@ export const App = () => {
               : TERRAIN_SERVICES_POINT_STYLE
             ).map((style) => ({ ...style, id: `terrainServices-${style.id}-${index}` }))}
             isVisible={key === activeTerrainService?.key}
-            // isVisible={false}
-            // isVisible={true}
-            // hoverPopup={Popup}
+            hoverPopup={Popup}
           />
         );
       })}
       {/* can't be all data be in one layer like it is in paas map? */}
-      {/* can't be all data be in one layer like it is in paas map? */}
-      {/* can't be all data be in one layer like it is in paas map? */}
-      {/* can't be all data be in one layer like it is in paas map? */}
-      {/* can't be all data be in one layer like it is in paas map? */}
       {dataGroupedByRegion?.map((feature, index) => {
-        console.log("rendered from dataGroupedByRegion");
-        console.log(feature.id);
         return (
           <Layer
             key={feature.id + "3000" ?? index + 3000}
@@ -343,12 +340,11 @@ export const App = () => {
               : TERRAIN_SERVICES_POINT_STYLE
             ).map((style) => ({ ...style, id: `${style.id}-${index}` }))}
             isVisible={!activeTerrainService}
-            // isVisible={true}
             hoverPopup={
               <Popup
                 name={feature.properties.name}
-                workingGroups={feature.properties.workingGroups
-                  ?.map((workingGroup) => workingGroup.title)
+                terrainServices={feature.properties.terrainServices
+                  ?.map((terrainService) => terrainService.title)
                   .filter(isDefined)}
               />
             }
@@ -449,7 +445,7 @@ export const App = () => {
           title={t("welcomeModal.title")}
           isOpen={isWelcomeModalOpen}
           onClose={() => setWelcomeModalOpen(false)}
-          closeButtonIcon={<Chevron className="text-white" direction="right" />}
+          closeButtonIcon={<Chevron direction="right" />}
         >
           <div className="pb-4">{t("welcomeModal.description")}</div>
         </Modal>

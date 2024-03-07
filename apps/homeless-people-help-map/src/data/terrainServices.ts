@@ -21,6 +21,7 @@ export const useTerrainServices = () => {
           phone: service.attributes?.Telefon,
           available: service.attributes?.Dostupnost,
           price: service.attributes?.Cena_kapacita,
+          areas: service.attributes?.Lokalita_posobnosti,
           geojson: featureCollection([
             ...DISTRICTS_GEOJSON.features.filter((feature) => {
               return service.attributes?.Lokalita_posobnosti?.split(",")
@@ -44,7 +45,7 @@ export const useTerrainServices = () => {
             ...feature,
             properties: {
               ...feature.properties,
-              workingGroups: data?.terenneSluzbies?.data
+              terrainServices: data?.terenneSluzbies?.data
                 .filter((service) => {
                   if (
                     service.attributes?.Lokalita_posobnosti?.split(",")
@@ -62,12 +63,13 @@ export const useTerrainServices = () => {
                     phone: service.attributes?.Telefon,
                     available: service.attributes?.Dostupnost,
                     price: service.attributes?.Cena_kapacita,
+                    areas: service.attributes?.Lokalita_posobnosti,
                   };
                 }),
             },
           };
         })
-        .filter((region) => region.properties.workingGroups?.length),
+        .filter((region) => region.properties.terrainServices?.length),
     isLoading,
     error,
   };

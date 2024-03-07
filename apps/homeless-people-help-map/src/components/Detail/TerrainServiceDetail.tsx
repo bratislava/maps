@@ -1,6 +1,5 @@
 import { DataDisplay, Tag } from "@bratislava/react-maps-ui";
 import { FeatureCollection } from "@bratislava/utils/src/types";
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { colors } from "../../utils/colors";
 
@@ -15,6 +14,7 @@ export interface ITerrainService {
   // web: string;
   // openingHours: string;
   price: string;
+  areas: string;
   geojson: FeatureCollection;
 }
 
@@ -24,13 +24,9 @@ type TerrainServiceDetailType = {
 
 // TODO fix missing web and openingHours,
 export const TerrainServiceDetail = ({
-  service: { title, provider, phone, price, geojson },
+  service: { title, provider, phone, price, areas },
 }: TerrainServiceDetailType) => {
   const { t } = useTranslation("translation", { keyPrefix: "detail.terrainService" });
-
-  const areas = useMemo(() => {
-    return geojson.features.map((f) => f.properties?.name).join(", ");
-  }, [geojson]);
 
   return (
     <div className="p-6 flex flex-col gap-4">

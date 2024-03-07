@@ -1,7 +1,6 @@
 import { usePrevious } from '@bratislava/utils';
 import { FeatureCollection } from '@bratislava/utils/src/types';
-import { feature } from '@turf/helpers';
-import { Feature, Geometry } from 'geojson';
+import { Feature } from 'geojson';
 import { MapMouseEvent, Popup } from 'mapbox-gl';
 import {
   FC,
@@ -26,7 +25,7 @@ export interface ILayerProps {
   filters?: Filter[];
   ignoreFilters?: boolean;
   ignoreClick?: boolean;
-  hoverPopup?: ReactNode;
+  hoverPopup?: FC<{ name: string }> | ReactNode;
 }
 
 export const Layer = ({
@@ -101,7 +100,13 @@ export const Layer = ({
         features?: mapboxgl.MapboxGeoJSONFeature[];
       },
     ) => {
-      setRenderedPopupContent(hoverPopup);
+      setRenderedPopupContent(
+        typeof hoverPopup === 'function'
+          ? hoverPopup({
+              name: e.features?.[0].properties?.name ?? '',
+            })
+          : hoverPopup,
+      );
     },
     [hoverPopup],
   );

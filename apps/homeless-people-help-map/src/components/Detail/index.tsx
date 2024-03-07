@@ -17,8 +17,9 @@ import { Detail as MapDetail } from "@bratislava/react-maps";
 import { MainDetail, mainFeaturePropertiesSchema } from "./MainDetail";
 import { ITerrainService, TerrainServiceDetail } from "./TerrainServiceDetail";
 import {
-  terrainServicesDetailsPropertiesSchema,
   TerrainServiceDetails,
+  nameSchema,
+  terrainServicePropertiesSchema,
 } from "./TerrainServiceDetails";
 import { SheetHandle } from "@bratislava/react-maps-ui";
 
@@ -32,14 +33,6 @@ export interface DetailProps {
 
 export const Detail = forwardRef<HTMLDivElement, DetailProps>(
   ({ feature, onClose, isMobile, activeTerrainService, isVisible }, forwardedRef) => {
-    // console.log("-----------------");
-    // console.log("-----------------");
-    // console.log("-----------------");
-    // console.log("-----------------");
-    // console.log("-----------------");
-    // console.log(activeTerrainService);
-    // console.log(feature);
-
     const detailRef = useRef<SheetHandle>(null);
 
     const [currentHeight, setCurrentHeight] = useState(0);
@@ -94,12 +87,13 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
       }
 
       try {
-        const workingGroups = feature?.properties
-          ? terrainServicesDetailsPropertiesSchema.parse(
-              JSON.parse(feature?.properties.workingGroups),
-            )
+        const terrainServices = feature?.properties
+          ? terrainServicePropertiesSchema
+              .array()
+              .parse(JSON.parse(feature?.properties.terrainServices))
           : [];
-        return <TerrainServiceDetails workingGroups={workingGroups} />;
+        const name = nameSchema.parse(feature?.properties?.name);
+        return <TerrainServiceDetails terrainServices={terrainServices} name={name} />;
       } catch (e) {
         // Who cares?
       }
