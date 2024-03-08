@@ -25,12 +25,17 @@ export const TerrainServicesDetailPropertiesSchema = z.object({
 
 type TerrainServicesDetailsProperties = z.infer<typeof TerrainServicesDetailPropertiesSchema>;
 
+export interface ITerrainServiceWrapperProps extends TerrainServicesDetailsProperties {
+  isMobile: boolean;
+}
+
 export const TerrainServiceWrapper = ({
   terrainServices,
   name,
-}: TerrainServicesDetailsProperties) => {
+  isMobile,
+}: ITerrainServiceWrapperProps) => {
   const { t } = useTranslation();
-  const [openedValue, setOpenedValue] = useState("0");
+  const [openedValue, setOpenedValue] = useState(isMobile ? undefined : "0");
 
   return (
     <div className="flex flex-col p-4">

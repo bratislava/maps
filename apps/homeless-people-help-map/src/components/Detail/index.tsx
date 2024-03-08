@@ -94,7 +94,13 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
               .parse(JSON.parse(feature?.properties.terrainServices))
           : [];
         const name = nameSchema.parse(feature?.properties?.name);
-        return <TerrainServiceWrapper terrainServices={terrainServices} name={name} />;
+        return (
+          <TerrainServiceWrapper
+            terrainServices={terrainServices}
+            name={name}
+            isMobile={isMobile}
+          />
+        );
       } catch (e) {
         // Who cares?
       }
