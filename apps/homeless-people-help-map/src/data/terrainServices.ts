@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { featureCollection } from "@turf/helpers";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { REGIONS } from "./regions";
-import { ITerrainService } from "../components/Detail/TerrainServiceDetail";
+import { ITerrainService } from "../utils/types";
 
 export const useTerrainServices = () => {
   const { i18n } = useTranslation();

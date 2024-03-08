@@ -47,7 +47,7 @@ import { SyringeExchangeMarker } from "./SyringeExchangeMarker";
 import { useFixpointAndSyringeExchange } from "../data/fixpointAndSyringeExchange";
 import { useTerrainServices } from "../data/terrainServices";
 import { useServicesData } from "../data/data";
-import { ITerrainService } from "./Detail/TerrainServiceDetail";
+import { ITerrainService } from "../utils/types";
 
 const { uniqueDistricts } = processData();
 const uniqueLayers = Object.keys(colors).filter((key) => key !== "terrainServices");

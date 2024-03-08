@@ -15,13 +15,14 @@ import { OtherServiceDetail, otherServiceFeaturePropertiesSchema } from "./Other
 
 import { Detail as MapDetail } from "@bratislava/react-maps";
 import { MainDetail, mainFeaturePropertiesSchema } from "./MainDetail";
-import { ITerrainService, TerrainServiceDetail } from "./TerrainServiceDetail";
+import { TerrainServiceSingleWrapper } from "./TerrainServiceSingleWrapper";
 import {
-  TerrainServiceDetails,
+  TerrainServiceWrapper,
   nameSchema,
   terrainServicePropertiesSchema,
-} from "./TerrainServiceDetails";
+} from "./TerrainServiceMultipleWrapper";
 import { SheetHandle } from "@bratislava/react-maps-ui";
+import { ITerrainService } from "../../utils/types";
 
 export interface DetailProps {
   feature?: Feature | null;
@@ -49,7 +50,7 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
 
     const detail = useMemo(() => {
       if (activeTerrainService) {
-        return <TerrainServiceDetail service={activeTerrainService} />;
+        return <TerrainServiceSingleWrapper service={activeTerrainService} />;
       }
 
       try {
@@ -93,7 +94,7 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
               .parse(JSON.parse(feature?.properties.terrainServices))
           : [];
         const name = nameSchema.parse(feature?.properties?.name);
-        return <TerrainServiceDetails terrainServices={terrainServices} name={name} />;
+        return <TerrainServiceWrapper terrainServices={terrainServices} name={name} />;
       } catch (e) {
         // Who cares?
       }

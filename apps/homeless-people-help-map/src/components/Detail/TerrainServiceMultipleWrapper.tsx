@@ -1,16 +1,9 @@
-import {
-  Accordion,
-  AccordionItem,
-  DataDisplay,
-  Divider,
-  Feedback,
-  Tag,
-} from "@bratislava/react-maps-ui";
+import { Accordion, AccordionItem, Divider, Feedback } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
-import { colors } from "../../utils/colors";
 import cx from "classnames";
 import { z } from "zod";
 import { Fragment, useState } from "react";
+import { TerrainServiceDetail } from "./TerrainServiceDetail";
 
 export const terrainServicePropertiesSchema = z.object({
   key: z.string(),
@@ -22,7 +15,6 @@ export const terrainServicePropertiesSchema = z.object({
   price: z.string().optional(),
   areas: z.string().optional(),
 });
-type TerrainServiceProperties = z.infer<typeof terrainServicePropertiesSchema>;
 
 export const nameSchema = z.string().optional();
 
@@ -33,36 +25,7 @@ export const TerrainServicesDetailPropertiesSchema = z.object({
 
 type TerrainServicesDetailsProperties = z.infer<typeof TerrainServicesDetailPropertiesSchema>;
 
-const DetailTerrainServiceItem = ({
-  key,
-  provider,
-  phone,
-  price,
-  areas,
-}: TerrainServiceProperties) => {
-  const { t } = useTranslation("translation", { keyPrefix: "detail.terrainService" });
-  const { t: detailT } = useTranslation("translation", { keyPrefix: "detail.main" });
-
-  return (
-    <div key={key} className="flex flex-col gap-4">
-      <div>
-        <div className="font-light text-[14px] mt-3">{detailT("services")}</div>
-        <Tag className="w-fit lowercase mt-1" style={{ background: colors.terrainServices }}>
-          {t("tag")}
-        </Tag>
-      </div>
-      <DataDisplay label={t("provider")} text={provider} />
-      <DataDisplay enableEnhancements label={t("phone")} text={phone} />
-      {/* <DetailWebRow href={web} label={t("web")} />
-      <DataDisplay label={t("openingHours")} text={openingHours} /> */}
-      <DataDisplay label={t("price")} text={price} />
-      <DataDisplay label={t("areas")} text={areas} />
-    </div>
-  );
-};
-
-// TODO fix missing web and openingHours,
-export const TerrainServiceDetails = ({
+export const TerrainServiceWrapper = ({
   terrainServices,
   name,
 }: TerrainServicesDetailsProperties) => {
@@ -81,7 +44,7 @@ export const TerrainServiceDetails = ({
           type="single"
         >
           {terrainServices.map((terrainService, index) => {
-            const { key, title } = terrainService;
+            const { key, title, provider, phone, price, areas } = terrainService;
             return (
               <Fragment key={key}>
                 <AccordionItem
@@ -97,8 +60,14 @@ export const TerrainServiceDetails = ({
                       "pb-3": index !== terrainServices.length - 1,
                     })}
                   >
-                    <DetailTerrainServiceItem {...terrainService} />
-                    {index > 0 && <Divider className="mx-6" />}
+                    <div className="flex flex-col gap-4">
+                      <TerrainServiceDetail
+                        provider={provider}
+                        phone={phone?.toString()}
+                        price={price}
+                        areas={areas}
+                      />
+                    </div>
                   </div>
                 </AccordionItem>
               </Fragment>
