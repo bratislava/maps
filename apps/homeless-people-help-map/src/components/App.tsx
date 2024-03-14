@@ -204,15 +204,14 @@ export const App = () => {
       layerFilter.setActiveOnly(rememberedActiveLayerKeys, true);
       return;
     }
-
-    // Close filters on mobile
-    isMobile && setSidebarVisible(false);
-    // TODO refactor this
     // layerFilter is missing in dependencies because it will start rerendering loop
-    // isMobile can't be in dependencies because left side filter "Typy pomoci" will be turned off. Why? God knows
   }, [activeTerrainService, rememberedActiveLayerKeys]);
 
-  // Disable terrain service if
+  useEffect(() => {
+    // Close filters on mobile
+    isMobile && setSidebarVisible(false);
+  }, [isMobile]);
+
   useEffect(() => {
     if (layerFilter.activeKeys.length) {
       setActiveTerrainService(null);
@@ -328,7 +327,6 @@ export const App = () => {
           />
         );
       })}
-      {/* can't be all data be in one layer like it is in paas map? */}
       {dataGroupedByRegion?.map((feature, index) => {
         return (
           <Layer

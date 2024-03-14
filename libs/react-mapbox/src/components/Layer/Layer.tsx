@@ -60,9 +60,6 @@ export const Layer = ({
   const [renderedPopupContent, setRenderedPopupContent] =
     useState<ReactNode>(null);
 
-  // console.log('Layer geojson');
-  // console.log(geojson);
-
   const popupElement = useMemo(() => {
     return document.createElement('div');
   }, []);
