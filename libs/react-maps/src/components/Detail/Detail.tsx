@@ -79,7 +79,8 @@ export const Detail = forwardRef<SheetHandle, DetailProps>(
             setCurrentSnapHeight(snapHeight);
             setCurrentSnap(snapIndex);
           }}
-          onClose={onClose}
+          // switching between two features (terrain service) on homeles-people-help-map, causes multiple calls to onClose
+          // onClose={onClose}
           hideHeader={hideBottomSheetHeader}
         >
           <div className="text-foreground-lightmode dark:text-foreground-darkmode">

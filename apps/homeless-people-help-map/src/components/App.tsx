@@ -338,6 +338,7 @@ export const App = () => {
               : TERRAIN_SERVICES_POINT_STYLE
             ).map((style) => ({ ...style, id: `${style.id}-${index}` }))}
             isVisible={!activeTerrainService}
+            hidePopup={feature.properties.name !== selectedFeature?.properties?.name}
             hoverPopup={
               <Popup
                 name={feature.properties.name}

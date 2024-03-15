@@ -22,6 +22,7 @@ export interface ILayerProps {
   geojson: FeatureCollection | Feature | null;
   styles: any;
   isVisible?: boolean;
+  hidePopup?: boolean;
   filters?: Filter[];
   ignoreFilters?: boolean;
   ignoreClick?: boolean;
@@ -32,6 +33,7 @@ export const Layer = ({
   geojson,
   styles,
   isVisible = true,
+  hidePopup = true,
   filters = [],
   ignoreFilters = false,
   ignoreClick = false,
@@ -90,6 +92,10 @@ export const Layer = ({
       }
     };
   }, [map, popup, popupElement, isPopupVisible]);
+
+  useEffect(() => {
+    hidePopup && setPopupVisible(false);
+  }, [hidePopup]);
 
   const renderPopupContent = useCallback(
     (
