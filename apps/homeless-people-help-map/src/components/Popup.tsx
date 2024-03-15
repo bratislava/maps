@@ -1,7 +1,15 @@
-import { Feature } from "geojson";
-
 export type PopupProps = {
-  feature: Feature;
+  name: string;
+  terrainServices?: string[];
 };
 
-export const Popup = ({ feature }: PopupProps) => <div>{feature.properties?.name}</div>;
+export const Popup = ({ name, terrainServices }: PopupProps) => (
+  <div>
+    <div className="flex border-b-2 justify-center">{name}</div>
+    <div className="py-4">
+      {terrainServices?.map((terrainService, index) => (
+        <div key={index}>{terrainService}</div>
+      ))}
+    </div>
+  </div>
+);

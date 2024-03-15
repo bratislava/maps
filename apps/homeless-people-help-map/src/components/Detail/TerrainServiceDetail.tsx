@@ -1,36 +1,40 @@
 import { DataDisplay, Tag } from "@bratislava/react-maps-ui";
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { colors } from "../../utils/colors";
-import { ITerrainService } from "../Layers";
-import DetailWebRow from "./DetailWebRow";
 
-export type TerrainServiceDetail = {
-  service: ITerrainService;
-};
+export interface ITerrainServiceDetailProps {
+  provider?: string;
+  phone?: string | null;
+  // web: string;
+  // openingHours: string;
+  price?: string;
+  areas?: string;
+}
 
 // TODO fix missing web and openingHours,
 export const TerrainServiceDetail = ({
-  service: { title, provider, phone, price, geojson },
-}: TerrainServiceDetail) => {
+  provider,
+  phone,
+  price,
+  areas,
+}: ITerrainServiceDetailProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "detail.terrainService" });
-
-  const areas = useMemo(() => {
-    return geojson.features.map((f) => f.properties?.name).join(", ");
-  }, [geojson]);
+  const { t: detailT } = useTranslation("translation", { keyPrefix: "detail.main" });
 
   return (
-    <div className="p-6 flex flex-col gap-4">
-      <div className="font-semibold pt-1 pr-12">{title}</div>
-      <Tag className="text-white w-fit lowercase" style={{ background: colors.terrainServices }}>
-        {t("tag")}
-      </Tag>
+    <>
+      <div>
+        <div className="font-light text-[14px] mt-3">{detailT("services")}</div>
+        <Tag className="text-white w-fit lowercase" style={{ background: colors.terrainServices }}>
+          {t("tag")}
+        </Tag>
+      </div>
       <DataDisplay label={t("provider")} text={provider} />
       <DataDisplay enableEnhancements label={t("phone")} text={phone} />
       {/* <DetailWebRow href={web} label={t("web")} />
       <DataDisplay label={t("openingHours")} text={openingHours} /> */}
       <DataDisplay label={t("price")} text={price} />
       <DataDisplay label={t("areas")} text={areas} />
-    </div>
+    </>
   );
 };

@@ -31,7 +31,7 @@ export const Modal = ({
   noOverlayStyles = false,
   underlayClassName,
   overlayClassName,
-  hideCloseButtonIcon = false
+  hideCloseButtonIcon = false,
 }: IModalProps) => {
   return (
     <Transition show={isOpen} as={Fragment}>
@@ -101,14 +101,14 @@ export const Modal = ({
                             !closeButtonInCorner,
                         })}
                       >
-                        {!hideCloseButtonIcon &&
+                        {!hideCloseButtonIcon && (
                           <IconButton
                             className="w-12 outline-none h-12 !bg-primary !border-primary !rounded-full flex items-center justify-center"
                             onClick={() => onClose && onClose()}
                           >
-                            {closeButtonIcon ?? <X className="text-white" />}
+                            {closeButtonIcon ?? <X />}
                           </IconButton>
-                        }
+                        )}
                       </div>
                     )}
                   </Dialog.Panel>

@@ -2,7 +2,7 @@ import { Accordion, AccordionItem, Checkbox } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { colors } from "../utils/colors";
 import cx from "classnames";
-import { ITerrainService } from "./Layers";
+import { ITerrainService } from "../utils/types";
 
 const COLOR = colors.terrainServices;
 
@@ -34,7 +34,7 @@ export const TerrainServices = ({
       <Accordion type="multiple">
         <AccordionItem
           headerIsTrigger
-          headerClassName="pl-[22px] pr-[2px]"
+          headerClassName="pl-6 pr-6 py-3"
           value="terrainServices"
           title={t("terrainServices.title")}
         >

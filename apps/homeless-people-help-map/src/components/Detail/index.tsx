@@ -15,9 +15,14 @@ import { OtherServiceDetail, otherServiceFeaturePropertiesSchema } from "./Other
 
 import { Detail as MapDetail } from "@bratislava/react-maps";
 import { MainDetail, mainFeaturePropertiesSchema } from "./MainDetail";
-import { ITerrainService } from "../Layers";
-import { TerrainServiceDetail } from "./TerrainServiceDetail";
+import { TerrainServiceSingleWrapper } from "./TerrainServiceSingleWrapper";
+import {
+  TerrainServiceWrapper,
+  nameSchema,
+  terrainServicePropertiesSchema,
+} from "./TerrainServiceMultipleWrapper";
 import { SheetHandle } from "@bratislava/react-maps-ui";
+import { ITerrainService } from "../../utils/types";
 
 export interface DetailProps {
   feature?: Feature | null;
@@ -45,7 +50,7 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
 
     const detail = useMemo(() => {
       if (activeTerrainService) {
-        return <TerrainServiceDetail service={activeTerrainService} />;
+        return <TerrainServiceSingleWrapper service={activeTerrainService} />;
       }
 
       try {
@@ -79,6 +84,24 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
         const props = drinkingFountainFeaturePropertiesSchema.parse(feature?.properties);
         return <DrinkingFountainDetail {...props} />;
       } catch {
+        // Who cares?
+      }
+
+      try {
+        const terrainServices = feature?.properties
+          ? terrainServicePropertiesSchema
+              .array()
+              .parse(JSON.parse(feature?.properties.terrainServices))
+          : [];
+        const name = nameSchema.parse(feature?.properties?.name);
+        return (
+          <TerrainServiceWrapper
+            terrainServices={terrainServices}
+            name={name}
+            isMobile={isMobile}
+          />
+        );
+      } catch (e) {
         // Who cares?
       }
 

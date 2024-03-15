@@ -28,7 +28,7 @@ export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
       <button
         onClick={() => setModalOpen(true)}
         className={cx(
-          "bg-primary-soft rounded-lg flex w-full h-12 shadow-lg font-semibold text-sm pl-2 pr-4 text-foreground-lightmode gap-1 items-center",
+          "bg-primary rounded-lg flex w-full h-12 shadow-lg font-semibold text-sm pl-2 pr-4 text-foreground-lightmode gap-1 items-center",
           className,
         )}
       >

@@ -14,5 +14,5 @@ export const colors: { [key: string]: string } = {
 export const mainColors = {
   black: "#000000",
   yellow: "#F1B830",
-  softYellow: "#FFE781",
-}
+  softYellow: "#FEF8EA",
+};

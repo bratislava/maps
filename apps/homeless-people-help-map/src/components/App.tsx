@@ -27,8 +27,9 @@ import TERRAIN_SERVICES_POLYGON_STYLE from "../assets/layers/terrainServicesPoly
 // utils
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { Chevron, Funnel } from "@bratislava/react-maps-icons";
+import { MapboxGeoJSONFeature } from "mapbox-gl";
 import { IconButton, Modal, Sidebar } from "@bratislava/react-maps-ui";
-import { usePrevious } from "@bratislava/utils";
+import { isDefined, usePrevious } from "@bratislava/utils";
 import { Feature, Point } from "geojson";
 import { buildingsData } from "../data/buildings";
 import { colors, mainColors } from "../utils/colors";
@@ -38,7 +39,6 @@ import { Detail } from "./Detail";
 import { Filters } from "./Filters";
 import { FixpointAndSyringeExchangeMarker } from "./FixpointAndSyringeExchangeMarker";
 import { FixpointMarker } from "./FixpointMarker";
-import { ITerrainService } from "./Layers";
 import { Legend } from "./Legend";
 import { Marker } from "./Marker";
 import { PhoneLinksModal } from "./PhoneLinksModal";
@@ -47,6 +47,7 @@ import { SyringeExchangeMarker } from "./SyringeExchangeMarker";
 import { useFixpointAndSyringeExchange } from "../data/fixpointAndSyringeExchange";
 import { useTerrainServices } from "../data/terrainServices";
 import { useServicesData } from "../data/data";
+import { ITerrainService } from "../utils/types";
 
 const { uniqueDistricts } = processData();
 const uniqueLayers = Object.keys(colors).filter((key) => key !== "terrainServices");
@@ -60,13 +61,20 @@ export const App = () => {
   const mapRef = useRef<MapHandle>(null);
 
   const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
+
+  const [isLegendOpen, setLegendOpen] = useState(false);
+
+  const [isWelcomeModalOpen, setWelcomeModalOpen] = useState(true);
 
   const [isMobile, setMobile] = useState(false);
 
   const previousMobile = usePrevious(isMobile);
 
   const { data: fixpointAndSyringeExchangeData } = useFixpointAndSyringeExchange();
-  const { data: terrainServices } = useTerrainServices();
+  const { dataByService: terrainServices, dataGroupedByRegion } = useTerrainServices();
+  const [activeTerrainService, setActiveTerrainService] = useState<ITerrainService | null>(null);
+
   const { data } = useServicesData();
 
   const districtFilter = useFilter({
@@ -127,28 +135,43 @@ export const App = () => {
     }
   }, [previousMobile, isMobile]);
 
-  // fit to district
-  useEffect(() => {
-    mapRef.current?.fitDistrict(districtFilter.activeKeys);
-  }, [districtFilter.activeKeys]);
-
   // move point to center when selected
   useEffect(() => {
     const MAP = mapRef.current;
-    if (MAP && selectedMarker) {
+    if (
+      MAP &&
+      (selectedMarker || selectedFeature || activeTerrainService || districtFilter.activeKeys)
+    ) {
       setTimeout(() => {
-        mapRef.current?.moveToFeatures(selectedMarker);
+        if (selectedMarker) {
+          mapRef.current?.moveToFeatures(selectedMarker);
+        }
+        if (selectedFeature) {
+          mapRef.current?.moveToFeatures(selectedFeature);
+        }
+        if (districtFilter.activeKeys) {
+          mapRef.current?.fitDistrict(districtFilter.activeKeys);
+        }
+
+        if (activeTerrainService) {
+          // this needs to wait to not start race condition between opening detail and fitting feature
+          // eventually it should be looked into if it is possible to work like moveToFeatures which can handle both opening detail and moveToFeatures
+          setTimeout(() => {
+            mapRef.current?.fitFeature(activeTerrainService.geojson.features);
+          }, 250);
+        }
       }, 0);
     }
-  }, [selectedMarker]);
+  }, [selectedMarker, selectedFeature, activeTerrainService, districtFilter.activeKeys]);
 
   const [rememberedActiveLayerKeys, setRememberedActiveLayerKeys] = useState<string[]>([]);
-  const [activeTerrainService, setActiveTerrainService] = useState<ITerrainService | null>(null);
-  const [serviceDetail, setServiceDetail] = useState<boolean>(false);
 
   const isDetailVisible = useMemo(() => {
-    return (!!selectedMarker || !!activeTerrainService) && (!isMobile || !isSidebarVisible);
-  }, [isMobile, isSidebarVisible, selectedMarker, serviceDetail]);
+    return (
+      (!!selectedMarker || !!activeTerrainService || !!selectedFeature) &&
+      (!isMobile || !isSidebarVisible)
+    );
+  }, [selectedMarker, activeTerrainService, selectedFeature, isMobile, isSidebarVisible]);
 
   const handleActiveTerrainServiceChange = useCallback(
     (terrainService: ITerrainService | null) => {
@@ -179,23 +202,16 @@ export const App = () => {
   useEffect(() => {
     if (!activeTerrainService) {
       layerFilter.setActiveOnly(rememberedActiveLayerKeys, true);
-      setServiceDetail(false);
       return;
     }
-    const features = activeTerrainService.geojson.features;
-    // Fit terrain service features
-    features && mapRef.current?.fitFeature(features);
+    // layerFilter is missing in dependencies because it will start rerendering loop
+  }, [activeTerrainService, rememberedActiveLayerKeys]);
 
+  useEffect(() => {
     // Close filters on mobile
     isMobile && setSidebarVisible(false);
+  }, [isMobile]);
 
-    // Wait to fit features
-    setTimeout(() => {
-      setServiceDetail(true);
-    }, 500);
-  }, [activeTerrainService]);
-
-  // Disable terrain service if
   useEffect(() => {
     if (layerFilter.activeKeys.length) {
       setActiveTerrainService(null);
@@ -207,26 +223,40 @@ export const App = () => {
     if (activeTerrainService) {
       handleActiveTerrainServiceChange(null);
     }
+    setSelectedFeature(null);
   }, [handleActiveTerrainServiceChange, activeTerrainService]);
 
   const { height: viewportControlsHeight = 0, ref: viewportControlsRef } = useResizeDetector();
   const { height: detailHeight = 0, ref: detailRef } = useResizeDetector();
 
+  // scroll detail to top when detail is changed
   useEffect(() => {
     detailRef.current?.scrollIntoView();
-  }, [detailRef, selectedMarker]);
+  }, [detailRef, selectedMarker, selectedFeature]);
 
   const { height: windowHeight } = useWindowSize();
 
   const shouldBeViewportControlsMoved = useMemo(() => {
     return (
-      windowHeight < viewportControlsHeight + detailHeight + 40 && !!selectedMarker && !isMobile
+      windowHeight < viewportControlsHeight + detailHeight + 40 &&
+      (!!selectedMarker || !!selectedFeature || !!activeTerrainService) &&
+      !isMobile
     );
-  }, [windowHeight, detailHeight, viewportControlsHeight, selectedMarker, isMobile]);
+  }, [
+    windowHeight,
+    viewportControlsHeight,
+    detailHeight,
+    selectedMarker,
+    selectedFeature,
+    activeTerrainService,
+    isMobile,
+  ]);
 
-  const [isLegendOpen, setLegendOpen] = useState(false);
-
-  const [isWelcomeModalOpen, setWelcomeModalOpen] = useState(true);
+  const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
+    setSelectedFeature(features[0] ?? null);
+    setSelectedMarker(null);
+    setActiveTerrainService(null);
+  }, []);
 
   return (
     <Map
@@ -241,6 +271,7 @@ export const App = () => {
       isDevelopment={import.meta.env.DEV}
       onMobileChange={setMobile}
       onMapClick={closeDetail}
+      onFeaturesClick={onFeaturesClick}
       mapInformation={{
         title: t("informationModal.title"),
         description: (
@@ -280,19 +311,45 @@ export const App = () => {
         styles={DISTRICTS_STYLE}
       />
 
-      {terrainServices?.map(({ key, geojson }, index) => (
-        <Layer
-          key={index}
-          geojson={geojson}
-          // Style ids have to be unique
-          styles={(geojson.features[0]?.geometry.type === "Polygon"
-            ? TERRAIN_SERVICES_POLYGON_STYLE
-            : TERRAIN_SERVICES_POINT_STYLE
-          ).map((style) => ({ ...style, id: `${style.id}-${index}` }))}
-          isVisible={key === activeTerrainService?.key}
-          hoverPopup={Popup}
-        />
-      ))}
+      {terrainServices?.map(({ key, geojson }, index) => {
+        return (
+          <Layer
+            ignoreClick
+            key={index}
+            geojson={geojson}
+            // Style ids have to be unique
+            styles={(geojson.features[0]?.geometry.type === "Polygon"
+              ? TERRAIN_SERVICES_POLYGON_STYLE
+              : TERRAIN_SERVICES_POINT_STYLE
+            ).map((style) => ({ ...style, id: `terrainServices-${style.id}-${index}` }))}
+            isVisible={key === activeTerrainService?.key}
+            hoverPopup={Popup}
+          />
+        );
+      })}
+      {dataGroupedByRegion?.map((feature, index) => {
+        return (
+          <Layer
+            key={feature.id + "3000" ?? index + 3000}
+            geojson={feature}
+            // Style ids have to be unique
+            styles={(feature.geometry.type === "Polygon"
+              ? TERRAIN_SERVICES_POLYGON_STYLE
+              : TERRAIN_SERVICES_POINT_STYLE
+            ).map((style) => ({ ...style, id: `${style.id}-${index}` }))}
+            isVisible={!activeTerrainService}
+            hidePopup={feature.properties.name !== selectedFeature?.properties?.name}
+            hoverPopup={
+              <Popup
+                name={feature.properties.name}
+                terrainServices={feature.properties.terrainServices
+                  ?.map((terrainService) => terrainService.title)
+                  .filter(isDefined)}
+              />
+            }
+          />
+        );
+      })}
 
       {/* BUILDING MARKERS */}
       {buildingsData.features.map((feature, index) => [
@@ -343,7 +400,7 @@ export const App = () => {
         ref={detailRef}
         isVisible={isDetailVisible}
         isMobile={isMobile}
-        feature={selectedMarker}
+        feature={selectedMarker ?? selectedFeature}
         activeTerrainService={activeTerrainService}
         onClose={closeDetail}
       />
@@ -387,7 +444,7 @@ export const App = () => {
           title={t("welcomeModal.title")}
           isOpen={isWelcomeModalOpen}
           onClose={() => setWelcomeModalOpen(false)}
-          closeButtonIcon={<Chevron className="text-white" direction="right" />}
+          closeButtonIcon={<Chevron direction="right" />}
         >
           <div className="pb-4">{t("welcomeModal.description")}</div>
         </Modal>

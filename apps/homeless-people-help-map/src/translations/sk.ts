@@ -97,7 +97,7 @@ export default {
       openingHours: "Otváracie hodiny",
       price: "Cena",
       areas: "Oblasti",
-      tag: "terénna služba",
+      tag: "terénna a sociálna pomoc",
     },
     fixpointSyringeExchange: {
       name: "Názov",

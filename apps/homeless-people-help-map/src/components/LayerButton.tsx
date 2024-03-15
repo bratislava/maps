@@ -12,7 +12,7 @@ export const LayerButton = ({ color, isVisible, title, onClick }: LayerButtonPro
   return (
     <button
       className={cx(
-        "w-full flex justify-between items-center py-3 text-left border-l-4 pr-6 pl-[20px] transition-all bg-opacity-10 dark:bg-opacity-10",
+        "w-full flex justify-between items-center py-3 text-left border-l-4 pr-6 pl-6 transition-all bg-opacity-10 dark:bg-opacity-10",
         {
           "bg-gray-lightmode dark:bg-gray-darkmode": isVisible,
           "border-background-lightmode dark:border-background-darkmode": !isVisible,
