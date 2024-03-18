@@ -71,13 +71,6 @@ export const Legend = () => {
           <DrugsAndSexIcon className="w-6 h-6" />
           {t("layers.drugsAndSex")}
         </Tag>
-        <Tag
-          style={{ background: colors.notaBene }}
-          className="w-fit flex items-center gap-3 text-white"
-        >
-          <NotaBeneIcon className="w-6 h-6" />
-          {t("layers.notaBene")}
-        </Tag>
       </div>
       <div className="flex flex-col gap-4">
         <div className="flex gap-2 items-center">

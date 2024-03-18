@@ -127,7 +127,6 @@ export default {
     culture: "culture",
     drugsAndSex: "Contact center for drug users and people from the sex business",
     kolo: "Kolo - the center of reuse",
-    notaBene: "Street magazine Nota Bene",
   },
 
   helpPhoneLinks: {

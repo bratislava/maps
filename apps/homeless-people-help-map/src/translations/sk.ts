@@ -127,7 +127,6 @@ export default {
     culture: "kultúra",
     drugsAndSex: "Kontaktné centrum pre užívateľov drog a ľudí zo sexbiznisu",
     kolo: "Kolo - centrum opätovného použitia",
-    notaBene: "Pouličný časopis Nota Bene",
   },
 
   helpPhoneLinks: {

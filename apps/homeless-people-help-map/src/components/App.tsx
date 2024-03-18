@@ -100,7 +100,6 @@ export const App = () => {
     if (layerFilter.isAnyKeyActive(["culture"])) result.push(["==", "isCulture", true]);
     if (layerFilter.isAnyKeyActive(["drugsAndSex"])) result.push(["==", "isDrugsAndSex", true]);
     if (layerFilter.isAnyKeyActive(["kolo"])) result.push(["==", "isKolo", true]);
-    if (layerFilter.isAnyKeyActive(["notaBene"])) result.push(["==", "isNotaBene", true]);
     return result;
   }, [layerFilter]);
 

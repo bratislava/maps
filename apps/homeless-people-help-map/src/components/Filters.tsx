@@ -142,7 +142,7 @@ export const Filters = ({
         title={t("otherLayersLabel")}
         isMobile={isMobile}
         filter={layerFilter}
-        layers={["kolo", "notaBene"]}
+        layers={["kolo"]}
       />
     </Sidebar>
   );
