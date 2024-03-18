@@ -130,6 +130,10 @@ export default {
     notaBene: "Street magazine Nota Bene",
   },
 
+  popup: {
+    terrainServices: "Terrain services:",
+  },
+
   helpPhoneLinks: {
     title: "Help lines",
     labels: {

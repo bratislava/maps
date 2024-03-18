@@ -130,6 +130,10 @@ export default {
     notaBene: "Pouličný časopis Nota Bene",
   },
 
+  popup: {
+    terrainServices: "Terénne služby:",
+  },
+
   helpPhoneLinks: {
     title: "Linky pomoci",
     labels: {

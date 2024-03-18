@@ -147,7 +147,7 @@ export const App = () => {
           mapRef.current?.moveToFeatures(selectedMarker);
         }
         if (selectedFeature) {
-          mapRef.current?.moveToFeatures(selectedFeature);
+          mapRef.current?.fitDistrict(selectedFeature.properties?.district);
         }
         if (districtFilter.activeKeys) {
           mapRef.current?.fitDistrict(districtFilter.activeKeys);
@@ -340,12 +340,14 @@ export const App = () => {
             isVisible={!activeTerrainService}
             hidePopup={feature.properties.name !== selectedFeature?.properties?.name}
             hoverPopup={
-              <Popup
-                name={feature.properties.name}
-                terrainServices={feature.properties.terrainServices
-                  ?.map((terrainService) => terrainService.title)
-                  .filter(isDefined)}
-              />
+              isMobile ? null : (
+                <Popup
+                  name={feature.properties.name}
+                  terrainServices={feature.properties.terrainServices
+                    ?.map((terrainService) => terrainService.title)
+                    .filter(isDefined)}
+                />
+              )
             }
           />
         );
