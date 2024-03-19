@@ -25,7 +25,7 @@ export const TerrainServiceDetail = ({
     <>
       <div>
         <div className="font-light text-[14px] mt-3">{detailT("services")}</div>
-        <Tag className="text-white w-fit lowercase" style={{ background: colors.terrainServices }}>
+        <Tag className="w-fit lowercase" style={{ background: colors.terrainServices }} isSmall>
           {t("tag")}
         </Tag>
       </div>
