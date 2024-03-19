@@ -10,7 +10,9 @@ export const useFixpointAndSyringeExchange = () => {
   const processedFeatures = data?.fixpoints?.data.map((fixpoint) => {
     // convert to fixpointAndSyringeExchangeData type
     return {
-      id: fixpoint.id,
+      // id needs to be different for each Marker on map otherwise it will interact with each other
+      // https://github.com/bratislava/private-maps/issues/14#issuecomment-2003846920
+      id: "fixpoints-" + fixpoint.id,
       type: "Feature",
       geometry: {
         type: "Point",
