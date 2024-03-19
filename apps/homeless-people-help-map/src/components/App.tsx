@@ -72,7 +72,8 @@ export const App = () => {
   const previousMobile = usePrevious(isMobile);
 
   const { data: fixpointAndSyringeExchangeData } = useFixpointAndSyringeExchange();
-  const { dataByService: terrainServices, dataGroupedByRegion } = useTerrainServices();
+  const { dataByService: terrainServices, dataGroupedByRegion: terrainServicesGroupedByRegion } =
+    useTerrainServices();
   const [activeTerrainService, setActiveTerrainService] = useState<ITerrainService | null>(null);
 
   const { data } = useServicesData();
@@ -327,7 +328,7 @@ export const App = () => {
           />
         );
       })}
-      {dataGroupedByRegion?.map((feature, index) => {
+      {terrainServicesGroupedByRegion?.map((feature, index) => {
         return (
           <Layer
             key={feature.id + "3000" ?? index + 3000}
