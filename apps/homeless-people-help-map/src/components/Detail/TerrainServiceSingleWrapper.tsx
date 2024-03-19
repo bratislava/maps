@@ -17,7 +17,7 @@ export const TerrainServiceSingleWrapper = ({
   const { t: mainT } = useTranslation();
 
   return (
-    <div className="p-6 flex flex-col gap-4">
+    <div className="p-4 flex flex-col gap-4">
       <div className="font-semibold pt-1 pr-12">{title}</div>
       <TerrainServiceDetail provider={provider} phone={phone} price={price} areas={areas} />
       <Feedback

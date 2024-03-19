@@ -72,7 +72,8 @@ export const App = () => {
   const previousMobile = usePrevious(isMobile);
 
   const { data: fixpointAndSyringeExchangeData } = useFixpointAndSyringeExchange();
-  const { dataByService: terrainServices, dataGroupedByRegion } = useTerrainServices();
+  const { dataByService: terrainServices, dataGroupedByRegion: terrainServicesGroupedByRegion } =
+    useTerrainServices();
   const [activeTerrainService, setActiveTerrainService] = useState<ITerrainService | null>(null);
 
   const { data } = useServicesData();
@@ -147,7 +148,7 @@ export const App = () => {
           mapRef.current?.moveToFeatures(selectedMarker);
         }
         if (selectedFeature) {
-          mapRef.current?.moveToFeatures(selectedFeature);
+          mapRef.current?.fitDistrict(selectedFeature.properties?.district);
         }
         if (districtFilter.activeKeys) {
           mapRef.current?.fitDistrict(districtFilter.activeKeys);
@@ -323,11 +324,11 @@ export const App = () => {
               : TERRAIN_SERVICES_POINT_STYLE
             ).map((style) => ({ ...style, id: `terrainServices-${style.id}-${index}` }))}
             isVisible={key === activeTerrainService?.key}
-            hoverPopup={Popup}
+            hoverPopup={(name) => <Popup name={name} />}
           />
         );
       })}
-      {dataGroupedByRegion?.map((feature, index) => {
+      {terrainServicesGroupedByRegion?.map((feature, index) => {
         return (
           <Layer
             key={feature.id + "3000" ?? index + 3000}
@@ -340,12 +341,14 @@ export const App = () => {
             isVisible={!activeTerrainService}
             hidePopup={feature.properties.name !== selectedFeature?.properties?.name}
             hoverPopup={
-              <Popup
-                name={feature.properties.name}
-                terrainServices={feature.properties.terrainServices
-                  ?.map((terrainService) => terrainService.title)
-                  .filter(isDefined)}
-              />
+              isMobile ? null : (
+                <Popup
+                  name={feature.properties.name}
+                  terrainServices={feature.properties.terrainServices
+                    ?.map((terrainService) => terrainService.title)
+                    .filter(isDefined)}
+                />
+              )
             }
           />
         );

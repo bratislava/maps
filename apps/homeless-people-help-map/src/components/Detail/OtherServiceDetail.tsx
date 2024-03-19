@@ -44,7 +44,7 @@ export const OtherServiceDetail = ({
 }: OtherServiceProperties) => {
   const { t } = useTranslation();
   return (
-    <div className="p-6 flex flex-col gap-4">
+    <div className="p-4 flex flex-col gap-4">
       <div className="font-semibold pt-1 pr-12">{name}</div>
       <Tag
         className={cx("text-white w-fit lowercase", {
@@ -62,11 +62,7 @@ export const OtherServiceDetail = ({
       <DataDisplay label={t("detail.otherService.time")} text={time} />
       <DataDisplay label={t("detail.otherService.price")} text={price} />
       <DataDisplay enableEnhancements label={t("detail.otherService.phone")} text={phone} />
-      <DataDisplay
-        switchFontWeights
-        label={t("detail.otherService.description")}
-        text={description}
-      />
+      <DataDisplay label={t("detail.otherService.description")} text={description} />
       <DetailWebRow href={web} label={t("detail.otherService.web")} />
       <DataDisplay label={t("detail.otherService.provider")} text={provider} />
     </div>
