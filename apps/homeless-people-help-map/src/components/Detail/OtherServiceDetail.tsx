@@ -62,11 +62,7 @@ export const OtherServiceDetail = ({
       <DataDisplay label={t("detail.otherService.time")} text={time} />
       <DataDisplay label={t("detail.otherService.price")} text={price} />
       <DataDisplay enableEnhancements label={t("detail.otherService.phone")} text={phone} />
-      <DataDisplay
-        switchFontWeights
-        label={t("detail.otherService.description")}
-        text={description}
-      />
+      <DataDisplay label={t("detail.otherService.description")} text={description} />
       <DetailWebRow href={web} label={t("detail.otherService.web")} />
       <DataDisplay label={t("detail.otherService.provider")} text={provider} />
     </div>

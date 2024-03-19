@@ -75,49 +75,42 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
       <>
         {properties.isCounseling && (
           <DataDisplay
-            switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`counseling`)}</div>}
             text={properties.counseling}
           />
         )}
         {properties.isHygiene && (
           <DataDisplay
-            switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`hygiene`)}</div>}
             text={properties.hygiene}
           />
         )}
         {properties.isOvernight && (
           <DataDisplay
-            switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`overnight`)}</div>}
             text={properties.overnight}
           />
         )}
         {properties.isMeals && (
           <DataDisplay
-            switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`meals`)}</div>}
             text={properties.meals}
           />
         )}
         {properties.isMedicalTreatment && (
           <DataDisplay
-            switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`medicalTreatment`)}</div>}
             text={properties.medicalTreatment}
           />
         )}
         {properties.isCulture && (
           <DataDisplay
-            switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`culture`)}</div>}
             text={properties.culture}
           />
         )}
         {properties.isDrugsAndSex && (
           <DataDisplay
-            switchFontWeights
             label={<div className="first-letter:uppercase">{layersT(`drugsAndSex`)}</div>}
             text={properties.drugsAndSex}
           />

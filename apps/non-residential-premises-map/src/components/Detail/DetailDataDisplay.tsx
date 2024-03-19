@@ -27,7 +27,6 @@ export const DetailDataDisplay = ({
   const { t } = useTranslation("translation", { keyPrefix: "detail" });
 
   const [isModalOpen, setModalOpen] = useState(false);
-  const switchFontWeights = true;
 
   const occupancy: TOccupacy = feature?.properties?.occupancy;
   const contractLink: string = feature.properties?.linkNZ || "";
@@ -128,29 +127,12 @@ export const DetailDataDisplay = ({
         )}
       </div>
 
+      <DataDisplay label={t(`locality`)} text={feature?.properties?.locality} />
+      <DataDisplay label={t(`purpose`)} text={feature?.properties?.purpose} />
+      <DataDisplay label={t(`lessee`)} text={feature?.properties?.lessee} />
+      <DataDisplay label={t(`rentUntil`)} text={rentUntil} />
+      <DataDisplay label={t(`description`)} text={feature?.properties?.description} />
       <DataDisplay
-        label={t(`locality`)}
-        text={feature?.properties?.locality}
-        switchFontWeights={switchFontWeights}
-      />
-      <DataDisplay
-        label={t(`purpose`)}
-        text={feature?.properties?.purpose}
-        switchFontWeights={switchFontWeights}
-      />
-      <DataDisplay
-        label={t(`lessee`)}
-        text={feature?.properties?.lessee}
-        switchFontWeights={switchFontWeights}
-      />
-      <DataDisplay label={t(`rentUntil`)} text={rentUntil} switchFontWeights={switchFontWeights} />
-      <DataDisplay
-        label={t(`description`)}
-        text={feature?.properties?.description}
-        switchFontWeights={switchFontWeights}
-      />
-      <DataDisplay
-        switchFontWeights={switchFontWeights}
         label={t(`approximateArea`)}
         text={
           typeof feature?.properties?.approximateArea === "number" && (
@@ -163,7 +145,6 @@ export const DetailDataDisplay = ({
       />
       <DataDisplay
         label={t(`approximateRentPricePerYear`)}
-        switchFontWeights={switchFontWeights}
         text={
           typeof feature?.properties?.approximateRentPricePerYear === "number" && (
             <span>
@@ -177,7 +158,6 @@ export const DetailDataDisplay = ({
       />
       {contractLink && (
         <DataDisplay
-          switchFontWeights={switchFontWeights}
           label={t(`contract`)}
           text={
             <a className="flex underline" rel="noreferrer" href={contractLink} target="_blank">
@@ -188,7 +168,6 @@ export const DetailDataDisplay = ({
       )}
       {groundPlanLink && (
         <DataDisplay
-          switchFontWeights={switchFontWeights}
           label={t(`groundPlan`)}
           text={
             <a className="flex underline" rel="noreferrer" href={groundPlanLink} target="_blank">

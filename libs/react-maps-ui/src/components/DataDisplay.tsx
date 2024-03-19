@@ -72,8 +72,8 @@ export const DataDisplay = ({
       <div>
         <div
           className={cx(" text-[14px]", {
-            "font-light": !switchFontWeights,
-            "font-semibold": switchFontWeights,
+            "font-light": switchFontWeights,
+            "font-semibold": !switchFontWeights,
           })}
         >
           {label}
@@ -81,8 +81,8 @@ export const DataDisplay = ({
 
         <div
           className={cx({
-            "font-light": switchFontWeights,
-            "font-semibold": !switchFontWeights,
+            "font-light": !switchFontWeights,
+            "font-semibold": switchFontWeights,
           })}
         >
           {enableEnhancements ? (
