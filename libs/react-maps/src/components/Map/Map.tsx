@@ -237,7 +237,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
         features: districtFeatures,
       }) as [number, number, number, number];
 
-      MAP.fitBounds(boundingBox, { padding: 128 });
+      MAP.fitBounds(boundingBox, { padding: 32 });
     };
 
     const fitBounds = (
