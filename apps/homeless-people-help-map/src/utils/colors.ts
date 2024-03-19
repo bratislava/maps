@@ -7,7 +7,6 @@ export const colors: { [key: string]: string } = {
   culture: "#93539B",
   drugsAndSex: "#9E2D35",
   kolo: "#EFB646",
-  notaBene: "#547242",
   terrainServices: "#FB99BE",
 };
 

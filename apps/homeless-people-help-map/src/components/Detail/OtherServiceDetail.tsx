@@ -18,7 +18,6 @@ export const otherServiceFeaturePropertiesSchema = z.object({
   locality: z.string(),
   address: z.string(),
   description: z.string(),
-  isNotaBene: z.boolean().optional(),
   isDrugsAndSex: z.boolean().optional(),
   isKolo: z.boolean().optional(),
 });
@@ -37,7 +36,6 @@ export const OtherServiceDetail = ({
   web,
   locality,
   address,
-  isNotaBene,
   description,
   isDrugsAndSex,
   isKolo,
@@ -48,7 +46,6 @@ export const OtherServiceDetail = ({
       <div className="font-semibold pt-1 pr-12">{name}</div>
       <Tag
         className={cx("text-white w-fit lowercase", {
-          "bg-[#547242]": isNotaBene,
           "bg-[#EFB646]": isKolo,
           "bg-[#9E2D35]": isDrugsAndSex,
         })}

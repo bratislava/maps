@@ -67,10 +67,6 @@ export const Marker = ({ feature, onClick, isSelected, activeKeys }: IMarkerProp
         y: feature.properties?.isDrugsAndSex && activeKeys.includes("drugsAndSex") ? 1 : 0,
       },
       { x: "kolo", y: feature.properties?.isKolo && activeKeys.includes("kolo") ? 1 : 0 },
-      {
-        x: "notaBene",
-        y: feature.properties?.isNotaBene && activeKeys.includes("notaBene") ? 1 : 0,
-      },
     ],
     [feature, activeKeys],
   );
