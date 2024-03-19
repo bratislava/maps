@@ -323,7 +323,7 @@ export const App = () => {
               : TERRAIN_SERVICES_POINT_STYLE
             ).map((style) => ({ ...style, id: `terrainServices-${style.id}-${index}` }))}
             isVisible={key === activeTerrainService?.key}
-            hoverPopup={Popup}
+            hoverPopup={(name) => <Popup name={name} />}
           />
         );
       })}

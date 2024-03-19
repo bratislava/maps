@@ -26,7 +26,7 @@ export interface ILayerProps {
   filters?: Filter[];
   ignoreFilters?: boolean;
   ignoreClick?: boolean;
-  hoverPopup?: FC<{ name: string }> | ReactNode;
+  hoverPopup?: FC<string> | ReactNode;
 }
 
 export const Layer = ({
@@ -105,9 +105,7 @@ export const Layer = ({
     ) => {
       setRenderedPopupContent(
         typeof hoverPopup === 'function'
-          ? hoverPopup({
-              name: e.features?.[0].properties?.name ?? '',
-            })
+          ? hoverPopup(e.features?.[0].properties?.name ?? '')
           : hoverPopup,
       );
     },

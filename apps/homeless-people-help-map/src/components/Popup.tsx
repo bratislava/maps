@@ -11,12 +11,14 @@ export const Popup = ({ name, terrainServices }: PopupProps) => {
   return (
     <div>
       <div className="flex font-semibold text-[18px]">{name}</div>
-      <div className="py-4">
-        <div className="pb-3">{t("popup.terrainServices")}</div>
-        {terrainServices?.map((terrainService, index) => (
-          <div key={index}>{terrainService}</div>
-        ))}
-      </div>
+      {terrainServices && (
+        <div className="py-4">
+          <div className="pb-3">{t("popup.terrainServices")}</div>
+          {terrainServices?.map((terrainService, index) => (
+            <div key={index}>{terrainService}</div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
