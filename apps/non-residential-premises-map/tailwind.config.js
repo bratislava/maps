@@ -1,7 +1,7 @@
-import { colors } from "./src/utils/colors";
+import { colors } from "./src/utils/colors.ts";
 
 export default {
-  presets: [require("../../libs/react-maps-ui/tailwind.config")],
+  presets: [require("@bratislava/react-maps-ui/tailwind.config")],
   darkMode: "class",
   content: [
     "./src/**/*.{html,ts,tsx}",
