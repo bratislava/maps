@@ -184,7 +184,7 @@ export default {
   informationModal: {
     title: "Map of help to homeless people.",
     description:
-      "Did you find outdated information or did you not find what you were looking for? Write to us at <1>sekciasocialnychveci@bratislava.sk</1> and help us improve the map. You can find more about activities in the social field on the website of the capital, in the section social services and housing.",
+      "Did you find outdated information or is something missing on map? Write to us at <1>sekciasocialnychveci@bratislava.sk</1> and help improve the map. You can find more about activities in the social field on the website of the capital, in the section social services and housing.",
     descriptionLink: "mailto:sekciasocialnychveci@bratislava.sk",
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",

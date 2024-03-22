@@ -71,7 +71,7 @@ export const DataDisplay = ({
     return (
       <div>
         <div
-          className={cx(" text-[14px]", {
+          className={cx("text-[14px]", {
             "font-light": switchFontWeights,
             "font-semibold": !switchFontWeights,
           })}

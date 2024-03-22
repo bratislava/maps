@@ -147,7 +147,9 @@ export const App = () => {
           mapRef.current?.moveToFeatures(selectedMarker);
         }
         if (selectedFeature) {
-          mapRef.current?.fitDistrict(selectedFeature.properties?.district);
+          setTimeout(() => {
+            mapRef.current?.fitDistrict(selectedFeature.properties?.district);
+          }, 250);
         }
         if (districtFilter.activeKeys) {
           mapRef.current?.fitDistrict(districtFilter.activeKeys);
