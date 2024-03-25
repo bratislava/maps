@@ -14,7 +14,7 @@ const enhancePhoneNumbers = (text: string) => {
       `<a href="tel:${tel.replaceAll(
         /[\s\-/]/g,
         ""
-      )}" class="font-semibold underline">${tel}</a>`
+      )}" class="font-normal underline">${tel}</a>`
   );
 };
 
@@ -22,7 +22,7 @@ const enhanceEmails = (text: string) => {
   return text.replace(
     emailRegex,
     (email) =>
-      `<a href="mailto:${email}" class="font-semibold underline">${email}</a>`
+      `<a href="mailto:${email}" class="font-normal underline">${email}</a>`
   );
 };
 
@@ -30,7 +30,7 @@ const enhanceUrls = (text: string) => {
   return text.replace(
     urlRegex,
     (url) =>
-      `<a href="${url}" class="font-semibold underline" target="_blank">${url
+      `<a href="${url}" class="font-normal underline" target="_blank">${url
         .replace("https://", "")
         .replace("http://", "")
         .replace(/^www\./, "")}</a>`
@@ -72,7 +72,7 @@ export const DataDisplay = ({
       <div>
         <div
           className={cx("text-[14px]", {
-            "font-light": switchFontWeights,
+            "font-normal": switchFontWeights,
             "font-semibold": !switchFontWeights,
           })}
         >
@@ -81,7 +81,7 @@ export const DataDisplay = ({
 
         <div
           className={cx({
-            "font-light": !switchFontWeights,
+            "font-normal": !switchFontWeights,
             "font-semibold": switchFontWeights,
           })}
         >
