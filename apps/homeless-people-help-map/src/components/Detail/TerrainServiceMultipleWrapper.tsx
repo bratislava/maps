@@ -54,17 +54,13 @@ export const TerrainServiceWrapper = ({
               <Fragment key={key}>
                 <AccordionItem
                   headerIsTrigger
-                  value={`${index}`}
+                  value={index.toString()}
                   title={<div className="font-semibold">{title}</div>}
                   headerClassName={
                     "px-4 py-3 text-left bg-primary-soft dark:bg-primary-soft-darkmode border-b-2 border-primary dark:border-primary-darkmode mb-0"
                   }
                 >
-                  <div
-                    className={cx("px-4", {
-                      "pb-3": index !== terrainServices.length - 1,
-                    })}
-                  >
+                  <div className="px-4 py-3">
                     <div className="flex flex-col gap-4">
                       <TerrainServiceDetail
                         provider={provider}

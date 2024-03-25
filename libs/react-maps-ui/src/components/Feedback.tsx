@@ -17,7 +17,7 @@ export const Feedback = ({
       <a
         href={reportProblemLink}
         target="_blank"
-        className="underline font-semibold text-[#E07B04]"
+        className="underline"
         rel="noreferrer"
       >
         {reportProblem}
