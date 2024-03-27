@@ -1,1 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41.02 31.92"><defs><style>.cls-1{fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:.5px;}</style></defs><g id="Layer_1-2"><g><path class="cls-1" d="M22.15,31.67c11.55,0,18.61-5.04,18.61-5.04V10.4c-3.65,0-4.57-3.26-9.77-6.58-.78-.5-2.94-1.97-4.89-3.03-1.64-.89-3.75-.76-4.63,.88h0c-.76,1.41-.3,3.17,1.06,4.02l5.02,3.18s0,.01,0,.01h-11.31"/><path class="cls-1" d="M21.03,25.98H9.43c-1.55,0-2.83,1.27-2.83,2.83v.04c0,1.55,1.27,2.83,2.83,2.83h12.72"/><path class="cls-1" d="M21.03,20.28H4.49c-1.55,0-2.83,1.27-2.83,2.83v.04c0,1.55,1.27,2.83,2.83,2.83H21.03"/><path class="cls-1" d="M21.03,14.59H3.08c-1.55,0-2.83,1.27-2.83,2.83v.04c0,1.55,1.27,2.83,2.83,2.83H21.03"/><path class="cls-1" d="M19.4,8.89H7.13c-1.55,0-2.83,1.27-2.83,2.83v.04c0,1.55,1.27,2.83,2.83,2.83h13.9"/></g></g></svg>
+<svg width="29" height="22" viewBox="0 0 29 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_4361_26163)">
+<path d="M15.7873 21.6874C23.6964 21.6874 28.5309 18.2362 28.5309 18.2362V7.12228C26.0315 7.12228 25.4015 4.88992 21.8407 2.61647C21.3065 2.27408 19.8274 1.26746 18.4921 0.5416C17.3691 -0.0678499 15.9242 0.0211707 15.3216 1.1442C14.8012 2.10973 15.1162 3.31494 16.0475 3.897L19.485 6.07458V6.08143H11.7402" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.02 17.791H7.07658C6.01518 17.791 5.13867 18.6607 5.13867 19.7289V19.7563C5.13867 20.8177 6.00834 21.6942 7.07658 21.6942H15.7869" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.0204 13.8877H3.69426C2.63286 13.8877 1.75635 14.7574 1.75635 15.8256V15.853C1.75635 16.9144 2.62601 17.7909 3.69426 17.7909H15.0204" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.0201 9.99121H2.72844C1.66704 9.99121 0.790527 10.8609 0.790527 11.9291V11.9565C0.790527 13.0179 1.66019 13.8944 2.72844 13.8944H15.0201" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.9041 6.08789H5.50188C4.44048 6.08789 3.56396 6.95755 3.56396 8.0258V8.05319C3.56396 9.11459 4.43363 9.99111 5.50188 9.99111H15.0202" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_4361_26163">
+<rect width="28.0895" height="21.858" fill="white" transform="translate(0.618164)"/>
+</clipPath>
+</defs>
+</svg>
