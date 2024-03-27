@@ -4,7 +4,8 @@ export default {
   close: "Close",
   loading: "Loading",
   moreInformation: "More information",
-  reportProblemLink: "mailto:sekciasocialnychveci@bratislava.sk",
+  reportProblemLink:
+    "mailto:sekciasocialnychveci@bratislava.sk?subject=Map of help to homeless people - suggestion to change/add information",
   reportProblem: "sekciasocialnychveci@bratislava.sk",
   problemHint:
     "Did you find stale information or map is missing something? Write us and help us improving map.",
@@ -186,8 +187,10 @@ export default {
     title: "Map of help to homeless people.",
     description:
       "Did you find outdated information or is something missing on map? Write to us at <1>sekciasocialnychveci@bratislava.sk</1> and help improve the map. You can find more about activities in the social field on the website of the capital, in the section social services and housing.",
-    descriptionLink: "mailto:sekciasocialnychveci@bratislava.sk",
+    descriptionLink:
+      "mailto:sekciasocialnychveci@bratislava.sk?subject=Map of help to homeless people - suggestion to change/add information",
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
-    footerLink: "mailto:mapy.inovacie@bratislava.sk",
+    footerLink:
+      "mailto:mapy.inovacie@bratislava.sk?subject=Map of help to homeless people - feedback",
   },
 };

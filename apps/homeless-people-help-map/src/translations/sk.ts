@@ -4,7 +4,8 @@ export default {
   close: "Zavrieť",
   loading: "Načítavanie",
   moreInformation: "Viac informácií",
-  reportProblemLink: "mailto:sekciasocialnychveci@bratislava.sk",
+  reportProblemLink:
+    "mailto:sekciasocialnychveci@bratislava.sk?subject=Mapa pomoci pre ľudí bez domova - návrh na zmenu/doplnenie údajov",
   reportProblem: "sekciasocialnychveci@bratislava.sk",
   problemHint:
     "Našli ste neaktuálnu informáciu alebo niečo na mape chýba? Napíšte nám a pomôžte mapu zlepšovať.",
@@ -186,8 +187,10 @@ export default {
     title: "Mapa pomoci ľudom bez domova.",
     description:
       "Našli ste neaktuálnu informáciu alebo niečo na mape chýba? Napíšte nám na <1>sekciasocialnychveci@bratislava.sk</1> a pomôžte mapu zlepšovať. Viac o aktivitách v sociálnej oblasti nájdete na webe hlavného mesta, v sekcii sociálne služby a bývanie.",
-    descriptionLink: "mailto:sekciasocialnychveci@bratislava.sk",
+    descriptionLink:
+      "mailto:sekciasocialnychveci@bratislava.sk?subject=Mapa pomoci pre ľudí bez domova - návrh na zmenu/doplnenie údajov",
     footer: "Zanechajte nám spätnú väzbu na <1>mapy.inovacie@bratislava.sk</1>",
-    footerLink: "mailto:mapy.inovacie@bratislava.sk",
+    footerLink:
+      "mailto:mapy.inovacie@bratislava.sk?subject=Mapa pomoci pre ľudí bez domova - spätná väzba",
   },
 };
