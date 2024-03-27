@@ -1,0 +1,88 @@
+"use strict";
+exports.__esModule = true;
+/* eslint-disable camelcase */
+exports["default"] = {
+    title: "Non-residential premises",
+    tabTitle: "Non-residential premises - Magistrát mesta Bratislava",
+    search: "Search",
+    close: "Close",
+    loading: "Loading",
+    layersLabel: "Layers",
+    noImage: "No image",
+    loadingImage: "Loading image",
+    filters: {
+        title: "Filtering",
+        reset: "Reset",
+        purpose: {
+            title: "Purpose",
+            placeholder: "Purpose",
+            multiplePurposes: "Selected"
+        },
+        occupancy: {
+            title: "Occupancy",
+            placeholder: "Occupancy",
+            multipleOccupancies: "Selected",
+            types: {
+                free: "Free",
+                forRent: "For rent",
+                other: "Not available",
+                occupied: "Occupied"
+            }
+        },
+        district: {
+            title: "District",
+            placeholder: "District",
+            multipleDistricts: "Selected"
+        },
+        area: {
+            title: "Area"
+        },
+        price: {
+            title: "Approximate price per year"
+        }
+    },
+    detail: {
+        title: "Premise detail",
+        premiseCount_zero: "No premises",
+        premiseCount_one: "{{count}} premise",
+        premiseCount_few: "{{count}} premises",
+        premiseCount_other: "{{count}} premises",
+        locality: "Locality",
+        purpose: "Purpose",
+        lessee: "Lessee",
+        rentUntil: "Rent until",
+        indefinite: "Indefinite",
+        approximateArea: "Approximate area",
+        approximateRentPricePerYear: "Approximate rent price per year",
+        description: "Description",
+        contract: "Contract",
+        rentalContract: "rental contract",
+        free: "Free",
+        occupied: "Occupied",
+        premisePhotos: "photos",
+        forRent: "For rent",
+        other: "Not available",
+        ongoingCompetition: "Ongoing competition",
+        contactUs: "Contact us for information about this space",
+        groundPlan: "Ground Plan",
+        spacePlan: "Floor plan of the space",
+        streetView: "Street view"
+    },
+    legend: {
+        title: "Legend",
+        free: "Free",
+        forRent: "For rent",
+        other: "Not available",
+        occupied: "Occupied",
+        districtBorder: "Disctrict border"
+    },
+    activeFilters: "Active filters",
+    resetFilters: "Reset filters",
+    informationModal: {
+        title: "Map information",
+        description: "List of non-residential premises owned and managed by the city of Bratislava. If you are interested in more information about the lease, contact us at <1>spravanehnutelnosti@bratislava.sk</1>.",
+        descriptionLink: "mailto:spravanehnutelnosti@bratislava.sk",
+        footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
+        footerLink: "mailto:mapy.inovacie@bratislava.sk"
+    }
+};

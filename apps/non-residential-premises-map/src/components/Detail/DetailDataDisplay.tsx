@@ -1,15 +1,16 @@
-import { DataDisplay, ImageLightBox, Note } from "@bratislava/react-maps-ui";
-import { useArcgisAttachments } from "@bratislava/react-use-arcgis";
+import * as React from "react";
+import { DataDisplay, ImageLightBox, Note } from "../../libs/react-maps-ui";
+import { useArcgisAttachments } from "../../libs/react-use-arcgis";
 import { Feature } from "geojson";
 import { useTranslation } from "react-i18next";
 import { colors } from "../../utils/colors";
-import cx from "classnames";
+import * as cx from "classnames";
 import { ButtonLink } from "../ButtonLink";
 import { ReactComponent as ImageIcon } from "../../assets/icons/imageicon.svg";
 import { ReactComponent as GoogleStreetIcon } from "../../assets/icons/googlestreetview.svg";
 import { useState } from "react";
 import { GEOPORTAL_LAYER_URL } from "../../utils/const";
-import RoundedIconButon from "@bratislava/react-maps/src/components/Detail/RoundedIconButon";
+import RoundedIconButon from "../../libs/react-maps/src/components/Detail/RoundedIconButon";
 
 export interface IDetailDataDisplayProps {
   feature: Feature;

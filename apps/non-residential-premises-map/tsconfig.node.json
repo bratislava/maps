@@ -2,7 +2,11 @@
   "compilerOptions": {
     "composite": true,
     "module": "esnext",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "jsx": "react",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite-library.config", "./tailwind.config.ts", "src", "./environment.ts", "dist/components/App.d.ts", "dist/translations/en.d.ts", "dist/utils/colors.d.ts", "dist/utils/const.d.ts", "postcss.config.ts"]
 }

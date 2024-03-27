@@ -1,4 +1,4 @@
-import { Marker as MapMarker } from "@bratislava/react-mapbox";
+import { Marker as MapMarker } from "../../libs/react-mapbox";
 import { Feature } from "geojson";
 import { point } from "@turf/helpers";
 import { MultiFeatureMarker } from "./MultiFeatureMarker";

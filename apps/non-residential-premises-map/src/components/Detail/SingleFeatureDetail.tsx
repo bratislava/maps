@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { AnimateHeight, DataDisplay, ImageLightBox } from "@bratislava/react-maps-ui";
+import { AnimateHeight, DataDisplay, ImageLightBox } from "../../libs/react-maps-ui";
 import { Feature } from "geojson";
 import { Image } from "../Image";
 import { DetailDataDisplay } from "./DetailDataDisplay";
 import { useTranslation } from "react-i18next";
-import { useArcgisAttachments } from "@bratislava/react-use-arcgis";
+import { useArcgisAttachments } from "../../libs/react-use-arcgis";
 import { GEOPORTAL_LAYER_URL } from "../../utils/const";
 
 export interface ISingleFeatureDetailProps {

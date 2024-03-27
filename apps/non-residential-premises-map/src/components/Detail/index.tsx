@@ -2,8 +2,8 @@ import { Feature } from "geojson";
 import { useState, useEffect, useRef, useMemo, MutableRefObject, forwardRef } from "react";
 import { SingleFeatureDetail } from "./SingleFeatureDetail";
 import { MultiFeatureDetail } from "./MultiFeatureDetail";
-import { Detail as MapDetail } from "@bratislava/react-maps";
-import { SheetHandle } from "@bratislava/react-maps-ui";
+import { Detail as MapDetail } from "../../libs/react-maps";
+import { SheetHandle } from "../../libs/react-maps-ui";
 
 export interface DetailProps {
   features: Array<Feature>;

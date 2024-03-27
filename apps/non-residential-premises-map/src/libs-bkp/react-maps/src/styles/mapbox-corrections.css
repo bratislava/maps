@@ -1,0 +1,28 @@
+.mapboxgl-ctrl-attrib-button {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='24' height='24' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd'%3E %3Cpath d='M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0'/%3E %3C/svg%3E") !important;
+  background-color: rgba(255, 255, 255, 50) !important;
+}
+
+.mapboxgl-ctrl {
+  margin: 0 !important;
+}
+
+.mapboxgl-popup {
+  @apply z-50 !important;
+}
+
+.mapboxgl-popup-content {
+  @apply text-[16px] font-sans pointer-events-none bg-background-lightmode w-fit dark:bg-background-darkmode border-2 border-background-lightmode dark:border-gray-darkmode/20 rounded-lg shadow-lg text-foreground-lightmode dark:text-foreground-darkmode p-2 !important;
+}
+
+.mapboxgl-popup-tip {
+  @apply z-50 !important;
+}
+
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  @apply -translate-y-[2px] border-t-background-lightmode dark:border-t-background-darkmode !important;
+}
+
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+  @apply translate-y-[2px] border-b-background-lightmode dark:border-b-background-darkmode !important;
+}

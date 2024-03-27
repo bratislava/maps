@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import checker from "vite-plugin-checker";
 import svgr from "vite-plugin-svgr";
 import { resolve } from "path";
-import postcss from "./postcss.config.js";
+import postcss from "./postcss.config";
 
 export default defineConfig({
   plugins: [react(), svgr(), checker({ typescript: true })],
@@ -20,13 +20,13 @@ export default defineConfig({
         manualChunks: {
           "mapbox-gl": ["mapbox-gl"],
           "framer-motion": ["framer-motion"],
-          "@bratislava/geojson-data": ["@bratislava/geojson-data"],
-          "@bratislava/react-maps": ["@bratislava/react-maps"],
+          // "@bratislava/geojson-data": ["@bratislava/geojson-data"],
+          // "@bratislava/react-maps": ["@bratislava/react-maps"],
         },
       },
     },
   },
   css: {
-    postcss
-  }
+    postcss,
+  },
 });

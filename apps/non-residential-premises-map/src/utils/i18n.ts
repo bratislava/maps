@@ -3,6 +3,7 @@ import { initReactI18next } from "react-i18next";
 import enTranslation from "../translations/en";
 import skTranslation from "../translations/sk";
 import { i18n as ReactMapsI18n } from "@bratislava/react-maps";
+import { environment } from "../../environment";
 
 const getLangFromQuery = () => {
   const pathnameArray = window.location.pathname.split("/");
@@ -21,7 +22,7 @@ const queryLanguage = getLangFromQuery();
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
-    debug: import.meta.env.DEV,
+    debug: environment.nodeEnv === "development",
     resources: {
       en: {
         translation: enTranslation,

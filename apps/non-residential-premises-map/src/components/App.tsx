@@ -1,11 +1,12 @@
-import { useArcgis } from "@bratislava/react-use-arcgis";
-import cx from "classnames";
+import { useArcgis } from "../libs/react-use-arcgis";
+import * as cx from "classnames";
+import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import "../styles.css";
 import { colors } from "../utils/colors";
 
-import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
+import { DISTRICTS_GEOJSON } from "../libs/geojson-data";
 
 // maps
 import {
@@ -16,7 +17,7 @@ import {
   Slot,
   ThemeController,
   ViewportController,
-} from "@bratislava/react-maps";
+} from "../libs/react-maps";
 
 import {
   Cluster,
@@ -25,28 +26,29 @@ import {
   useCombinedFilter,
   useFilter,
   useMarkerOrFeaturesInQuery,
-} from "@bratislava/react-mapbox";
+} from "../libs/react-mapbox";
 
 // layer styles
 import DISTRICTS_STYLE from "../assets/layers/districts/districts";
 
 // utils
-import { usePrevious } from "@bratislava/utils";
+import { usePrevious } from "../libs/utils";
 import { Feature, FeatureCollection } from "geojson";
 import { processData } from "../utils/utils";
 import { Filters } from "./Filters";
 
-import { Funnel } from "@bratislava/react-maps-icons";
-import { IconButton, Sidebar } from "@bratislava/react-maps-ui";
+import { Funnel } from "../libs/react-maps-icons";
+import { IconButton, Sidebar } from "../libs/react-maps-ui";
 import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
 import Detail from "./Detail";
 import { Legend } from "./Legend";
 import { Marker } from "./Marker";
 import { GEOPORTAL_LAYER_URL } from "../utils/const";
-import { Point } from "@bratislava/utils/src/types";
+import { Point } from "../libs/utils/src/types";
+import { environment } from "../../environment";
 
-const isDevelopment = !!import.meta.env.DEV;
+const isDevelopment = !!environment.nodeEnv;
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -370,10 +372,10 @@ export const App = () => {
       loadingSpinnerColor={colors.primary}
       ref={mapRef}
       minZoom={!isMobile ? 10.8 : 10.4}
-      mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
+      mapboxAccessToken={environment.mapboxPublicToken}
       mapStyles={{
-        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+        light: environment.mapboxLightStyle,
+        dark: environment.mapboxDarkStyle,
       }}
       enableSatelliteOnLoad
       initialViewport={{
@@ -391,14 +393,15 @@ export const App = () => {
       }}
       mapInformation={{
         title: t("informationModal.title"),
-        description: (
-          <Trans i18nKey="informationModal.description">
-            before
-            <a href={t("informationModal.descriptionLink")} className="underline font-semibold">
-              link
-            </a>
-          </Trans>
-        ),
+        // description: (
+        //   <Trans i18nKey="informationModal.description">
+        //     before
+        //     <a href={t("informationModal.descriptionLink")} className="underline font-semibold">
+        //       link
+        //     </a>
+        //   </Trans>
+        // ),
+        description: "text",
         partners: [
           {
             name: "bratislava",

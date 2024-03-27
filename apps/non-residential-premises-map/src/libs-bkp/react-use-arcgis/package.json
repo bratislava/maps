@@ -1,0 +1,10 @@
+{
+  "name": "@bratislava/react-use-arcgis",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/geojson": "^7946.0.10",
+    "react": "^18.2.0"
+  }
+}

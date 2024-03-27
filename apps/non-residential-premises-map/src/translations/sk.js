@@ -1,0 +1,88 @@
+"use strict";
+exports.__esModule = true;
+/* eslint-disable camelcase */
+exports["default"] = {
+    title: "Nebytové priestory",
+    tabTitle: "Nebytové priestory - Magistrát mesta Bratislava",
+    search: "Hľadať",
+    close: "Zavrieť",
+    loading: "Načítavanie",
+    layersLabel: "Vrstvy",
+    noImage: "Žiaden obrázok",
+    loadingImage: "Načítava sa obrázok",
+    filters: {
+        title: "Filter",
+        reset: "Zrušiť",
+        purpose: {
+            title: "Účel",
+            placeholder: "Účel",
+            multiplePurposes: "Zvolených"
+        },
+        occupancy: {
+            title: "Obsadenosť",
+            placeholder: "Obsadenosť",
+            multipleOccupancies: "Zvolených",
+            types: {
+                free: "Voľné",
+                forRent: "Na prenájom",
+                other: "Nie je k dispozícii",
+                occupied: "Obsadené"
+            }
+        },
+        district: {
+            title: "Mestská časť",
+            placeholder: "Mestská časť",
+            multipleDistricts: "Zvolených"
+        },
+        area: {
+            title: "Výmera"
+        },
+        price: {
+            title: "Orientačná ročná cena"
+        }
+    },
+    detail: {
+        title: "Detail priestoru",
+        premiseCount_zero: "Žiadne priestory",
+        premiseCount_one: "{{count}} priestor",
+        premiseCount_few: "{{count}} priestory",
+        premiseCount_other: "{{count}} priestorov",
+        locality: "Lokalita",
+        purpose: "Účel priestoru",
+        lessee: "Nájomca",
+        rentUntil: "Doba nájmu",
+        indefinite: "Neurčitá",
+        approximateArea: "Orientačná výmera",
+        approximateRentPricePerYear: "Orientačná ročná cena nájmu",
+        description: "Detailný popis",
+        contract: "Zmluva",
+        rentalContract: "nájomná zmluva",
+        free: "Voľné",
+        occupied: "Obsadené",
+        premisePhotos: "Fotografie",
+        forRent: "Na prenájom",
+        other: "Nie je k dispozícii",
+        ongoingCompetition: "Prebiehajúca súťaž",
+        contactUs: "Kontaktujte nás pre informácie o tomto priestore",
+        groundPlan: "Pôdorys",
+        spacePlan: "Pôdorys priestoru",
+        streetView: "Street view"
+    },
+    legend: {
+        title: "Legenda",
+        free: "Voľné",
+        forRent: "Na prenájom",
+        other: "Nie je k dispozícii",
+        occupied: "Obsadené",
+        districtBorder: "Hranica mestskej časti"
+    },
+    activeFilters: "Aktívny filter",
+    resetFilters: "Zrušiť filter",
+    informationModal: {
+        title: "Informácie o mape",
+        description: "Zoznam nebytových priestorov vo vlastníctve a správe mesta Bratislava. V prípade záujmu o bližšie informácie k nájmom nás kontaktujte na <1>spravanehnutelnosti@bratislava.sk</1>.",
+        descriptionLink: "mailto:spravanehnutelnosti@bratislava.sk",
+        footer: "Zanechajte nám spätnú väzbu na <1>mapy.inovacie@bratislava.sk</1>",
+        footerLink: "mailto:mapy.inovacie@bratislava.sk"
+    }
+};

@@ -1,6 +1,6 @@
-import { IFilterResult } from "@bratislava/react-mapbox";
-import { SearchBar } from "@bratislava/react-maps";
-import { Funnel, X } from "@bratislava/react-maps-icons";
+import { IFilterResult } from "../libs/react-mapbox";
+import { SearchBar } from "../libs/react-maps";
+import { Funnel, X } from "../libs/react-maps-icons";
 import cx from "classnames";
 import {
   ActiveFilters,
@@ -9,7 +9,7 @@ import {
   SelectOption,
   Sidebar,
   Slider,
-} from "@bratislava/react-maps-ui";
+} from "../libs/react-maps-ui";
 import { useTranslation } from "react-i18next";
 import { SelectValueRenderer } from "./SelectValueRenderer";
 import { useMemo } from "react";

@@ -1,0 +1,12 @@
+import { Feature } from "geojson";
+import { AllExp } from "./decision/all";
+import { AnyExp } from "./decision/any";
+import { EqualsExp } from "./decision/equals";
+import { GteExp } from "./decision/gte";
+import { LteExp } from "./decision/lte";
+import { GetExp } from "./lookup/get";
+import { InExp } from "./lookup/in";
+export type Exp = AllExp | AnyExp | EqualsExp | GetExp | InExp | GteExp | LteExp;
+export type Value = boolean | string | null | number;
+export type ExpOrValue = Exp | Value;
+export declare const evaluate: (exp: ExpOrValue, f: Feature) => string | number | boolean;

@@ -1,10 +1,10 @@
-import { Accordion, AccordionItem, Divider } from "@bratislava/react-maps-ui";
+import { Accordion, AccordionItem, Divider } from "../../libs/react-maps-ui";
 import { Feature } from "geojson";
 import { useEffect, useMemo, useState, Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { DetailDataDisplay } from "./DetailDataDisplay";
 import cx from "classnames";
-import { getUniqueValuesFromFeatures } from "@bratislava/utils";
+import { getUniqueValuesFromFeatures } from "../../libs/utils";
 
 const CustomAccordionItem = ({
   value,

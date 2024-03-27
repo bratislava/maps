@@ -1,8 +1,8 @@
-import { Chevron } from "@bratislava/react-maps-icons";
+import { Chevron } from "../libs/react-maps-icons";
 import classnames from "classnames";
 import { ReactNode } from "react";
 import { colors } from "../utils/colors";
-import type { TOccupacy } from "./Detail/DetailDataDisplay";
+import { TOccupacy } from "./Detail/DetailDataDisplay";
 
 export interface IButtonProps {
   href: string;
