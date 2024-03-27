@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build",
-    "build-library": "tsc && vite build --config vite-library.config.ts",
+    "build-library": "tsc --module commonjs && vite build --config vite-library.config.ts",
     "build:k-z": "tsc && vite build",
     "build:suppress": "tsc-silent -p ./tsconfig.json --suppress @ && vite build",
     "preview": "vite preview",

@@ -45,8 +45,9 @@ import { Legend } from "./Legend";
 import { Marker } from "./Marker";
 import { GEOPORTAL_LAYER_URL } from "../utils/const";
 import { Point } from "@bratislava/utils/src/types";
+import { environment } from "../../environment";
 
-const isDevelopment = !!import.meta.env.DEV;
+const isDevelopment = !!environment.nodeEnv;
 
 export const App = () => {
   const { t, i18n } = useTranslation();
@@ -370,10 +371,10 @@ export const App = () => {
       loadingSpinnerColor={colors.primary}
       ref={mapRef}
       minZoom={!isMobile ? 10.8 : 10.4}
-      mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
+      mapboxAccessToken={environment.mapboxPublicToken}
       mapStyles={{
-        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+        light: environment.mapboxLightStyle,
+        dark: environment.mapboxDarkStyle,
       }}
       enableSatelliteOnLoad
       initialViewport={{
