@@ -126,6 +126,7 @@ export default {
     medicalTreatment: "medical treatment",
     culture: "culture",
     drugsAndSex: "Contact center for drug users and people from the sex business",
+    terrainServices: "terrain services",
     kolo: "Kolo - the center of reuse",
   },
 

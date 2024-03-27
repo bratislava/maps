@@ -126,6 +126,7 @@ export default {
     medicalTreatment: "zdravotné oštrenie",
     culture: "kultúra",
     drugsAndSex: "Kontaktné centrum pre užívateľov drog a ľudí zo sexbiznisu",
+    terrainServices: "terénne služby",
     kolo: "Kolo - centrum opätovného použitia",
   },
 
