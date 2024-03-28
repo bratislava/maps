@@ -57,6 +57,8 @@ export const App = () => {
   const { t, i18n } = useTranslation();
 
   const [isSidebarVisible, setSidebarVisible] = useState(false);
+  const [frameState, setFrameState] = useState<boolean>(false);
+  const frameStateSideBar = useRef(isSidebarVisible);
 
   const mapRef = useRef<MapHandle>(null);
 
@@ -123,17 +125,34 @@ export const App = () => {
     return e;
   }, [districtFilter.expression, layerFilterFixedExpression]);
 
+  const handleSideBar = useCallback((value: boolean, changePrevious: boolean) => {
+    if (changePrevious) frameStateSideBar.current = value;
+    setSidebarVisible(value);
+  }, []);
+
   // close sidebar on mobile and open on desktop
   useEffect(() => {
     // from mobile to desktop
-    if (previousMobile !== false && isMobile === false) {
-      setSidebarVisible(true);
+    if (previousMobile == true && !isMobile) {
+      handleSideBar(true, true);
     }
     // from desktop to mobile
-    if (previousMobile !== true && isMobile === true) {
-      setSidebarVisible(false);
+    if (previousMobile == false && isMobile) {
+      handleSideBar(false, true);
     }
-  }, [previousMobile, isMobile]);
+
+    window === window.parent || isMobile ? setFrameState(false) : setFrameState(true);
+  }, [previousMobile, isMobile, handleSideBar]);
+
+  useEffect(() => {
+    if (!frameState) return;
+
+    if (selectedMarker) {
+      handleSideBar(false, false);
+    } else {
+      handleSideBar(frameStateSideBar.current, true);
+    }
+  }, [frameState, selectedMarker, handleSideBar]);
 
   // move point to center when selected
   useEffect(() => {
@@ -466,7 +485,7 @@ export const App = () => {
           <Filters
             isMobile
             isVisible={isSidebarVisible}
-            setVisible={setSidebarVisible}
+            setVisible={(isVisible) => handleSideBar(isVisible ?? false, true)}
             areFiltersDefault={combinedFilter.areDefault}
             activeFilters={combinedFilter.active}
             onResetFiltersClick={combinedFilter.reset}
@@ -506,7 +525,7 @@ export const App = () => {
           <Filters
             isMobile={false}
             isVisible={isSidebarVisible}
-            setVisible={setSidebarVisible}
+            setVisible={(isVisible) => handleSideBar(isVisible ?? false, true)}
             areFiltersDefault={combinedFilter.areDefault}
             onResetFiltersClick={combinedFilter.reset}
             districtFilter={districtFilter}
