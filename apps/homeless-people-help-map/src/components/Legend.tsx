@@ -8,6 +8,7 @@ import { ReactComponent as CounselingIcon } from "../assets/icons/layers/counsel
 import { ReactComponent as CultureIcon } from "../assets/icons/layers/culture.svg";
 import { ReactComponent as NotaBeneIcon } from "../assets/icons/layers/nota-bene.svg";
 import { ReactComponent as DrugsAndSexIcon } from "../assets/icons/layers/drugs-and-sex.svg";
+import { ReactComponent as TerrainServiceIcon } from "../assets/icons/layers/terrain-service.svg";
 import { ReactComponent as HygieneIcon } from "../assets/icons/layers/hygiene.svg";
 import { ReactComponent as MealsIcon } from "../assets/icons/layers/meals.svg";
 import { ReactComponent as MedicalTreatmentIcon } from "../assets/icons/layers/medical-treatment.svg";
@@ -70,6 +71,13 @@ export const Legend = () => {
         >
           <DrugsAndSexIcon className="w-6 h-6" />
           {t("layers.drugsAndSex")}
+        </Tag>
+        <Tag
+          style={{ background: colors.terrainServices }}
+          className="w-fit flex items-center gap-3 text-white"
+        >
+          <TerrainServiceIcon className="w-6 h-6" />
+          {t("layers.terrainServices")}
         </Tag>
       </div>
       <div className="flex flex-col gap-4">
