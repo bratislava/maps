@@ -57,8 +57,8 @@ export const App = () => {
   const { t, i18n } = useTranslation();
 
   const [isSidebarVisible, setSidebarVisible] = useState(false);
-  const [frameState, setFrameState] = useState<boolean>(false);
-  const frameStateSideBar = useRef(isSidebarVisible);
+  const [isSidebarClosedByUser, setSidebarClosedByUser] = useState(false);
+  const [shouldAutomaticalyToggleSideBar, setAutomaticalyToggleSideBar] = useState<boolean>(false);
 
   const mapRef = useRef<MapHandle>(null);
 
@@ -125,34 +125,41 @@ export const App = () => {
     return e;
   }, [districtFilter.expression, layerFilterFixedExpression]);
 
-  const handleSideBar = useCallback((value: boolean, changePrevious: boolean) => {
-    if (changePrevious) frameStateSideBar.current = value;
-    setSidebarVisible(value);
-  }, []);
-
   // close sidebar on mobile and open on desktop
   useEffect(() => {
     // from mobile to desktop
-    if (previousMobile == true && !isMobile) {
-      handleSideBar(true, true);
+    if (previousMobile && !isMobile) {
+      setSidebarVisible(true);
     }
     // from desktop to mobile
-    if (previousMobile == false && isMobile) {
-      handleSideBar(false, true);
+    if (!previousMobile && isMobile) {
+      setSidebarVisible(false);
     }
-
-    window === window.parent || isMobile ? setFrameState(false) : setFrameState(true);
-  }, [previousMobile, isMobile, handleSideBar]);
+  }, [previousMobile, isMobile]);
 
   useEffect(() => {
-    if (!frameState) return;
+    // if in iframe or mobile, close sidebar automaticaly
+    window === window.parent || isMobile
+      ? setAutomaticalyToggleSideBar(false)
+      : setAutomaticalyToggleSideBar(true);
+  }, [isMobile]);
 
-    if (selectedMarker) {
-      handleSideBar(false, false);
-    } else {
-      handleSideBar(frameStateSideBar.current, true);
+  // automatic sidebar toggling
+  useEffect(() => {
+    if (shouldAutomaticalyToggleSideBar && !isSidebarClosedByUser) {
+      if (selectedMarker || selectedFeature || activeTerrainService) {
+        setSidebarVisible(false);
+      } else {
+        setSidebarVisible(true);
+      }
     }
-  }, [frameState, selectedMarker, handleSideBar]);
+  }, [
+    selectedMarker,
+    selectedFeature,
+    activeTerrainService,
+    shouldAutomaticalyToggleSideBar,
+    isSidebarClosedByUser,
+  ]);
 
   // move point to center when selected
   useEffect(() => {
@@ -224,6 +231,7 @@ export const App = () => {
       return;
     }
     // layerFilter is missing in dependencies because it will start rerendering loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTerrainService, rememberedActiveLayerKeys]);
 
   useEffect(() => {
@@ -485,7 +493,7 @@ export const App = () => {
           <Filters
             isMobile
             isVisible={isSidebarVisible}
-            setVisible={(isVisible) => handleSideBar(isVisible ?? false, true)}
+            setVisible={(isVisible) => setSidebarVisible(isVisible)}
             areFiltersDefault={combinedFilter.areDefault}
             activeFilters={combinedFilter.active}
             onResetFiltersClick={combinedFilter.reset}
@@ -525,7 +533,11 @@ export const App = () => {
           <Filters
             isMobile={false}
             isVisible={isSidebarVisible}
-            setVisible={(isVisible) => handleSideBar(isVisible ?? false, true)}
+            setVisible={(isVisible) => {
+              !isVisible && setSidebarClosedByUser(true);
+              isVisible && setSidebarClosedByUser(false);
+              setSidebarVisible(isVisible);
+            }}
             areFiltersDefault={combinedFilter.areDefault}
             onResetFiltersClick={combinedFilter.reset}
             districtFilter={districtFilter}
