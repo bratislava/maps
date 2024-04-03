@@ -534,8 +534,7 @@ export const App = () => {
             isMobile={false}
             isVisible={isSidebarVisible}
             setVisible={(isVisible) => {
-              !isVisible && setSidebarClosedByUser(true);
-              isVisible && setSidebarClosedByUser(false);
+              setSidebarClosedByUser(!isVisible);
               setSidebarVisible(isVisible);
             }}
             areFiltersDefault={combinedFilter.areDefault}
