@@ -12,7 +12,7 @@
 }
 
 .mapboxgl-popup-content {
-  @apply text-[16px] font-sans pointer-events-none bg-background-lightmode w-fit dark:bg-background-darkmode border-2 border-background-lightmode dark:border-gray-darkmode/20 rounded-lg shadow-lg text-foreground-lightmode dark:text-foreground-darkmode p-2 !important;
+  @apply text-[16px] font-sans pointer-events-none bg-background-lightmode w-fit dark:bg-background-darkmode border-2 border-background-lightmode dark:border-gray-darkmode/20 rounded-lg shadow-lg text-foreground-lightmode dark:text-foreground-darkmode p-0 !important;
 }
 
 .mapboxgl-popup-tip {

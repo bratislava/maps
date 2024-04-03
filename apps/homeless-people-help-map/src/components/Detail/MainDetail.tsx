@@ -176,7 +176,7 @@ export const MainDetail = ({ properties, className, isExpanded, isMobile }: IMai
 
         {isSomeService && (
           <div className="flex flex-col gap-1">
-            <div className="font-light text-[14px]">{detailT("services")}</div>
+            <div className="text-[14px] font-semibold">{detailT("services")}</div>
             <div className="flex flex-wrap gap-2">
               {properties.isCounseling && (
                 <Tag
