@@ -57,6 +57,8 @@ export const App = () => {
   const { t, i18n } = useTranslation();
 
   const [isSidebarVisible, setSidebarVisible] = useState(false);
+  const [isSidebarClosedByUser, setSidebarClosedByUser] = useState(false);
+  const [shouldAutomaticalyToggleSideBar, setAutomaticalyToggleSideBar] = useState<boolean>(false);
 
   const mapRef = useRef<MapHandle>(null);
 
@@ -126,14 +128,38 @@ export const App = () => {
   // close sidebar on mobile and open on desktop
   useEffect(() => {
     // from mobile to desktop
-    if (previousMobile !== false && isMobile === false) {
+    if (previousMobile && !isMobile) {
       setSidebarVisible(true);
     }
     // from desktop to mobile
-    if (previousMobile !== true && isMobile === true) {
+    if (!previousMobile && isMobile) {
       setSidebarVisible(false);
     }
   }, [previousMobile, isMobile]);
+
+  useEffect(() => {
+    // if in iframe or mobile, close sidebar automaticaly
+    window === window.parent || isMobile
+      ? setAutomaticalyToggleSideBar(false)
+      : setAutomaticalyToggleSideBar(true);
+  }, [isMobile]);
+
+  // automatic sidebar toggling
+  useEffect(() => {
+    if (shouldAutomaticalyToggleSideBar && !isSidebarClosedByUser) {
+      if (selectedMarker || selectedFeature || activeTerrainService) {
+        setSidebarVisible(false);
+      } else {
+        setSidebarVisible(true);
+      }
+    }
+  }, [
+    selectedMarker,
+    selectedFeature,
+    activeTerrainService,
+    shouldAutomaticalyToggleSideBar,
+    isSidebarClosedByUser,
+  ]);
 
   // move point to center when selected
   useEffect(() => {
@@ -207,6 +233,7 @@ export const App = () => {
       return;
     }
     // layerFilter is missing in dependencies because it will start rerendering loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTerrainService, rememberedActiveLayerKeys]);
 
   useEffect(() => {
@@ -468,7 +495,7 @@ export const App = () => {
           <Filters
             isMobile
             isVisible={isSidebarVisible}
-            setVisible={setSidebarVisible}
+            setVisible={(isVisible) => setSidebarVisible(isVisible)}
             areFiltersDefault={combinedFilter.areDefault}
             activeFilters={combinedFilter.active}
             onResetFiltersClick={combinedFilter.reset}
@@ -508,7 +535,10 @@ export const App = () => {
           <Filters
             isMobile={false}
             isVisible={isSidebarVisible}
-            setVisible={setSidebarVisible}
+            setVisible={(isVisible) => {
+              setSidebarClosedByUser(!isVisible);
+              setSidebarVisible(isVisible);
+            }}
             areFiltersDefault={combinedFilter.areDefault}
             onResetFiltersClick={combinedFilter.reset}
             districtFilter={districtFilter}
