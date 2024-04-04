@@ -320,6 +320,7 @@ export const App = () => {
 
   const onFeaturesClick = useCallback(
     (features: MapboxGeoJSONFeature[]) => {
+      // features from args has properties in json format, thats why we use features from original source
       const selectedFeatureFromOriginalSource =
         features &&
         features[0] &&
