@@ -89,9 +89,7 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
 
       try {
         const terrainServices = feature?.properties
-          ? terrainServicePropertiesSchema
-              .array()
-              .parse(JSON.parse(feature?.properties.terrainServices))
+          ? terrainServicePropertiesSchema.array().parse(feature?.properties.terrainServices)
           : [];
         const name = nameSchema.parse(feature?.properties?.name);
         return (

@@ -17,7 +17,14 @@ import {
 import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
 
-import { Filter, Layer, useCombinedFilter, useFilter } from "@bratislava/react-mapbox";
+import {
+  Filter,
+  Layer,
+  useCombinedFilter,
+  useFilter,
+  useMarkerOrFeaturesInQuery,
+} from "@bratislava/react-mapbox";
+import { featureCollection } from "@turf/helpers";
 
 // layer styles
 import DISTRICTS_STYLE from "../assets/layers/districts";
@@ -58,12 +65,14 @@ export const App = () => {
 
   const [isSidebarVisible, setSidebarVisible] = useState(false);
   const [isSidebarClosedByUser, setSidebarClosedByUser] = useState(false);
-  const [shouldAutomaticalyToggleSideBar, setAutomaticalyToggleSideBar] = useState<boolean>(false);
+  const [shouldAutomaticallyToggleSideBar, setAutomaticallyToggleSideBar] =
+    useState<boolean>(false);
 
   const mapRef = useRef<MapHandle>(null);
 
   const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
-  const [selectedFeature, setSelectedFeature] = useState<MapboxGeoJSONFeature | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
+  const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>([]);
 
   const [isLegendOpen, setLegendOpen] = useState(false);
 
@@ -106,6 +115,13 @@ export const App = () => {
     return result;
   }, [layerFilter]);
 
+  // this is needed to update selectedFeatures when selectedFeature is changed
+  // this is needed because of unnecessary rerendering useMarkerOrFeaturesInQuery which causes multiple query parameters to appear
+  // lazy solution without diving too deep into logic
+  useEffect(() => {
+    setSelectedFeatures(selectedFeature ? [selectedFeature] : []);
+  }, [selectedFeature]);
+
   const combinedFilter = useCombinedFilter({
     combiner: "all",
     filters: [
@@ -125,6 +141,27 @@ export const App = () => {
     return e;
   }, [districtFilter.expression, layerFilterFixedExpression]);
 
+  useMarkerOrFeaturesInQuery({
+    markersData: featureCollection(terrainServicesGroupedByRegion ?? []),
+    selectedFeatures: selectedFeatures,
+    setSelectedFeaturesAndZoom: (features) => {
+      // frameState is not set in the beginning - setTimeout as a lazy solution
+      setTimeout(() => {
+        setSelectedFeature((features && features[0]) || null);
+      }, 500);
+    },
+  });
+  useMarkerOrFeaturesInQuery({
+    markersData: data ?? null,
+    selectedMarker: selectedMarker,
+    setSelectedMarkerAndZoom: (marker) => {
+      // frameState is not set in the beginning - setTimeout as a lazy solution
+      setTimeout(() => {
+        setSelectedMarker(marker);
+      }, 500);
+    },
+  });
+
   // close sidebar on mobile and open on desktop
   useEffect(() => {
     // from mobile to desktop
@@ -138,15 +175,15 @@ export const App = () => {
   }, [previousMobile, isMobile]);
 
   useEffect(() => {
-    // if in iframe or mobile, close sidebar automaticaly
+    // if in iframe or mobile, close sidebar automatically
     window === window.parent || isMobile
-      ? setAutomaticalyToggleSideBar(false)
-      : setAutomaticalyToggleSideBar(true);
+      ? setAutomaticallyToggleSideBar(false)
+      : setAutomaticallyToggleSideBar(true);
   }, [isMobile]);
 
   // automatic sidebar toggling
   useEffect(() => {
-    if (shouldAutomaticalyToggleSideBar && !isSidebarClosedByUser) {
+    if (shouldAutomaticallyToggleSideBar && !isSidebarClosedByUser) {
       if (selectedMarker || selectedFeature || activeTerrainService) {
         setSidebarVisible(false);
       } else {
@@ -157,7 +194,7 @@ export const App = () => {
     selectedMarker,
     selectedFeature,
     activeTerrainService,
-    shouldAutomaticalyToggleSideBar,
+    shouldAutomaticallyToggleSideBar,
     isSidebarClosedByUser,
   ]);
 
@@ -281,11 +318,18 @@ export const App = () => {
     isMobile,
   ]);
 
-  const onFeaturesClick = useCallback((features: MapboxGeoJSONFeature[]) => {
-    setSelectedFeature(features[0] ?? null);
-    setSelectedMarker(null);
-    setActiveTerrainService(null);
-  }, []);
+  const onFeaturesClick = useCallback(
+    (features: MapboxGeoJSONFeature[]) => {
+      const selectedFeatureFromOriginalSource =
+        features &&
+        features[0] &&
+        terrainServicesGroupedByRegion?.find((t) => t.id === features[0].id);
+      setSelectedFeature(selectedFeatureFromOriginalSource ?? null);
+      setSelectedMarker(null);
+      setActiveTerrainService(null);
+    },
+    [terrainServicesGroupedByRegion],
+  );
 
   return (
     <Map

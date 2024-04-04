@@ -6,7 +6,7 @@ export type useMarkerOrFeaturesInQueryOptions = {
   markersData: FeatureCollection | null;
   selectedMarker?: Feature<Point> | null;
   selectedFeatures?: Feature[];
-  zoomAtWhichMarkerWasSelected: number | null;
+  zoomAtWhichMarkerWasSelected?: number | null;
   setSelectedMarkerAndZoom?: (
     feature: Feature<Point, GeoJsonProperties> | null,
     zoom: number | null,
