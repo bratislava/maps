@@ -59,7 +59,7 @@ export default {
         streetView: "Street View",
         alternateRoute: "Obchádzka",
         problemHint:
-          "Nastal kvôli rozkopávke nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
+          "Nastal kvôli rozkopávke problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",
         reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
@@ -85,7 +85,7 @@ export default {
         streetView: "Street View",
         alternateRoute: "Obchádzka",
         problemHint:
-          "Nastal kvôli obmedzeniu nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
+          "Nastal kvôli obmedzeniu problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",
         reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
@@ -112,7 +112,7 @@ export default {
         streetView: "Street View",
         alternateRoute: "Obchádzka",
         problemHint:
-          "Nastal kvôli poruche nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
+          "Nastal kvôli poruche problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",
         reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
@@ -128,7 +128,7 @@ export default {
         description: "Popis",
         fullSize: "Celkový rozmer",
         problemHint:
-          "Nastal kvôli oprave nejaký problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
+          "Nastal kvôli oprave problém? Neboli dodržané povinnosti, či vzniká riziko vo verejnom priestore alebo na vozovke?",
         reportProblem: "Nahlásiť problém",
         reportProblemLink: "http://inovacie.bratislava.sk/nahlasit-problem",
       },
@@ -153,7 +153,7 @@ export default {
     title: "Informácie o mape",
     info: "Dajte nám vedieť, ak nastal kvôli stavebným prácam vo verejnom priestore problém",
     descriptionPart1:
-      "Mapa zobrazuje právoplatne povolené rozkopávky, uzávierky a nahlásené poruchy na miestnych cestách I. a II. triedy.",
+      "Mapa zobrazuje právoplatne povolené rozkopávky, uzávierky a nahlásené poruchy na miestnych cestách I. až IV. triedy.",
     descriptionPart2:
       "<1>Viac informácií</1> o dopravných povoleniach a cestnom správnom orgáne, ktorý povoluje rozkopávky a uzávierky.",
     descriptionPart3: "<1>Viac informácií</1> o správe a údržbe komunikácií v hlavnom meste.",
