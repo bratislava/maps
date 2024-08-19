@@ -3,7 +3,6 @@ import { getUniqueValuesFromFeatures } from "@bratislava/utils";
 import { FeatureCollection, Point } from "geojson";
 import { data as rawData } from "../data/data";
 import { featureCollection } from "@turf/helpers";
-import { fixpointAndSyringeExchangeData as rawFixpointAndSyringeExchangeData } from "../data/fixpointAndSyringeExchange";
 
 export const processData = () => {
   let GLOBAL_ID = 0;
@@ -23,21 +22,6 @@ export const processData = () => {
     ),
   );
 
-  const fixpointAndSyringeExchangeData: FeatureCollection<Point> = addDistrictPropertyToLayer(
-    featureCollection(
-      rawFixpointAndSyringeExchangeData.features.map((f) => {
-        GLOBAL_ID++;
-        return {
-          ...f,
-          id: GLOBAL_ID,
-          properties: {
-            ...f.properties,
-          },
-        };
-      }),
-    ),
-  );
-
   const uniqueDistricts: string[] = getUniqueValuesFromFeatures(data.features, "district").sort(
     (a, b) => DISTRICTS.findIndex((d) => d == a) - DISTRICTS.findIndex((d) => d == b) ?? 0,
   );
@@ -45,6 +29,5 @@ export const processData = () => {
   return {
     data,
     uniqueDistricts,
-    fixpointAndSyringeExchangeData,
   };
 };

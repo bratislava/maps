@@ -7,7 +7,6 @@ export const useDrinkingFountains = () => {
   const { data, isLoading, error } = usePitneFontankyQuery({ locale: i18n.language });
 
   const processedFeatures = data?.pitneFontankies?.data.map((fountain) => {
-    // convert to fixpointAndSyringeExchangeData type
     return {
       // id needs to be different for each Marker on map otherwise it will interact with each other
       // https://github.com/bratislava/private-maps/issues/14#issuecomment-2003846920
