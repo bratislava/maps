@@ -1933,6 +1933,13 @@ export type SluzbyPreLudiBezDomovaQueryVariables = Exact<{
 
 export type SluzbyPreLudiBezDomovaQuery = { __typename?: 'Query', sluzbyPreLudiBezDomovas?: { __typename?: 'SluzbyPreLudiBezDomovaEntityResponseCollection', data: Array<{ __typename?: 'SluzbyPreLudiBezDomovaEntity', id?: string | null, attributes?: { __typename?: 'SluzbyPreLudiBezDomova', Adresa?: string | null, Cas?: string | null, Email?: string | null, Kontaktne_centrum?: string | null, Hygiena_osatenie?: string | null, Kultura?: string | null, Latitude?: number | null, Longitude?: number | null, Mestska_cast?: string | null, Navigacia?: string | null, Navigovat?: string | null, Nazov?: string | null, Noclah_ubytovanie?: string | null, Popis?: string | null, Poskytovatel?: string | null, Socialne_pravne_poradenstvo?: string | null, Strava?: string | null, Tagy?: string | null, Telefon?: any | null, Telefon_popis?: string | null, Web?: string | null, Zdravotne_osetrenie?: string | null, Subor?: { __typename?: 'UploadFileRelationResponseCollection', data: Array<{ __typename?: 'UploadFileEntity', id?: string | null, attributes?: { __typename?: 'UploadFile', url: string } | null }> } | null } | null }> } | null };
 
+export type PitneFontankyQueryVariables = Exact<{
+  locale: Scalars['I18NLocaleCode']['input'];
+}>;
+
+
+export type PitneFontankyQuery = { __typename?: 'Query', pitneFontankies?: { __typename?: 'PitneFontankyEntityResponseCollection', data: Array<{ __typename?: 'PitneFontankyEntity', id?: string | null, attributes?: { __typename?: 'PitneFontanky', Latitude?: number | null, Longitude?: number | null, Nazov?: string | null, Rok_spustenia?: string | null, Spravca?: string | null, Stav?: string | null, Typ?: string | null, Fotky?: { __typename?: 'UploadFileRelationResponseCollection', data: Array<{ __typename?: 'UploadFileEntity', id?: string | null, attributes?: { __typename?: 'UploadFile', url: string } | null }> } | null } | null }> } | null };
+
 
 export const LinkyPomociDocument = `
     query LinkyPomoci($locale: I18NLocaleCode!) {
@@ -2077,5 +2084,43 @@ export const useSluzbyPreLudiBezDomovaQuery = <
     useQuery<SluzbyPreLudiBezDomovaQuery, TError, TData>(
       ['SluzbyPreLudiBezDomova', variables],
       fetcher<SluzbyPreLudiBezDomovaQuery, SluzbyPreLudiBezDomovaQueryVariables>(SluzbyPreLudiBezDomovaDocument, variables),
+      options
+    );
+export const PitneFontankyDocument = `
+    query PitneFontanky($locale: I18NLocaleCode!) {
+  pitneFontankies(locale: $locale) {
+    data {
+      id
+      attributes {
+        Fotky {
+          data {
+            id
+            attributes {
+              url
+            }
+          }
+        }
+        Latitude
+        Longitude
+        Nazov
+        Rok_spustenia
+        Spravca
+        Stav
+        Typ
+      }
+    }
+  }
+}
+    `;
+export const usePitneFontankyQuery = <
+      TData = PitneFontankyQuery,
+      TError = unknown
+    >(
+      variables: PitneFontankyQueryVariables,
+      options?: UseQueryOptions<PitneFontankyQuery, TError, TData>
+    ) =>
+    useQuery<PitneFontankyQuery, TError, TData>(
+      ['PitneFontanky', variables],
+      fetcher<PitneFontankyQuery, PitneFontankyQueryVariables>(PitneFontankyDocument, variables),
       options
     );

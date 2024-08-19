@@ -18,6 +18,7 @@ import { useResizeDetector } from "react-resize-detector";
 import { useWindowSize } from "usehooks-ts";
 
 import {
+  Cluster,
   Filter,
   Layer,
   useCombinedFilter,
@@ -55,6 +56,8 @@ import { useFixpointAndSyringeExchange } from "../data/fixpointAndSyringeExchang
 import { useTerrainServices } from "../data/terrainServices";
 import { useServicesData } from "../data/data";
 import { ITerrainService } from "../utils/types";
+import { DrinkingFountainMarker } from "./DrinkingFountainMarker";
+import { useDrinkingFountains } from "../data/drinkingFountains";
 
 const { uniqueDistricts } = processData();
 const uniqueLayers = Object.keys(colors).filter((key) => key !== "terrainServices");
@@ -71,7 +74,9 @@ export const App = () => {
   const mapRef = useRef<MapHandle>(null);
 
   const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
+  // terrain services are located in sidebar
   const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
+  // grouped terrain services are shown on map
   const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>([]);
 
   const [isLegendOpen, setLegendOpen] = useState(false);
@@ -83,6 +88,7 @@ export const App = () => {
   const previousMobile = usePrevious(isMobile);
 
   const { data: fixpointAndSyringeExchangeData } = useFixpointAndSyringeExchange();
+  const { data: drinkingFountainsData } = useDrinkingFountains();
   const { dataByService: terrainServices, dataGroupedByRegion: terrainServicesGroupedByRegion } =
     useTerrainServices();
   const [activeTerrainService, setActiveTerrainService] = useState<ITerrainService | null>(null);
@@ -384,7 +390,7 @@ export const App = () => {
         geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
-
+      {/* terrain services located in sidebar, they are not shown until selected in sidebar, replacing  */}
       {terrainServices?.map(({ key, geojson }, index) => {
         return (
           <Layer
@@ -431,6 +437,43 @@ export const App = () => {
       {buildingsData.features.map((feature, index) => [
         <BuildingMarker key={index} feature={feature} icon={feature.properties.icon} />,
       ])}
+      {/* DRINKING FOUNTAIN MARKERS */}
+      <Cluster features={drinkingFountainsData?.features ?? []} radius={24}>
+        {({ features, lng, lat, key, clusterExpansionZoom }) => {
+          return features.length === 1 ? (
+            <DrinkingFountainMarker
+              key={key}
+              feature={features[0]}
+              isSelected={selectedFeature?.id === features[0].properties?.id}
+              onClick={(tmp) => {
+                console.log(tmp);
+                setSelectedMarker(tmp);
+              }}
+            />
+          ) : (
+            <DrinkingFountainMarker
+              key={key}
+              feature={{
+                ...features[0],
+                geometry: {
+                  type: "Point",
+                  coordinates: [lng, lat],
+                },
+              }}
+              count={features.length}
+              onClick={() =>
+                mapRef.current?.changeViewport({
+                  zoom: clusterExpansionZoom ?? 0,
+                  center: {
+                    lat,
+                    lng,
+                  },
+                })
+              }
+            />
+          );
+        }}
+      </Cluster>
 
       {/* FIXPOINT AND SYRINGE EXCHANGE MARKERS  TODO CONTINUE HERE*/}
       <Filter expression={activeTerrainService?.key ? ["any", false] : districtFilter.expression}>

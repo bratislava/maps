@@ -89,7 +89,11 @@ export default {
     },
     drinkingFountain: {
       drinkingFountain: "Pitná fontánka",
-      location: "Lokalita",
+      buildSince: "Rok postavenia",
+      maintainer: "Správca",
+      name: "Názov",
+      state: "Stav",
+      type: "Typ",
     },
     terrainService: {
       provider: "Poskytovateľ",
@@ -193,4 +197,5 @@ export default {
     footerLink:
       "mailto:mapy.inovacie@bratislava.sk?subject=Mapa pomoci pre ľudí bez domova - spätná väzba",
   },
+  loadingImage: "Načítava sa obrázok",
 };

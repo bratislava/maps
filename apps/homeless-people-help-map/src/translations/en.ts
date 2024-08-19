@@ -89,7 +89,11 @@ export default {
     },
     drinkingFountain: {
       drinkingFountain: "Drinking fountain",
-      location: "Location",
+      buildSince: "Build since",
+      maintainer: "Maintainer",
+      name: "Name",
+      state: "State",
+      type: "Type",
     },
     terrainService: {
       provider: "Provider",
@@ -193,4 +197,5 @@ export default {
     footerLink:
       "mailto:mapy.inovacie@bratislava.sk?subject=Map of help to homeless people - feedback",
   },
+  loadingImage: "Loading image",
 };
