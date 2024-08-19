@@ -14,6 +14,7 @@ export * from "./DropdownArrow";
 export * from "./Feedback";
 export * from "./IconButton";
 export * from "./IconButtonGroup";
+export * from "./Image";
 export * from "./LoadingSpinner";
 export * from "./Modal";
 export * from "./Popover";

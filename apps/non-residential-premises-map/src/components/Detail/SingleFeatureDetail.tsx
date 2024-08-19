@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { AnimateHeight, DataDisplay, ImageLightBox } from "@bratislava/react-maps-ui";
+import { AnimateHeight, DataDisplay, ImageLightBox, Image } from "@bratislava/react-maps-ui";
 import { Feature } from "geojson";
-import { Image } from "../Image";
 import { DetailDataDisplay } from "./DetailDataDisplay";
 import { useTranslation } from "react-i18next";
 import { useArcgisAttachments } from "@bratislava/react-use-arcgis";
@@ -10,9 +9,14 @@ import { GEOPORTAL_LAYER_URL } from "../../utils/const";
 export interface ISingleFeatureDetailProps {
   feature: Feature;
   isExpanded: boolean;
+  isMobile?: boolean;
 }
 
-export const SingleFeatureDetail = ({ feature, isExpanded }: ISingleFeatureDetailProps) => {
+export const SingleFeatureDetail = ({
+  feature,
+  isExpanded,
+  isMobile,
+}: ISingleFeatureDetailProps) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const { t } = useTranslation("translation", { keyPrefix: "detail" });
 
@@ -36,11 +40,11 @@ export const SingleFeatureDetail = ({ feature, isExpanded }: ISingleFeatureDetai
         <AnimateHeight isVisible={isExpanded}>
           {alternativeImage ? (
             <div className="w-full">
-              <Image object="cover" src={image} />
+              <Image src={image} isMobile={isMobile} />
             </div>
           ) : (
             <button className="w-full" onClick={() => setModalOpen(true)}>
-              <Image object="cover" src={image} />
+              <Image src={image} isMobile={isMobile} />
             </button>
           )}
         </AnimateHeight>
