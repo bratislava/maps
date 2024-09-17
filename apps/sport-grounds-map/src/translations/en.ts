@@ -6,7 +6,6 @@ export default {
   loading: "Loading",
   layersLabel: "Layers",
   noImage: "Image is missing...",
-  loadingImage: "Loading image",
   legend: "Legend",
   filters: {
     title: "Filtering",
