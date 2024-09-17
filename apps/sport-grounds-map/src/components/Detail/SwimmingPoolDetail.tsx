@@ -84,7 +84,7 @@ export const SwimmingPoolDetail = ({
       <>
         {displayHeader && (
           <>
-            <Image src={imgSrc} isMobile={isMobile} />
+            <Image src={imgSrc} isMobile={isMobile} imageMissingText={mainT("noImage")} />
 
             <div className="absolute top-[232px] left-4">
               <a

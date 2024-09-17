@@ -1,4 +1,4 @@
-import { Chevron, X } from "@bratislava/react-maps-icons";
+import { Chevron } from "@bratislava/react-maps-icons";
 import { Tag, Image } from "@bratislava/react-maps-ui";
 import { Feature, Point } from "geojson";
 import { useTranslation } from "react-i18next";
@@ -23,7 +23,7 @@ export const CvickoDetail = ({ feature, isMobile, displayHeader }: CvickoDetailP
     <div className="relative flex flex-col justify-end !text-black dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode w-full">
       {displayHeader && (
         <>
-          <Image src={imgSrc} isMobile={isMobile} />
+          <Image src={imgSrc} isMobile={isMobile} imageMissingText={t("noImage")} />
 
           <div className="absolute top-[232px] left-4">
             <a

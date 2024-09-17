@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import cx from "classnames";
 
 export interface IImageProps {
   src?: string;
   alt?: string;
   isMobile?: boolean;
+  imageMissingText: string;
 }
 
-export const Image = ({ src, alt, isMobile }: IImageProps) => {
-  // add translations in library
-  const { t } = useTranslation();
+export const Image = ({
+  src,
+  alt,
+  isMobile,
+  imageMissingText,
+}: IImageProps) => {
   const [isError, setError] = useState(false);
 
   useEffect(() => {
@@ -24,7 +27,7 @@ export const Image = ({ src, alt, isMobile }: IImageProps) => {
   return (
     <div className="relative w-full h-64 z-0">
       <div className="flex items-center justify-center absolute top-0 right-0 bottom-0 left-0  bg-gray-lightmode dark:bg-gray-darkmode bg-opacity-10 dark:bg-opacity-10">
-        {t("loadingImage")}
+        {imageMissingText}
       </div>
       <img
         draggable="false"

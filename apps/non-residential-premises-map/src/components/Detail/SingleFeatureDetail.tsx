@@ -19,6 +19,7 @@ export const SingleFeatureDetail = ({
 }: ISingleFeatureDetailProps) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const { t } = useTranslation("translation", { keyPrefix: "detail" });
+  const { t: mainT } = useTranslation();
 
   const { data: featureAttachments } = useArcgisAttachments(GEOPORTAL_LAYER_URL, feature?.id || 0);
   const featureImages = featureAttachments?.length
@@ -40,11 +41,11 @@ export const SingleFeatureDetail = ({
         <AnimateHeight isVisible={isExpanded}>
           {alternativeImage ? (
             <div className="w-full">
-              <Image src={image} isMobile={isMobile} />
+              <Image src={image} isMobile={isMobile} imageMissingText={mainT("loadingImage")} />
             </div>
           ) : (
             <button className="w-full" onClick={() => setModalOpen(true)}>
-              <Image src={image} isMobile={isMobile} />
+              <Image src={image} isMobile={isMobile} imageMissingText={mainT("loadingImage")} />
             </button>
           )}
         </AnimateHeight>

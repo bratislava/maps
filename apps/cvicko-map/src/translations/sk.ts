@@ -40,5 +40,4 @@ export default {
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },
   noImage: "Žiaden obrázok",
-  loadingImage: "Načítava sa obrázok",
 };

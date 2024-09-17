@@ -6,7 +6,6 @@ export default {
   loading: "Načítavanie",
   layersLabel: "Vrstvy",
   noImage: "Chýbajúci obrázok...",
-  loadingImage: "Načítava sa obrázok",
   legend: "Legenda",
   filters: {
     title: "Filter",

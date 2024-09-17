@@ -23,7 +23,7 @@ export const CvickoDetail = ({ feature, isMobile, displayHeader }: CvickoDetailP
     <div className="relative flex flex-col justify-end text-foreground-lightmode dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode w-full">
       {displayHeader && (
         <>
-          <Image src={imgSrc} isMobile={isMobile} />
+          <Image src={imgSrc} isMobile={isMobile} imageMissingText={mainT("noImage")} />
 
           <div className="absolute top-[232px] left-4">
             <a
