@@ -72,7 +72,7 @@ export const App = () => {
     useState<boolean>(false);
 
   const mapRef = useRef<MapHandle>(null);
-
+  // TODO refactor this, why is there 3 different states for selected feature/marker
   const [selectedMarker, setSelectedMarker] = useState<Feature<Point> | null>(null);
   // terrain services are located in sidebar
   const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
@@ -390,7 +390,7 @@ export const App = () => {
         geojson={DISTRICTS_GEOJSON}
         styles={DISTRICTS_STYLE}
       />
-      {/* terrain services located in sidebar, they are not shown until selected in sidebar, replacing  */}
+      {/* terrain services located in sidebar, they are not shown until selected in sidebar  */}
       {terrainServices?.map(({ key, geojson }, index) => {
         return (
           <Layer
@@ -445,10 +445,7 @@ export const App = () => {
               key={key}
               feature={features[0]}
               isSelected={selectedFeature?.id === features[0].properties?.id}
-              onClick={(tmp) => {
-                console.log(tmp);
-                setSelectedMarker(tmp);
-              }}
+              onClick={(feature) => setSelectedMarker(feature)}
             />
           ) : (
             <DrinkingFountainMarker
