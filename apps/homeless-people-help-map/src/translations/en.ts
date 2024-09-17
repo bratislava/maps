@@ -9,6 +9,7 @@ export default {
   reportProblem: "sekciasocialnychveci@bratislava.sk",
   problemHint:
     "Did you find stale information or map is missing something? Write us and help us improving map.",
+  noImage: "Žiaden obrázok",
   legend: {
     title: "Legend",
     point: "Point",
@@ -197,5 +198,4 @@ export default {
     footerLink:
       "mailto:mapy.inovacie@bratislava.sk?subject=Map of help to homeless people - feedback",
   },
-  loadingImage: "Loading image",
 };

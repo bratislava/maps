@@ -9,6 +9,7 @@ export default {
   reportProblem: "sekciasocialnychveci@bratislava.sk",
   problemHint:
     "Našli ste neaktuálnu informáciu alebo niečo na mape chýba? Napíšte nám a pomôžte mapu zlepšovať.",
+  noImage: "Žiaden obrázok",
   legend: {
     title: "Legenda",
     point: "Bod",
@@ -197,5 +198,4 @@ export default {
     footerLink:
       "mailto:mapy.inovacie@bratislava.sk?subject=Mapa pomoci pre ľudí bez domova - spätná väzba",
   },
-  loadingImage: "Načítava sa obrázok",
 };
