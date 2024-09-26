@@ -39,7 +39,11 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
     const detail = useMemo(() => {
       if (features.length === 1) {
         return (
-          <SingleFeatureDetail isExpanded={currentSnap !== 0 || !isMobile} feature={features[0]} />
+          <SingleFeatureDetail
+            isExpanded={currentSnap !== 0 || !isMobile}
+            feature={features[0]}
+            isMobile={isMobile}
+          />
         );
       }
       if (features.length > 1) {

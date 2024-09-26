@@ -2,8 +2,7 @@ import { Feature, Point } from "geojson";
 import { useTranslation } from "react-i18next";
 import { Chevron } from "@bratislava/react-maps-icons";
 import { Row } from "./Row";
-import { Note, Popover, Tag } from "@bratislava/react-maps-ui";
-import { Image } from "./Image";
+import { Note, Popover, Tag, Image } from "@bratislava/react-maps-ui";
 
 import { ReactComponent as ToiletsIcon } from "../../assets/icons/toilets.svg";
 import { ReactComponent as ShowerIcon } from "../../assets/icons/shower.svg";
@@ -17,7 +16,6 @@ import { ReactComponent as ChildrenPoolIcon } from "../../assets/icons/childenpo
 import { ReactComponent as WellnessIcon } from "../../assets/icons/wellness.svg";
 import { ReactComponent as RestaurantIcon } from "../../assets/icons/restauracia.svg";
 
-
 export interface SwimmingPoolDetailProps {
   feature: Feature<Point>;
   onClose: () => void;
@@ -25,7 +23,8 @@ export interface SwimmingPoolDetailProps {
   displayHeader: boolean;
 }
 
-type TService = "toalety"
+type TService =
+  | "toalety"
   | "sprcha"
   | "šatňa"
   | "ihrisko"
@@ -36,9 +35,13 @@ type TService = "toalety"
   | "wellness"
   | "reštaurácia"
   | "prezliekareň"
-  | "detský bazén"
+  | "detský bazén";
 
-export const SwimmingPoolDetail = ({ feature, isMobile, displayHeader }: SwimmingPoolDetailProps) => {
+export const SwimmingPoolDetail = ({
+  feature,
+  isMobile,
+  displayHeader,
+}: SwimmingPoolDetailProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "layers.swimmingPools.detail" });
   const { t: mainT }: { t: (key: string) => string } = useTranslation();
 
@@ -50,38 +53,38 @@ export const SwimmingPoolDetail = ({ feature, isMobile, displayHeader }: Swimmin
     const iconSize = 24;
     switch (service) {
       case "toalety":
-        return <ToiletsIcon width={iconSize} height={iconSize} />
+        return <ToiletsIcon width={iconSize} height={iconSize} />;
       case "parkovanie":
-        return <ParkingIcon width={iconSize} height={iconSize} />
+        return <ParkingIcon width={iconSize} height={iconSize} />;
       case "mhd":
-        return <TransportIcon width={iconSize} height={iconSize} />
+        return <TransportIcon width={iconSize} height={iconSize} />;
       case "bicykel":
-        return <BikeIcon width={iconSize} height={iconSize} />
+        return <BikeIcon width={iconSize} height={iconSize} />;
       case "sprchy":
-        return <ShowerIcon width={iconSize} height={iconSize} />
+        return <ShowerIcon width={iconSize} height={iconSize} />;
       case "ihrisko":
-        return <PlaygroundIcon width={iconSize} height={iconSize} />
+        return <PlaygroundIcon width={iconSize} height={iconSize} />;
       case "bufet":
-        return <BufetIcon width={iconSize} height={iconSize} />
+        return <BufetIcon width={iconSize} height={iconSize} />;
       case "šatňa":
-        return <ChangingRoomIcon width={iconSize} height={iconSize} />
+        return <ChangingRoomIcon width={iconSize} height={iconSize} />;
       case "reštaurácia":
-        return <RestaurantIcon width={iconSize} height={iconSize} />
+        return <RestaurantIcon width={iconSize} height={iconSize} />;
       case "wellness":
-        return <WellnessIcon width={iconSize} height={iconSize} />
+        return <WellnessIcon width={iconSize} height={iconSize} />;
       case "detský bazén":
-        return <ChildrenPoolIcon width={iconSize} height={iconSize} />
-      default: null
+        return <ChildrenPoolIcon width={iconSize} height={iconSize} />;
+      default:
+        null;
     }
-  }
+  };
 
   return (
     <div className="flex relative flex-col justify-end text-foreground-lightmode dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode w-full">
       <>
-
-        {displayHeader &&
+        {displayHeader && (
           <>
-            <Image src={imgSrc} isMobile={isMobile} />
+            <Image src={imgSrc} isMobile={isMobile} imageMissingText={mainT("noImage")} />
 
             <div className="absolute top-[232px] left-4">
               <a
@@ -102,10 +105,14 @@ export const SwimmingPoolDetail = ({ feature, isMobile, displayHeader }: Swimmin
               </a>
             </div>
           </>
-        }
+        )}
 
-        <div className={`flex pl-4 pr-4 ${displayHeader ? 'pt-12' : 'pt-2'} pb-5 md:pb-5 md:pt-12 flex-col space-y-6`}>
-          {displayHeader &&
+        <div
+          className={`flex pl-4 pr-4 ${
+            displayHeader ? "pt-12" : "pt-2"
+          } pb-5 md:pb-5 md:pt-12 flex-col space-y-6`}
+        >
+          {displayHeader && (
             <a
               className="text-primary dark:text-primary-soft underline font-bold"
               href={feature.properties?.["navigate"]}
@@ -114,16 +121,14 @@ export const SwimmingPoolDetail = ({ feature, isMobile, displayHeader }: Swimmin
             >
               {t("navigate")}
             </a>
-          }
+          )}
 
-          {feature.properties?.note &&
+          {feature.properties?.note && (
             <Note className={`flex flex-col gap-3 !bg-[#D0ECF8]`}>
               <div className="flex-1 font-semibold">Oznam</div>
-              <div className="!font-normal">
-                {feature.properties?.note}
-              </div>
+              <div className="!font-normal">{feature.properties?.note}</div>
             </Note>
-          }
+          )}
           <Row label={feature.properties?.name} text={feature.properties?.description} />
 
           <div>
@@ -136,26 +141,28 @@ export const SwimmingPoolDetail = ({ feature, isMobile, displayHeader }: Swimmin
             <div className="grid grid-cols-10 grid-rows-1">
               {feature.properties?.services?.map((service: TService) => {
                 const icon = setServiceIcons(service);
-                return (icon &&
-                  <Popover
-                    isSmall={true}
-                    key={service}
-                    button={({ open, close }) => (
-                      <button
-                        onMouseEnter={open}
-                        onFocus={open}
-                        onTouchStart={open}
-                        onTouchEnd={close}
-                        onMouseLeave={close}
-                        onMouseDown={() => close()}
-                      >
-                        {setServiceIcons(service)}
-                      </button>
-                    )}
-                    panel={<div>{t(service as any)}</div>}
-                    allowedPlacements={['top']}
-                  />
-                )
+                return (
+                  icon && (
+                    <Popover
+                      isSmall={true}
+                      key={service}
+                      button={({ open, close }) => (
+                        <button
+                          onMouseEnter={open}
+                          onFocus={open}
+                          onTouchStart={open}
+                          onTouchEnd={close}
+                          onMouseLeave={close}
+                          onMouseDown={() => close()}
+                        >
+                          {setServiceIcons(service)}
+                        </button>
+                      )}
+                      panel={<div>{t(service as any)}</div>}
+                      allowedPlacements={["top"]}
+                    />
+                  )
+                );
               })}
             </div>
           </div>

@@ -1,8 +1,8 @@
-import { Chevron, X } from "@bratislava/react-maps-icons";
-import { Tag } from "@bratislava/react-maps-ui";
+import { Chevron } from "@bratislava/react-maps-icons";
+import { Tag, Image } from "@bratislava/react-maps-ui";
 import { Feature, Point } from "geojson";
 import { useTranslation } from "react-i18next";
-import { Image } from "./Image";
+
 import { Row } from "./Row";
 
 export interface CvickoDetailProps {
@@ -20,12 +20,10 @@ export const CvickoDetail = ({ feature, isMobile, displayHeader }: CvickoDetailP
   const imgSrc = feature.properties?.photo as string;
 
   return (
-    <div
-      className="relative flex flex-col justify-end !text-black dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode w-full"
-    >
-      {displayHeader &&
+    <div className="relative flex flex-col justify-end !text-black dark:text-foreground-darkmode bg-background-lightmode dark:bg-background-darkmode w-full">
+      {displayHeader && (
         <>
-          <Image src={imgSrc} isMobile={isMobile} />
+          <Image src={imgSrc} isMobile={isMobile} imageMissingText={t("noImage")} />
 
           <div className="absolute top-[232px] left-4">
             <a
@@ -46,10 +44,14 @@ export const CvickoDetail = ({ feature, isMobile, displayHeader }: CvickoDetailP
             </a>
           </div>
         </>
-      }
+      )}
 
-      <div className={`flex pl-4 pr-4 ${displayHeader ? 'pt-12' : 'pt-2'} pb-5 md:pb-5 md:pt-12 flex-col space-y-6`}>
-        {displayHeader &&
+      <div
+        className={`flex pl-4 pr-4 ${
+          displayHeader ? "pt-12" : "pt-2"
+        } pb-5 md:pb-5 md:pt-12 flex-col space-y-6`}
+      >
+        {displayHeader && (
           <a
             className="text-blue dark:text-primary-soft underline font-semibold"
             href={feature.properties?.["navigate"]}
@@ -58,7 +60,7 @@ export const CvickoDetail = ({ feature, isMobile, displayHeader }: CvickoDetailP
           >
             {t("detail.navigate")}
           </a>
-        }
+        )}
 
         <div>
           <Row label={t("detail.name")} text={feature.properties?.["name"]} />
@@ -79,7 +81,7 @@ export const CvickoDetail = ({ feature, isMobile, displayHeader }: CvickoDetailP
         <Row label={t("detail.email")} text={feature.properties?.email} />
       </div>
     </div>
-  )
+  );
 };
 
 export default CvickoDetail;
