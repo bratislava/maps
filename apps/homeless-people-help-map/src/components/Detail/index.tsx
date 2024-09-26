@@ -82,7 +82,7 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
 
       try {
         const props = drinkingFountainFeaturePropertiesSchema.parse(feature?.properties);
-        return <DrinkingFountainDetail {...props} />;
+        return <DrinkingFountainDetail isMobile={isMobile} properties={props} />;
       } catch {
         // Who cares?
       }

@@ -9,6 +9,7 @@ export default {
   reportProblem: "sekciasocialnychveci@bratislava.sk",
   problemHint:
     "Našli ste neaktuálnu informáciu alebo niečo na mape chýba? Napíšte nám a pomôžte mapu zlepšovať.",
+  noImage: "Žiaden obrázok",
   legend: {
     title: "Legenda",
     point: "Bod",
@@ -89,7 +90,11 @@ export default {
     },
     drinkingFountain: {
       drinkingFountain: "Pitná fontánka",
-      location: "Lokalita",
+      buildSince: "Rok postavenia",
+      maintainer: "Správca",
+      name: "Názov",
+      state: "Stav",
+      type: "Typ",
     },
     terrainService: {
       provider: "Poskytovateľ",

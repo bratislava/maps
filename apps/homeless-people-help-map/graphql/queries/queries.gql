@@ -90,3 +90,28 @@ query SluzbyPreLudiBezDomova($locale: I18NLocaleCode!) {
     }
   }
 }
+
+query PitneFontanky($locale: I18NLocaleCode!) {
+  pitneFontankies(locale: $locale) {
+    data {
+      id
+      attributes {
+        Fotky {
+          data {
+            id
+            attributes {
+              url
+            }
+          }
+        }
+        Latitude
+        Longitude
+        Nazov
+        Rok_spustenia
+        Spravca
+        Stav
+        Typ
+      }
+    }
+  }
+}

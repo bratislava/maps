@@ -9,6 +9,7 @@ export default {
   reportProblem: "sekciasocialnychveci@bratislava.sk",
   problemHint:
     "Did you find stale information or map is missing something? Write us and help us improving map.",
+  noImage: "Žiaden obrázok",
   legend: {
     title: "Legend",
     point: "Point",
@@ -89,7 +90,11 @@ export default {
     },
     drinkingFountain: {
       drinkingFountain: "Drinking fountain",
-      location: "Location",
+      buildSince: "Build since",
+      maintainer: "Maintainer",
+      name: "Name",
+      state: "State",
+      type: "Type",
     },
     terrainService: {
       provider: "Provider",
