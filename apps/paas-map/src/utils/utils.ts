@@ -230,7 +230,7 @@ export const processData = ({
           .filter(
             (f) =>
               (f.properties?.["web"] === "ano" || f.properties?.["web"] === "ano - planned") &&
-              (f.properties?.["Status"] === "active" || f.properties?.["Status"] === "planned"),
+              (f.properties?.["status"] === "active" || f.properties?.["status"] === "planned"),
           ),
       ],
     } as FeatureCollection<Polygon>,
