@@ -76,7 +76,7 @@ export const App = () => {
   );
 
   const { data: rawUdrData } = useArcgis(
-    "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/UDR_P/MapServer/40",
+    "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/UDR_P/MapServer/2139",
     { format: "geojson" },
   );
 
