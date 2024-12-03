@@ -21,7 +21,7 @@ export default defineConfig({
         name: "PAAS - Zone map",
         short_name: "PAAS - Zone map",
         theme_color: "#71ca55",
-        start_url: "/static-pages/paas-map/index.html?lang=sk",
+        start_url: "/paas-map/index.html?lang=sk",
         background_color: "#ffffff",
         display: "fullscreen",
         icons: [
@@ -61,6 +61,6 @@ export default defineConfig({
   },
   base: "./",
   css: {
-    postcss
-  }
+    postcss,
+  },
 });
