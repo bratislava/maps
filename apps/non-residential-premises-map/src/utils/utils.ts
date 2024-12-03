@@ -9,7 +9,7 @@ export const processData = (rawData: FeatureCollection) => {
     featureCollection(
       rawData.features.map((feature) => {
         const originalPropertiesKeys = Object.keys(feature.properties ?? {});
-        const originalOccupancy = feature.properties?.["Obsadenosť"];
+        const originalOccupancy = feature.properties?.["obsadenosť"];
         const occupancy =
           originalOccupancy === "na prenájom"
             ? "forRent"
@@ -26,7 +26,7 @@ export const processData = (rawData: FeatureCollection) => {
             : occupancy === "other"
             ? colors.other
             : colors.free;
-        const locality = feature.properties?.["Ulica_a_cislo_vchodu"];
+        const locality = feature.properties?.["ulica_a_cislo_vchodu"];
         const street = locality?.replaceAll(/[0-9]/g, "").trim().split(",")[0];
         const competition =
           feature.properties?.["aktualne_prebiehajuca_sutaz"] === "neprebieha"
@@ -46,13 +46,13 @@ export const processData = (rawData: FeatureCollection) => {
             // sometimes the picture urls come with a token in query string, which forces you to login even when the picture is public
             // in such cases, getting rid of the entire query (which shouldn't contain anything else of value) solves the issue
             picture: feature.properties?.["picture"]?.split("?")[0],
-            streetView: feature.properties?.["GOOGLE_odkaz"],
+            streetView: feature.properties?.["google_odkaz"],
             occupancy,
-            rentUntil: feature.properties?.["Doba_najmu"],
-            description: feature.properties?.["Poznamka"],
-            approximateArea: feature.properties?.["Orientacna_vymera_v_m2"],
+            rentUntil: feature.properties?.["doba_najmu"],
+            description: feature.properties?.["poznamka"],
+            approximateArea: feature.properties?.["orientacna_vymera_v_m2"],
             approximateRentPricePerYear: feature.properties?.["orientacna_cena_najmu_za_rok"],
-            linkNZ: feature.properties?.["Odkaz_NZ"],
+            linkNZ: feature.properties?.["odkaznz01"],
             color,
             street,
             competition,
