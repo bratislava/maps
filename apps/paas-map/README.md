@@ -12,10 +12,10 @@ ParkingLots: https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/park
 
 Branches: https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/Pobo%C4%8Dka/MapServer/87
 
-UDR: https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/UDR_P/MapServer/40
+UDR: https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/UDR_P/MapServer/2139
 
 ODP: https://nest-proxy.bratislava.sk/geoportal/hSite/rest/services/parkovanie/ODP/MapServer/3
 
 # Deployment
 
-[https://cdn-api.bratislava.sk/static-pages/paas-map/index.html?lang=sk](https://cdn-api.bratislava.sk/static-pages/paas-map/index.html?lang=sk)
+[https://static-pages.s3.bratislava.sk/paas-map/index.html?lang=sk](https://static-pages.s3.bratislava.sk/paas-map/index.html?lang=sk)
