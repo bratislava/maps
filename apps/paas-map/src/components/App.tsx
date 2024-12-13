@@ -96,11 +96,11 @@ export const App = () => {
     return {
       udrDataRegular: {
         ...udrData,
-        features: udrData?.features.filter((udr) => udr.properties?.Zakladna_cena !== 2),
+        features: udrData?.features.filter((udr) => udr.properties?.zakladna_cena !== 2),
       } as FeatureCollection,
       udrDataTwoEur: {
         ...udrData,
-        features: udrData?.features.filter((udr) => udr.properties?.Zakladna_cena === 2),
+        features: udrData?.features.filter((udr) => udr.properties?.zakladna_cena === 2),
       } as FeatureCollection,
     };
   }, [udrData]);
