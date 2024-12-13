@@ -4,12 +4,12 @@ This repository provides libraries for creating map applications using mapbox an
 
 ## Some of maps we developed
 
-- [Paas zone map](https://cdn-api.bratislava.sk/static-pages/paas-map/index.html?lang=sk)
-- [Cvicko sport grounds map](https://cdn-api.bratislava.sk/static-pages/cvicko-map/index.html?lang=sk)
-- [Drinking fountains map](https://cdn-api.bratislava.sk/static-pages/drinking-fountains-map/index.html?lang=sk)
-- [Greenary care map](https://cdn-api.bratislava.sk/static-pages/greenary-care-map/index.html?lang=sk)
-- [Planting map](https://cdn-api.bratislava.sk/static-pages/planting-map/index.html?lang=sk)
-- [Sport grounds map](https://cdn-api.bratislava.sk/static-pages/sport-grounds-map/index.html?lang=sk)
+- [Paas zone map](https://static-pages.s3.bratislava.sk/paas-map/index.html?lang=sk)
+- [Cvicko sport grounds map](https://static-pages.s3.bratislava.sk/cvicko-map/index.html?lang=sk)
+- [Drinking fountains map](https://static-pages.s3.bratislava.sk/drinking-fountains-map/index.html?lang=sk)
+- [Greenary care map](https://static-pages.s3.bratislava.sk/greenary-care-map/index.html?lang=sk)
+- [Planting map](https://static-pages.s3.bratislava.sk/planting-map/index.html?lang=sk)
+- [Sport grounds map](https://static-pages.s3.bratislava.sk/sport-grounds-map/index.html?lang=sk)
 
 ## Structure
 
@@ -27,13 +27,13 @@ Inside the `apps` folder there are all of our map applications. It is a good sta
 
 ## Deployment
 
-We are uploadig our built applications manually to our [CDN](https://cdn.bratislava.sk/buckets/static-pages/browse). To get access to it, please contact Martin Pinter.
+We are uploadig our built applications manually to our [s3](https://console.s3.bratislava.sk/browser/static-pages). To get access to it, please contact Martin Pinter.
 
 There is a bucket called **static-pages** in which every map is uploaded to its subfolder.
 
 > Tip: If you are uploading files through CDN GUI you can't upload folder which contains subfolders OR multiple folders at once due to some bug otherwise CDN will mess it up. So you have to upload every folder separately and when you want to upload subfolders, you have to create root folders manually through GUI.
 
-After upploading, app is available at: `https://cdn-api.bratislava.sk/static-pages/<folder-name>/index.html`. Some maps are available also on `/sk.html` and `/en.html` urls for better SEO management.
+After upploading, app is available at: `https://static-pages.s3.bratislava.sk/<folder-name>/index.html`. Some maps are available also on `/sk.html` and `/en.html` urls for better SEO management.
 
 ### Iframes
 

@@ -4,4 +4,4 @@ Data comes from our Arcgis server: https://nest-proxy.bratislava.sk/geoportal/hS
 
 # Deployment
 
-[https://cdn-api.bratislava.sk/static-pages/planting-map/index.html?lang=sk](https://cdn-api.bratislava.sk/static-pages/planting-map/index.html?lang=sk)
+[https://static-pages.s3.bratislava.sk/planting-map/index.html?lang=sk](https://static-pages.s3.bratislava.sk/planting-map/index.html?lang=sk)

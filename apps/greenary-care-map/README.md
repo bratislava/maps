@@ -4,4 +4,4 @@ Data comes from our Arcgis Online: https://services8.arcgis.com/pRlN1m0su5BYaFAS
 
 # Deployment
 
-[https://cdn-api.bratislava.sk/static-pages/greenary-care-map/index.html?lang=sk](https://cdn-api.bratislava.sk/static-pages/greenary-care-map/index.html?lang=sk)
+[https://static-pages.s3.bratislava.sk/greenary-care-map/index.html?lang=sk](https://static-pages.s3.bratislava.sk/greenary-care-map/index.html?lang=sk)
