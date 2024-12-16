@@ -27,7 +27,17 @@ Inside the `apps` folder there are all of our map applications. It is a good sta
 
 ## Deployment
 
-We are uploadig our built applications manually to our [s3](https://console.s3.bratislava.sk/browser/static-pages). To get access to it, please contact Martin Pinter.
+We are uploadig our built applications to our [s3](https://console.s3.bratislava.sk/browser/static-pages). To get access to it, please contact @vidriduch or @mpinter.
+
+There is an automation present for uploading files using github actions, or you can do a manual upload. 
+
+### Deployment staging
+If anything is uploaded to master it will be deployed to [dev folder] (https://console.s3.bratislava.sk/browser/static-pages/dev) automatically.
+
+### Deployment prod
+If you want to deploy to production there is two ways using automation. You have to create new release and make a tag and name it, following naming patteron of [semver](https://semver.org/).
+1. deploy single map - tag name should be `prod-<name-of-map-from-package>-v<sem-ver>` -> `prod-closures-and-restrictions-map-v1.2.3`
+2. deploy all maps - tag name should be `prod-all-v<sem-ver>` -> `prod-all-v1.2.3`
 
 There is a bucket called **static-pages** in which every map is uploaded to its subfolder.
 
