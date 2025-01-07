@@ -1,6 +1,6 @@
 name: Test build closures-and-restrictions
 
-on: [pull_request]
+on: [push]
 jobs:
   Deploy:
     name: Test build closures-and-restrictions-map
@@ -10,6 +10,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
-          cache: "yarn"
-      - run: yarn install --frozen-lockfile
-      - run: yarn workspace @bratislava/closures-and-restrictions-map build
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build --workspace=@bratislava/closures-and-restrictions-map
