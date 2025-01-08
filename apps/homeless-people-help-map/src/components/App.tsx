@@ -410,7 +410,7 @@ export const App = () => {
       {terrainServicesGroupedByRegion?.map((feature, index) => {
         return (
           <Layer
-            key={feature.id + "3000" ?? index + 3000}
+            key={feature.id + "3000"}
             geojson={feature}
             // Style ids have to be unique
             styles={(feature.geometry.type === "Polygon"

@@ -55,13 +55,22 @@ export const AccordionItem = ({
   style,
 }: IAccordionItemProps) => {
   return (
+    //  https://github.com/radix-ui/primitives/issues/2309 not yet resolved
+    //  eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //  @ts-ignore
     <Item
       value={value}
       className={cx("text-left w-full justify-between items-center", className)}
       style={style}
     >
+      {/* https://github.com/radix-ui/primitives/issues/2309 not yet resolved */}
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
       <Header className="flex flex-col">
         {headerIsTrigger ? (
+          //  https://github.com/radix-ui/primitives/issues/2309 not yet resolved
+          //  eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //  @ts-ignore
           <Trigger
             className={cx(
               "flex w-full gap-4 items-center justify-between",
@@ -105,6 +114,9 @@ export const AccordionItem = ({
             >
               {rightSlot}
               {isOpenable && (
+                //  https://github.com/radix-ui/primitives/issues/2309 not yet resolved
+                //  eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                //  @ts-ignore
                 <Trigger className="p-1">
                   <AccordionChevron className="transition mr-[2px]" size="xs" />
                 </Trigger>
@@ -113,6 +125,9 @@ export const AccordionItem = ({
           </div>
         )}
       </Header>
+      {/* https://github.com/radix-ui/primitives/issues/2309 not yet resolved */}
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
       <AccordionContent className="overflow-hidden">
         <div>{children}</div>
       </AccordionContent>
