@@ -92,7 +92,7 @@ export const tooltips: Array<ITooltip> = [
 ];
 
 export const App = () => {
-  const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     document.title = t("tabTitle");
@@ -396,22 +396,25 @@ export const App = () => {
         filter: typeFilter,
         mapToActive: (activeTypes) => ({
           title: t("filters.type.title"),
-          items: activeTypes.map((type) => t(`filters.type.types.${type}`)),
+          // https://www.i18next.com/overview/typescript#type-error-template-literal
+          items: activeTypes.map((type) => t(`filters.type.types.${type}` as any)),
         }),
       },
       {
         filter: statusFilter,
         mapToActive: (activeStatuses) => ({
           title: t("filters.status.title"),
-          items: activeStatuses.map((status) => t(`filters.status.${status}`)),
+          // https://www.i18next.com/overview/typescript#type-error-template-literal
+          items: activeStatuses.map((status) => t(`filters.status.${status}` as any)),
         }),
       },
       {
         onlyInExpression: true,
         filter: layerfilter,
         mapToActive: (activeLayers) => ({
-          title: t("layers"),
-          items: activeLayers.map((l) => t(`layers.${l}.title`)),
+          title: t("layers" as any),
+          // https://www.i18next.com/overview/typescript#type-error-template-literal
+          items: activeLayers.map((l) => t(`layers.${l}.title` as any)),
         }),
       },
     ],

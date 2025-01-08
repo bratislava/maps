@@ -4,10 +4,10 @@
   "main": "src/index.ts",
   "license": "MIT",
   "peerDependencies": {
-    "i18next": "^21.8.4",
+    "i18next": "^24.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-i18next": "^11.16.9"
+    "react-i18next": "^15.4.0"
   },
   "devDependencies": {
     "@floating-ui/react": "^0.22.2",

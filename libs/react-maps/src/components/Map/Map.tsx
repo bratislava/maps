@@ -6,13 +6,13 @@ import {
   Marker,
   mergeViewports,
   PartialViewport,
-  Viewport
+  Viewport,
 } from '@bratislava/react-mapbox';
 import {
   Feedback,
   Information,
   InformationAlt,
-  X
+  X,
 } from '@bratislava/react-maps-icons';
 import { Divider, IconButton, Modal } from '@bratislava/react-maps-ui';
 import bbox from '@turf/bbox';
@@ -31,7 +31,7 @@ import {
   useMemo,
   useReducer,
   useRef,
-  useState
+  useState,
 } from 'react';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import { useResizeDetector } from 'react-resize-detector';
@@ -116,7 +116,8 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
     });
 
     const [isDevInfoVisible, setDevInfoVisible] = useState(false);
-    const [isInfoNotificationVisible, setInfoNotificationVisible] = useState<boolean>(!!mapInformation.infoNotification);
+    const [isInfoNotificationVisible, setInfoNotificationVisible] =
+      useState<boolean>(!!mapInformation.infoNotification);
 
     const [slotStates, setSlotStates] = useState<SlotState[]>([]);
 
@@ -552,33 +553,62 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
                   </IconButton>
                 </Slot>
 
-                {isInfoNotificationVisible &&
-                  <Slot id="infoNotification" position="top-right" className='z-50'>
-                    <div className={cx('bg-background-lightmode dark:bg-background-darkmode max-w-[480px] rounded-[8px] p-[20px] shadow-lg',
-                      !isMobile ? 'mx-[20px] mt-[20px]' : 'mx-[12px] mt-[12px]')}>
-                      <div className='grid gap-2'>
+                {isInfoNotificationVisible && (
+                  <Slot
+                    id="infoNotification"
+                    position="top-right"
+                    className="z-50"
+                  >
+                    <div
+                      className={cx(
+                        'bg-background-lightmode dark:bg-background-darkmode max-w-[480px] rounded-[8px] p-[20px] shadow-lg',
+                        !isMobile
+                          ? 'mx-[20px] mt-[20px]'
+                          : 'mx-[12px] mt-[12px]',
+                      )}
+                    >
+                      <div className="grid gap-2">
                         <div className="flex gap-2">
-                          {!isMobile && <Information className="mt-[2px]" size="md" />}
-                          <h5 className="text-md grow font-semibold">{mapInformation.infoNotification?.title}</h5>
-                          <div className='cursor-pointer pt-[2px]' onClick={() => setInfoNotificationVisible(false)}>
+                          {!isMobile && (
+                            <Information className="mt-[2px]" size="md" />
+                          )}
+                          <h5 className="text-md grow font-semibold">
+                            {mapInformation.infoNotification?.title}
+                          </h5>
+                          <div
+                            className="cursor-pointer pt-[2px]"
+                            onClick={() => setInfoNotificationVisible(false)}
+                          >
                             <X size="sm" />
                           </div>
                         </div>
                       </div>
 
-                      <div className={cx('mt-[12px]', !isMobile ? 'ml-[30px]' : '')}>
-                        <p style={{
-                          display: '-webkit-box',
-                          maxWidth: '450px',
-                          WebkitLineClamp: 4,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden'
-                        }}>
+                      <div
+                        className={cx(
+                          'mt-[12px]',
+                          !isMobile ? 'ml-[30px]' : '',
+                        )}
+                      >
+                        <p
+                          style={{
+                            display: '-webkit-box',
+                            maxWidth: '450px',
+                            WebkitLineClamp: 4,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                          }}
+                        >
                           {mapInformation.infoNotification?.txt}
                         </p>
                       </div>
 
-                      <div className={cx('mt-[12px]', !isMobile ? 'ml-[30px]' : '')}>
+                      <div
+                        className={cx(
+                          'mt-[12px]',
+                          !isMobile ? 'ml-[30px]' : '',
+                        )}
+                      >
                         <p
                           onClick={() => {
                             setInfoNotificationVisible(false);
@@ -591,8 +621,7 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
                       </div>
                     </div>
                   </Slot>
-                }
-
+                )}
 
                 <>{children}</>
 
@@ -636,26 +665,37 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
             <div className="gap-6 p-6">
               <div className="grid">
                 <div className="flex">
-                  <div className="grow">
-                  </div>
+                  <div className="grow"></div>
                   <div className="mb-3 grow-0">
-                    <InformationAlt className="rounded-full border-[16px] border-solid border-[#EBEBEB] bg-[#333333] !text-[#ffffff]" size="default" />
+                    <InformationAlt
+                      className="rounded-full border-[16px] border-solid border-[#EBEBEB] bg-[#333333] !text-[#ffffff]"
+                      size="default"
+                    />
                   </div>
-                  <div className="relative grow cursor-pointer" onClick={() => setDisplayLandscapeModal(false)}>
-                    <X size="sm" className='absolute top-0 right-0 float-right grow' />
+                  <div
+                    className="relative grow cursor-pointer"
+                    onClick={() => setDisplayLandscapeModal(false)}
+                  >
+                    <X
+                      size="sm"
+                      className="absolute top-0 right-0 float-right grow"
+                    />
                   </div>
                 </div>
               </div>
               <div className="flex flex-col text-center">
                 <div>
-                  V niektorých prípadoch sa mapa nemusí zobraziť správne. Na mobilnom zariadení je mapu najlepšie používať na výšku.
+                  V niektorých prípadoch sa mapa nemusí zobraziť správne. Na
+                  mobilnom zariadení je mapu najlepšie používať na výšku.
                 </div>
-                <div onClick={() => setDisplayLandscapeModal(false)} className="mt-[24px] cursor-pointer font-semibold">
+                <div
+                  onClick={() => setDisplayLandscapeModal(false)}
+                  className="mt-[24px] cursor-pointer font-semibold"
+                >
                   Zrušiť
                 </div>
               </div>
             </div>
-
           </Modal>
 
           <Modal
@@ -670,12 +710,15 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
                 <div className="text-md grow px-6 font-medium">
                   {mapInformation.title}
                 </div>
-                <div className='cursor-pointer pt-[2px]' onClick={() => setInformationModalOpen(false)}>
+                <div
+                  className="cursor-pointer pt-[2px]"
+                  onClick={() => setInformationModalOpen(false)}
+                >
                   <X size="sm" />
                 </div>
               </div>
 
-              {mapInformation.infoNotification &&
+              {mapInformation.infoNotification && (
                 <>
                   <div className="px-6 font-medium">
                     {mapInformation.infoNotification.title}
@@ -685,36 +728,37 @@ const MapWithoutTranslations = forwardRef<MapHandle, MapProps>(
                   </div>
                   <Divider className="mx-6" />
                 </>
-              }
+              )}
               <div className="px-6">{mapInformation.description}</div>
 
-              {mapInformation?.privatePartners && mapInformation?.privatePartners.length > 0 &&
-                <div>
-                  <div className="pl-6 font-medium">Partneri:</div>
-                  <div className="flex flex-wrap gap-4 px-6 py-2">
-                    {mapInformation.privatePartners.map((partner, index) => (
-                      <a
-                        key={index}
-                        target="_blank"
-                        href={partner.link}
-                        className="block"
-                        rel="noreferrer"
-                      >
-                        <img
-                          className="object-contain"
-                          style={{
-                            height: partner.height ?? 36,
-                            width: partner.width ?? 'auto',
-                          }}
-                          src={partner.image}
-                          alt={partner.name}
-                        />
-                      </a>
-                    ))}
+              {mapInformation?.privatePartners &&
+                mapInformation?.privatePartners.length > 0 && (
+                  <div>
+                    <div className="pl-6 font-medium">Partneri:</div>
+                    <div className="flex flex-wrap gap-4 px-6 py-2">
+                      {mapInformation.privatePartners.map((partner, index) => (
+                        <a
+                          key={index}
+                          target="_blank"
+                          href={partner.link}
+                          className="block"
+                          rel="noreferrer"
+                        >
+                          <img
+                            className="object-contain"
+                            style={{
+                              height: partner.height ?? 36,
+                              width: partner.width ?? 'auto',
+                            }}
+                            src={partner.image}
+                            alt={partner.name}
+                          />
+                        </a>
+                      ))}
+                    </div>
+                    <Divider className="mx-6" />
                   </div>
-                  <Divider className="mx-6" />
-                </div>
-              }
+                )}
               <div className="flex flex-wrap items-center justify-center gap-4 px-6 py-2">
                 {mapInformation.partners.map((partner, index) => (
                   <a

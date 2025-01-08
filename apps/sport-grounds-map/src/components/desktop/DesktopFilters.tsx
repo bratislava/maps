@@ -31,7 +31,7 @@ export const DesktopFilters = ({
   districtFilter,
   layerGroups,
 }: IDesktopFiltersProps) => {
-  const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <Sidebar
@@ -78,7 +78,6 @@ export const DesktopFilters = ({
             </SelectOption>
           ))}
         </Select>
-
       </div>
 
       <Divider className="mx-6" />

@@ -52,8 +52,6 @@ export const CvickoMarker = ({
   isSelected,
   onClick,
 }: ICvickoMarkerProps) => {
-  const { t }: { t: (key: string) => string } = useTranslation();
-
   const [isHovered, setHovered] = useState(false);
 
   const featureName = feature?.properties?.name || "Cvicko";
@@ -69,7 +67,6 @@ export const CvickoMarker = ({
   const IconComponent = useMemo(() => {
     return cvickoIdToIconComponentObject[featureName] ?? {};
   }, [featureName]);
-
 
   return (
     <>

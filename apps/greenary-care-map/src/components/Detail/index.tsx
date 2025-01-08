@@ -5,7 +5,6 @@ import { useArcgisAttachments } from "@bratislava/react-use-arcgis";
 import { DataDisplay, SheetHandle } from "@bratislava/react-maps-ui";
 import { Detail as MapDetail } from "@bratislava/react-maps";
 
-
 export interface DetailProps {
   features: Feature[];
   onClose: () => void;
@@ -14,7 +13,7 @@ export interface DetailProps {
 }
 
 export const Detail = ({ features, onClose, isMobile, arcgisServerUrl }: DetailProps) => {
-  const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const sheetRef = useRef<SheetHandle>(null);
 
@@ -41,7 +40,8 @@ export const Detail = ({ features, onClose, isMobile, arcgisServerUrl }: DetailP
     <div className="flex flex-col space-y-4 p-8 pt-6">
       <div className="first-letter:uppercase font-bold font-md text-[20px]">
         {feature?.properties?.["TYP_VYKONU_1"]
-          ? t(`categories.${feature?.properties?.["TYP_VYKONU_1"]}`)
+          ? // https://www.i18next.com/overview/typescript#type-error-template-literal
+            t(`categories.${feature?.properties?.["TYP_VYKONU_1"]}` as any)
           : t(`layers.esri.detail.title`)}
       </div>
       <DataDisplay
@@ -86,8 +86,9 @@ export const Detail = ({ features, onClose, isMobile, arcgisServerUrl }: DetailP
                   target="_blank"
                   key={index}
                 >
-                  {`${t("layers.esri.detail.showDocument")} ${attachments.length > 1 ? index + 1 : ""
-                    }`}
+                  {`${t("layers.esri.detail.showDocument")} ${
+                    attachments.length > 1 ? index + 1 : ""
+                  }`}
                 </a>
               );
             })}
@@ -106,9 +107,7 @@ export const Detail = ({ features, onClose, isMobile, arcgisServerUrl }: DetailP
       bottomSheetSnapPoints={[84, "50%", "100%"]}
       bottomSheetInitialSnap={1}
     >
-      {feature?.properties &&
-        detail
-      }
+      {feature?.properties && detail}
     </MapDetail>
   );
 };

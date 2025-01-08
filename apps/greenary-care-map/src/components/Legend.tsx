@@ -6,7 +6,7 @@ export interface ILegendProps {
 }
 
 export const Legend = ({ mapCircleColors }: ILegendProps) => {
-  const { t }: { t: (key: string) => string } = useTranslation();
+  const { t } = useTranslation();
   return (
     <div className="p-6 md:p-0">
       {Object.keys(mapCircleColors).map((type) => {
@@ -27,7 +27,8 @@ export const Legend = ({ mapCircleColors }: ILegendProps) => {
             {type === "districtBorder" ? (
               <div className="text-[14px]">{t("districtBorder")}</div>
             ) : (
-              <div className="text-[14px]">{t(`categories.${type}`)}</div>
+              // https://www.i18next.com/overview/typescript#type-error-template-literal
+              <div className="text-[14px]">{t(`categories.${type}` as any)}</div>
             )}
           </div>
         );

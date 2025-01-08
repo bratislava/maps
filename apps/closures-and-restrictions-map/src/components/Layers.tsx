@@ -18,7 +18,7 @@ export interface ILayerProps {
 }
 
 export const Layers = ({ filter }: ILayerProps) => {
-  const { t }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
+  const { t } = useTranslation();
 
   const layers: Array<ILayerCategory> = [
     {

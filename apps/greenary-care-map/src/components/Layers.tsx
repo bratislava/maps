@@ -43,7 +43,7 @@ export const Layers = <T extends string>({
   const {
     t,
     i18n: { language },
-  }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
+  } = useTranslation();
 
   return (
     <div className="flex flex-col w-full">
@@ -114,7 +114,8 @@ export const Layers = <T extends string>({
                       id={type}
                       label={
                         <div className="flex items-center gap-2">
-                          <span className="pb-[2px]">{t(`categories.${type}`)}</span>
+                          {/* https://www.i18next.com/overview/typescript#type-error-template-literal */}
+                          <span className="pb-[2px]">{t(`categories.${type}` as any)}</span>
                           {language === "sk" && (
                             <Popover
                               button={({ toggle }) => (
@@ -136,7 +137,8 @@ export const Layers = <T extends string>({
                               panel={
                                 <div className="flex flex-col gap-2 max-w-sm">
                                   <div className="text-md font-semibold">
-                                    {t(`categories.${type}`)}
+                                    {/* https://www.i18next.com/overview/typescript#type-error-template-literal */}
+                                    {t(`categories.${type}` as any)}
                                   </div>
                                   <div className="">{typeTooltips[type]}</div>
                                 </div>
@@ -159,7 +161,8 @@ export const Layers = <T extends string>({
       <Modal
         overlayClassName="max-w-lg"
         isOpen={isTooltipModalOpen}
-        title={t(`categories.${currentTooltipType ?? ""}`)}
+        // https://www.i18next.com/overview/typescript#type-error-template-literal
+        title={t(`categories.${currentTooltipType ?? ""}` as any)}
         description={typeTooltips[currentTooltipType ?? ""] ?? ""}
         onClose={closeTooltipModal}
       ></Modal>

@@ -34,7 +34,7 @@ export const MobileFilters = ({
   layerGroups,
   layerFilter,
 }: IMobileFiltersProps) => {
-  const { t }: { t: (key: string) => string } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <Sidebar
@@ -78,8 +78,9 @@ export const MobileFilters = ({
               <SelectValueRenderer
                 values={values}
                 placeholder={t("filters.district.placeholder")}
-                multiplePlaceholder={`${t("filters.district.multipleDistricts")} (${values.length
-                  })`}
+                multiplePlaceholder={`${t("filters.district.multipleDistricts")} (${
+                  values.length
+                })`}
               />
             )}
           >
@@ -89,9 +90,7 @@ export const MobileFilters = ({
               </SelectOption>
             ))}
           </Select>
-
         </div>
-
       </div>
 
       <Divider className="mx-6" />
