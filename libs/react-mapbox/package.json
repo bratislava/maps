@@ -64,13 +64,5 @@
   "dependencies": {
     "lodash.clonedeep": "^4.5.0",
     "lodash.groupby": "^4.6.0"
-  },
-  "engines": {
-    "node": "v20.9.0",
-    "npm": "10.7.0"
-  },
-  "volta": {
-    "node": "20.9.0",
-    "npm": "10.7.0"
   }
 }

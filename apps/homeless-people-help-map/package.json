@@ -45,13 +45,5 @@
     "vite": "^4.0.4",
     "vite-plugin-checker": "^0.5.3",
     "vite-plugin-svgr": "^2.4.0"
-  },
-  "engines": {
-    "node": "v20.9.0",
-    "npm": "10.7.0"
-  },
-  "volta": {
-    "node": "20.9.0",
-    "npm": "10.7.0"
   }
 }
