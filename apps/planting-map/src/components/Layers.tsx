@@ -1,9 +1,9 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
 import { Eye, Information } from "@bratislava/react-maps-icons";
 import { Accordion, AccordionItem, Checkbox, Modal, Popover } from "@bratislava/react-maps-ui";
+import { capitalizeFirstLetter } from "@bratislava/utils";
 import cx from "classnames";
 import { useCallback, useState } from "react";
-import { capitalizeFirstLetter } from "../../../planting-map/src/utils/utils";
 
 export interface ILayerCategory {
   label: string;

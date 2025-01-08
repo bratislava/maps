@@ -1,8 +1,8 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
-import { capitalizeFirstLetter } from "../../../planting-map/src/utils/utils";
 import { colors } from "../utils/colors";
 import { useTranslation } from "react-i18next";
 import { LayerButton } from "./LayerButton";
+import { capitalizeFirstLetter } from "@bratislava/utils";
 
 export type LayersProps = {
   filter: IFilterResult<string>;
