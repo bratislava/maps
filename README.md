@@ -13,7 +13,7 @@ This repository provides libraries for creating map applications using mapbox an
 
 ## Structure
 
-This repository is an yarn workspace.
+This repository is an npm workspace.
 
 ### Libraries
 
@@ -29,13 +29,16 @@ Inside the `apps` folder there are all of our map applications. It is a good sta
 
 We are uploadig our built applications to our [s3](https://console.s3.bratislava.sk/browser/static-pages). To get access to it, please contact @vidriduch or @mpinter.
 
-There is an automation present for uploading files using github actions, or you can do a manual upload. 
+There is an automation present for uploading files using github actions, or you can do a manual upload.
 
 ### Deployment staging
+
 If anything is uploaded to master it will be deployed to [dev folder] (https://console.s3.bratislava.sk/browser/static-pages/dev) automatically.
 
 ### Deployment prod
+
 If you want to deploy to production there is two ways using automation. You have to create new release and make a tag and name it, following naming patteron of [semver](https://semver.org/).
+
 1. deploy single map - tag name should be `prod-<name-of-map-from-package>-v<sem-ver>` -> `prod-closures-and-restrictions-map-v1.2.3`
 2. deploy all maps - tag name should be `prod-all-v<sem-ver>` -> `prod-all-v1.2.3`
 
@@ -85,13 +88,14 @@ Install dependencies:
 
 ```bash
 cd ./apps/<your-map>
-yarn install
+npm install
 ```
 
 After successful installation you can start developing using:
 
 ```bash
-yarn workspace <app-name> dev
+npm run dev -w <app-name>
+npm run dev -w @bratislava/closures-and-restrictions-map
 ```
 
 Where `<app-name>` is `name` property in corresponding `package.json` file.
@@ -99,10 +103,10 @@ Where `<app-name>` is `name` property in corresponding `package.json` file.
 ## Building
 
 ```bash
-yarn workspace <app-name> build
+npm run build -w <app-name>
 
 # Or you can suppress TS errors using
-yarn workspace <app-name> build:suppress
+npm run build:suppress -w <app-name>
 ```
 
 ## How to add new app
@@ -120,8 +124,8 @@ Install dependencies
 
 ```bash
 cd ./apps/your-map
-yarn -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-react-query
-yarn @tanstack/react-query graphql graphql-tag
+npm install -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-react-query
+npm install @tanstack/react-query graphql graphql-tag
 ```
 
 Add codegen.yml to the root of the maps/apps/your-map app:
