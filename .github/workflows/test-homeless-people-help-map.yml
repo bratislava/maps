@@ -1,6 +1,6 @@
 name: Test build homeless-people-help-map
 
-on: [push]
+on: [pull_request]
 jobs:
   Deploy:
     name: Test build homeless-people-help-map
