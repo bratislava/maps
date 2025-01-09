@@ -43,5 +43,5 @@ console.log(result);
 ## Testing
 
 ```
-yarn test
+npm run test
 ```

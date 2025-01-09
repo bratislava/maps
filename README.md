@@ -199,7 +199,7 @@ Add following to package.json `"scripts"` (or use `npx` in next step like so - `
 Run codegen, you shouldn't see any errors:
 
 ```
-yarn codegen
+npm run codegen
 ```
 
 You can now import `useXQuery` hooks from `./graphql/index.ts` like so:
