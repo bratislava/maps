@@ -1,6 +1,6 @@
 name: Test build sport-grounds-map
 
-on: [pull_request]
+on: [push]
 jobs:
   Deploy:
     name: Test build sport-grounds-map
@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
-          cache: "yarn"
-      - run: yarn install --frozen-lockfile
-      - run: yarn workspace @bratislava/sport-grounds-map build
+          node-version: 20.9.0
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build --workspace=@bratislava/sport-grounds-map
