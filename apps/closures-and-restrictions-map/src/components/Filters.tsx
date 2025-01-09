@@ -179,8 +179,8 @@ export const Filters = ({
             label="Date range"
             value={dateStart && dateEnd ? { start: dateStart, end: dateEnd } : undefined}
             onChange={(e) => {
-              onDateStartChange(e.start);
-              onDateEndChange(e.end);
+              e && onDateStartChange(e.start);
+              e && onDateEndChange(e.end);
             }}
             onResetClick={() => {
               onDateStartChange(undefined);
