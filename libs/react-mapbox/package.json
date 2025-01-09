@@ -10,7 +10,7 @@
   },
   "peerDependencies": {
     "framer-motion": "^6.5.1",
-    "mapbox-gl": "^2.9.2",
+    "mapbox-gl": "^2.12.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -59,13 +59,10 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-json-pretty": "^2.2.0",
-    "typescript": "^4.9.4"
+    "typescript": "^5.6.3"
   },
   "dependencies": {
     "lodash.clonedeep": "^4.5.0",
     "lodash.groupby": "^4.6.0"
-  },
-  "volta": {
-    "node": "16.20.2"
   }
 }

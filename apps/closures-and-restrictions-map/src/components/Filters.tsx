@@ -53,7 +53,7 @@ export const Filters = ({
   onDateEndChange,
   modalHandler,
 }: IFiltersProps) => {
-  const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const statusTagHandler = (status: string) => {
     const activeStatusKeys = statusFilter.activeKeys;
@@ -142,7 +142,8 @@ export const Filters = ({
             onReset={() => typeFilter.setActiveAll(false)}
             renderValue={({ values }) => (
               <SelectValueRenderer
-                values={values.map((v) => t(`filters.type.types.${v}`))}
+                // https://www.i18next.com/overview/typescript#type-error-template-literal
+                values={values.map((v) => t(`filters.type.types.${v}` as any))}
                 placeholder={t("filters.type.placeholder")}
                 multiplePlaceholder={`${t("filters.type.multipleTypes")} (${values.length})`}
               />
@@ -152,7 +153,8 @@ export const Filters = ({
               .sort((a, b) => (a === "Iné" ? 1 : b === "Iné" ? -1 : a.localeCompare(b)))
               .map((type) => (
                 <SelectOption key={type} value={type}>
-                  {t(`filters.type.types.${type}`)}
+                  {/* https://www.i18next.com/overview/typescript#type-error-template-literal */}
+                  {t(`filters.type.types.${type}` as any)}
                 </SelectOption>
               ))}
           </Select>
@@ -164,7 +166,8 @@ export const Filters = ({
           title={t("filters.status.title")}
           values={statusFilter.values.map((status) => ({
             key: status.key,
-            label: t(`filters.status.${status.key}`),
+            // https://www.i18next.com/overview/typescript#type-error-template-literal
+            label: t(`filters.status.${status.key}` as any),
             isActive: status.isActive,
           }))}
           onTagClick={(status: string) => statusTagHandler(status)}
@@ -176,8 +179,8 @@ export const Filters = ({
             label="Date range"
             value={dateStart && dateEnd ? { start: dateStart, end: dateEnd } : undefined}
             onChange={(e) => {
-              onDateStartChange(e.start);
-              onDateEndChange(e.end);
+              e && onDateStartChange(e.start);
+              e && onDateEndChange(e.end);
             }}
             onResetClick={() => {
               onDateStartChange(undefined);

@@ -70,7 +70,7 @@ export const processData = (rawData: FeatureCollection) => {
   const uniqueStreets = getUniqueValuesFromFeatures(data.features, "street");
 
   const uniqueDistricts: string[] = getUniqueValuesFromFeatures(data.features, "district").sort(
-    (a, b) => DISTRICTS.findIndex((d) => d == a) - DISTRICTS.findIndex((d) => d == b) ?? 0,
+    (a, b) => DISTRICTS.findIndex((d) => d == a) - DISTRICTS.findIndex((d) => d == b),
   );
 
   return {

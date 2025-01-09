@@ -36,7 +36,7 @@ export const DesktopFilters = ({
   typeCategories,
   typeTooltips,
 }: IDesktopFiltersProps) => {
-  const { t, i18n }: { t: (key: string) => string; i18n: { language: string } } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <Sidebar
@@ -118,7 +118,8 @@ export const DesktopFilters = ({
         title={t("filters.season.title")}
         values={seasonFilter.values.map((season) => ({
           key: season.key,
-          label: t(`filters.season.seasons.${season.key}`),
+          // https://www.i18next.com/overview/typescript#type-error-template-literal
+          label: t(`filters.season.seasons.${season.key}` as any),
           isActive: season.isActive,
         }))}
         onTagClick={(season) => {

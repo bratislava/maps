@@ -45,7 +45,7 @@ export const MobileFilters = ({
   typeCategories,
   typeTooltips,
 }: IMobileFiltersProps) => {
-  const { t }: { t: (key: string) => string } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <Sidebar
@@ -132,7 +132,8 @@ export const MobileFilters = ({
             title={t("filters.season.title")}
             values={seasonFilter.values.map((season) => ({
               key: season.key,
-              label: t(`filters.season.seasons.${season.key}`),
+              // https://www.i18next.com/overview/typescript#type-error-template-literal
+              label: t(`filters.season.seasons.${season.key}` as any),
               isActive: season.isActive,
             }))}
             onTagClick={(season) => {

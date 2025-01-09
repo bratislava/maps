@@ -188,7 +188,7 @@ export const processData = ({ rawDisordersData, rawDigupsAndClosuresData }: IPro
   ]);
 
   const uniqueDistricts: string[] = getUniqueValuesFromFeatures(allFeatures, "district").sort(
-    (a, b) => DISTRICTS.findIndex((d) => d == a) - DISTRICTS.findIndex((d) => d == b) ?? 0,
+    (a, b) => DISTRICTS.findIndex((d) => d == a) - DISTRICTS.findIndex((d) => d == b),
   );
 
   const uniqueLayers: string[] = getUniqueValuesFromFeatures(allFeatures, "layer").sort();

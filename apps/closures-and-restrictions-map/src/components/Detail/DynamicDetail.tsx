@@ -56,8 +56,6 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
     keyPrefix: "filters.type.types",
   });
 
-  const { t: mainT }: { t: (key: string) => string } = useTranslation();
-
   const { data: digupsAttachments } = useArcgisAttachments(DIGUPS_URL, objectId || 0);
 
   const { data: oldTownAttachments } = useArcgisAttachments(

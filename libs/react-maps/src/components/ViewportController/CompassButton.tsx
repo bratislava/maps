@@ -18,17 +18,17 @@ const CompassButtonWithoutTranslations = () => {
     mapMethods.changeViewport({ bearing: 0, zoom: mapState?.viewport.zoom });
   };
 
-
   return (
-    <IconButton aria-label={t('resetBearing')} >
-      <div onClick={() => handleCompassClick()}
+    <IconButton aria-label={t('resetBearing')}>
+      <div
+        onClick={() => handleCompassClick()}
         style={{
           transform: `rotate(${-(mapState?.viewport?.bearing ?? 0)}deg)`,
         }}
       >
         <Compass size="lg" />
       </div>
-    </IconButton >
+    </IconButton>
   );
 };
 export const CompassButton = () => {

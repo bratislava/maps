@@ -18,14 +18,15 @@ interface ILegendItem {
 }
 
 export const Legend = () => {
-  const { t }: { t: (key: string) => string } = useTranslation();
+  const { t } = useTranslation();
 
   const specificColors: ILegendItem[] = useMemo(
     () => [
       ...Object.keys(treeKindColorMappingObject).map(
         (key) =>
           ({
-            label: t(`trees.${key}`),
+            // https://www.i18next.com/overview/typescript#type-error-template-literal
+            label: t(`trees.${key}` as any),
             type: "circle",
             color: treeKindColorMappingObject[key],
           } as const),

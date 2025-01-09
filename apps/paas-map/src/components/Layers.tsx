@@ -145,6 +145,9 @@ const SecondaryLayerButton = ({
         <button onClick={toggle}>
           <Eye size="sm" isCrossed={!isActive} />
         </button>
+        {/* https://github.com/radix-ui/primitives/issues/2309 not yet resolved */}
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
         <Accordion.Trigger className="p-[2px]">
           <StyledChevron direction="bottom" size="xs" />
         </Accordion.Trigger>
@@ -251,6 +254,9 @@ export const Layers = <LF extends string, MF extends string>({
 
   return (
     <>
+      {/* https://github.com/radix-ui/primitives/issues/2309 not yet resolved */}
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
       <Accordion.Root value={value} onValueChange={setValue} type="multiple">
         {/* VISITORS */}
         <PrimaryLayerButton
@@ -275,6 +281,10 @@ export const Layers = <LF extends string, MF extends string>({
         />
 
         {/* PAYMENT */}
+
+        {/* https://github.com/radix-ui/primitives/issues/2309 not yet resolved */}
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
         <Accordion.Item value="payment">
           <Accordion.Header>
             <SecondaryLayerButton
@@ -308,6 +318,9 @@ export const Layers = <LF extends string, MF extends string>({
               }
             />
           </Accordion.Header>
+          {/* https://github.com/radix-ui/primitives/issues/2309 not yet resolved */}
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/* @ts-ignore */}
           <StyledAccordionContent className="overflow-hidden">
             <SubLayerButton
               isMobile={isMobile}
@@ -337,6 +350,9 @@ export const Layers = <LF extends string, MF extends string>({
         </Accordion.Item>
 
         {/* PARKING */}
+        {/* https://github.com/radix-ui/primitives/issues/2309 not yet resolved */}
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
         <Accordion.Item value="parking">
           <Accordion.Header>
             <SecondaryLayerButton
@@ -356,6 +372,9 @@ export const Layers = <LF extends string, MF extends string>({
               title={t("layerGroups.parking.title")}
             />
           </Accordion.Header>
+          {/* https://github.com/radix-ui/primitives/issues/2309 not yet resolved */}
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/* @ts-ignore */}
           <StyledAccordionContent className="overflow-hidden">
             <SubLayerButton
               isMobile={isMobile}
@@ -395,6 +414,9 @@ export const Layers = <LF extends string, MF extends string>({
         </Accordion.Item>
 
         {/* SUPPORT */}
+        {/* https://github.com/radix-ui/primitives/issues/2309 not yet resolved */}
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
         <Accordion.Item value="support">
           <Accordion.Header>
             <SecondaryLayerButton
@@ -431,6 +453,9 @@ export const Layers = <LF extends string, MF extends string>({
               }
             />
           </Accordion.Header>
+          {/* https://github.com/radix-ui/primitives/issues/2309 not yet resolved */}
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/* @ts-ignore */}
           <StyledAccordionContent className="overflow-hidden">
             <SubLayerButton
               isMobile={isMobile}

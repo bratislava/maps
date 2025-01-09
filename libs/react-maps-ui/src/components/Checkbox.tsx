@@ -37,6 +37,9 @@ export const Checkbox = ({
           borderColor: checked ? color : undefined,
         }}
       >
+        {/* https://github.com/radix-ui/primitives/issues/2309 not yet resolved */}
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
         <Indicator>
           <Tick width={10} height={10} className="text-white" />
         </Indicator>

@@ -13,7 +13,7 @@ export interface CvickoDetailProps {
 
 export const CvickoDetail = ({ feature, isMobile, displayHeader }: CvickoDetailProps) => {
   const { t } = useTranslation("translation", { keyPrefix: "layers.cvicko.detail" });
-  const { t: mainT }: { t: (key: string) => string } = useTranslation();
+  const { t: mainT } = useTranslation();
 
   if (!feature) return null;
 
@@ -74,7 +74,8 @@ export const CvickoDetail = ({ feature, isMobile, displayHeader }: CvickoDetailP
                 className="font-semibold bg-primary-azure dark:text-background-darkmode"
                 key={`${tag}`}
               >
-                {mainT(`filters.tag.tags.${tag}`)}
+                {/* https://www.i18next.com/overview/typescript#type-error-template-literal */}
+                {mainT(`filters.tag.tags.${tag}` as any)}
               </Tag>
             ))}
           </div>

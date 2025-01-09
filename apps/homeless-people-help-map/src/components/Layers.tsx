@@ -1,9 +1,8 @@
 import { IFilterResult } from "@bratislava/react-mapbox";
-import { capitalizeFirstLetter } from "../../../planting-map/src/utils/utils";
 import { colors } from "../utils/colors";
 import { useTranslation } from "react-i18next";
-import { FeatureCollection } from "geojson";
 import { LayerButton } from "./LayerButton";
+import { capitalizeFirstLetter } from "@bratislava/utils";
 
 export type LayersProps = {
   filter: IFilterResult<string>;
@@ -13,7 +12,7 @@ export type LayersProps = {
 };
 
 export const Layers = ({ filter, layers, title }: LayersProps) => {
-  const { t }: { t: (key: string) => string } = useTranslation();
+  const { t } = useTranslation();
 
   const handleLayerButtonClick = (layer: string) => {
     // If all layers are active then set this layer the only one active
@@ -42,7 +41,8 @@ export const Layers = ({ filter, layers, title }: LayersProps) => {
             key={layer}
             color={colors[layer]}
             isVisible={filter.isAnyKeyActive([layer])}
-            title={capitalizeFirstLetter(t(`layers.${layer}`))}
+            // https://www.i18next.com/overview/typescript#type-error-template-literal
+            title={capitalizeFirstLetter(t(`layers.${layer}` as any))}
             onClick={() => handleLayerButtonClick(layer)}
           />
         ))}

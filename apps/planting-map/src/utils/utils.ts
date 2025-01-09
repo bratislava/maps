@@ -159,11 +159,11 @@ export const processData = (rawData: FeatureCollection) => {
     (a, b) => parseInt(b) - parseInt(a),
   );
   const uniqueDistricts: string[] = getUniqueValuesFromFeatures(data.features, "district").sort(
-    (a, b) => DISTRICTS.findIndex((d) => d == a) - DISTRICTS.findIndex((d) => d == b) ?? 0,
+    (a, b) => DISTRICTS.findIndex((d) => d == a) - DISTRICTS.findIndex((d) => d == b),
   );
   const seasons = ["spring", "summer", "autumn", "winter"];
   const uniqueSeasons: string[] = getUniqueValuesFromFeatures(data.features, "season").sort(
-    (a, b) => seasons.findIndex((d) => d == a) - seasons.findIndex((d) => d == b) ?? 0,
+    (a, b) => seasons.findIndex((d) => d == a) - seasons.findIndex((d) => d == b),
   );
 
   return {
@@ -173,10 +173,6 @@ export const processData = (rawData: FeatureCollection) => {
     uniqueSeasons,
     uniqueKinds: kinds,
   };
-};
-
-export const capitalizeFirstLetter = (text: string) => {
-  return text.charAt(0).toUpperCase() + text.slice(1);
 };
 
 const getLog = (feature: Feature) => {
