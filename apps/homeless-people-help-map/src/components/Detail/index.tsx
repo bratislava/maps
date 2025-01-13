@@ -16,13 +16,9 @@ import { OtherServiceDetail, otherServiceFeaturePropertiesSchema } from "./Other
 import { Detail as MapDetail } from "@bratislava/react-maps";
 import { MainDetail, mainFeaturePropertiesSchema } from "./MainDetail";
 import { TerrainServiceSingleWrapper } from "./TerrainServiceSingleWrapper";
-import {
-  TerrainServiceWrapper,
-  nameSchema,
-  terrainServicePropertiesSchema,
-} from "./TerrainServiceMultipleWrapper";
+import { TerrainServiceWrapper, nameSchema } from "./TerrainServiceMultipleWrapper";
 import { SheetHandle } from "@bratislava/react-maps-ui";
-import { ITerrainService } from "../../utils/types";
+import { ITerrainService, terrainServicePropertiesSchema } from "../../utils/types";
 
 export interface DetailProps {
   feature?: Feature | null;

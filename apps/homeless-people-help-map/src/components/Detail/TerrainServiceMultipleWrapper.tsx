@@ -1,20 +1,10 @@
-import { Accordion, AccordionItem, Divider, Feedback } from "@bratislava/react-maps-ui";
+import { Accordion, AccordionItem, Feedback } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
-import cx from "classnames";
 import { z } from "zod";
 import { Fragment, useState } from "react";
-import { TerrainServiceDetail } from "./TerrainServiceDetail";
 
-export const terrainServicePropertiesSchema = z.object({
-  key: z.string(),
-  title: z.string().optional(),
-  provider: z.string().optional(),
-  phone: z.number().optional().nullable(),
-  // web: z.string(),
-  // openingHours: z.string(),
-  price: z.string().optional(),
-  areas: z.string().optional(),
-});
+import { TerrainServiceDetail } from "./TerrainServiceDetail";
+import { terrainServicePropertiesSchema } from "../../utils/types";
 
 export const nameSchema = z.string().optional();
 
@@ -64,7 +54,7 @@ export const TerrainServiceWrapper = ({
                     <div className="flex flex-col gap-4">
                       <TerrainServiceDetail
                         provider={provider}
-                        phone={phone?.toString()}
+                        phone={phone}
                         price={price}
                         areas={areas}
                       />
