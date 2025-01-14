@@ -1,15 +1,8 @@
 import { DataDisplay, Tag } from "@bratislava/react-maps-ui";
 import { useTranslation } from "react-i18next";
-import { colors } from "../../utils/colors";
 
-export interface ITerrainServiceDetailProps {
-  provider?: string;
-  phone?: string | null;
-  // web: string;
-  // openingHours: string;
-  price?: string;
-  areas?: string;
-}
+import { colors } from "../../utils/colors";
+import { TerrainServiceProperties } from "../../utils/types";
 
 // TODO fix missing web and openingHours,
 export const TerrainServiceDetail = ({
@@ -17,7 +10,7 @@ export const TerrainServiceDetail = ({
   phone,
   price,
   areas,
-}: ITerrainServiceDetailProps) => {
+}: Omit<TerrainServiceProperties, "key">) => {
   const { t } = useTranslation("translation", { keyPrefix: "detail.terrainService" });
   const { t: detailT } = useTranslation("translation", { keyPrefix: "detail.main" });
 
