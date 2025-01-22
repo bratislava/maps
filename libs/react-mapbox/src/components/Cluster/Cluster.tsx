@@ -47,9 +47,6 @@ export const Cluster = ({
       f.geometry.coordinates.join(','),
     );
 
-    console.log('original: ', featuresToFilter);
-    console.log('grouped: ', groupedFeatures);
-
     // split the features with same coordinates into a line side-by-side
     return Object.values(groupedFeatures).reduce((acc, curr) => {
       return [

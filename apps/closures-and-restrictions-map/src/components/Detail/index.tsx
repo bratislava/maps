@@ -10,14 +10,12 @@ export interface DetailProps {
   onClose: () => void;
 }
 
-
 export const Detail = forwardRef<HTMLDivElement, DetailProps>(
   ({ feature, isMobile, onClose }, forwardedRef) => {
-
     const getStreetViewUrl = (feature: Feature<Geometry, GeoJsonProperties> | null): string => {
-      if (feature?.geometry.type !== 'Point') return '';
-      return `http://maps.google.com/maps?q=&layer=c&cbll=${feature?.geometry?.coordinates[1]},${feature?.geometry?.coordinates[0]}`
-    }
+      if (feature?.geometry.type !== "Point") return "";
+      return `http://maps.google.com/maps?q=&layer=c&cbll=${feature?.geometry?.coordinates[1]},${feature?.geometry?.coordinates[0]}`;
+    };
 
     return (
       <MapDetail
@@ -28,14 +26,13 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
         bottomSheetInitialSnap={1}
       >
         <div ref={forwardedRef}>
-          {feature?.properties &&
-            < DynamicDetail
+          {feature?.properties && (
+            <DynamicDetail
               isMobile={isMobile}
               featureProps={feature.properties as IFeatureProps}
               streetViewUrl={getStreetViewUrl(feature)}
             />
-          }
-
+          )}
         </div>
       </MapDetail>
     );
