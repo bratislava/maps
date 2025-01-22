@@ -62,7 +62,8 @@ export interface ICommonOriginalProps {
   __oldTownMarker?: boolean;
 }
 
-export interface IDigupsAndClosuresOriginalProps extends ICommonOriginalProps {
+export interface IDigupsAndClosuresOriginalProps extends Omit<ICommonOriginalProps, "objectid"> {
+  OBJECTID: number; // gis is sending this as OBJECTID instead of objectid
   adresa_rozkopavky: string;
   cas_odstranenia: string | null;
   cas_vzniku: string | null;
@@ -81,7 +82,7 @@ export interface IDigupsAndClosuresOriginalProps extends ICommonOriginalProps {
   potvrdeny_termin_realizacie?: number;
 }
 
-export interface IDisorderOriginalProps extends ICommonOriginalProps {
+export interface IDisorderOriginalProps extends Omit<ICommonOriginalProps, "objectid"> {
   CreationDate: number;
   Creator: string;
   EditDate: number;
@@ -90,7 +91,7 @@ export interface IDisorderOriginalProps extends ICommonOriginalProps {
   globalid: string;
   mestska_cast: TCityDistrict;
   mestska_cast_other: string | null;
-  objectid: number;
+  OBJECTID: number; // gis is sending this as OBJECTID instead of objectid
   poznamky_a_doplnujuce_udaje: string | null;
   predmet_nadpis: string;
   rozmery_vykopu_v_m2: number;

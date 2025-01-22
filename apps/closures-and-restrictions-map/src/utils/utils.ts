@@ -41,7 +41,7 @@ export const processData = ({ rawDisordersData, rawDigupsAndClosuresData }: IPro
 
       const properties: IFeatureProps = {
         originalProperties,
-        objectId: originalProperties.objectid,
+        objectId: originalProperties.OBJECTID,
         startTimestamp,
         endTimestamp,
         dateOfPassage: originalProperties.datum_sprejazdnenia,
@@ -95,7 +95,7 @@ export const processData = ({ rawDisordersData, rawDigupsAndClosuresData }: IPro
         contractor: originalProperties?.ine_zhotovitel || originalProperties?.zhotovitel,
         layer,
         icon: layer === "closures" ? "closure" : "digup",
-        objectId: originalProperties.objectid,
+        objectId: originalProperties.OBJECTID,
         infoForResidents: originalProperties?.informacie,
         displayFeature: originalProperties.zobrazovanie === "Zobrazovat",
       };
