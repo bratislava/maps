@@ -70,6 +70,7 @@ export default {
         title: "Obmedzenie",
         startDate: "Začiatok realizácie",
         endDate: "Ukončenie realizácie",
+        dateOfPassage: "Predpokladané spriechodnenie",
         category: "Typ siete / kategória",
         address: "Adresa",
         fullSize: "Celkový rozmer",
