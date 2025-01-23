@@ -5,7 +5,7 @@ import type { Feature, FeatureCollection } from "geojson";
 import type {
   IDigupsAndClosuresOriginalProps,
   IDisorderOriginalProps,
-  IFeatureProps,
+  IOldTownOriginalProps,
   IProcessDataProps,
   TStatus,
 } from "../types/featureTypes";
@@ -39,9 +39,9 @@ export const processData = ({ rawDisordersData, rawDigupsAndClosuresData }: IPro
         owner = "Západoslovenská distribučná, a.s.";
       }
 
-      const properties: IFeatureProps = {
+      const properties = {
         originalProperties,
-        objectId: originalProperties.OBJECTID,
+        objectId: originalProperties.objectid,
         startTimestamp,
         endTimestamp,
         dateOfPassage: originalProperties.datum_sprejazdnenia,
@@ -69,7 +69,9 @@ export const processData = ({ rawDisordersData, rawDigupsAndClosuresData }: IPro
   const digupsAndClosuresData: FeatureCollection = addDistrictPropertyToLayer({
     ...rawDigupsAndClosuresData,
     features: rawDigupsAndClosuresData.features.map((feature) => {
-      const originalProperties = { ...(feature.properties as IDigupsAndClosuresOriginalProps) };
+      const originalProperties = {
+        ...(feature.properties as IDigupsAndClosuresOriginalProps | IOldTownOriginalProps),
+      };
       const layer = ["čiastočná", "úplná"].includes(originalProperties?.uzavierka)
         ? "closures"
         : "digups";
@@ -78,7 +80,7 @@ export const processData = ({ rawDisordersData, rawDigupsAndClosuresData }: IPro
         originalProperties.potvrdeny_termin_realizacie || originalProperties.datum_vzniku;
       const endTimestamp = originalProperties.termin_finalnej_upravy;
 
-      const properties: IFeatureProps = {
+      const properties = {
         originalProperties,
         startTimestamp,
         endTimestamp,
@@ -95,7 +97,9 @@ export const processData = ({ rawDisordersData, rawDigupsAndClosuresData }: IPro
         contractor: originalProperties?.ine_zhotovitel || originalProperties?.zhotovitel,
         layer,
         icon: layer === "closures" ? "closure" : "digup",
-        objectId: originalProperties.OBJECTID,
+        objectId: originalProperties.__oldTownMarker
+          ? (originalProperties as IOldTownOriginalProps).objectid
+          : (originalProperties as IDigupsAndClosuresOriginalProps).OBJECTID,
         infoForResidents: originalProperties?.informacie,
         displayFeature: originalProperties.zobrazovanie === "Zobrazovat",
       };

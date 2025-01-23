@@ -91,7 +91,7 @@ export interface IDisorderOriginalProps extends Omit<ICommonOriginalProps, "obje
   globalid: string;
   mestska_cast: TCityDistrict;
   mestska_cast_other: string | null;
-  OBJECTID: number; // gis is sending this as OBJECTID instead of objectid
+  objectid: number; // gis is sending this as OBJECTID instead of objectid
   poznamky_a_doplnujuce_udaje: string | null;
   predmet_nadpis: string;
   rozmery_vykopu_v_m2: number;
@@ -108,8 +108,27 @@ export interface IDisorderOriginalProps extends Omit<ICommonOriginalProps, "obje
   vlastnik_spravca_vedenia: string;
 }
 
+export interface IOldTownOriginalProps extends ICommonOriginalProps {
+  adresa_rozkopavky: string;
+  cas_odstranenia: string | null;
+  cas_vzniku: string | null;
+  datum_vzniku: number;
+  druh_rozkopavky: TNetworkType;
+  ine_investor: string | null;
+  ine_zhotovitel: string | null;
+  informacie: string;
+  investor: string;
+  potvrdeny_termin_realizacie?: number;
+  termin_finalnej_upravy: number;
+  uzavierka: TClosure;
+  vplyv_obmedzenia: string;
+  zasah_zelen: string;
+  zhotovitel: string;
+  zobrazovanie: "Zobrazovat" | "Nezobrazovat";
+}
+
 export interface IFeatureProps {
-  objectId: number;
+  objectId?: number;
   subject: string | null;
   type: Array<string>;
   address: string | null;
@@ -129,6 +148,9 @@ export interface IFeatureProps {
   infoForResidents?: string | null;
   status: TStatus;
   imageUrl?: string;
-  originalProperties: IDigupsAndClosuresOriginalProps | IDisorderOriginalProps;
+  originalProperties:
+    | IOldTownOriginalProps
+    | IDigupsAndClosuresOriginalProps
+    | IDisorderOriginalProps;
   displayFeature: boolean;
 }

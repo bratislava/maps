@@ -58,15 +58,9 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
 
   const { data: digupsAttachments } = useArcgisAttachments(DIGUPS_URL, objectId || 0);
 
-  const { data: oldTownAttachments } = useArcgisAttachments(
-    OLD_TOWN_DATA_URL,
-    objectId || originalProperties?.objectid || 0,
-  );
+  const { data: oldTownAttachments } = useArcgisAttachments(OLD_TOWN_DATA_URL, objectId || 0);
 
-  const { data: disordersAttachments } = useArcgisAttachments(
-    DISORDERS_URL,
-    objectId || originalProperties?.objectid || 0,
-  );
+  const { data: disordersAttachments } = useArcgisAttachments(DISORDERS_URL, objectId || 0);
 
   const filterAttachments = (
     attachments: Array<Attachment> | null,
@@ -78,7 +72,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
     const validAttachments = attachments.filter((a) => a?.keywords === attachementFilter);
 
     validAttachments.forEach((a) => {
-      urlList.push(`${url}/${objectId || originalProperties?.objectid}/attachment/${a.id}`);
+      urlList.push(`${url}/${objectId}/attachment/${a.id}`);
     });
 
     return urlList;
@@ -236,6 +230,7 @@ export const DynamicDetail: React.FC<IDetail> = ({ featureProps, streetViewUrl, 
       {!!length && <Row label={t("length")} text={`${length} m`} />}
       {!!width && <Row label={t("width")} text={`${width} m`} />}
       <Row label={t("investor")} text={investor} />
+      {/* we don't want to show disorders data by request of @Kubo Hruby */}
       {layer !== "disorders" && <Row label={t("owner")} text={owner} />}
       {layer !== "disorders" && <Row label={t("contractor")} text={contractorTextValue} />}
 
