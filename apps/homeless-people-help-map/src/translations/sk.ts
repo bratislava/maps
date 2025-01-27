@@ -1,11 +1,11 @@
 export default {
-  title: "Mapa pomoci ľudom bez domova",
+  title: "Mapa služieb pre ľudí v núdzi",
   search: "Hľadať",
   close: "Zavrieť",
   loading: "Načítavanie",
   moreInformation: "Viac informácií",
   reportProblemLink:
-    "mailto:sekciasocialnychveci@bratislava.sk?subject=Mapa pomoci pre ľudí bez domova - návrh na zmenu/doplnenie údajov",
+    "mailto:sekciasocialnychveci@bratislava.sk?subject=Mapa služieb pre ľudí v núdzi - návrh na zmenu/doplnenie údajov",
   reportProblem: "sekciasocialnychveci@bratislava.sk",
   problemHint:
     "Našli ste neaktuálnu informáciu alebo niečo na mape chýba? Napíšte nám a pomôžte mapu zlepšovať.",
@@ -181,7 +181,7 @@ export default {
   },
 
   welcomeModal: {
-    title: "Vitajte na mape pomoci ľudom bez domova",
+    title: "Vitajte na mapa služieb pre ľudí v núdzi",
     description:
       "Mapa obsahuje všetky formy pomoci pre ľudí, ktorí prišli o domov. Informácie o miestach na nocľah, stravovanie, hygienu či zdravotné ošetrenie, pôsobenie terénnych tímov alebo linky pomoci. ",
   },
@@ -189,13 +189,13 @@ export default {
   activeFilters: "Aktívny filter",
   resetFilters: "Zrušiť filter",
   informationModal: {
-    title: "Mapa pomoci ľudom bez domova.",
+    title: "Mapa služieb pre ľudí v núdzi.",
     description:
       "Našli ste neaktuálnu informáciu alebo niečo na mape chýba? Napíšte nám na <1>sekciasocialnychveci@bratislava.sk</1> a pomôžte mapu zlepšovať. Viac o aktivitách v sociálnej oblasti nájdete na webe hlavného mesta, v sekcii sociálne služby a bývanie.",
     descriptionLink:
-      "mailto:sekciasocialnychveci@bratislava.sk?subject=Mapa pomoci pre ľudí bez domova - návrh na zmenu/doplnenie údajov",
+      "mailto:sekciasocialnychveci@bratislava.sk?subject=Mapa služieb pre ľudí v núdzi - návrh na zmenu/doplnenie údajov",
     footer: "Zanechajte nám spätnú väzbu na <1>mapy.inovacie@bratislava.sk</1>",
     footerLink:
-      "mailto:mapy.inovacie@bratislava.sk?subject=Mapa pomoci pre ľudí bez domova - spätná väzba",
+      "mailto:mapy.inovacie@bratislava.sk?subject=Mapa služieb pre ľudí v núdzi - spätná väzba",
   },
 };
