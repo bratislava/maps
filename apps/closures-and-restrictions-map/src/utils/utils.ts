@@ -80,6 +80,20 @@ export const processData = ({ rawDisordersData, rawDigupsAndClosuresData }: IPro
         originalProperties.potvrdeny_termin_realizacie || originalProperties.datum_vzniku;
       const endTimestamp = originalProperties.termin_finalnej_upravy;
 
+      let investor = originalProperties.ine_investor || originalProperties?.investor;
+      if (investor.startsWith("Bratislavská vodárenská")) {
+        investor = "Bratislavská vodárenská spoločnosť, a.s.";
+      } else if (investor.startsWith("Západoslovenská distribučná")) {
+        investor = "Západoslovenská distribučná, a.s.";
+      }
+
+      let contractor = originalProperties.ine_zhotovitel || originalProperties?.zhotovitel;
+      if (investor.startsWith("Bratislavská vodárenská")) {
+        contractor = "Bratislavská vodárenská spoločnosť, a.s.";
+      } else if (contractor.startsWith("Západoslovenská distribučná")) {
+        contractor = "Západoslovenská distribučná, a.s.";
+      }
+
       const properties = {
         originalProperties,
         startTimestamp,
@@ -93,8 +107,8 @@ export const processData = ({ rawDisordersData, rawDigupsAndClosuresData }: IPro
         fullSize: originalProperties?.rozmery_vykopu_v_m2,
         width: originalProperties?.sirka_vykopu_m,
         length: originalProperties?.dlzka_vykopu_m,
-        investor: originalProperties?.ine_investor || originalProperties?.investor,
-        contractor: originalProperties?.ine_zhotovitel || originalProperties?.zhotovitel,
+        investor: investor,
+        contractor: contractor,
         layer,
         icon: layer === "closures" ? "closure" : "digup",
         objectId: originalProperties.__oldTownMarker
