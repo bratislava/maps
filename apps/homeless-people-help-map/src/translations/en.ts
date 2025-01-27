@@ -1,11 +1,11 @@
 export default {
-  title: "Map of help to homeless people",
+  title: "Map of services for people in need",
   search: "Search",
   close: "Close",
   loading: "Loading",
   moreInformation: "More information",
   reportProblemLink:
-    "mailto:sekciasocialnychveci@bratislava.sk?subject=Map of help to homeless people - suggestion to change/add information",
+    "mailto:sekciasocialnychveci@bratislava.sk?subject=Map of services for people in need - suggestion to change/add information",
   reportProblem: "sekciasocialnychveci@bratislava.sk",
   problemHint:
     "Did you find stale information or map is missing something? Write us and help us improving map.",
@@ -181,7 +181,7 @@ export default {
   },
 
   welcomeModal: {
-    title: "Welcome to the map of helping homeless people",
+    title: "Welcome to the map of services for people in need",
     description:
       "The map contains all forms of assistance for people who have lost their homes. Information about places to stay overnight, meals, hygiene or medical treatment, operation of field teams or help lines.",
   },
@@ -189,13 +189,13 @@ export default {
   activeFilters: "Active filters",
   resetFilters: "Reset filters",
   informationModal: {
-    title: "Map of help to homeless people.",
+    title: "Map of services for people in need.",
     description:
       "Did you find outdated information or is something missing on map? Write to us at <1>sekciasocialnychveci@bratislava.sk</1> and help improve the map. You can find more about activities in the social field on the website of the capital, in the section social services and housing.",
     descriptionLink:
-      "mailto:sekciasocialnychveci@bratislava.sk?subject=Map of help to homeless people - suggestion to change/add information",
+      "mailto:sekciasocialnychveci@bratislava.sk?subject=Map of services for people in need - suggestion to change/add information",
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
     footerLink:
-      "mailto:mapy.inovacie@bratislava.sk?subject=Map of help to homeless people - feedback",
+      "mailto:mapy.inovacie@bratislava.sk?subject=Map of services for people in need - feedback",
   },
 };
