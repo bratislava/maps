@@ -183,7 +183,7 @@ export default {
   welcomeModal: {
     title: "Vitajte na mapa služieb pre ľudí v núdzi",
     description:
-      "Mapa obsahuje všetky formy pomoci pre ľudí, ktorí prišli o domov. Informácie o miestach na nocľah, stravovanie, hygienu či zdravotné ošetrenie, pôsobenie terénnych tímov alebo linky pomoci. ",
+      "Mapa obsahuje všetky formy pomoci pre ľudí, ktorí sa nachádzajú v núdzi. Informácie o miestach na nocľah, stravovanie, hygienu či zdravotné ošetrenie, pôsobenie terénnych tímov alebo linky pomoci. ",
   },
 
   activeFilters: "Aktívny filter",
