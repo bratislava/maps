@@ -14,7 +14,12 @@ import { AnimationChangeEvent, Cluster, LineString } from "@bratislava/react-map
 import { Trans, useTranslation } from "react-i18next";
 import DrinkingFountainMarker from "../components/DrinkingFountainMarker";
 import { processFountainData } from "../utils/fountainUtil";
-import { generateRawWorkoutData, getCvickoIdFromQuery, getIsHomepageFromQuery, IWorkout } from "../utils/utils";
+import {
+  generateRawWorkoutData,
+  getCvickoIdFromQuery,
+  getIsHomepageFromQuery,
+  IWorkout,
+} from "../utils/utils";
 import { CvickoMarker } from "./CvickoMarker";
 
 import { coordinates as apolloBasicCoordinates } from "../assets/layers/running-tracks/basic/apollo";
@@ -55,9 +60,8 @@ import { runningTracks } from "../assets/layers/running-tracks/data/running-tack
 
 export type TSelectedFeature = Feature<Point> | null;
 
-
-const queryWorkouts = "https://general-strapi.bratislava.sk/api/cvickas?populate=*&pagination[limit]=-1";
-
+const queryWorkouts =
+  "https://general-strapi.bratislava.sk/api/cvickas?populate=*&pagination[limit]=-1";
 
 export const App = () => {
   const mapRef = useRef<MapHandle>(null);
@@ -70,7 +74,6 @@ export const App = () => {
   const currentCvickoId = useQuery("cvicko", getCvickoIdFromQuery);
   const isHomepage = useQuery("homepage", getIsHomepageFromQuery);
 
-  const [isLoading, setLoading] = useState(true);
   const [isMobile, setMobile] = useState<boolean | null>(null);
 
   const [selectedFountain, setSelectedFountain] = useState<TSelectedFeature>(null);
@@ -82,18 +85,17 @@ export const App = () => {
 
   useEffect(() => {
     setIsDetailOpened(selectedFeature !== null || selectedFountain !== null);
-  }, [selectedFeature, selectedFountain])
+  }, [selectedFeature, selectedFountain]);
 
   useEffect(() => {
     fetch(queryWorkouts, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Accept': 'application/json',
+        Accept: "application/json",
       },
     })
-      .then(response => response.json())
-      .then(response => JSON.stringify(setRawDataCvicko(response.data)))
-
+      .then((response) => response.json())
+      .then((response) => JSON.stringify(setRawDataCvicko(response.data)));
   }, []);
 
   useEffect(() => {
@@ -104,10 +106,10 @@ export const App = () => {
     }
   }, [rawDataCvicko]);
 
-
   const featureClickHandler = (
     feature: TSelectedFeature = null,
-    fountain: TSelectedFeature = null) => {
+    fountain: TSelectedFeature = null,
+  ) => {
     setSelectedFeature(feature);
     setSelectedFountain(fountain);
     const data = feature || fountain;
@@ -119,7 +121,7 @@ export const App = () => {
           lat: data.geometry.coordinates[1],
         },
       });
-  }
+  };
 
   // change page title according to current selected cvicko
   useEffect(() => {
@@ -132,7 +134,6 @@ export const App = () => {
     setSelectedFeature(null);
     setSelectedFountain(null);
   }, []);
-
 
   useEffect(() => {
     if (selectedFeature) {
@@ -166,14 +167,14 @@ export const App = () => {
         line === "apollo-rt"
           ? apolloDetailedStyles
           : line === "old-bridge-rt"
-            ? oldDetailedStyles
-            : line === "snp-rt"
-              ? snpDetailedStyles
-              : line === "small-rt"
-                ? smallDetailedStyles
-                : line === "large-rt"
-                  ? largeDetailedStyles
-                  : [];
+          ? oldDetailedStyles
+          : line === "snp-rt"
+          ? snpDetailedStyles
+          : line === "small-rt"
+          ? smallDetailedStyles
+          : line === "large-rt"
+          ? largeDetailedStyles
+          : [];
 
       setAnimatedLineStyles(animatedLineStyles);
 
@@ -181,17 +182,17 @@ export const App = () => {
         line === "apollo-rt"
           ? apolloDetailedCoordinates
           : line === "old-bridge-rt"
-            ? oldDetailedCoordinates
-            : line === "snp-rt"
-              ? snpDetailedCoordinates
-              : line === "small-rt"
-                ? smallDetailedCoordinates
-                : line === "large-rt"
-                  ? largeDetailedCoordinates
-                  : [
-                    [0, 0],
-                    [0, 0],
-                  ];
+          ? oldDetailedCoordinates
+          : line === "snp-rt"
+          ? snpDetailedCoordinates
+          : line === "small-rt"
+          ? smallDetailedCoordinates
+          : line === "large-rt"
+          ? largeDetailedCoordinates
+          : [
+              [0, 0],
+              [0, 0],
+            ];
 
       setAnimatedLineCoordinates(animatedLineCoordinates);
 
@@ -213,19 +214,15 @@ export const App = () => {
     mapRef.current?.changeViewport({ center: event.center, pitch: 20, bearing: 25, zoom: 15 }, 200);
   };
 
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
   // set event listeners
   useEffect(() => {
     const cancelAnimation = (event: KeyboardEvent) => {
-      if (event.code === 'Escape') stopAnimation();
+      if (event.code === "Escape") stopAnimation();
     };
 
-    document.addEventListener('keydown', cancelAnimation);
+    document.addEventListener("keydown", cancelAnimation);
 
-    return () => document.removeEventListener('keydown', cancelAnimation);
+    return () => document.removeEventListener("keydown", cancelAnimation);
   }, [stopAnimation]);
 
   const ininialViewport = useMemo(
@@ -257,7 +254,7 @@ export const App = () => {
     return windowHeight < viewportControlsHeight + detailHeight + 40 && !!selectedFeature;
   }, [windowHeight, detailHeight, viewportControlsHeight, selectedFeature]);
 
-  return isLoading ? null : (
+  return (
     <div className="h-full w-full">
       <Map
         interactive={!isAnimating}
@@ -306,7 +303,6 @@ export const App = () => {
           ),
         }}
       >
-
         <Cluster features={data?.features ?? []} radius={24}>
           {({ features, lng, lat, key, clusterExpansionZoom }) =>
             features.length === 1 ? (
@@ -353,9 +349,8 @@ export const App = () => {
                 length={track.length}
               />
             </>
-          )
-        })
-        }
+          );
+        })}
 
         {/* Cvicko icons */}
         {cvickoData?.features.map((cvickoFeature) => (
@@ -447,7 +442,12 @@ export const App = () => {
         </Slot>
 
         <Slot id="mobile-detail" isVisible={isDetailOpened && isMobile !== null && isMobile}>
-          <Detail isMobile={isMobile !== null && isMobile} feature={selectedFeature} fountain={selectedFountain} onClose={closeDetail} />
+          <Detail
+            isMobile={isMobile !== null && isMobile}
+            feature={selectedFeature}
+            fountain={selectedFountain}
+            onClose={closeDetail}
+          />
         </Slot>
 
         <Slot
@@ -458,18 +458,26 @@ export const App = () => {
           avoidMapboxControls={shouldBeViewportControlsMoved ? true : false}
           isVisible={!!selectedFeature || !!selectedFountain}
         >
-
-          <Slot id="desktop-detail" isVisible={isDetailOpened && !isMobile} position="top-right" autoPadding>
+          <Slot
+            id="desktop-detail"
+            isVisible={isDetailOpened && !isMobile}
+            position="top-right"
+            autoPadding
+          >
             <div
               ref={detailRef}
               className={cx("w-96", {
                 "shadow-lg": isDetailOpened,
               })}
             >
-              <Detail isMobile={false} feature={selectedFeature} fountain={selectedFountain} onClose={closeDetail} />
+              <Detail
+                isMobile={false}
+                feature={selectedFeature}
+                fountain={selectedFountain}
+                onClose={closeDetail}
+              />
             </div>
           </Slot>
-
         </Slot>
       </Map>
     </div>
