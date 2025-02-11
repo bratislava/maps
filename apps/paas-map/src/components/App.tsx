@@ -85,7 +85,6 @@ export const App = () => {
     { format: "geojson" },
   );
 
-  const [isLoading, setLoading] = useState(true);
   const [markersData, setMarkersData] = useState<FeatureCollection | null>(null);
   const [zonesData, setZonesData] = useState<FeatureCollection | null>(null);
   const [udrData, setUdrData] = useState<FeatureCollection | null>(null);
@@ -130,7 +129,6 @@ export const App = () => {
       setZonesData(zonesData);
       setUdrData(udrData);
       setOdpData(odpData);
-      setLoading(false);
     }
   }, [
     rawAssistantsData,
@@ -311,7 +309,7 @@ export const App = () => {
     if (filteredZones?.length) mapRef.current?.fitFeature(filteredZones);
   }, [zoneFilter.activeKeys, zonesData?.features]);
 
-  return isLoading ? null : (
+  return (
     <Map
       ref={mapRef}
       minZoom={9.5}
