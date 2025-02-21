@@ -98,8 +98,6 @@ export const App = () => {
     document.title = t("tabTitle");
   }, [t]);
 
-  const [isLoading, setLoading] = useState(true);
-
   const [markersData, setMarkersData] = useState<FeatureCollection | null>(null);
 
   // const [repairsPolygonsData, setRepairsPolygonsData] = useState<FeatureCollection | null>(null);
@@ -193,8 +191,6 @@ export const App = () => {
       setUniqueDistricts(uniqueDistricts);
       setUniqueLayers(uniqueLayers);
       setUniqueTypes(uniqueTypes);
-
-      setLoading(false);
     }
   }, [
     rawDisordersData,
@@ -446,7 +442,7 @@ export const App = () => {
     setDateEnd(undefined);
   };
 
-  return isLoading ? null : (
+  return (
     <Map
       loadingSpinnerColor={colors.defaultBlue}
       initialViewport={initialViewport}
