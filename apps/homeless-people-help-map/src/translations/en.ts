@@ -183,7 +183,7 @@ export default {
   welcomeModal: {
     title: "Welcome to the map of services for people in need",
     description:
-      "The map contains all forms of assistance for people who have lost their homes. Information about places to stay overnight, meals, hygiene or medical treatment, operation of field teams or help lines.",
+      "The map contains all forms of assistance for people in need. Information about places to stay overnight, meals, hygiene or medical treatment, operation of field teams or help lines.",
   },
 
   activeFilters: "Active filters",
