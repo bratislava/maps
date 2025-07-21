@@ -19,6 +19,7 @@ import { TerrainServiceSingleWrapper } from "./TerrainServiceSingleWrapper";
 import { TerrainServiceWrapper, nameSchema } from "./TerrainServiceMultipleWrapper";
 import { SheetHandle } from "@bratislava/react-maps-ui";
 import { ITerrainService, terrainServicePropertiesSchema } from "../../utils/types";
+import { PublicToiletDetail, publicToiletFeaturePropertiesSchema } from "./PublicToiletDetail";
 
 export interface DetailProps {
   feature?: Feature | null;
@@ -79,6 +80,13 @@ export const Detail = forwardRef<HTMLDivElement, DetailProps>(
       try {
         const props = drinkingFountainFeaturePropertiesSchema.parse(feature?.properties);
         return <DrinkingFountainDetail isMobile={isMobile} properties={props} />;
+      } catch {
+        // Who cares?
+      }
+
+      try {
+        const props = publicToiletFeaturePropertiesSchema.parse(feature?.properties);
+        return <PublicToiletDetail properties={props} />;
       } catch {
         // Who cares?
       }

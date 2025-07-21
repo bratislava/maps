@@ -58,6 +58,8 @@ import { useServicesData } from "../data/data";
 import { ITerrainService } from "../utils/types";
 import { DrinkingFountainMarker } from "./DrinkingFountainMarker";
 import { useDrinkingFountains } from "../data/drinkingFountains";
+import { PublicToiletMarker } from "./PublicToiletMarker";
+import { usePublicToilets } from "../data/publicToilets";
 
 const { uniqueDistricts } = processData();
 const uniqueLayers = Object.keys(colors).filter((key) => key !== "terrainServices");
@@ -65,6 +67,7 @@ const defaultLayersValues = uniqueLayers.reduce((prev, curr) => ({ ...prev, [cur
 
 export const App = () => {
   const { t, i18n } = useTranslation();
+  const processedPublicToiletsData = usePublicToilets();
 
   const [isSidebarVisible, setSidebarVisible] = useState(false);
   const [isSidebarClosedByUser, setSidebarClosedByUser] = useState(false);
@@ -449,6 +452,40 @@ export const App = () => {
             />
           ) : (
             <DrinkingFountainMarker
+              key={key}
+              feature={{
+                ...features[0],
+                geometry: {
+                  type: "Point",
+                  coordinates: [lng, lat],
+                },
+              }}
+              count={features.length}
+              onClick={() =>
+                mapRef.current?.changeViewport({
+                  zoom: clusterExpansionZoom ?? 0,
+                  center: {
+                    lat,
+                    lng,
+                  },
+                })
+              }
+            />
+          );
+        }}
+      </Cluster>
+      {/* PUBLIC TOILETS MARKERS */}
+      <Cluster features={processedPublicToiletsData.data?.features ?? []} radius={24}>
+        {({ features, lng, lat, key, clusterExpansionZoom }) => {
+          return features.length === 1 ? (
+            <PublicToiletMarker
+              key={key}
+              feature={features[0]}
+              isSelected={selectedFeature?.id === features[0].id}
+              onClick={(feature) => setSelectedMarker(feature)}
+            />
+          ) : (
+            <PublicToiletMarker
               key={key}
               feature={{
                 ...features[0],

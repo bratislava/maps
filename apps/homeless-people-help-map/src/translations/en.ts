@@ -15,6 +15,7 @@ export default {
     point: "Point",
     districtBorder: "District border",
     drinkingFountain: "Drinking fountain",
+    publicToilet: "Public toilet",
     orientationPoint: "Orientation point",
     fixpoint: "Fixpoint",
     syringeExchange: "Syringe exchange",
@@ -95,6 +96,13 @@ export default {
       name: "Name",
       state: "State",
       type: "Type",
+    },
+    publicToilet: {
+      publicToilet: "Public toilets",
+      maintainer: "Maintainer",
+      name: "Name",
+      price: "Price",
+      openingHours: "Opening hours",
     },
     terrainService: {
       provider: "Provider",
