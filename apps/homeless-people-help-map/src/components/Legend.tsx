@@ -13,6 +13,7 @@ import { ReactComponent as HygieneIcon } from "../assets/icons/layers/hygiene.sv
 import { ReactComponent as MealsIcon } from "../assets/icons/layers/meals.svg";
 import { ReactComponent as MedicalTreatmentIcon } from "../assets/icons/layers/medical-treatment.svg";
 import { ReactComponent as BuildingIcon } from "../assets/icons/buildings/castle.svg";
+import { ReactComponent as PublicToiletsIcon } from "../assets/icons/toilets/marker-inactive.svg";
 import { Tag } from "@bratislava/react-maps-ui";
 import { colors } from "../utils/colors";
 import { useTranslation } from "react-i18next";
@@ -100,6 +101,10 @@ export const Legend = () => {
         <div className="flex gap-2 items-center">
           <FixpointAndSyringeExchangeMarkerIcon />
           <div>{t("legend.fixpointAndSyringeExchange")}</div>
+        </div>
+        <div className="flex gap-2 items-center">
+          <PublicToiletsIcon />
+          <div>{t("legend.publicToilet")}</div>
         </div>
 
         <div className="flex gap-2 items-center">
