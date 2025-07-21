@@ -15,7 +15,7 @@ export default {
     point: "Point",
     districtBorder: "District border",
     drinkingFountain: "Drinking fountain",
-    publicToilet: "Public toilet",
+    publicToilet: "Public toilets",
     orientationPoint: "Orientation point",
     fixpoint: "Fixpoint",
     syringeExchange: "Syringe exchange",
