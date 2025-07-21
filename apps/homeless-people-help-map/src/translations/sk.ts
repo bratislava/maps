@@ -15,6 +15,7 @@ export default {
     point: "Bod",
     districtBorder: "Hranica mestskej časti",
     drinkingFountain: "Pitná fontánka",
+    publicToilet: "Verejné záchody",
     orientationPoint: "Orientačný bod",
     fixpoint: "Fixpoint",
     syringeExchange: "Výmena striekačiek",
@@ -95,6 +96,13 @@ export default {
       name: "Názov",
       state: "Stav",
       type: "Typ",
+    },
+    publicToilet: {
+      publicToilet: "Verejné záchody",
+      maintainer: "Správca",
+      name: "Názov",
+      price: "Cena",
+      openingHours: "Otváracie hodiny",
     },
     terrainService: {
       provider: "Poskytovateľ",
