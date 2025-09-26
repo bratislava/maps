@@ -46,42 +46,42 @@ export const App = () => {
   }, [t]);
 
   const { data: rawZonesData } = useArcgis(
-    "https://geoportal.bratislava.sk//hsite/rest/services/parkovanie/Hranica_RZ/MapServer/1",
+    "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/Hranica_RZ/MapServer/1",
     { format: "geojson" },
   );
 
   const { data: rawAssistantsData } = useArcgis(
-    "https://geoportal.bratislava.sk/hsite/rest/services/doprava/Asistenti_PAAS/MapServer/51",
+    "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/doprava/Asistenti_PAAS/MapServer/51",
     { format: "geojson" },
   );
 
   const { data: rawParkomatsData } = useArcgis(
-    "https://geoportal.bratislava.sk/hsite/rest/services/doprava/Parkomaty/MapServer/17",
+    "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/doprava/Parkomaty/MapServer/17",
     { format: "geojson" },
   );
 
   const { data: rawPartnersData } = useArcgis(
-    "https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Zmluvn%C3%AD_partneri_PAAS/MapServer/128",
+    "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/Zmluvn%C3%AD_partneri_PAAS/MapServer/128",
     { format: "geojson" },
   );
 
   const { data: rawParkingLotsData } = useArcgis(
-    "https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Parkovisk%C3%A1/MapServer/118",
+    "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/Parkovisk%C3%A1/MapServer/118",
     { format: "geojson" },
   );
 
   const { data: rawBranchesData } = useArcgis(
-    "https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/Pobo%C4%8Dka/MapServer/87",
+    "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/Pobo%C4%8Dka/MapServer/87",
     { format: "geojson" },
   );
 
   const { data: rawUdrData } = useArcgis(
-    "https://geoportal.bratislava.sk/hsite/rest/services/parkovanie/UDR_P/MapServer/2139",
+    "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/UDR_P/MapServer/2139",
     { format: "geojson" },
   );
 
   const { data: rawOdpData } = useArcgis(
-    "https://geoportal.bratislava.sk/hSite/rest/services/parkovanie/ODP/MapServer/3",
+    "https://nest-proxy.bratislava.sk/geoportal/hSite/rest/services/parkovanie/ODP/MapServer/3",
     { format: "geojson" },
   );
 
