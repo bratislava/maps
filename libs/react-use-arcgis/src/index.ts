@@ -77,11 +77,14 @@ export const fetchAllFromArcgis = async (
           })
       );
 
-      // filter out features which don't have geometry for some reason
+      // gis server can return erroneous data and still return 200 status - skip them so that at least correct data get displayed
       features = chunks
         .flat()
-        .filter((feature) => feature.geometry)
-        .map((feature) => {
+        .filter(
+          (feature: Feature) =>
+            feature && feature.geometry && (feature.geometry as any).coordinates
+        )
+        .map((feature: Feature) => {
           GLOBAL_FEATURE_ID++;
           return {
             ...feature,
@@ -90,7 +93,11 @@ export const fetchAllFromArcgis = async (
         });
     } else {
       const data = await fetchFromArcgis(url, { format: ops.format });
-      features = data.features;
+      // gis server can return erroneous data and still return 200 status - skip them so that at least correct data get displayed
+      features = data.features.filter(
+        (feature: Feature) =>
+          feature && feature.geometry && (feature.geometry as any).coordinates
+      );
     }
 
     resolve({
