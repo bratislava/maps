@@ -335,7 +335,7 @@ export const App = () => {
 
   return (
     <>
-      <DataWarningBanner warnings={dataWarnings} />
+      {/* <DataWarningBanner warnings={dataWarnings} /> */}
       <Map
         ref={mapRef}
         minZoom={9.5}
