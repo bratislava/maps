@@ -46,13 +46,24 @@ const DEFAULT_OPTIONS: IUseArcgisOptions = {
   format: "pgeojson",
 };
 
+export interface ArcgisResult {
+  data: FeatureCollection;
+  warning?: {
+    filteredCount: number;
+    totalCount: number;
+    message: string;
+  };
+}
+
 export const fetchAllFromArcgis = async (
   url: string,
   options?: IUseArcgisOptions
-) => {
-  return new Promise<FeatureCollection>(async (resolve, reject) => {
+): Promise<ArcgisResult> => {
+  return new Promise<ArcgisResult>(async (resolve, reject) => {
     let GLOBAL_FEATURE_ID = 0;
     let features: Feature[] = [];
+    let totalFeaturesReceived = 0;
+    let filteredCount = 0;
 
     const ops = options
       ? {
@@ -77,9 +88,11 @@ export const fetchAllFromArcgis = async (
           })
       );
 
+      const allFeatures = chunks.flat();
+      totalFeaturesReceived = allFeatures.length;
+
       // gis server can return erroneous data and still return 200 status - skip them so that at least correct data get displayed
-      features = chunks
-        .flat()
+      features = allFeatures
         .filter(
           (feature: Feature) =>
             feature && feature.geometry && (feature.geometry as any).coordinates
@@ -91,19 +104,46 @@ export const fetchAllFromArcgis = async (
             id: GLOBAL_FEATURE_ID,
           };
         });
+
+      filteredCount = totalFeaturesReceived - features.length;
     } else {
       const data = await fetchFromArcgis(url, { format: ops.format });
+      totalFeaturesReceived = data.features.length;
+
       // gis server can return erroneous data and still return 200 status - skip them so that at least correct data get displayed
-      features = data.features.filter(
+      const validFeatures = data.features.filter(
         (feature: Feature) =>
           feature && feature.geometry && (feature.geometry as any).coordinates
       );
+
+      features = validFeatures.map((feature: Feature) => {
+        GLOBAL_FEATURE_ID++;
+        return {
+          ...feature,
+          id: GLOBAL_FEATURE_ID,
+        };
+      });
+
+      filteredCount = totalFeaturesReceived - features.length;
     }
 
-    resolve({
-      type: "FeatureCollection",
-      features,
-    } as FeatureCollection);
+    const result: ArcgisResult = {
+      data: {
+        type: "FeatureCollection",
+        features,
+      } as FeatureCollection,
+    };
+
+    if (filteredCount > 0) {
+      result.warning = {
+        filteredCount,
+        totalCount: totalFeaturesReceived,
+        message: `${filteredCount} invalid feature(s) were filtered out from the data source`,
+      };
+      console.warn(`[ArcGIS] ${result.warning.message} (${url})`);
+    }
+
+    resolve(result);
   });
 };
 
@@ -139,29 +179,43 @@ export const useArcgis = (
   options?: IUseArcgisOptions
 ) => {
   const [data, setData] = useState<FeatureCollection | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
 
   useEffect(() => {
+    setWarning(null);
+
     if (Array.isArray(url)) {
       Promise.all(url.map((u) => fetchAllFromArcgis(u, options))).then(
         (results) => {
+          const warnings = results
+            .filter((r) => r.warning)
+            .map((r) => r.warning!.message);
+          if (warnings.length > 0) {
+            setWarning(warnings.join("; "));
+          }
+
           setData({
             type: "FeatureCollection",
             features: results.reduce(
-              (features, result) => [...features, ...result.features],
+              (features, result) => [...features, ...result.data.features],
               [] as Feature[]
             ),
           });
         }
       );
     } else {
-      fetchAllFromArcgis(url, options).then((fetchedData) => {
-        setData(fetchedData);
+      fetchAllFromArcgis(url, options).then((result) => {
+        if (result.warning) {
+          setWarning(result.warning.message);
+        }
+        setData(result.data);
       });
     }
   }, [url]);
 
   return {
     data: data,
+    warning: warning,
   };
 };
 

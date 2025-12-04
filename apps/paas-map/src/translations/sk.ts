@@ -137,4 +137,12 @@ export default {
     footer: "Zanechajte nám spätnú väzbu na <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },
+  dataWarning: {
+    title: "Chybné dáta",
+    message:
+      "Niektoré dáta zo zdrojov obsahovali chyby a neboli zobrazené. Zvyšok mapy funguje normálne.",
+    messageShort: "Niektoré dáta neboli zobrazené kvôli chybám",
+    details: "Detaily",
+    dismiss: "Zavrieť",
+  },
 };
