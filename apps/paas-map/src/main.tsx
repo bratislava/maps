@@ -1,3 +1,4 @@
+// TODO check where does react and react-dom come from, it is missing in package.json and also missing in root package.json
 import React from "react";
 import ReactDOM from "react-dom";
 import { I18nextProvider } from "react-i18next";

@@ -93,14 +93,18 @@ export const App = () => {
 
   const udrDataByPrice = useMemo(() => {
     return {
-      udrDataRegular: {
-        ...udrData,
-        features: udrData?.features.filter((udr) => udr.properties?.zakladna_cena !== 2),
-      } as FeatureCollection,
-      udrDataTwoEur: {
-        ...udrData,
-        features: udrData?.features.filter((udr) => udr.properties?.zakladna_cena === 2),
-      } as FeatureCollection,
+      udrDataRegular: udrData
+        ? {
+            ...udrData,
+            features: udrData?.features.filter((udr) => udr.properties?.zakladna_cena !== 2),
+          }
+        : null,
+      udrDataTwoEur: udrData
+        ? {
+            ...udrData,
+            features: udrData?.features.filter((udr) => udr.properties?.zakladna_cena === 2),
+          }
+        : null,
     };
   }, [udrData]);
 
