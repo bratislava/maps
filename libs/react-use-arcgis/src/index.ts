@@ -13,7 +13,7 @@ export const fetchFromArcgis = async (
     count?: number;
     format?: string;
   }
-) => {
+): Promise<FeatureCollection> => {
   return fetch(
     [
       `${url}/query?where=1=1`,
@@ -93,11 +93,14 @@ export const fetchAllFromArcgis = async (
 
       // gis server can return erroneous data and still return 200 status - skip them so that at least correct data get displayed
       features = allFeatures
+        // we are looking for features with coordinates
+        // every other geometry type then GeometryCollection have coordinates
         .filter(
-          (feature: Feature) =>
-            feature && feature.geometry && (feature.geometry as any).coordinates
+          (feature) =>
+            feature.geometry.type !== "GeometryCollection" &&
+            feature.geometry.coordinates
         )
-        .map((feature: Feature) => {
+        .map((feature) => {
           GLOBAL_FEATURE_ID++;
           return {
             ...feature,
@@ -112,11 +115,14 @@ export const fetchAllFromArcgis = async (
 
       // gis server can return erroneous data and still return 200 status - skip them so that at least correct data get displayed
       const validFeatures = data.features.filter(
-        (feature: Feature) =>
-          feature && feature.geometry && (feature.geometry as any).coordinates
+        (feature) =>
+          // we are looking for features with coordinates
+          // every other geometry type then GeometryCollection have coordinates
+          feature.geometry.type !== "GeometryCollection" &&
+          feature.geometry.coordinates
       );
 
-      features = validFeatures.map((feature: Feature) => {
+      features = validFeatures.map((feature) => {
         GLOBAL_FEATURE_ID++;
         return {
           ...feature,
@@ -131,7 +137,7 @@ export const fetchAllFromArcgis = async (
       data: {
         type: "FeatureCollection",
         features,
-      } as FeatureCollection,
+      },
     };
 
     if (filteredCount > 0) {
