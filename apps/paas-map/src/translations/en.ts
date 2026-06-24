@@ -138,4 +138,12 @@ export default {
     footer: "Leave the feedback at <1>mapy.inovacie@bratislava.sk</1>",
     footerLink: "mailto:mapy.inovacie@bratislava.sk",
   },
+  dataWarning: {
+    title: "Data error",
+    message:
+      "Some data from sources contained errors and were not displayed. The rest of the map works normally.",
+    messageShort: "Some data not displayed due to errors",
+    details: "Details",
+    dismiss: "Dismiss",
+  },
 };

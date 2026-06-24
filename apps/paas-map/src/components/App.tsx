@@ -24,6 +24,7 @@ import { Cluster, Filter, IFilterResult, Layer, useFilter } from "@bratislava/re
 
 // components
 import { Detail } from "./Detail";
+import { DataWarningBanner } from "./DataWarningBanner";
 
 // utils
 import { Feature, FeatureCollection, Point } from "geojson";
@@ -45,42 +46,42 @@ export const App = () => {
     document.title = t("title");
   }, [t]);
 
-  const { data: rawZonesData } = useArcgis(
+  const { data: rawZonesData, warning: zonesWarning } = useArcgis(
     "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/Hranica_RZ/MapServer/1",
     { format: "geojson" },
   );
 
-  const { data: rawAssistantsData } = useArcgis(
+  const { data: rawAssistantsData, warning: assistantsWarning } = useArcgis(
     "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/doprava/Asistenti_PAAS/MapServer/51",
     { format: "geojson" },
   );
 
-  const { data: rawParkomatsData } = useArcgis(
+  const { data: rawParkomatsData, warning: parkomatsWarning } = useArcgis(
     "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/doprava/Parkomaty/MapServer/17",
     { format: "geojson" },
   );
 
-  const { data: rawPartnersData } = useArcgis(
+  const { data: rawPartnersData, warning: partnersWarning } = useArcgis(
     "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/Zmluvn%C3%AD_partneri_PAAS/MapServer/128",
     { format: "geojson" },
   );
 
-  const { data: rawParkingLotsData } = useArcgis(
+  const { data: rawParkingLotsData, warning: parkingLotsWarning } = useArcgis(
     "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/Parkovisk%C3%A1/MapServer/118",
     { format: "geojson" },
   );
 
-  const { data: rawBranchesData } = useArcgis(
+  const { data: rawBranchesData, warning: branchesWarning } = useArcgis(
     "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/Pobo%C4%8Dka/MapServer/87",
     { format: "geojson" },
   );
 
-  const { data: rawUdrData } = useArcgis(
+  const { data: rawUdrData, warning: udrWarning } = useArcgis(
     "https://nest-proxy.bratislava.sk/geoportal/hsite/rest/services/parkovanie/UDR_P/MapServer/2139",
     { format: "geojson" },
   );
 
-  const { data: rawOdpData } = useArcgis(
+  const { data: rawOdpData, warning: odpWarning } = useArcgis(
     "https://nest-proxy.bratislava.sk/geoportal/hSite/rest/services/parkovanie/ODP/MapServer/3",
     { format: "geojson" },
   );
@@ -90,6 +91,29 @@ export const App = () => {
   const [udrData, setUdrData] = useState<FeatureCollection | null>(null);
   const [odpData, setOdpData] = useState<FeatureCollection | null>(null);
   const [isSidebarVisible, setSidebarVisible] = useState<boolean | undefined>(undefined);
+
+  // Collect all data warnings
+  const dataWarnings = useMemo(() => {
+    const warnings: string[] = [];
+    if (zonesWarning) warnings.push(zonesWarning);
+    if (assistantsWarning) warnings.push(assistantsWarning);
+    if (parkomatsWarning) warnings.push(parkomatsWarning);
+    if (partnersWarning) warnings.push(partnersWarning);
+    if (parkingLotsWarning) warnings.push(parkingLotsWarning);
+    if (branchesWarning) warnings.push(branchesWarning);
+    if (udrWarning) warnings.push(udrWarning);
+    if (odpWarning) warnings.push(odpWarning);
+    return warnings;
+  }, [
+    zonesWarning,
+    assistantsWarning,
+    parkomatsWarning,
+    partnersWarning,
+    parkingLotsWarning,
+    branchesWarning,
+    udrWarning,
+    odpWarning,
+  ]);
 
   const udrDataByPrice = useMemo(() => {
     return {
@@ -314,183 +338,186 @@ export const App = () => {
   }, [zoneFilter.activeKeys, zonesData?.features]);
 
   return (
-    <Map
-      ref={mapRef}
-      minZoom={9.5}
-      mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
-      loadingSpinnerColor={colors.green}
-      mapStyles={{
-        light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
-        dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
-      }}
-      isDevelopment={import.meta.env.DEV}
-      onMobileChange={setMobile}
-      onMapClick={closeDetail}
-      selectedFeatures={selectedFeatures}
-      onFeaturesClick={onFeaturesClick}
-      mapInformationButtonClassName="!top-20 sm:!top-6"
-      mapInformation={{
-        title: t("informationModal.title"),
-        description: t("informationModal.description"),
-        privatePartners: [
-          {
-            name: "tesco",
-            link: "https://tesco.sk/",
-            image: "logos/tesco.svg",
-            width: 100,
-            height: 50,
-          },
-          {
-            name: "palace",
-            link: "https://www.shoppingpalace.sk/",
-            image: "logos/palace.svg",
-            width: 100,
-            height: 50,
-          },
-        ],
-        partners: [
-          {
-            name: "bratislava",
-            link: "https://bratislava.sk",
-            image: "logos/bratislava.png",
-          },
-          {
-            name: "inovation",
-            link: "https://inovacie.bratislava.sk/",
-            image: "logos/inovation.png",
-          },
-          {
-            name: "geoportal",
-            link: "https://nest-proxy.bratislava.sk/geoportal/pfa/apps/sites/#/verejny-mapovy-portal",
-            image: "logos/geoportal.png",
-          },
-        ],
-        footer: (
-          <Trans i18nKey="informationModal.footer">
-            before
-            <a href={t("informationModal.footerLink")} className="underline font-semibold">
-              link
-            </a>
-          </Trans>
-        ),
-      }}
-    >
-      <Filter expression={markerFilter.keepOnEmptyExpression}>
-        <Cluster features={markersData?.features ?? []} radius={44}>
-          {({ features, lng, lat, key, clusterExpansionZoom }) => (
-            <Marker
-              isSelected={features[0].id === selectedMarker?.id}
-              key={key}
-              features={features}
-              lat={lat}
-              lng={lng}
-              onClick={(feature) => {
-                if (clusterExpansionZoom) {
-                  mapRef.current?.changeViewport({
-                    zoom: clusterExpansionZoom,
-                    center: {
-                      lat,
-                      lng,
-                    },
-                  });
-                } else {
-                  setSelectedMarker(feature);
-                  setSelectedFeature(null);
-                  mapRef.current?.changeViewport({
-                    center: {
-                      lat,
-                      lng,
-                    },
-                  });
-                }
-              }}
+    <>
+      {/* <DataWarningBanner warnings={dataWarnings} /> */}
+      <Map
+        ref={mapRef}
+        minZoom={9.5}
+        mapboxAccessToken={import.meta.env.PUBLIC_MAPBOX_PUBLIC_TOKEN}
+        loadingSpinnerColor={colors.green}
+        mapStyles={{
+          light: import.meta.env.PUBLIC_MAPBOX_LIGHT_STYLE,
+          dark: import.meta.env.PUBLIC_MAPBOX_DARK_STYLE,
+        }}
+        isDevelopment={import.meta.env.DEV}
+        onMobileChange={setMobile}
+        onMapClick={closeDetail}
+        selectedFeatures={selectedFeatures}
+        onFeaturesClick={onFeaturesClick}
+        mapInformationButtonClassName="!top-20 sm:!top-6"
+        mapInformation={{
+          title: t("informationModal.title"),
+          description: t("informationModal.description"),
+          privatePartners: [
+            {
+              name: "tesco",
+              link: "https://tesco.sk/",
+              image: "logos/tesco.svg",
+              width: 100,
+              height: 50,
+            },
+            {
+              name: "palace",
+              link: "https://www.shoppingpalace.sk/",
+              image: "logos/palace.svg",
+              width: 100,
+              height: 50,
+            },
+          ],
+          partners: [
+            {
+              name: "bratislava",
+              link: "https://bratislava.sk",
+              image: "logos/bratislava.png",
+            },
+            {
+              name: "inovation",
+              link: "https://inovacie.bratislava.sk/",
+              image: "logos/inovation.png",
+            },
+            {
+              name: "geoportal",
+              link: "https://nest-proxy.bratislava.sk/geoportal/pfa/apps/sites/#/verejny-mapovy-portal",
+              image: "logos/geoportal.png",
+            },
+          ],
+          footer: (
+            <Trans i18nKey="informationModal.footer">
+              before
+              <a href={t("informationModal.footerLink")} className="underline font-semibold">
+                link
+              </a>
+            </Trans>
+          ),
+        }}
+      >
+        <Filter expression={markerFilter.keepOnEmptyExpression}>
+          <Cluster features={markersData?.features ?? []} radius={44}>
+            {({ features, lng, lat, key, clusterExpansionZoom }) => (
+              <Marker
+                isSelected={features[0].id === selectedMarker?.id}
+                key={key}
+                features={features}
+                lat={lat}
+                lng={lng}
+                onClick={(feature) => {
+                  if (clusterExpansionZoom) {
+                    mapRef.current?.changeViewport({
+                      zoom: clusterExpansionZoom,
+                      center: {
+                        lat,
+                        lng,
+                      },
+                    });
+                  } else {
+                    setSelectedMarker(feature);
+                    setSelectedFeature(null);
+                    mapRef.current?.changeViewport({
+                      center: {
+                        lat,
+                        lng,
+                      },
+                    });
+                  }
+                }}
+              />
+            )}
+          </Cluster>
+        </Filter>
+
+        <Layer filters={zoneFilter.keepOnEmptyExpression} geojson={zonesData} styles={zoneStyles} />
+
+        <Layer
+          filters={layerFilter.keepOnEmptyExpression}
+          geojson={udrDataByPrice.udrDataRegular}
+          styles={udrStyles}
+        />
+        <Layer
+          filters={layerFilter.keepOnEmptyExpression}
+          geojson={udrDataByPrice.udrDataTwoEur}
+          styles={udrStyles2}
+        />
+
+        <Layer filters={layerFilter.keepOnEmptyExpression} geojson={odpData} styles={odpStyles} />
+
+        <Slot id="controls">
+          <ThemeController
+            className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
+              "translate-x-96": isSidebarVisible && !isMobile,
+            })}
+          />
+          <ViewportController
+            className={cx("fixed right-4 bottom-[88px] sm:bottom-8", {
+              "-translate-x-96": window.innerHeight <= (desktopDetailHeight ?? 0) + 200,
+            })}
+            slots={viewportControllerSlots}
+          />
+          <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
+            <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
+          </div>
+        </Slot>
+
+        <Layout isOnlyMobile>
+          <Slot id="mobile-header">
+            <MobileHeader
+              onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
+              onVisitorClick={setActiveOnlyVisitorLayers}
+              onResidentClick={setActiveOnlyResidentLayers}
+              isVisitorOrResidentActive={layerFilter.isAnyKeyActive(["visitors"])}
             />
-          )}
-        </Cluster>
-      </Filter>
+          </Slot>
 
-      <Layer filters={zoneFilter.keepOnEmptyExpression} geojson={zonesData} styles={zoneStyles} />
+          <Slot position="top-right" id="mobile-filters" isVisible={isSidebarVisible}>
+            <Filters
+              isMobile={true}
+              isVisible={isSidebarVisible}
+              setVisible={setSidebarVisible}
+              layerFilter={layerFilter as IFilterResult<string>}
+              markerFilter={markerFilter as IFilterResult<string>}
+            />
+          </Slot>
+        </Layout>
 
-      <Layer
-        filters={layerFilter.keepOnEmptyExpression}
-        geojson={udrDataByPrice.udrDataRegular}
-        styles={udrStyles}
-      />
-      <Layer
-        filters={layerFilter.keepOnEmptyExpression}
-        geojson={udrDataByPrice.udrDataTwoEur}
-        styles={udrStyles2}
-      />
+        <Layout isOnlyDesktop>
+          <Slot id="desktop-search">
+            <DesktopSearch areFiltersOpen={isSidebarVisible ?? false} />
+          </Slot>
 
-      <Layer filters={layerFilter.keepOnEmptyExpression} geojson={odpData} styles={odpStyles} />
-
-      <Slot id="controls">
-        <ThemeController
-          className={cx("fixed left-4 bottom-[88px] sm:bottom-8 sm:transform", {
-            "translate-x-96": isSidebarVisible && !isMobile,
-          })}
-        />
-        <ViewportController
-          className={cx("fixed right-4 bottom-[88px] sm:bottom-8", {
-            "-translate-x-96": window.innerHeight <= (desktopDetailHeight ?? 0) + 200,
-          })}
-          slots={viewportControllerSlots}
-        />
-        <div className="fixed bottom-8 left-4 right-4 z-10 shadow-lg rounded-lg sm:hidden">
-          <SearchBar placeholder={t("search")} language={i18n.language} direction="top" />
-        </div>
-      </Slot>
-
-      <Layout isOnlyMobile>
-        <Slot id="mobile-header">
-          <MobileHeader
-            onFunnelClick={() => setSidebarVisible((isSidebarVisible) => !isSidebarVisible)}
-            onVisitorClick={setActiveOnlyVisitorLayers}
-            onResidentClick={setActiveOnlyResidentLayers}
-            isVisitorOrResidentActive={layerFilter.isAnyKeyActive(["visitors"])}
-          />
-        </Slot>
-
-        <Slot position="top-right" id="mobile-filters" isVisible={isSidebarVisible}>
-          <Filters
-            isMobile={true}
+          <Slot
+            id="desktop-filters"
             isVisible={isSidebarVisible}
-            setVisible={setSidebarVisible}
-            layerFilter={layerFilter as IFilterResult<string>}
-            markerFilter={markerFilter as IFilterResult<string>}
-          />
-        </Slot>
-      </Layout>
+            position="top-left"
+            autoPadding
+            avoidMapboxControls={!isMobile}
+          >
+            <Filters
+              isMobile={false}
+              isVisible={isSidebarVisible}
+              setVisible={setSidebarVisible}
+              layerFilter={layerFilter as IFilterResult<string>}
+              markerFilter={markerFilter as IFilterResult<string>}
+            />
+          </Slot>
+        </Layout>
 
-      <Layout isOnlyDesktop>
-        <Slot id="desktop-search">
-          <DesktopSearch areFiltersOpen={isSidebarVisible ?? false} />
-        </Slot>
-
-        <Slot
-          id="desktop-filters"
-          isVisible={isSidebarVisible}
-          position="top-left"
-          autoPadding
-          avoidMapboxControls={!isMobile}
-        >
-          <Filters
-            isMobile={false}
-            isVisible={isSidebarVisible}
-            setVisible={setSidebarVisible}
-            layerFilter={layerFilter as IFilterResult<string>}
-            markerFilter={markerFilter as IFilterResult<string>}
-          />
-        </Slot>
-      </Layout>
-
-      <Detail
-        isOpen={isDetailOpen}
-        isMobile={isMobile ?? false}
-        feature={selectedFeature ?? selectedMarker}
-        onClose={closeDetail}
-      />
-    </Map>
+        <Detail
+          isOpen={isDetailOpen}
+          isMobile={isMobile ?? false}
+          feature={selectedFeature ?? selectedMarker}
+          onClose={closeDetail}
+        />
+      </Map>
+    </>
   );
 };
 
