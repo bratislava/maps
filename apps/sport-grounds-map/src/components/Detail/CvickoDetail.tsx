@@ -74,6 +74,7 @@ export const CvickoDetail = ({ feature, isMobile, displayHeader }: CvickoDetailP
                 className="font-semibold bg-primary-azure dark:text-background-darkmode"
                 key={`${tag}`}
               >
+                {/* TODO this deserves rework of how tags and translations work */}
                 {/* https://www.i18next.com/overview/typescript#type-error-template-literal */}
                 {mainT(`filters.tag.tags.${tag}` as any)}
               </Tag>

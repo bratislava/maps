@@ -54,6 +54,8 @@ export default {
         water: "voda",
         pool: "bazén",
         cvicko: "cvičko",
+        "vodný bicykel": "vodný bicykel",
+        grilovanie: "grilovanie",
       },
     },
   },
