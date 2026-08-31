@@ -97,6 +97,12 @@ export const fetchAllFromArcgis = async (
         // every other geometry type then GeometryCollection have coordinates
         .filter(
           (feature) =>
+            // this explicit check is intended,
+            // on one hand we have types that says that geometry is mandatory.
+            // on the other hand fetchFromArcgis is sending data where geometry is missing
+            // and it was causing error, hence the explicit check
+            feature &&
+            feature.geometry &&
             feature.geometry.type !== "GeometryCollection" &&
             feature.geometry.coordinates
         )
@@ -115,9 +121,15 @@ export const fetchAllFromArcgis = async (
 
       // gis server can return erroneous data and still return 200 status - skip them so that at least correct data get displayed
       const validFeatures = data.features.filter(
+        // we are looking for features with coordinates
+        // every other geometry type then GeometryCollection have coordinates
         (feature) =>
-          // we are looking for features with coordinates
-          // every other geometry type then GeometryCollection have coordinates
+          // this explicit check is intended,
+          // on one hand we have types that says that geometry is mandatory.
+          // on the other hand fetchFromArcgis is sending data where geometry is missing
+          // and it was causing error, hence the explicit check
+          feature &&
+          feature.geometry &&
           feature.geometry.type !== "GeometryCollection" &&
           feature.geometry.coordinates
       );
