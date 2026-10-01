@@ -11,14 +11,14 @@ jobs:
     name: Deploy prod greenary-care-map
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
+      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3.9.1
         with:
           node-version: 20.9.0
           cache: "npm"
       - run: npm ci
       - run: npm run build --workspace=@bratislava/greenary-care-map
-      - uses: lovellfelix/minio-deploy-action@v1
+      - uses: lovellfelix/minio-deploy-action@1f4fafcee58750ebe8f726d33a55d926d2224065 # v1
         with:
           endpoint: ${{ secrets.MINIO_ENDPOINT }}
           access_key: ${{ secrets.MINIO_ACCESS_KEY }}
