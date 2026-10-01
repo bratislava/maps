@@ -16,11 +16,16 @@ jobs:
           cache: "npm"
       - run: npm ci
       - run: npm run build --workspace=@bratislava/sport-grounds-map
-      - uses: lovellfelix/minio-deploy-action@1f4fafcee58750ebe8f726d33a55d926d2224065 # v1
-        with:
-          endpoint: ${{ secrets.MINIO_ENDPOINT }}
-          access_key: ${{ secrets.MINIO_ACCESS_KEY }}
-          secret_key: ${{ secrets.MINIO_SECRET_KEY }}
-          bucket: "static-pages"
-          source_dir: "apps/sport-grounds-map/dist"
-          target_dir: "/dev/sport-grounds-map"
+      - name: Upload to MinIO
+        env:
+          MC_VERSION: RELEASE.2025-08-13T08-35-41Z
+          MC_SHA256: 01f866e9c5f9b87c2b09116fa5d7c06695b106242d829a8bb32990c00312e891
+          MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+        run: |
+          curl --silent --show-error --location --fail --output "$RUNNER_TEMP/mc" "https://github.com/minio/mc/releases/download/$MC_VERSION/mc.linux-amd64.$MC_VERSION"
+          echo "$MC_SHA256  $RUNNER_TEMP/mc" | sha256sum --check
+          chmod +x "$RUNNER_TEMP/mc"
+          "$RUNNER_TEMP/mc" alias set deploy "$MINIO_ENDPOINT" "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY"
+          "$RUNNER_TEMP/mc" cp --recursive apps/sport-grounds-map/dist/ deploy/static-pages/dev/sport-grounds-map/
