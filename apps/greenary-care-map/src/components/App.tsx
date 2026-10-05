@@ -308,7 +308,7 @@ export const App = () => {
           },
           {
             name: "geoportal",
-            link: "https://nest-proxy.bratislava.sk/geoportal/pfa/apps/sites/#/verejny-mapovy-portal",
+            link: "https://geoportal.bratislava.sk/pfa/apps/sites/#/verejny-mapovy-portal",
             image: "logos/geoportal.png",
           },
         ],
