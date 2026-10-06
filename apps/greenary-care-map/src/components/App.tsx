@@ -14,7 +14,7 @@ import {
   SearchBar,
   Slot,
   ThemeController,
-  ViewportController
+  ViewportController,
 } from "@bratislava/react-maps";
 import { Sidebar } from "@bratislava/react-maps-ui";
 import { useArcgis } from "@bratislava/react-use-arcgis";
@@ -308,7 +308,7 @@ export const App = () => {
           },
           {
             name: "geoportal",
-            link: "https://nest-proxy.bratislava.sk/geoportal/pfa/apps/sites/#/verejny-mapovy-portal",
+            link: "https://geoportal.bratislava.sk/pfa/apps/sites/#/verejny-mapovy-portal",
             image: "logos/geoportal.png",
           },
         ],
