@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { mainColors } from "../../utils/colors";
+import { sortByName } from "../../utils/sortByName";
 
 export interface IPhoneLinksModal {
   className?: string;
@@ -46,7 +47,7 @@ export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
             <LoadingSpinner color={mainColors.yellow} />
           ) : (
             <Accordion type="single" collapsible className="font-semibold">
-              {data.linkyPomocis.map((type, index) => (
+              {sortByName(data.linkyPomocis, i18n.language).map((type, index) => (
                 <div key={type?.documentId} className="flex gap-4">
                   <IconButton
                     onClick={() => window.open(`tel:${type?.Telefon}`, "_self")}

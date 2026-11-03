@@ -4,16 +4,18 @@ import { featureCollection } from "@turf/helpers";
 import { DISTRICTS_GEOJSON } from "@bratislava/geojson-data";
 import { REGIONS } from "./regions";
 import { ITerrainService } from "../utils/types";
+import { sortByName } from "../utils/sortByName";
 
 export const useTerrainServices = () => {
   const { i18n } = useTranslation();
   const { data, isLoading, error } = useTerenneSluzbyQuery({ locale: i18n.language });
+  const services = data && sortByName(data.terenneSluzbies, i18n.language);
 
   return {
     dataByService:
       data &&
       // map to format of old data
-      data?.terenneSluzbies.map((service) => {
+      services?.map((service) => {
         return {
           key: service?.documentId,
           title: service?.Nazov,
@@ -45,8 +47,8 @@ export const useTerrainServices = () => {
             ...feature,
             properties: {
               ...feature.properties,
-              terrainServices: data?.terenneSluzbies
-                .filter((service) => {
+              terrainServices: services
+                ?.filter((service) => {
                   if (
                     service?.Lokalita_posobnosti?.split(",")
                       .map((s) => s.trim())
