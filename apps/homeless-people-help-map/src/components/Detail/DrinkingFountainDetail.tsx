@@ -8,16 +8,12 @@ export const drinkingFountainFeaturePropertiesSchema = z.object({
   longitude: z.number(),
   maintainer: z.string(),
   name: z.string(),
-  photo: z.object({
-    data: z.array(
-      z.object({
-        id: z.string(),
-        attributes: z.object({
-          url: z.string(),
-        }),
-      }),
-    ),
-  }),
+  photo: z.array(
+    z.object({
+      documentId: z.string(),
+      url: z.string(),
+    }),
+  ),
   state: z.string(),
   type: z.string(),
 });
@@ -32,7 +28,7 @@ export interface IDrinkingFountainDetailProps {
 export const DrinkingFountainDetail = ({ properties, isMobile }: IDrinkingFountainDetailProps) => {
   const { buildSince, maintainer, name, photo, state, type: fountainType } = properties;
   const { t } = useTranslation();
-  const image = photo.data[0]?.attributes.url;
+  const image = photo[0]?.url;
   return (
     <div>
       {image && <Image src={image} isMobile={isMobile} imageMissingText={t("noImage")} />}

@@ -7,47 +7,47 @@ export const useServicesData = () => {
   const { i18n } = useTranslation();
   const { data, isLoading, error } = useSluzbyPreLudiBezDomovaQuery({ locale: i18n.language });
 
-  const processedFeatures = data?.sluzbyPreLudiBezDomovas?.data.map((service) => {
+  const processedFeatures = data?.sluzbyPreLudiBezDomovas.map((service) => {
     return {
-      id: service.id,
+      id: service?.documentId,
       type: "Feature",
       geometry: {
         type: "Point",
-        coordinates: [service.attributes?.Longitude, service.attributes?.Latitude],
+        coordinates: [service?.Longitude, service?.Latitude],
       },
       properties: {
         layerName:
-          service.attributes?.Tagy === "Ďaľšie služby"
+          service?.Tagy === "Ďaľšie služby"
             ? "Ďaľšie služby"
             : "Služby pre ľudí bez domova",
-        counseling: service.attributes?.Socialne_pravne_poradenstvo || "",
-        drugsAndSex: service.attributes?.Kontaktne_centrum || "",
-        hygiene: service.attributes?.Hygiena_osatenie || "",
-        overnight: service.attributes?.Noclah_ubytovanie || "",
-        meals: service.attributes?.Strava || "",
-        medicalTreatment: service.attributes?.Zdravotne_osetrenie || "",
-        culture: service.attributes?.Kultura || "",
-        isCounseling: !!service.attributes?.Socialne_pravne_poradenstvo?.length,
-        isHygiene: !!service.attributes?.Hygiena_osatenie?.length,
-        isOvernight: !!service.attributes?.Noclah_ubytovanie?.length,
-        isMeals: !!service.attributes?.Strava?.length,
-        isMedicalTreatment: !!service.attributes?.Zdravotne_osetrenie?.length,
-        isCulture: !!service.attributes?.Kultura,
-        isDrugsAndSex: !!service.attributes?.Kontaktne_centrum,
-        // KOLO in slovak strapi has id 5 and in english 6
-        isKolo: service.id === "5" || service.id === "6",
-        name: service.attributes?.Nazov || "",
-        provider: service.attributes?.Poskytovatel || "",
-        address: service.attributes?.Adresa || "",
-        district: service.attributes?.Mestska_cast,
-        howToGetThere: service.attributes?.Navigacia || "",
-        phone: service.attributes?.Telefon ? `${service.attributes?.Telefon}` : "",
-        phoneDescription: service.attributes?.Telefon_popis,
-        description: service.attributes?.Popis || "",
-        openingHours: service.attributes?.Cas || "",
-        email: service.attributes?.Email || "",
-        web: service.attributes?.Web || "",
-        navigate: service.attributes?.Navigovat || "",
+        counseling: service?.Socialne_pravne_poradenstvo || "",
+        drugsAndSex: service?.Kontaktne_centrum || "",
+        hygiene: service?.Hygiena_osatenie || "",
+        overnight: service?.Noclah_ubytovanie || "",
+        meals: service?.Strava || "",
+        medicalTreatment: service?.Zdravotne_osetrenie || "",
+        culture: service?.Kultura || "",
+        isCounseling: !!service?.Socialne_pravne_poradenstvo?.length,
+        isHygiene: !!service?.Hygiena_osatenie?.length,
+        isOvernight: !!service?.Noclah_ubytovanie?.length,
+        isMeals: !!service?.Strava?.length,
+        isMedicalTreatment: !!service?.Zdravotne_osetrenie?.length,
+        isCulture: !!service?.Kultura,
+        isDrugsAndSex: !!service?.Kontaktne_centrum,
+        // match by name: Strapi 5 gives an entry a new id on every publish
+        isKolo: service?.Nazov === "KOLO",
+        name: service?.Nazov || "",
+        provider: service?.Poskytovatel || "",
+        address: service?.Adresa || "",
+        district: service?.Mestska_cast,
+        howToGetThere: service?.Navigacia || "",
+        phone: service?.Telefon ? `${service?.Telefon}` : "",
+        phoneDescription: service?.Telefon_popis,
+        description: service?.Popis || "",
+        openingHours: service?.Cas || "",
+        email: service?.Email || "",
+        web: service?.Web || "",
+        navigate: service?.Navigovat || "",
       },
     };
   });
