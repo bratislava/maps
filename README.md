@@ -128,10 +128,10 @@ npm install -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen
 npm install @tanstack/react-query graphql graphql-tag
 ```
 
-Add codegen.yml to the root of the maps/apps/your-map app:
+Add codegen.yml to the root of the maps/apps/your-map app. Production general-strapi has GraphQL introspection disabled, so generate against [general-strapi](https://github.com/bratislava/general-strapi) running locally:
 
 ```yml
-schema: https://general-strapi.bratislava.sk/graphql
+schema: ${GENERAL_STRAPI_URL:http://localhost:1337}/graphql
 documents: "./graphql/queries/**/*.{gql,graphql}"
 generates:
   graphql/index.ts:
@@ -140,28 +140,22 @@ generates:
       - typescript-operations
       - typescript-react-query
     config:
-      fetcher:
-        endpoint: "https://general-strapi.bratislava.sk/graphql"
-        fetchParams:
-          headers:
-            Content-Type: "application/json"
+      fetcher: "../src/utils/fetcher#fetcher"
 ```
 
-Add at least 1 query to file matching `./graphql/queries/**/*.{gql,graphql}` - i.e. /maps/apps/your-map/graphql/queries/queries.gql, the following should work against 'general-strapi' endpoint:
+The fetcher posts to `${PUBLIC_GENERAL_STRAPI_URL ?? "https://general-strapi.bratislava.sk"}/graphql`; copy it from `apps/homeless-people-help-map/src/utils/fetcher.ts`.
+
+Add at least 1 query to file matching `./graphql/queries/**/*.{gql,graphql}` - i.e. /maps/apps/your-map/graphql/queries/queries.gql, the following should work against 'general-strapi' (Strapi 5) endpoint:
 
 ```
 query Fixpointy($locale: I18NLocaleCode!) {
   fixpoints(locale: $locale) {
-    data {
-      id
-      attributes {
-        Adresa
-        Latitude
-        Longitude
-        Nazov
-        createdAt
-      }
-    }
+    documentId
+    Adresa
+    Latitude
+    Longitude
+    Nazov
+    createdAt
   }
 }
 ```

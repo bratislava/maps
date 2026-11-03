@@ -6,6 +6,8 @@ interface ImportMetaEnv {
   readonly PUBLIC_MAPBOX_LIGHT_STYLE: string;
   readonly PUBLIC_MAPBOX_DARK_STYLE: string;
   readonly PUBLIC_MAPBOX_LAYER_PREFIX: string;
+  // general-strapi base URL, defaults to production; override to test against another Strapi
+  readonly PUBLIC_GENERAL_STRAPI_URL?: string;
   // more env variables...
 }
 

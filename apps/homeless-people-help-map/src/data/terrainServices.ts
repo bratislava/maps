@@ -13,24 +13,24 @@ export const useTerrainServices = () => {
     dataByService:
       data &&
       // map to format of old data
-      data?.terenneSluzbies?.data.map((service) => {
+      data?.terenneSluzbies.map((service) => {
         return {
-          key: service.id,
-          title: service.attributes?.Nazov,
-          provider: service.attributes?.Poskytovatel,
-          phone: service.attributes?.Telefon,
-          available: service.attributes?.Dostupnost,
-          price: service.attributes?.Cena_kapacita,
-          areas: service.attributes?.Lokalita_posobnosti,
+          key: service?.documentId,
+          title: service?.Nazov,
+          provider: service?.Poskytovatel,
+          phone: service?.Telefon,
+          available: service?.Dostupnost,
+          price: service?.Cena_kapacita,
+          areas: service?.Lokalita_posobnosti,
           geojson: featureCollection([
             ...DISTRICTS_GEOJSON.features.filter((feature) => {
-              return service.attributes?.Lokalita_posobnosti?.split(",")
+              return service?.Lokalita_posobnosti?.split(",")
                 .map((s) => s.trim())
                 .includes(feature.properties.name.trim());
             }),
             ...REGIONS.features.filter((feature) => {
               if (!feature?.properties?.name) return;
-              return service.attributes?.Lokalita_posobnosti?.split(",")
+              return service?.Lokalita_posobnosti?.split(",")
                 .map((s) => s.trim())
                 .includes(feature.properties.name.trim());
             }),
@@ -45,10 +45,10 @@ export const useTerrainServices = () => {
             ...feature,
             properties: {
               ...feature.properties,
-              terrainServices: data?.terenneSluzbies?.data
+              terrainServices: data?.terenneSluzbies
                 .filter((service) => {
                   if (
-                    service.attributes?.Lokalita_posobnosti?.split(",")
+                    service?.Lokalita_posobnosti?.split(",")
                       .map((s) => s.trim())
                       .includes(feature.properties.name.trim())
                   ) {
@@ -57,13 +57,13 @@ export const useTerrainServices = () => {
                 })
                 .map((service) => {
                   return {
-                    key: service.id,
-                    title: service.attributes?.Nazov,
-                    provider: service.attributes?.Poskytovatel,
-                    phone: service.attributes?.Telefon,
-                    available: service.attributes?.Dostupnost,
-                    price: service.attributes?.Cena_kapacita,
-                    areas: service.attributes?.Lokalita_posobnosti,
+                    key: service?.documentId,
+                    title: service?.Nazov,
+                    provider: service?.Poskytovatel,
+                    phone: service?.Telefon,
+                    available: service?.Dostupnost,
+                    price: service?.Cena_kapacita,
+                    areas: service?.Lokalita_posobnosti,
                   };
                 }),
             },
