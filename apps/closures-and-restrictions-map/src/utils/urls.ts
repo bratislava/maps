@@ -19,5 +19,7 @@ export const REPAIRS_2022_POLYGONS_URL =
 export const OLD_TOWN_DATA_URL =
   "https://services8.arcgis.com/pRlN1m0su5BYaFAS/arcgis/rest/services/survey123_89553347736c458d84bf40e1252c6b12_results/FeatureServer/0";
 
-export const STRAPI_NOTIFICATIONS_URL =
-  "https://general-strapi.bratislava.sk/api/rozkopavky?locale=sk";
+const GENERAL_STRAPI_URL =
+  import.meta.env.PUBLIC_GENERAL_STRAPI_URL ?? "https://general-strapi.bratislava.sk";
+
+export const STRAPI_NOTIFICATIONS_URL = `${GENERAL_STRAPI_URL}/api/rozkopavky?locale=sk`;

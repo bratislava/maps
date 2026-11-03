@@ -146,7 +146,7 @@ export const App = () => {
       },
     })
       .then((response) => response.json())
-      .then((response) => JSON.stringify(setStrapiNotification(response.data.attributes)));
+      .then((response) => JSON.stringify(setStrapiNotification(response.data)));
   }, []);
 
   useEffect(() => {
