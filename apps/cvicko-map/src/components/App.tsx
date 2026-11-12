@@ -60,8 +60,9 @@ import { runningTracks } from "../assets/layers/running-tracks/data/running-tack
 
 export type TSelectedFeature = Feature<Point> | null;
 
-const queryWorkouts =
-  "https://general-strapi.bratislava.sk/api/cvickas?populate=*&pagination[limit]=-1";
+const strapiUrl = import.meta.env.PUBLIC_GENERAL_STRAPI_URL ?? "https://general-strapi.bratislava.sk";
+// Strapi 5 caps pagination[limit]=-1 to one entry; 100 is the server's maxLimit
+const queryWorkouts = `${strapiUrl}/api/cvickas?populate=*&pagination[pageSize]=100`;
 
 export const App = () => {
   const mapRef = useRef<MapHandle>(null);

@@ -4,7 +4,7 @@ import { Feature, FeatureCollection, Point } from "@bratislava/utils/src/types";
 
 type CvickoId = "apollo" | "lanfranconi" | "most-snp" | "nabrezie" | "promenada" | "tyrsak";
 
-interface IWorkoutAttributes {
+export interface IWorkout {
   id: number;
   nazov: string;
   kategoriaSportoviska: string;
@@ -16,9 +16,6 @@ interface IWorkoutAttributes {
   longitude: number;
   createdAt: Date;
   fotka: any;
-}
-export interface IWorkout {
-  attributes: IWorkoutAttributes;
 }
 
 
@@ -49,8 +46,7 @@ export const generateRawWorkoutData = (workouts: Array<IWorkout>): FeatureCollec
     features: []
   }
 
-  workoutData.features = workouts.map((w, i) => {
-    const workout = w.attributes;
+  workoutData.features = workouts.map((workout, i) => {
     return {
       type: "Feature",
       geometry: {
@@ -65,7 +61,7 @@ export const generateRawWorkoutData = (workouts: Array<IWorkout>): FeatureCollec
         location: workout.umiestnenie,
         website: workout.webLink,
         wantToWorkout: "https://cvicko.sk",
-        photo: workout.fotka?.data?.attributes?.formats?.small.url,
+        photo: workout.fotka?.formats?.small?.url,
         navigate: workout.navigovatLink,
       },
     }
