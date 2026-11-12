@@ -146,7 +146,10 @@ export const App = () => {
       },
     })
       .then((response) => response.json())
-      .then((response) => JSON.stringify(setStrapiNotification(response.data.attributes)));
+      .then((response) => {
+        // Strapi 5 returns { data: null } when the single type has no published entry
+        if (response.data) setStrapiNotification(response.data);
+      });
   }, []);
 
   useEffect(() => {
