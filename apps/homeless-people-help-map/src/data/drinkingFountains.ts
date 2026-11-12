@@ -17,7 +17,8 @@ export const useDrinkingFountains = () => {
         coordinates: [fountain?.Longitude, fountain?.Latitude],
       },
       properties: {
-        photo: fountain?.Fotky ?? [],
+        // Strapi 5 types list items as nullable; drop nulls so the detail schema parses
+        photo: fountain?.Fotky?.filter(Boolean) ?? [],
         latitude: fountain?.Latitude || "",
         longitude: fountain?.Longitude || "",
         name: fountain?.Nazov || "",

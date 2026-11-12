@@ -17,9 +17,7 @@ export const useServicesData = () => {
       },
       properties: {
         layerName:
-          service?.Tagy === "Ďaľšie služby"
-            ? "Ďaľšie služby"
-            : "Služby pre ľudí bez domova",
+          service?.Tagy === "Ďaľšie služby" ? "Ďaľšie služby" : "Služby pre ľudí bez domova",
         counseling: service?.Socialne_pravne_poradenstvo || "",
         drugsAndSex: service?.Kontaktne_centrum || "",
         hygiene: service?.Hygiena_osatenie || "",

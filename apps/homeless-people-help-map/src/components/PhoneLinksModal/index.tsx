@@ -13,7 +13,6 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { mainColors } from "../../utils/colors";
-import { sortByName } from "../../utils/sortByName";
 
 export interface IPhoneLinksModal {
   className?: string;
@@ -47,7 +46,7 @@ export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
             <LoadingSpinner color={mainColors.yellow} />
           ) : (
             <Accordion type="single" collapsible className="font-semibold">
-              {sortByName(data.linkyPomocis, i18n.language).map((type, index) => (
+              {data.linkyPomocis.map((type, index) => (
                 <div key={type?.documentId} className="flex gap-4">
                   <IconButton
                     onClick={() => window.open(`tel:${type?.Telefon}`, "_self")}
@@ -79,10 +78,7 @@ export const PhoneLinksModal = ({ className }: IPhoneLinksModal) => {
                           label={t("helpPhoneLinks.labels.operation")}
                           text={type?.Prevadzka}
                         />
-                        <DataDisplay
-                          label={t("helpPhoneLinks.labels.price")}
-                          text={type?.Cena}
-                        />
+                        <DataDisplay label={t("helpPhoneLinks.labels.price")} text={type?.Cena} />
                       </div>
                       {index !== 2 && <Divider className="my-4 mr-6" />}
                     </AccordionItem>

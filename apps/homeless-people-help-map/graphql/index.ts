@@ -2110,7 +2110,7 @@ export type PitneFontankyQuery = { __typename?: 'Query', pitneFontankies: Array<
 
 export const LinkyPomociDocument = `
     query LinkyPomoci($locale: I18NLocaleCode!) {
-  linkyPomocis(locale: $locale) {
+  linkyPomocis(locale: $locale, sort: "Nazov:asc") {
     documentId
     Cena
     Email
@@ -2164,7 +2164,7 @@ export const useFixpointyQuery = <
     );
 export const TerenneSluzbyDocument = `
     query TerenneSluzby($locale: I18NLocaleCode!) {
-  terenneSluzbies(locale: $locale) {
+  terenneSluzbies(locale: $locale, sort: "Nazov:asc") {
     documentId
     Cena_kapacita
     Dostupnost
