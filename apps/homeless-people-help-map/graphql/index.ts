@@ -1,4 +1,5 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { fetcher } from '../src/utils/fetcher';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -6,26 +7,6 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-
-function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
-  return async (): Promise<TData> => {
-    const res = await fetch("https://general-strapi.bratislava.sk/graphql", {
-    method: "POST",
-    ...({"headers":{"Content-Type":"application/json"}}),
-      body: JSON.stringify({ query, variables }),
-    });
-
-    const json = await res.json();
-
-    if (json.errors) {
-      const { message } = json.errors[0];
-
-      throw new Error(message);
-    }
-
-    return json.data;
-  }
-}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -37,7 +18,6 @@ export type Scalars = {
   I18NLocaleCode: { input: any; output: any; }
   JSON: { input: any; output: any; }
   Long: { input: any; output: any; }
-  Upload: { input: any; output: any; }
 };
 
 export type BooleanFilterInput = {
@@ -54,6 +34,7 @@ export type BooleanFilterInput = {
   lt?: InputMaybe<Scalars['Boolean']['input']>;
   lte?: InputMaybe<Scalars['Boolean']['input']>;
   ne?: InputMaybe<Scalars['Boolean']['input']>;
+  nei?: InputMaybe<Scalars['Boolean']['input']>;
   not?: InputMaybe<BooleanFilterInput>;
   notContains?: InputMaybe<Scalars['Boolean']['input']>;
   notContainsi?: InputMaybe<Scalars['Boolean']['input']>;
@@ -67,14 +48,17 @@ export type BooleanFilterInput = {
 export type Cvicka = {
   __typename?: 'Cvicka';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
-  fotka?: Maybe<UploadFileEntityResponse>;
+  documentId: Scalars['ID']['output'];
+  fotka?: Maybe<UploadFile>;
   kategoriaSportoviska?: Maybe<Scalars['String']['output']>;
   latitude?: Maybe<Scalars['Float']['output']>;
   locale?: Maybe<Scalars['String']['output']>;
-  localizations?: Maybe<CvickaRelationResponseCollection>;
+  localizations: Array<Maybe<Cvicka>>;
+  localizations_connection?: Maybe<CvickaRelationResponseCollection>;
   longitude?: Maybe<Scalars['Float']['output']>;
   navigovatLink?: Maybe<Scalars['String']['output']>;
   nazov?: Maybe<Scalars['String']['output']>;
+  publishedAt?: Maybe<Scalars['DateTime']['output']>;
   sport?: Maybe<Scalars['String']['output']>;
   umiestnenie?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -88,27 +72,23 @@ export type CvickaLocalizationsArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
-export type CvickaEntity = {
-  __typename?: 'CvickaEntity';
-  attributes?: Maybe<Cvicka>;
-  id?: Maybe<Scalars['ID']['output']>;
-};
 
-export type CvickaEntityResponse = {
-  __typename?: 'CvickaEntityResponse';
-  data?: Maybe<CvickaEntity>;
+export type CvickaLocalizations_ConnectionArgs = {
+  filters?: InputMaybe<CvickaFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type CvickaEntityResponseCollection = {
   __typename?: 'CvickaEntityResponseCollection';
-  data: Array<CvickaEntity>;
-  meta: ResponseCollectionMeta;
+  nodes: Array<Cvicka>;
+  pageInfo: Pagination;
 };
 
 export type CvickaFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<CvickaFiltersInput>>>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
   kategoriaSportoviska?: InputMaybe<StringFilterInput>;
   latitude?: InputMaybe<FloatFilterInput>;
   locale?: InputMaybe<StringFilterInput>;
@@ -118,6 +98,7 @@ export type CvickaFiltersInput = {
   nazov?: InputMaybe<StringFilterInput>;
   not?: InputMaybe<CvickaFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<CvickaFiltersInput>>>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
   sport?: InputMaybe<StringFilterInput>;
   umiestnenie?: InputMaybe<StringFilterInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
@@ -131,6 +112,7 @@ export type CvickaInput = {
   longitude?: InputMaybe<Scalars['Float']['input']>;
   navigovatLink?: InputMaybe<Scalars['String']['input']>;
   nazov?: InputMaybe<Scalars['String']['input']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
   sport?: InputMaybe<Scalars['String']['input']>;
   umiestnenie?: InputMaybe<Scalars['String']['input']>;
   webLink?: InputMaybe<Scalars['String']['input']>;
@@ -138,7 +120,7 @@ export type CvickaInput = {
 
 export type CvickaRelationResponseCollection = {
   __typename?: 'CvickaRelationResponseCollection';
-  data: Array<CvickaEntity>;
+  nodes: Array<Cvicka>;
 };
 
 export type DateTimeFilterInput = {
@@ -155,6 +137,7 @@ export type DateTimeFilterInput = {
   lt?: InputMaybe<Scalars['DateTime']['input']>;
   lte?: InputMaybe<Scalars['DateTime']['input']>;
   ne?: InputMaybe<Scalars['DateTime']['input']>;
+  nei?: InputMaybe<Scalars['DateTime']['input']>;
   not?: InputMaybe<DateTimeFilterInput>;
   notContains?: InputMaybe<Scalars['DateTime']['input']>;
   notContainsi?: InputMaybe<Scalars['DateTime']['input']>;
@@ -163,6 +146,11 @@ export type DateTimeFilterInput = {
   null?: InputMaybe<Scalars['Boolean']['input']>;
   or?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>;
   startsWith?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type DeleteMutationResponse = {
+  __typename?: 'DeleteMutationResponse';
+  documentId: Scalars['ID']['output'];
 };
 
 export type FileInfoInput = {
@@ -178,8 +166,10 @@ export type Fixpointy = {
   Longitude?: Maybe<Scalars['Float']['output']>;
   Nazov?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  documentId: Scalars['ID']['output'];
   locale?: Maybe<Scalars['String']['output']>;
-  localizations?: Maybe<FixpointyRelationResponseCollection>;
+  localizations: Array<Maybe<Fixpointy>>;
+  localizations_connection?: Maybe<FixpointyRelationResponseCollection>;
   publishedAt?: Maybe<Scalars['DateTime']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
@@ -188,25 +178,20 @@ export type Fixpointy = {
 export type FixpointyLocalizationsArgs = {
   filters?: InputMaybe<FixpointyFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  publicationState?: InputMaybe<PublicationState>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
-export type FixpointyEntity = {
-  __typename?: 'FixpointyEntity';
-  attributes?: Maybe<Fixpointy>;
-  id?: Maybe<Scalars['ID']['output']>;
-};
 
-export type FixpointyEntityResponse = {
-  __typename?: 'FixpointyEntityResponse';
-  data?: Maybe<FixpointyEntity>;
+export type FixpointyLocalizations_ConnectionArgs = {
+  filters?: InputMaybe<FixpointyFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type FixpointyEntityResponseCollection = {
   __typename?: 'FixpointyEntityResponseCollection';
-  data: Array<FixpointyEntity>;
-  meta: ResponseCollectionMeta;
+  nodes: Array<Fixpointy>;
+  pageInfo: Pagination;
 };
 
 export type FixpointyFiltersInput = {
@@ -216,7 +201,7 @@ export type FixpointyFiltersInput = {
   Nazov?: InputMaybe<StringFilterInput>;
   and?: InputMaybe<Array<InputMaybe<FixpointyFiltersInput>>>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
   locale?: InputMaybe<StringFilterInput>;
   localizations?: InputMaybe<FixpointyFiltersInput>;
   not?: InputMaybe<FixpointyFiltersInput>;
@@ -235,7 +220,7 @@ export type FixpointyInput = {
 
 export type FixpointyRelationResponseCollection = {
   __typename?: 'FixpointyRelationResponseCollection';
-  data: Array<FixpointyEntity>;
+  nodes: Array<Fixpointy>;
 };
 
 export type FloatFilterInput = {
@@ -252,6 +237,7 @@ export type FloatFilterInput = {
   lt?: InputMaybe<Scalars['Float']['input']>;
   lte?: InputMaybe<Scalars['Float']['input']>;
   ne?: InputMaybe<Scalars['Float']['input']>;
+  nei?: InputMaybe<Scalars['Float']['input']>;
   not?: InputMaybe<FloatFilterInput>;
   notContains?: InputMaybe<Scalars['Float']['input']>;
   notContainsi?: InputMaybe<Scalars['Float']['input']>;
@@ -262,41 +248,33 @@ export type FloatFilterInput = {
   startsWith?: InputMaybe<Scalars['Float']['input']>;
 };
 
-export type GenericMorph = Cvicka | Fixpointy | I18NLocale | Kupaliska | LinkyPomoci | PitneFontanky | Rozkopavky | SluzbyPreLudiBezDomova | TerenneSluzby | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
+export type GenericMorph = Cvicka | Fixpointy | I18NLocale | Kupaliska | LinkyPomoci | PitneFontanky | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Rozkopavky | SluzbyPreLudiBezDomova | TerenneSluzby | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
 
 export type I18NLocale = {
   __typename?: 'I18NLocale';
   code?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  documentId: Scalars['ID']['output'];
   name?: Maybe<Scalars['String']['output']>;
+  publishedAt?: Maybe<Scalars['DateTime']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
-};
-
-export type I18NLocaleEntity = {
-  __typename?: 'I18NLocaleEntity';
-  attributes?: Maybe<I18NLocale>;
-  id?: Maybe<Scalars['ID']['output']>;
-};
-
-export type I18NLocaleEntityResponse = {
-  __typename?: 'I18NLocaleEntityResponse';
-  data?: Maybe<I18NLocaleEntity>;
 };
 
 export type I18NLocaleEntityResponseCollection = {
   __typename?: 'I18NLocaleEntityResponseCollection';
-  data: Array<I18NLocaleEntity>;
-  meta: ResponseCollectionMeta;
+  nodes: Array<I18NLocale>;
+  pageInfo: Pagination;
 };
 
 export type I18NLocaleFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<I18NLocaleFiltersInput>>>;
   code?: InputMaybe<StringFilterInput>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
   name?: InputMaybe<StringFilterInput>;
   not?: InputMaybe<I18NLocaleFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<I18NLocaleFiltersInput>>>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
@@ -314,6 +292,7 @@ export type IdFilterInput = {
   lt?: InputMaybe<Scalars['ID']['input']>;
   lte?: InputMaybe<Scalars['ID']['input']>;
   ne?: InputMaybe<Scalars['ID']['input']>;
+  nei?: InputMaybe<Scalars['ID']['input']>;
   not?: InputMaybe<IdFilterInput>;
   notContains?: InputMaybe<Scalars['ID']['input']>;
   notContainsi?: InputMaybe<Scalars['ID']['input']>;
@@ -338,6 +317,7 @@ export type IntFilterInput = {
   lt?: InputMaybe<Scalars['Int']['input']>;
   lte?: InputMaybe<Scalars['Int']['input']>;
   ne?: InputMaybe<Scalars['Int']['input']>;
+  nei?: InputMaybe<Scalars['Int']['input']>;
   not?: InputMaybe<IntFilterInput>;
   notContains?: InputMaybe<Scalars['Int']['input']>;
   notContainsi?: InputMaybe<Scalars['Int']['input']>;
@@ -362,6 +342,7 @@ export type JsonFilterInput = {
   lt?: InputMaybe<Scalars['JSON']['input']>;
   lte?: InputMaybe<Scalars['JSON']['input']>;
   ne?: InputMaybe<Scalars['JSON']['input']>;
+  nei?: InputMaybe<Scalars['JSON']['input']>;
   not?: InputMaybe<JsonFilterInput>;
   notContains?: InputMaybe<Scalars['JSON']['input']>;
   notContainsi?: InputMaybe<Scalars['JSON']['input']>;
@@ -376,19 +357,22 @@ export type Kupaliska = {
   __typename?: 'Kupaliska';
   adresa?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  documentId: Scalars['ID']['output'];
   email?: Maybe<Scalars['String']['output']>;
-  fotka?: Maybe<UploadFileEntityResponse>;
+  fotka?: Maybe<UploadFile>;
   kategoriaSportoviska?: Maybe<Scalars['String']['output']>;
   latitude?: Maybe<Scalars['Float']['output']>;
   listokLink?: Maybe<Scalars['String']['output']>;
   locale?: Maybe<Scalars['String']['output']>;
-  localizations?: Maybe<KupaliskaRelationResponseCollection>;
+  localizations: Array<Maybe<Kupaliska>>;
+  localizations_connection?: Maybe<KupaliskaRelationResponseCollection>;
   longitude?: Maybe<Scalars['Float']['output']>;
   navigovatLink?: Maybe<Scalars['String']['output']>;
   nazov?: Maybe<Scalars['String']['output']>;
   otvaracieHodiny?: Maybe<Scalars['String']['output']>;
   oznam?: Maybe<Scalars['String']['output']>;
   popis?: Maybe<Scalars['String']['output']>;
+  publishedAt?: Maybe<Scalars['DateTime']['output']>;
   sluzby?: Maybe<Scalars['String']['output']>;
   sport?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -402,29 +386,25 @@ export type KupaliskaLocalizationsArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
-export type KupaliskaEntity = {
-  __typename?: 'KupaliskaEntity';
-  attributes?: Maybe<Kupaliska>;
-  id?: Maybe<Scalars['ID']['output']>;
-};
 
-export type KupaliskaEntityResponse = {
-  __typename?: 'KupaliskaEntityResponse';
-  data?: Maybe<KupaliskaEntity>;
+export type KupaliskaLocalizations_ConnectionArgs = {
+  filters?: InputMaybe<KupaliskaFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type KupaliskaEntityResponseCollection = {
   __typename?: 'KupaliskaEntityResponseCollection';
-  data: Array<KupaliskaEntity>;
-  meta: ResponseCollectionMeta;
+  nodes: Array<Kupaliska>;
+  pageInfo: Pagination;
 };
 
 export type KupaliskaFiltersInput = {
   adresa?: InputMaybe<StringFilterInput>;
   and?: InputMaybe<Array<InputMaybe<KupaliskaFiltersInput>>>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
   email?: InputMaybe<StringFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
   kategoriaSportoviska?: InputMaybe<StringFilterInput>;
   latitude?: InputMaybe<FloatFilterInput>;
   listokLink?: InputMaybe<StringFilterInput>;
@@ -438,6 +418,7 @@ export type KupaliskaFiltersInput = {
   otvaracieHodiny?: InputMaybe<StringFilterInput>;
   oznam?: InputMaybe<StringFilterInput>;
   popis?: InputMaybe<StringFilterInput>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
   sluzby?: InputMaybe<StringFilterInput>;
   sport?: InputMaybe<StringFilterInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
@@ -457,6 +438,7 @@ export type KupaliskaInput = {
   otvaracieHodiny?: InputMaybe<Scalars['String']['input']>;
   oznam?: InputMaybe<Scalars['String']['input']>;
   popis?: InputMaybe<Scalars['String']['input']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
   sluzby?: InputMaybe<Scalars['String']['input']>;
   sport?: InputMaybe<Scalars['String']['input']>;
   webLink?: InputMaybe<Scalars['String']['input']>;
@@ -464,7 +446,7 @@ export type KupaliskaInput = {
 
 export type KupaliskaRelationResponseCollection = {
   __typename?: 'KupaliskaRelationResponseCollection';
-  data: Array<KupaliskaEntity>;
+  nodes: Array<Kupaliska>;
 };
 
 export type LinkyPomoci = {
@@ -477,8 +459,10 @@ export type LinkyPomoci = {
   Prevadzkovatel?: Maybe<Scalars['String']['output']>;
   Telefon?: Maybe<Scalars['Long']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  documentId: Scalars['ID']['output'];
   locale?: Maybe<Scalars['String']['output']>;
-  localizations?: Maybe<LinkyPomociRelationResponseCollection>;
+  localizations: Array<Maybe<LinkyPomoci>>;
+  localizations_connection?: Maybe<LinkyPomociRelationResponseCollection>;
   publishedAt?: Maybe<Scalars['DateTime']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
@@ -487,25 +471,20 @@ export type LinkyPomoci = {
 export type LinkyPomociLocalizationsArgs = {
   filters?: InputMaybe<LinkyPomociFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  publicationState?: InputMaybe<PublicationState>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
-export type LinkyPomociEntity = {
-  __typename?: 'LinkyPomociEntity';
-  attributes?: Maybe<LinkyPomoci>;
-  id?: Maybe<Scalars['ID']['output']>;
-};
 
-export type LinkyPomociEntityResponse = {
-  __typename?: 'LinkyPomociEntityResponse';
-  data?: Maybe<LinkyPomociEntity>;
+export type LinkyPomociLocalizations_ConnectionArgs = {
+  filters?: InputMaybe<LinkyPomociFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type LinkyPomociEntityResponseCollection = {
   __typename?: 'LinkyPomociEntityResponseCollection';
-  data: Array<LinkyPomociEntity>;
-  meta: ResponseCollectionMeta;
+  nodes: Array<LinkyPomoci>;
+  pageInfo: Pagination;
 };
 
 export type LinkyPomociFiltersInput = {
@@ -518,7 +497,7 @@ export type LinkyPomociFiltersInput = {
   Telefon?: InputMaybe<LongFilterInput>;
   and?: InputMaybe<Array<InputMaybe<LinkyPomociFiltersInput>>>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
   locale?: InputMaybe<StringFilterInput>;
   localizations?: InputMaybe<LinkyPomociFiltersInput>;
   not?: InputMaybe<LinkyPomociFiltersInput>;
@@ -540,7 +519,7 @@ export type LinkyPomociInput = {
 
 export type LinkyPomociRelationResponseCollection = {
   __typename?: 'LinkyPomociRelationResponseCollection';
-  data: Array<LinkyPomociEntity>;
+  nodes: Array<LinkyPomoci>;
 };
 
 export type LongFilterInput = {
@@ -557,6 +536,7 @@ export type LongFilterInput = {
   lt?: InputMaybe<Scalars['Long']['input']>;
   lte?: InputMaybe<Scalars['Long']['input']>;
   ne?: InputMaybe<Scalars['Long']['input']>;
+  nei?: InputMaybe<Scalars['Long']['input']>;
   not?: InputMaybe<LongFilterInput>;
   notContains?: InputMaybe<Scalars['Long']['input']>;
   notContainsi?: InputMaybe<Scalars['Long']['input']>;
@@ -571,37 +551,30 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Change user password. Confirm with the current password. */
   changePassword?: Maybe<UsersPermissionsLoginPayload>;
-  createCvicka?: Maybe<CvickaEntityResponse>;
-  createCvickaLocalization?: Maybe<CvickaEntityResponse>;
-  createFixpointy?: Maybe<FixpointyEntityResponse>;
-  createFixpointyLocalization?: Maybe<FixpointyEntityResponse>;
-  createKupaliska?: Maybe<KupaliskaEntityResponse>;
-  createKupaliskaLocalization?: Maybe<KupaliskaEntityResponse>;
-  createLinkyPomoci?: Maybe<LinkyPomociEntityResponse>;
-  createLinkyPomociLocalization?: Maybe<LinkyPomociEntityResponse>;
-  createPitneFontanky?: Maybe<PitneFontankyEntityResponse>;
-  createPitneFontankyLocalization?: Maybe<PitneFontankyEntityResponse>;
-  createRozkopavkyLocalization?: Maybe<RozkopavkyEntityResponse>;
-  createSluzbyPreLudiBezDomova?: Maybe<SluzbyPreLudiBezDomovaEntityResponse>;
-  createSluzbyPreLudiBezDomovaLocalization?: Maybe<SluzbyPreLudiBezDomovaEntityResponse>;
-  createTerenneSluzby?: Maybe<TerenneSluzbyEntityResponse>;
-  createTerenneSluzbyLocalization?: Maybe<TerenneSluzbyEntityResponse>;
-  createUploadFile?: Maybe<UploadFileEntityResponse>;
-  createUploadFolder?: Maybe<UploadFolderEntityResponse>;
+  createCvicka?: Maybe<Cvicka>;
+  createFixpointy?: Maybe<Fixpointy>;
+  createKupaliska?: Maybe<Kupaliska>;
+  createLinkyPomoci?: Maybe<LinkyPomoci>;
+  createPitneFontanky?: Maybe<PitneFontanky>;
+  createReviewWorkflowsWorkflow?: Maybe<ReviewWorkflowsWorkflow>;
+  createReviewWorkflowsWorkflowStage?: Maybe<ReviewWorkflowsWorkflowStage>;
+  createSluzbyPreLudiBezDomova?: Maybe<SluzbyPreLudiBezDomova>;
+  createTerenneSluzby?: Maybe<TerenneSluzby>;
   /** Create a new role */
   createUsersPermissionsRole?: Maybe<UsersPermissionsCreateRolePayload>;
   /** Create a new user */
   createUsersPermissionsUser: UsersPermissionsUserEntityResponse;
-  deleteCvicka?: Maybe<CvickaEntityResponse>;
-  deleteFixpointy?: Maybe<FixpointyEntityResponse>;
-  deleteKupaliska?: Maybe<KupaliskaEntityResponse>;
-  deleteLinkyPomoci?: Maybe<LinkyPomociEntityResponse>;
-  deletePitneFontanky?: Maybe<PitneFontankyEntityResponse>;
-  deleteRozkopavky?: Maybe<RozkopavkyEntityResponse>;
-  deleteSluzbyPreLudiBezDomova?: Maybe<SluzbyPreLudiBezDomovaEntityResponse>;
-  deleteTerenneSluzby?: Maybe<TerenneSluzbyEntityResponse>;
-  deleteUploadFile?: Maybe<UploadFileEntityResponse>;
-  deleteUploadFolder?: Maybe<UploadFolderEntityResponse>;
+  deleteCvicka?: Maybe<DeleteMutationResponse>;
+  deleteFixpointy?: Maybe<DeleteMutationResponse>;
+  deleteKupaliska?: Maybe<DeleteMutationResponse>;
+  deleteLinkyPomoci?: Maybe<DeleteMutationResponse>;
+  deletePitneFontanky?: Maybe<DeleteMutationResponse>;
+  deleteReviewWorkflowsWorkflow?: Maybe<DeleteMutationResponse>;
+  deleteReviewWorkflowsWorkflowStage?: Maybe<DeleteMutationResponse>;
+  deleteRozkopavky?: Maybe<DeleteMutationResponse>;
+  deleteSluzbyPreLudiBezDomova?: Maybe<DeleteMutationResponse>;
+  deleteTerenneSluzby?: Maybe<DeleteMutationResponse>;
+  deleteUploadFile?: Maybe<UploadFile>;
   /** Delete an existing role */
   deleteUsersPermissionsRole?: Maybe<UsersPermissionsDeleteRolePayload>;
   /** Delete an existing user */
@@ -611,28 +584,25 @@ export type Mutation = {
   /** Request a reset password token */
   forgotPassword?: Maybe<UsersPermissionsPasswordPayload>;
   login: UsersPermissionsLoginPayload;
-  multipleUpload: Array<Maybe<UploadFileEntityResponse>>;
   /** Register a user */
   register: UsersPermissionsLoginPayload;
-  removeFile?: Maybe<UploadFileEntityResponse>;
   /** Reset user password. Confirm with a code (resetToken from forgotPassword) */
   resetPassword?: Maybe<UsersPermissionsLoginPayload>;
-  updateCvicka?: Maybe<CvickaEntityResponse>;
-  updateFileInfo: UploadFileEntityResponse;
-  updateFixpointy?: Maybe<FixpointyEntityResponse>;
-  updateKupaliska?: Maybe<KupaliskaEntityResponse>;
-  updateLinkyPomoci?: Maybe<LinkyPomociEntityResponse>;
-  updatePitneFontanky?: Maybe<PitneFontankyEntityResponse>;
-  updateRozkopavky?: Maybe<RozkopavkyEntityResponse>;
-  updateSluzbyPreLudiBezDomova?: Maybe<SluzbyPreLudiBezDomovaEntityResponse>;
-  updateTerenneSluzby?: Maybe<TerenneSluzbyEntityResponse>;
-  updateUploadFile?: Maybe<UploadFileEntityResponse>;
-  updateUploadFolder?: Maybe<UploadFolderEntityResponse>;
+  updateCvicka?: Maybe<Cvicka>;
+  updateFixpointy?: Maybe<Fixpointy>;
+  updateKupaliska?: Maybe<Kupaliska>;
+  updateLinkyPomoci?: Maybe<LinkyPomoci>;
+  updatePitneFontanky?: Maybe<PitneFontanky>;
+  updateReviewWorkflowsWorkflow?: Maybe<ReviewWorkflowsWorkflow>;
+  updateReviewWorkflowsWorkflowStage?: Maybe<ReviewWorkflowsWorkflowStage>;
+  updateRozkopavky?: Maybe<Rozkopavky>;
+  updateSluzbyPreLudiBezDomova?: Maybe<SluzbyPreLudiBezDomova>;
+  updateTerenneSluzby?: Maybe<TerenneSluzby>;
+  updateUploadFile: UploadFile;
   /** Update an existing role */
   updateUsersPermissionsRole?: Maybe<UsersPermissionsUpdateRolePayload>;
   /** Update an existing user */
   updateUsersPermissionsUser: UsersPermissionsUserEntityResponse;
-  upload: UploadFileEntityResponse;
 };
 
 
@@ -646,108 +616,61 @@ export type MutationChangePasswordArgs = {
 export type MutationCreateCvickaArgs = {
   data: CvickaInput;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
-};
-
-
-export type MutationCreateCvickaLocalizationArgs = {
-  data?: InputMaybe<CvickaInput>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationCreateFixpointyArgs = {
   data: FixpointyInput;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
-};
-
-
-export type MutationCreateFixpointyLocalizationArgs = {
-  data?: InputMaybe<FixpointyInput>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationCreateKupaliskaArgs = {
   data: KupaliskaInput;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
-};
-
-
-export type MutationCreateKupaliskaLocalizationArgs = {
-  data?: InputMaybe<KupaliskaInput>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationCreateLinkyPomociArgs = {
   data: LinkyPomociInput;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
-};
-
-
-export type MutationCreateLinkyPomociLocalizationArgs = {
-  data?: InputMaybe<LinkyPomociInput>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationCreatePitneFontankyArgs = {
   data: PitneFontankyInput;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
-export type MutationCreatePitneFontankyLocalizationArgs = {
-  data?: InputMaybe<PitneFontankyInput>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+export type MutationCreateReviewWorkflowsWorkflowArgs = {
+  data: ReviewWorkflowsWorkflowInput;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
-export type MutationCreateRozkopavkyLocalizationArgs = {
-  data?: InputMaybe<RozkopavkyInput>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+export type MutationCreateReviewWorkflowsWorkflowStageArgs = {
+  data: ReviewWorkflowsWorkflowStageInput;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationCreateSluzbyPreLudiBezDomovaArgs = {
   data: SluzbyPreLudiBezDomovaInput;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
-};
-
-
-export type MutationCreateSluzbyPreLudiBezDomovaLocalizationArgs = {
-  data?: InputMaybe<SluzbyPreLudiBezDomovaInput>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationCreateTerenneSluzbyArgs = {
   data: TerenneSluzbyInput;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
-};
-
-
-export type MutationCreateTerenneSluzbyLocalizationArgs = {
-  data?: InputMaybe<TerenneSluzbyInput>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
-};
-
-
-export type MutationCreateUploadFileArgs = {
-  data: UploadFileInput;
-};
-
-
-export type MutationCreateUploadFolderArgs = {
-  data: UploadFolderInput;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
@@ -762,32 +685,42 @@ export type MutationCreateUsersPermissionsUserArgs = {
 
 
 export type MutationDeleteCvickaArgs = {
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
 };
 
 
 export type MutationDeleteFixpointyArgs = {
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
 };
 
 
 export type MutationDeleteKupaliskaArgs = {
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
 };
 
 
 export type MutationDeleteLinkyPomociArgs = {
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
 };
 
 
 export type MutationDeletePitneFontankyArgs = {
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+};
+
+
+export type MutationDeleteReviewWorkflowsWorkflowArgs = {
+  documentId: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteReviewWorkflowsWorkflowStageArgs = {
+  documentId: Scalars['ID']['input'];
 };
 
 
@@ -797,23 +730,18 @@ export type MutationDeleteRozkopavkyArgs = {
 
 
 export type MutationDeleteSluzbyPreLudiBezDomovaArgs = {
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
 };
 
 
 export type MutationDeleteTerenneSluzbyArgs = {
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
 };
 
 
 export type MutationDeleteUploadFileArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type MutationDeleteUploadFolderArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -843,21 +771,8 @@ export type MutationLoginArgs = {
 };
 
 
-export type MutationMultipleUploadArgs = {
-  field?: InputMaybe<Scalars['String']['input']>;
-  files: Array<InputMaybe<Scalars['Upload']['input']>>;
-  ref?: InputMaybe<Scalars['String']['input']>;
-  refId?: InputMaybe<Scalars['ID']['input']>;
-};
-
-
 export type MutationRegisterArgs = {
   input: UsersPermissionsRegisterInput;
-};
-
-
-export type MutationRemoveFileArgs = {
-  id: Scalars['ID']['input'];
 };
 
 
@@ -870,74 +785,84 @@ export type MutationResetPasswordArgs = {
 
 export type MutationUpdateCvickaArgs = {
   data: CvickaInput;
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
-};
-
-
-export type MutationUpdateFileInfoArgs = {
-  id: Scalars['ID']['input'];
-  info?: InputMaybe<FileInfoInput>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationUpdateFixpointyArgs = {
   data: FixpointyInput;
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationUpdateKupaliskaArgs = {
   data: KupaliskaInput;
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationUpdateLinkyPomociArgs = {
   data: LinkyPomociInput;
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationUpdatePitneFontankyArgs = {
   data: PitneFontankyInput;
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type MutationUpdateReviewWorkflowsWorkflowArgs = {
+  data: ReviewWorkflowsWorkflowInput;
+  documentId: Scalars['ID']['input'];
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type MutationUpdateReviewWorkflowsWorkflowStageArgs = {
+  data: ReviewWorkflowsWorkflowStageInput;
+  documentId: Scalars['ID']['input'];
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationUpdateRozkopavkyArgs = {
   data: RozkopavkyInput;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationUpdateSluzbyPreLudiBezDomovaArgs = {
   data: SluzbyPreLudiBezDomovaInput;
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationUpdateTerenneSluzbyArgs = {
   data: TerenneSluzbyInput;
-  id: Scalars['ID']['input'];
+  documentId: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type MutationUpdateUploadFileArgs = {
-  data: UploadFileInput;
   id: Scalars['ID']['input'];
-};
-
-
-export type MutationUpdateUploadFolderArgs = {
-  data: UploadFolderInput;
-  id: Scalars['ID']['input'];
+  info?: InputMaybe<FileInfoInput>;
 };
 
 
@@ -950,15 +875,6 @@ export type MutationUpdateUsersPermissionsRoleArgs = {
 export type MutationUpdateUsersPermissionsUserArgs = {
   data: UsersPermissionsUserInput;
   id: Scalars['ID']['input'];
-};
-
-
-export type MutationUploadArgs = {
-  field?: InputMaybe<Scalars['String']['input']>;
-  file: Scalars['Upload']['input'];
-  info?: InputMaybe<FileInfoInput>;
-  ref?: InputMaybe<Scalars['String']['input']>;
-  refId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type Pagination = {
@@ -978,7 +894,8 @@ export type PaginationArg = {
 
 export type PitneFontanky = {
   __typename?: 'PitneFontanky';
-  Fotky?: Maybe<UploadFileRelationResponseCollection>;
+  Fotky: Array<Maybe<UploadFile>>;
+  Fotky_connection?: Maybe<UploadFileRelationResponseCollection>;
   Latitude?: Maybe<Scalars['Float']['output']>;
   Longitude?: Maybe<Scalars['Float']['output']>;
   Nazov?: Maybe<Scalars['String']['output']>;
@@ -987,8 +904,10 @@ export type PitneFontanky = {
   Stav?: Maybe<Scalars['String']['output']>;
   Typ?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  documentId: Scalars['ID']['output'];
   locale?: Maybe<Scalars['String']['output']>;
-  localizations?: Maybe<PitneFontankyRelationResponseCollection>;
+  localizations: Array<Maybe<PitneFontanky>>;
+  localizations_connection?: Maybe<PitneFontankyRelationResponseCollection>;
   publishedAt?: Maybe<Scalars['DateTime']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
@@ -1001,28 +920,30 @@ export type PitneFontankyFotkyArgs = {
 };
 
 
-export type PitneFontankyLocalizationsArgs = {
-  filters?: InputMaybe<PitneFontankyFiltersInput>;
+export type PitneFontankyFotky_ConnectionArgs = {
+  filters?: InputMaybe<UploadFileFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  publicationState?: InputMaybe<PublicationState>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
-export type PitneFontankyEntity = {
-  __typename?: 'PitneFontankyEntity';
-  attributes?: Maybe<PitneFontanky>;
-  id?: Maybe<Scalars['ID']['output']>;
+
+export type PitneFontankyLocalizationsArgs = {
+  filters?: InputMaybe<PitneFontankyFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
-export type PitneFontankyEntityResponse = {
-  __typename?: 'PitneFontankyEntityResponse';
-  data?: Maybe<PitneFontankyEntity>;
+
+export type PitneFontankyLocalizations_ConnectionArgs = {
+  filters?: InputMaybe<PitneFontankyFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type PitneFontankyEntityResponseCollection = {
   __typename?: 'PitneFontankyEntityResponseCollection';
-  data: Array<PitneFontankyEntity>;
-  meta: ResponseCollectionMeta;
+  nodes: Array<PitneFontanky>;
+  pageInfo: Pagination;
 };
 
 export type PitneFontankyFiltersInput = {
@@ -1035,7 +956,7 @@ export type PitneFontankyFiltersInput = {
   Typ?: InputMaybe<StringFilterInput>;
   and?: InputMaybe<Array<InputMaybe<PitneFontankyFiltersInput>>>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
   locale?: InputMaybe<StringFilterInput>;
   localizations?: InputMaybe<PitneFontankyFiltersInput>;
   not?: InputMaybe<PitneFontankyFiltersInput>;
@@ -1058,248 +979,586 @@ export type PitneFontankyInput = {
 
 export type PitneFontankyRelationResponseCollection = {
   __typename?: 'PitneFontankyRelationResponseCollection';
-  data: Array<PitneFontankyEntity>;
+  nodes: Array<PitneFontanky>;
 };
 
-export enum PublicationState {
-  Live = 'LIVE',
-  Preview = 'PREVIEW'
+export enum PublicationFilter {
+  HasPublishedVersion = 'HAS_PUBLISHED_VERSION',
+  HasPublishedVersionDocument = 'HAS_PUBLISHED_VERSION_DOCUMENT',
+  Modified = 'MODIFIED',
+  NeverPublished = 'NEVER_PUBLISHED',
+  NeverPublishedDocument = 'NEVER_PUBLISHED_DOCUMENT',
+  PublishedWithoutDraft = 'PUBLISHED_WITHOUT_DRAFT',
+  PublishedWithDraft = 'PUBLISHED_WITH_DRAFT',
+  Unmodified = 'UNMODIFIED'
+}
+
+export enum PublicationStatus {
+  Draft = 'DRAFT',
+  Published = 'PUBLISHED'
 }
 
 export type Query = {
   __typename?: 'Query';
-  cvicka?: Maybe<CvickaEntityResponse>;
-  cvickas?: Maybe<CvickaEntityResponseCollection>;
-  fixpoints?: Maybe<FixpointyEntityResponseCollection>;
-  fixpointy?: Maybe<FixpointyEntityResponse>;
-  i18NLocale?: Maybe<I18NLocaleEntityResponse>;
-  i18NLocales?: Maybe<I18NLocaleEntityResponseCollection>;
-  kupaliska?: Maybe<KupaliskaEntityResponse>;
-  kupaliskas?: Maybe<KupaliskaEntityResponseCollection>;
-  linkyPomoci?: Maybe<LinkyPomociEntityResponse>;
-  linkyPomocis?: Maybe<LinkyPomociEntityResponseCollection>;
+  cvicka?: Maybe<Cvicka>;
+  cvickas: Array<Maybe<Cvicka>>;
+  cvickas_connection?: Maybe<CvickaEntityResponseCollection>;
+  fixpoints: Array<Maybe<Fixpointy>>;
+  fixpoints_connection?: Maybe<FixpointyEntityResponseCollection>;
+  fixpointy?: Maybe<Fixpointy>;
+  i18NLocale?: Maybe<I18NLocale>;
+  i18NLocales: Array<Maybe<I18NLocale>>;
+  i18NLocales_connection?: Maybe<I18NLocaleEntityResponseCollection>;
+  kupaliska?: Maybe<Kupaliska>;
+  kupaliskas: Array<Maybe<Kupaliska>>;
+  kupaliskas_connection?: Maybe<KupaliskaEntityResponseCollection>;
+  linkyPomoci?: Maybe<LinkyPomoci>;
+  linkyPomocis: Array<Maybe<LinkyPomoci>>;
+  linkyPomocis_connection?: Maybe<LinkyPomociEntityResponseCollection>;
   me?: Maybe<UsersPermissionsMe>;
-  pitneFontankies?: Maybe<PitneFontankyEntityResponseCollection>;
-  pitneFontanky?: Maybe<PitneFontankyEntityResponse>;
-  rozkopavky?: Maybe<RozkopavkyEntityResponse>;
-  sluzbyPreLudiBezDomova?: Maybe<SluzbyPreLudiBezDomovaEntityResponse>;
-  sluzbyPreLudiBezDomovas?: Maybe<SluzbyPreLudiBezDomovaEntityResponseCollection>;
-  terenneSluzbies?: Maybe<TerenneSluzbyEntityResponseCollection>;
-  terenneSluzby?: Maybe<TerenneSluzbyEntityResponse>;
-  uploadFile?: Maybe<UploadFileEntityResponse>;
-  uploadFiles?: Maybe<UploadFileEntityResponseCollection>;
-  uploadFolder?: Maybe<UploadFolderEntityResponse>;
-  uploadFolders?: Maybe<UploadFolderEntityResponseCollection>;
-  usersPermissionsRole?: Maybe<UsersPermissionsRoleEntityResponse>;
-  usersPermissionsRoles?: Maybe<UsersPermissionsRoleEntityResponseCollection>;
-  usersPermissionsUser?: Maybe<UsersPermissionsUserEntityResponse>;
-  usersPermissionsUsers?: Maybe<UsersPermissionsUserEntityResponseCollection>;
+  pitneFontankies: Array<Maybe<PitneFontanky>>;
+  pitneFontankies_connection?: Maybe<PitneFontankyEntityResponseCollection>;
+  pitneFontanky?: Maybe<PitneFontanky>;
+  reviewWorkflowsWorkflow?: Maybe<ReviewWorkflowsWorkflow>;
+  reviewWorkflowsWorkflowStage?: Maybe<ReviewWorkflowsWorkflowStage>;
+  reviewWorkflowsWorkflowStages: Array<Maybe<ReviewWorkflowsWorkflowStage>>;
+  reviewWorkflowsWorkflowStages_connection?: Maybe<ReviewWorkflowsWorkflowStageEntityResponseCollection>;
+  reviewWorkflowsWorkflows: Array<Maybe<ReviewWorkflowsWorkflow>>;
+  reviewWorkflowsWorkflows_connection?: Maybe<ReviewWorkflowsWorkflowEntityResponseCollection>;
+  rozkopavky?: Maybe<Rozkopavky>;
+  sluzbyPreLudiBezDomova?: Maybe<SluzbyPreLudiBezDomova>;
+  sluzbyPreLudiBezDomovas: Array<Maybe<SluzbyPreLudiBezDomova>>;
+  sluzbyPreLudiBezDomovas_connection?: Maybe<SluzbyPreLudiBezDomovaEntityResponseCollection>;
+  terenneSluzbies: Array<Maybe<TerenneSluzby>>;
+  terenneSluzbies_connection?: Maybe<TerenneSluzbyEntityResponseCollection>;
+  terenneSluzby?: Maybe<TerenneSluzby>;
+  uploadFile?: Maybe<UploadFile>;
+  uploadFiles: Array<Maybe<UploadFile>>;
+  uploadFiles_connection?: Maybe<UploadFileEntityResponseCollection>;
+  usersPermissionsRole?: Maybe<UsersPermissionsRole>;
+  usersPermissionsRoles: Array<Maybe<UsersPermissionsRole>>;
+  usersPermissionsRoles_connection?: Maybe<UsersPermissionsRoleEntityResponseCollection>;
+  usersPermissionsUser?: Maybe<UsersPermissionsUser>;
+  usersPermissionsUsers: Array<Maybe<UsersPermissionsUser>>;
+  usersPermissionsUsers_connection?: Maybe<UsersPermissionsUserEntityResponseCollection>;
 };
 
 
 export type QueryCvickaArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryCvickasArgs = {
   filters?: InputMaybe<CvickaFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
   pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryCvickas_ConnectionArgs = {
+  filters?: InputMaybe<CvickaFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryFixpointsArgs = {
   filters?: InputMaybe<FixpointyFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
   pagination?: InputMaybe<PaginationArg>;
-  publicationState?: InputMaybe<PublicationState>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryFixpoints_ConnectionArgs = {
+  filters?: InputMaybe<FixpointyFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryFixpointyArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryI18NLocaleArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryI18NLocalesArgs = {
   filters?: InputMaybe<I18NLocaleFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryI18NLocales_ConnectionArgs = {
+  filters?: InputMaybe<I18NLocaleFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryKupaliskaArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryKupaliskasArgs = {
   filters?: InputMaybe<KupaliskaFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
   pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryKupaliskas_ConnectionArgs = {
+  filters?: InputMaybe<KupaliskaFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryLinkyPomociArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryLinkyPomocisArgs = {
   filters?: InputMaybe<LinkyPomociFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
   pagination?: InputMaybe<PaginationArg>;
-  publicationState?: InputMaybe<PublicationState>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryLinkyPomocis_ConnectionArgs = {
+  filters?: InputMaybe<LinkyPomociFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryPitneFontankiesArgs = {
   filters?: InputMaybe<PitneFontankyFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
   pagination?: InputMaybe<PaginationArg>;
-  publicationState?: InputMaybe<PublicationState>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryPitneFontankies_ConnectionArgs = {
+  filters?: InputMaybe<PitneFontankyFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryPitneFontankyArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryReviewWorkflowsWorkflowArgs = {
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryReviewWorkflowsWorkflowStageArgs = {
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryReviewWorkflowsWorkflowStagesArgs = {
+  filters?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryReviewWorkflowsWorkflowStages_ConnectionArgs = {
+  filters?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryReviewWorkflowsWorkflowsArgs = {
+  filters?: InputMaybe<ReviewWorkflowsWorkflowFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryReviewWorkflowsWorkflows_ConnectionArgs = {
+  filters?: InputMaybe<ReviewWorkflowsWorkflowFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryRozkopavkyArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QuerySluzbyPreLudiBezDomovaArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QuerySluzbyPreLudiBezDomovasArgs = {
   filters?: InputMaybe<SluzbyPreLudiBezDomovaFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
   pagination?: InputMaybe<PaginationArg>;
-  publicationState?: InputMaybe<PublicationState>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QuerySluzbyPreLudiBezDomovas_ConnectionArgs = {
+  filters?: InputMaybe<SluzbyPreLudiBezDomovaFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryTerenneSluzbiesArgs = {
   filters?: InputMaybe<TerenneSluzbyFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
   pagination?: InputMaybe<PaginationArg>;
-  publicationState?: InputMaybe<PublicationState>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryTerenneSluzbies_ConnectionArgs = {
+  filters?: InputMaybe<TerenneSluzbyFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryTerenneSluzbyArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   locale?: InputMaybe<Scalars['I18NLocaleCode']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryUploadFileArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryUploadFilesArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
-export type QueryUploadFolderArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
-};
-
-
-export type QueryUploadFoldersArgs = {
-  filters?: InputMaybe<UploadFolderFiltersInput>;
+export type QueryUploadFiles_ConnectionArgs = {
+  filters?: InputMaybe<UploadFileFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryUsersPermissionsRoleArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryUsersPermissionsRolesArgs = {
   filters?: InputMaybe<UsersPermissionsRoleFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
   pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryUsersPermissionsRoles_ConnectionArgs = {
+  filters?: InputMaybe<UsersPermissionsRoleFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryUsersPermissionsUserArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
+  documentId: Scalars['ID']['input'];
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  status?: InputMaybe<PublicationStatus>;
 };
 
 
 export type QueryUsersPermissionsUsersArgs = {
   filters?: InputMaybe<UsersPermissionsUserFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+
+export type QueryUsersPermissionsUsers_ConnectionArgs = {
+  filters?: InputMaybe<UsersPermissionsUserFiltersInput>;
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationFilter?: InputMaybe<PublicationFilter>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status?: InputMaybe<PublicationStatus>;
+};
+
+export type ReviewWorkflowsWorkflow = {
+  __typename?: 'ReviewWorkflowsWorkflow';
+  contentTypes: Scalars['JSON']['output'];
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  documentId: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  publishedAt?: Maybe<Scalars['DateTime']['output']>;
+  stageRequiredToPublish?: Maybe<ReviewWorkflowsWorkflowStage>;
+  stages: Array<Maybe<ReviewWorkflowsWorkflowStage>>;
+  stages_connection?: Maybe<ReviewWorkflowsWorkflowStageRelationResponseCollection>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
+
+export type ReviewWorkflowsWorkflowStagesArgs = {
+  filters?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
-export type ResponseCollectionMeta = {
-  __typename?: 'ResponseCollectionMeta';
-  pagination: Pagination;
+
+export type ReviewWorkflowsWorkflowStages_ConnectionArgs = {
+  filters?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
+export type ReviewWorkflowsWorkflowEntityResponseCollection = {
+  __typename?: 'ReviewWorkflowsWorkflowEntityResponseCollection';
+  nodes: Array<ReviewWorkflowsWorkflow>;
+  pageInfo: Pagination;
+};
+
+export type ReviewWorkflowsWorkflowFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ReviewWorkflowsWorkflowFiltersInput>>>;
+  contentTypes?: InputMaybe<JsonFilterInput>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
+  name?: InputMaybe<StringFilterInput>;
+  not?: InputMaybe<ReviewWorkflowsWorkflowFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<ReviewWorkflowsWorkflowFiltersInput>>>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
+  stageRequiredToPublish?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>;
+  stages?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+};
+
+export type ReviewWorkflowsWorkflowInput = {
+  contentTypes?: InputMaybe<Scalars['JSON']['input']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  stageRequiredToPublish?: InputMaybe<Scalars['ID']['input']>;
+  stages?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
+};
+
+export type ReviewWorkflowsWorkflowStage = {
+  __typename?: 'ReviewWorkflowsWorkflowStage';
+  color?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  documentId: Scalars['ID']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  publishedAt?: Maybe<Scalars['DateTime']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  workflow?: Maybe<ReviewWorkflowsWorkflow>;
+};
+
+export type ReviewWorkflowsWorkflowStageEntityResponseCollection = {
+  __typename?: 'ReviewWorkflowsWorkflowStageEntityResponseCollection';
+  nodes: Array<ReviewWorkflowsWorkflowStage>;
+  pageInfo: Pagination;
+};
+
+export type ReviewWorkflowsWorkflowStageFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>>>;
+  color?: InputMaybe<StringFilterInput>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
+  name?: InputMaybe<StringFilterInput>;
+  not?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>>>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+  workflow?: InputMaybe<ReviewWorkflowsWorkflowFiltersInput>;
+};
+
+export type ReviewWorkflowsWorkflowStageInput = {
+  color?: InputMaybe<Scalars['String']['input']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  workflow?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type ReviewWorkflowsWorkflowStageRelationResponseCollection = {
+  __typename?: 'ReviewWorkflowsWorkflowStageRelationResponseCollection';
+  nodes: Array<ReviewWorkflowsWorkflowStage>;
 };
 
 export type Rozkopavky = {
   __typename?: 'Rozkopavky';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  documentId: Scalars['ID']['output'];
   enabled: Scalars['Boolean']['output'];
   locale?: Maybe<Scalars['String']['output']>;
-  localizations?: Maybe<RozkopavkyRelationResponseCollection>;
+  localizations: Array<Maybe<Rozkopavky>>;
+  localizations_connection?: Maybe<RozkopavkyRelationResponseCollection>;
+  publishedAt?: Maybe<Scalars['DateTime']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
-};
-
-export type RozkopavkyEntity = {
-  __typename?: 'RozkopavkyEntity';
-  attributes?: Maybe<Rozkopavky>;
-  id?: Maybe<Scalars['ID']['output']>;
-};
-
-export type RozkopavkyEntityResponse = {
-  __typename?: 'RozkopavkyEntityResponse';
-  data?: Maybe<RozkopavkyEntity>;
 };
 
 export type RozkopavkyInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type RozkopavkyRelationResponseCollection = {
   __typename?: 'RozkopavkyRelationResponseCollection';
-  data: Array<RozkopavkyEntity>;
+  nodes: Array<Rozkopavky>;
 };
 
 export type SluzbyPreLudiBezDomova = {
@@ -1321,15 +1580,18 @@ export type SluzbyPreLudiBezDomova = {
   Poskytovatel?: Maybe<Scalars['String']['output']>;
   Socialne_pravne_poradenstvo?: Maybe<Scalars['String']['output']>;
   Strava?: Maybe<Scalars['String']['output']>;
-  Subor?: Maybe<UploadFileRelationResponseCollection>;
+  Subor: Array<Maybe<UploadFile>>;
+  Subor_connection?: Maybe<UploadFileRelationResponseCollection>;
   Tagy?: Maybe<Scalars['String']['output']>;
   Telefon?: Maybe<Scalars['Long']['output']>;
   Telefon_popis?: Maybe<Scalars['String']['output']>;
   Web?: Maybe<Scalars['String']['output']>;
   Zdravotne_osetrenie?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  documentId: Scalars['ID']['output'];
   locale?: Maybe<Scalars['String']['output']>;
-  localizations?: Maybe<SluzbyPreLudiBezDomovaRelationResponseCollection>;
+  localizations: Array<Maybe<SluzbyPreLudiBezDomova>>;
+  localizations_connection?: Maybe<SluzbyPreLudiBezDomovaRelationResponseCollection>;
   publishedAt?: Maybe<Scalars['DateTime']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
@@ -1342,28 +1604,30 @@ export type SluzbyPreLudiBezDomovaSuborArgs = {
 };
 
 
-export type SluzbyPreLudiBezDomovaLocalizationsArgs = {
-  filters?: InputMaybe<SluzbyPreLudiBezDomovaFiltersInput>;
+export type SluzbyPreLudiBezDomovaSubor_ConnectionArgs = {
+  filters?: InputMaybe<UploadFileFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  publicationState?: InputMaybe<PublicationState>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
-export type SluzbyPreLudiBezDomovaEntity = {
-  __typename?: 'SluzbyPreLudiBezDomovaEntity';
-  attributes?: Maybe<SluzbyPreLudiBezDomova>;
-  id?: Maybe<Scalars['ID']['output']>;
+
+export type SluzbyPreLudiBezDomovaLocalizationsArgs = {
+  filters?: InputMaybe<SluzbyPreLudiBezDomovaFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
-export type SluzbyPreLudiBezDomovaEntityResponse = {
-  __typename?: 'SluzbyPreLudiBezDomovaEntityResponse';
-  data?: Maybe<SluzbyPreLudiBezDomovaEntity>;
+
+export type SluzbyPreLudiBezDomovaLocalizations_ConnectionArgs = {
+  filters?: InputMaybe<SluzbyPreLudiBezDomovaFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type SluzbyPreLudiBezDomovaEntityResponseCollection = {
   __typename?: 'SluzbyPreLudiBezDomovaEntityResponseCollection';
-  data: Array<SluzbyPreLudiBezDomovaEntity>;
-  meta: ResponseCollectionMeta;
+  nodes: Array<SluzbyPreLudiBezDomova>;
+  pageInfo: Pagination;
 };
 
 export type SluzbyPreLudiBezDomovaFiltersInput = {
@@ -1391,7 +1655,7 @@ export type SluzbyPreLudiBezDomovaFiltersInput = {
   Zdravotne_osetrenie?: InputMaybe<StringFilterInput>;
   and?: InputMaybe<Array<InputMaybe<SluzbyPreLudiBezDomovaFiltersInput>>>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
   locale?: InputMaybe<StringFilterInput>;
   localizations?: InputMaybe<SluzbyPreLudiBezDomovaFiltersInput>;
   not?: InputMaybe<SluzbyPreLudiBezDomovaFiltersInput>;
@@ -1429,7 +1693,7 @@ export type SluzbyPreLudiBezDomovaInput = {
 
 export type SluzbyPreLudiBezDomovaRelationResponseCollection = {
   __typename?: 'SluzbyPreLudiBezDomovaRelationResponseCollection';
-  data: Array<SluzbyPreLudiBezDomovaEntity>;
+  nodes: Array<SluzbyPreLudiBezDomova>;
 };
 
 export type StringFilterInput = {
@@ -1446,6 +1710,7 @@ export type StringFilterInput = {
   lt?: InputMaybe<Scalars['String']['input']>;
   lte?: InputMaybe<Scalars['String']['input']>;
   ne?: InputMaybe<Scalars['String']['input']>;
+  nei?: InputMaybe<Scalars['String']['input']>;
   not?: InputMaybe<StringFilterInput>;
   notContains?: InputMaybe<Scalars['String']['input']>;
   notContainsi?: InputMaybe<Scalars['String']['input']>;
@@ -1466,8 +1731,10 @@ export type TerenneSluzby = {
   Sluzba?: Maybe<Scalars['String']['output']>;
   Telefon?: Maybe<Scalars['Long']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  documentId: Scalars['ID']['output'];
   locale?: Maybe<Scalars['String']['output']>;
-  localizations?: Maybe<TerenneSluzbyRelationResponseCollection>;
+  localizations: Array<Maybe<TerenneSluzby>>;
+  localizations_connection?: Maybe<TerenneSluzbyRelationResponseCollection>;
   publishedAt?: Maybe<Scalars['DateTime']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
@@ -1476,25 +1743,20 @@ export type TerenneSluzby = {
 export type TerenneSluzbyLocalizationsArgs = {
   filters?: InputMaybe<TerenneSluzbyFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  publicationState?: InputMaybe<PublicationState>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
-export type TerenneSluzbyEntity = {
-  __typename?: 'TerenneSluzbyEntity';
-  attributes?: Maybe<TerenneSluzby>;
-  id?: Maybe<Scalars['ID']['output']>;
-};
 
-export type TerenneSluzbyEntityResponse = {
-  __typename?: 'TerenneSluzbyEntityResponse';
-  data?: Maybe<TerenneSluzbyEntity>;
+export type TerenneSluzbyLocalizations_ConnectionArgs = {
+  filters?: InputMaybe<TerenneSluzbyFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type TerenneSluzbyEntityResponseCollection = {
   __typename?: 'TerenneSluzbyEntityResponseCollection';
-  data: Array<TerenneSluzbyEntity>;
-  meta: ResponseCollectionMeta;
+  nodes: Array<TerenneSluzby>;
+  pageInfo: Pagination;
 };
 
 export type TerenneSluzbyFiltersInput = {
@@ -1507,7 +1769,7 @@ export type TerenneSluzbyFiltersInput = {
   Telefon?: InputMaybe<LongFilterInput>;
   and?: InputMaybe<Array<InputMaybe<TerenneSluzbyFiltersInput>>>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
   locale?: InputMaybe<StringFilterInput>;
   localizations?: InputMaybe<TerenneSluzbyFiltersInput>;
   not?: InputMaybe<TerenneSluzbyFiltersInput>;
@@ -1529,7 +1791,7 @@ export type TerenneSluzbyInput = {
 
 export type TerenneSluzbyRelationResponseCollection = {
   __typename?: 'TerenneSluzbyRelationResponseCollection';
-  data: Array<TerenneSluzbyEntity>;
+  nodes: Array<TerenneSluzby>;
 };
 
 export type UploadFile = {
@@ -1537,7 +1799,9 @@ export type UploadFile = {
   alternativeText?: Maybe<Scalars['String']['output']>;
   caption?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  documentId: Scalars['ID']['output'];
   ext?: Maybe<Scalars['String']['output']>;
+  focalPoint?: Maybe<Scalars['JSON']['output']>;
   formats?: Maybe<Scalars['JSON']['output']>;
   hash: Scalars['String']['output'];
   height?: Maybe<Scalars['Int']['output']>;
@@ -1546,6 +1810,7 @@ export type UploadFile = {
   previewUrl?: Maybe<Scalars['String']['output']>;
   provider: Scalars['String']['output'];
   provider_metadata?: Maybe<Scalars['JSON']['output']>;
+  publishedAt?: Maybe<Scalars['DateTime']['output']>;
   related?: Maybe<Array<Maybe<GenericMorph>>>;
   size: Scalars['Float']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -1553,21 +1818,10 @@ export type UploadFile = {
   width?: Maybe<Scalars['Int']['output']>;
 };
 
-export type UploadFileEntity = {
-  __typename?: 'UploadFileEntity';
-  attributes?: Maybe<UploadFile>;
-  id?: Maybe<Scalars['ID']['output']>;
-};
-
-export type UploadFileEntityResponse = {
-  __typename?: 'UploadFileEntityResponse';
-  data?: Maybe<UploadFileEntity>;
-};
-
 export type UploadFileEntityResponseCollection = {
   __typename?: 'UploadFileEntityResponseCollection';
-  data: Array<UploadFileEntity>;
-  meta: ResponseCollectionMeta;
+  nodes: Array<UploadFile>;
+  pageInfo: Pagination;
 };
 
 export type UploadFileFiltersInput = {
@@ -1575,13 +1829,12 @@ export type UploadFileFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<UploadFileFiltersInput>>>;
   caption?: InputMaybe<StringFilterInput>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
   ext?: InputMaybe<StringFilterInput>;
-  folder?: InputMaybe<UploadFolderFiltersInput>;
-  folderPath?: InputMaybe<StringFilterInput>;
+  focalPoint?: InputMaybe<JsonFilterInput>;
   formats?: InputMaybe<JsonFilterInput>;
   hash?: InputMaybe<StringFilterInput>;
   height?: InputMaybe<IntFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
   mime?: InputMaybe<StringFilterInput>;
   name?: InputMaybe<StringFilterInput>;
   not?: InputMaybe<UploadFileFiltersInput>;
@@ -1589,106 +1842,16 @@ export type UploadFileFiltersInput = {
   previewUrl?: InputMaybe<StringFilterInput>;
   provider?: InputMaybe<StringFilterInput>;
   provider_metadata?: InputMaybe<JsonFilterInput>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
   size?: InputMaybe<FloatFilterInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
   url?: InputMaybe<StringFilterInput>;
   width?: InputMaybe<IntFilterInput>;
 };
 
-export type UploadFileInput = {
-  alternativeText?: InputMaybe<Scalars['String']['input']>;
-  caption?: InputMaybe<Scalars['String']['input']>;
-  ext?: InputMaybe<Scalars['String']['input']>;
-  folder?: InputMaybe<Scalars['ID']['input']>;
-  folderPath?: InputMaybe<Scalars['String']['input']>;
-  formats?: InputMaybe<Scalars['JSON']['input']>;
-  hash?: InputMaybe<Scalars['String']['input']>;
-  height?: InputMaybe<Scalars['Int']['input']>;
-  mime?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  previewUrl?: InputMaybe<Scalars['String']['input']>;
-  provider?: InputMaybe<Scalars['String']['input']>;
-  provider_metadata?: InputMaybe<Scalars['JSON']['input']>;
-  size?: InputMaybe<Scalars['Float']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
-  width?: InputMaybe<Scalars['Int']['input']>;
-};
-
 export type UploadFileRelationResponseCollection = {
   __typename?: 'UploadFileRelationResponseCollection';
-  data: Array<UploadFileEntity>;
-};
-
-export type UploadFolder = {
-  __typename?: 'UploadFolder';
-  children?: Maybe<UploadFolderRelationResponseCollection>;
-  createdAt?: Maybe<Scalars['DateTime']['output']>;
-  files?: Maybe<UploadFileRelationResponseCollection>;
-  name: Scalars['String']['output'];
-  parent?: Maybe<UploadFolderEntityResponse>;
-  path: Scalars['String']['output'];
-  pathId: Scalars['Int']['output'];
-  updatedAt?: Maybe<Scalars['DateTime']['output']>;
-};
-
-
-export type UploadFolderChildrenArgs = {
-  filters?: InputMaybe<UploadFolderFiltersInput>;
-  pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-};
-
-
-export type UploadFolderFilesArgs = {
-  filters?: InputMaybe<UploadFileFiltersInput>;
-  pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-};
-
-export type UploadFolderEntity = {
-  __typename?: 'UploadFolderEntity';
-  attributes?: Maybe<UploadFolder>;
-  id?: Maybe<Scalars['ID']['output']>;
-};
-
-export type UploadFolderEntityResponse = {
-  __typename?: 'UploadFolderEntityResponse';
-  data?: Maybe<UploadFolderEntity>;
-};
-
-export type UploadFolderEntityResponseCollection = {
-  __typename?: 'UploadFolderEntityResponseCollection';
-  data: Array<UploadFolderEntity>;
-  meta: ResponseCollectionMeta;
-};
-
-export type UploadFolderFiltersInput = {
-  and?: InputMaybe<Array<InputMaybe<UploadFolderFiltersInput>>>;
-  children?: InputMaybe<UploadFolderFiltersInput>;
-  createdAt?: InputMaybe<DateTimeFilterInput>;
-  files?: InputMaybe<UploadFileFiltersInput>;
-  id?: InputMaybe<IdFilterInput>;
-  name?: InputMaybe<StringFilterInput>;
-  not?: InputMaybe<UploadFolderFiltersInput>;
-  or?: InputMaybe<Array<InputMaybe<UploadFolderFiltersInput>>>;
-  parent?: InputMaybe<UploadFolderFiltersInput>;
-  path?: InputMaybe<StringFilterInput>;
-  pathId?: InputMaybe<IntFilterInput>;
-  updatedAt?: InputMaybe<DateTimeFilterInput>;
-};
-
-export type UploadFolderInput = {
-  children?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
-  files?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  parent?: InputMaybe<Scalars['ID']['input']>;
-  path?: InputMaybe<Scalars['String']['input']>;
-  pathId?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type UploadFolderRelationResponseCollection = {
-  __typename?: 'UploadFolderRelationResponseCollection';
-  data: Array<UploadFolderEntity>;
+  nodes: Array<UploadFile>;
 };
 
 export type UsersPermissionsCreateRolePayload = {
@@ -1717,6 +1880,7 @@ export type UsersPermissionsMe = {
   __typename?: 'UsersPermissionsMe';
   blocked?: Maybe<Scalars['Boolean']['output']>;
   confirmed?: Maybe<Scalars['Boolean']['output']>;
+  documentId: Scalars['ID']['output'];
   email?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   role?: Maybe<UsersPermissionsMeRole>;
@@ -1740,30 +1904,27 @@ export type UsersPermissionsPermission = {
   __typename?: 'UsersPermissionsPermission';
   action: Scalars['String']['output'];
   createdAt?: Maybe<Scalars['DateTime']['output']>;
-  role?: Maybe<UsersPermissionsRoleEntityResponse>;
+  documentId: Scalars['ID']['output'];
+  publishedAt?: Maybe<Scalars['DateTime']['output']>;
+  role?: Maybe<UsersPermissionsRole>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
-};
-
-export type UsersPermissionsPermissionEntity = {
-  __typename?: 'UsersPermissionsPermissionEntity';
-  attributes?: Maybe<UsersPermissionsPermission>;
-  id?: Maybe<Scalars['ID']['output']>;
 };
 
 export type UsersPermissionsPermissionFiltersInput = {
   action?: InputMaybe<StringFilterInput>;
   and?: InputMaybe<Array<InputMaybe<UsersPermissionsPermissionFiltersInput>>>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
   not?: InputMaybe<UsersPermissionsPermissionFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<UsersPermissionsPermissionFiltersInput>>>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
   role?: InputMaybe<UsersPermissionsRoleFiltersInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
 export type UsersPermissionsPermissionRelationResponseCollection = {
   __typename?: 'UsersPermissionsPermissionRelationResponseCollection';
-  data: Array<UsersPermissionsPermissionEntity>;
+  nodes: Array<UsersPermissionsPermission>;
 };
 
 export type UsersPermissionsRegisterInput = {
@@ -1776,15 +1937,26 @@ export type UsersPermissionsRole = {
   __typename?: 'UsersPermissionsRole';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  documentId: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  permissions?: Maybe<UsersPermissionsPermissionRelationResponseCollection>;
+  permissions: Array<Maybe<UsersPermissionsPermission>>;
+  permissions_connection?: Maybe<UsersPermissionsPermissionRelationResponseCollection>;
+  publishedAt?: Maybe<Scalars['DateTime']['output']>;
   type?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
-  users?: Maybe<UsersPermissionsUserRelationResponseCollection>;
+  users: Array<Maybe<UsersPermissionsUser>>;
+  users_connection?: Maybe<UsersPermissionsUserRelationResponseCollection>;
 };
 
 
 export type UsersPermissionsRolePermissionsArgs = {
+  filters?: InputMaybe<UsersPermissionsPermissionFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
+
+export type UsersPermissionsRolePermissions_ConnectionArgs = {
   filters?: InputMaybe<UsersPermissionsPermissionFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -1797,32 +1969,29 @@ export type UsersPermissionsRoleUsersArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
-export type UsersPermissionsRoleEntity = {
-  __typename?: 'UsersPermissionsRoleEntity';
-  attributes?: Maybe<UsersPermissionsRole>;
-  id?: Maybe<Scalars['ID']['output']>;
-};
 
-export type UsersPermissionsRoleEntityResponse = {
-  __typename?: 'UsersPermissionsRoleEntityResponse';
-  data?: Maybe<UsersPermissionsRoleEntity>;
+export type UsersPermissionsRoleUsers_ConnectionArgs = {
+  filters?: InputMaybe<UsersPermissionsUserFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type UsersPermissionsRoleEntityResponseCollection = {
   __typename?: 'UsersPermissionsRoleEntityResponseCollection';
-  data: Array<UsersPermissionsRoleEntity>;
-  meta: ResponseCollectionMeta;
+  nodes: Array<UsersPermissionsRole>;
+  pageInfo: Pagination;
 };
 
 export type UsersPermissionsRoleFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<UsersPermissionsRoleFiltersInput>>>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
   description?: InputMaybe<StringFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
   name?: InputMaybe<StringFilterInput>;
   not?: InputMaybe<UsersPermissionsRoleFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<UsersPermissionsRoleFiltersInput>>>;
   permissions?: InputMaybe<UsersPermissionsPermissionFiltersInput>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
   type?: InputMaybe<StringFilterInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
   users?: InputMaybe<UsersPermissionsUserFiltersInput>;
@@ -1830,8 +1999,10 @@ export type UsersPermissionsRoleFiltersInput = {
 
 export type UsersPermissionsRoleInput = {
   description?: InputMaybe<Scalars['String']['input']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   permissions?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
   users?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
 };
@@ -1846,43 +2017,37 @@ export type UsersPermissionsUser = {
   blocked?: Maybe<Scalars['Boolean']['output']>;
   confirmed?: Maybe<Scalars['Boolean']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  documentId: Scalars['ID']['output'];
   email: Scalars['String']['output'];
   provider?: Maybe<Scalars['String']['output']>;
-  role?: Maybe<UsersPermissionsRoleEntityResponse>;
+  publishedAt?: Maybe<Scalars['DateTime']['output']>;
+  role?: Maybe<UsersPermissionsRole>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   username: Scalars['String']['output'];
 };
 
-export type UsersPermissionsUserEntity = {
-  __typename?: 'UsersPermissionsUserEntity';
-  attributes?: Maybe<UsersPermissionsUser>;
-  id?: Maybe<Scalars['ID']['output']>;
-};
-
 export type UsersPermissionsUserEntityResponse = {
   __typename?: 'UsersPermissionsUserEntityResponse';
-  data?: Maybe<UsersPermissionsUserEntity>;
+  data?: Maybe<UsersPermissionsUser>;
 };
 
 export type UsersPermissionsUserEntityResponseCollection = {
   __typename?: 'UsersPermissionsUserEntityResponseCollection';
-  data: Array<UsersPermissionsUserEntity>;
-  meta: ResponseCollectionMeta;
+  nodes: Array<UsersPermissionsUser>;
+  pageInfo: Pagination;
 };
 
 export type UsersPermissionsUserFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<UsersPermissionsUserFiltersInput>>>;
   blocked?: InputMaybe<BooleanFilterInput>;
-  confirmationToken?: InputMaybe<StringFilterInput>;
   confirmed?: InputMaybe<BooleanFilterInput>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
+  documentId?: InputMaybe<IdFilterInput>;
   email?: InputMaybe<StringFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
   not?: InputMaybe<UsersPermissionsUserFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<UsersPermissionsUserFiltersInput>>>;
-  password?: InputMaybe<StringFilterInput>;
   provider?: InputMaybe<StringFilterInput>;
-  resetPasswordToken?: InputMaybe<StringFilterInput>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
   role?: InputMaybe<UsersPermissionsRoleFiltersInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
   username?: InputMaybe<StringFilterInput>;
@@ -1893,8 +2058,10 @@ export type UsersPermissionsUserInput = {
   confirmationToken?: InputMaybe<Scalars['String']['input']>;
   confirmed?: InputMaybe<Scalars['Boolean']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   provider?: InputMaybe<Scalars['String']['input']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
   resetPasswordToken?: InputMaybe<Scalars['String']['input']>;
   role?: InputMaybe<Scalars['ID']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
@@ -1902,7 +2069,7 @@ export type UsersPermissionsUserInput = {
 
 export type UsersPermissionsUserRelationResponseCollection = {
   __typename?: 'UsersPermissionsUserRelationResponseCollection';
-  data: Array<UsersPermissionsUserEntity>;
+  nodes: Array<UsersPermissionsUser>;
 };
 
 export type LinkyPomociQueryVariables = Exact<{
@@ -1910,56 +2077,52 @@ export type LinkyPomociQueryVariables = Exact<{
 }>;
 
 
-export type LinkyPomociQuery = { __typename?: 'Query', linkyPomocis?: { __typename?: 'LinkyPomociEntityResponseCollection', data: Array<{ __typename?: 'LinkyPomociEntity', id?: string | null, attributes?: { __typename?: 'LinkyPomoci', Cena?: string | null, Email?: string | null, Nazov?: string | null, Popis?: string | null, Prevadzka?: string | null, Prevadzkovatel?: string | null, Telefon?: any | null, createdAt?: any | null, locale?: string | null, publishedAt?: any | null, updatedAt?: any | null } | null }> } | null };
+export type LinkyPomociQuery = { __typename?: 'Query', linkyPomocis: Array<{ __typename?: 'LinkyPomoci', documentId: string, Cena?: string | null, Email?: string | null, Nazov?: string | null, Popis?: string | null, Prevadzka?: string | null, Prevadzkovatel?: string | null, Telefon?: any | null, createdAt?: any | null, locale?: string | null, publishedAt?: any | null, updatedAt?: any | null } | null> };
 
 export type FixpointyQueryVariables = Exact<{
   locale: Scalars['I18NLocaleCode']['input'];
 }>;
 
 
-export type FixpointyQuery = { __typename?: 'Query', fixpoints?: { __typename?: 'FixpointyEntityResponseCollection', data: Array<{ __typename?: 'FixpointyEntity', id?: string | null, attributes?: { __typename?: 'Fixpointy', Adresa?: string | null, Latitude?: number | null, Longitude?: number | null, Nazov?: string | null, createdAt?: any | null } | null }> } | null };
+export type FixpointyQuery = { __typename?: 'Query', fixpoints: Array<{ __typename?: 'Fixpointy', documentId: string, Adresa?: string | null, Latitude?: number | null, Longitude?: number | null, Nazov?: string | null, createdAt?: any | null } | null> };
 
 export type TerenneSluzbyQueryVariables = Exact<{
   locale: Scalars['I18NLocaleCode']['input'];
 }>;
 
 
-export type TerenneSluzbyQuery = { __typename?: 'Query', terenneSluzbies?: { __typename?: 'TerenneSluzbyEntityResponseCollection', data: Array<{ __typename?: 'TerenneSluzbyEntity', id?: string | null, attributes?: { __typename?: 'TerenneSluzby', Cena_kapacita?: string | null, Dostupnost?: string | null, Lokalita_posobnosti?: string | null, Nazov?: string | null, Poskytovatel?: string | null, Sluzba?: string | null, Telefon?: any | null } | null }> } | null };
+export type TerenneSluzbyQuery = { __typename?: 'Query', terenneSluzbies: Array<{ __typename?: 'TerenneSluzby', documentId: string, Cena_kapacita?: string | null, Dostupnost?: string | null, Lokalita_posobnosti?: string | null, Nazov?: string | null, Poskytovatel?: string | null, Sluzba?: string | null, Telefon?: any | null } | null> };
 
 export type SluzbyPreLudiBezDomovaQueryVariables = Exact<{
   locale: Scalars['I18NLocaleCode']['input'];
 }>;
 
 
-export type SluzbyPreLudiBezDomovaQuery = { __typename?: 'Query', sluzbyPreLudiBezDomovas?: { __typename?: 'SluzbyPreLudiBezDomovaEntityResponseCollection', data: Array<{ __typename?: 'SluzbyPreLudiBezDomovaEntity', id?: string | null, attributes?: { __typename?: 'SluzbyPreLudiBezDomova', Adresa?: string | null, Cas?: string | null, Email?: string | null, Kontaktne_centrum?: string | null, Hygiena_osatenie?: string | null, Kultura?: string | null, Latitude?: number | null, Longitude?: number | null, Mestska_cast?: string | null, Navigacia?: string | null, Navigovat?: string | null, Nazov?: string | null, Noclah_ubytovanie?: string | null, Popis?: string | null, Poskytovatel?: string | null, Socialne_pravne_poradenstvo?: string | null, Strava?: string | null, Tagy?: string | null, Telefon?: any | null, Telefon_popis?: string | null, Web?: string | null, Zdravotne_osetrenie?: string | null, Subor?: { __typename?: 'UploadFileRelationResponseCollection', data: Array<{ __typename?: 'UploadFileEntity', id?: string | null, attributes?: { __typename?: 'UploadFile', url: string } | null }> } | null } | null }> } | null };
+export type SluzbyPreLudiBezDomovaQuery = { __typename?: 'Query', sluzbyPreLudiBezDomovas: Array<{ __typename?: 'SluzbyPreLudiBezDomova', documentId: string, Adresa?: string | null, Cas?: string | null, Email?: string | null, Kontaktne_centrum?: string | null, Hygiena_osatenie?: string | null, Kultura?: string | null, Latitude?: number | null, Longitude?: number | null, Mestska_cast?: string | null, Navigacia?: string | null, Navigovat?: string | null, Nazov?: string | null, Noclah_ubytovanie?: string | null, Popis?: string | null, Poskytovatel?: string | null, Socialne_pravne_poradenstvo?: string | null, Strava?: string | null, Tagy?: string | null, Telefon?: any | null, Telefon_popis?: string | null, Web?: string | null, Zdravotne_osetrenie?: string | null, Subor: Array<{ __typename?: 'UploadFile', documentId: string, url: string } | null> } | null> };
 
 export type PitneFontankyQueryVariables = Exact<{
   locale: Scalars['I18NLocaleCode']['input'];
 }>;
 
 
-export type PitneFontankyQuery = { __typename?: 'Query', pitneFontankies?: { __typename?: 'PitneFontankyEntityResponseCollection', data: Array<{ __typename?: 'PitneFontankyEntity', id?: string | null, attributes?: { __typename?: 'PitneFontanky', Latitude?: number | null, Longitude?: number | null, Nazov?: string | null, Rok_spustenia?: string | null, Spravca?: string | null, Stav?: string | null, Typ?: string | null, Fotky?: { __typename?: 'UploadFileRelationResponseCollection', data: Array<{ __typename?: 'UploadFileEntity', id?: string | null, attributes?: { __typename?: 'UploadFile', url: string } | null }> } | null } | null }> } | null };
+export type PitneFontankyQuery = { __typename?: 'Query', pitneFontankies: Array<{ __typename?: 'PitneFontanky', documentId: string, Latitude?: number | null, Longitude?: number | null, Nazov?: string | null, Rok_spustenia?: string | null, Spravca?: string | null, Stav?: string | null, Typ?: string | null, Fotky: Array<{ __typename?: 'UploadFile', documentId: string, url: string } | null> } | null> };
 
 
 export const LinkyPomociDocument = `
     query LinkyPomoci($locale: I18NLocaleCode!) {
-  linkyPomocis(locale: $locale) {
-    data {
-      id
-      attributes {
-        Cena
-        Email
-        Nazov
-        Popis
-        Prevadzka
-        Prevadzkovatel
-        Telefon
-        createdAt
-        locale
-        publishedAt
-        updatedAt
-      }
-    }
+  linkyPomocis(locale: $locale, sort: "Nazov:asc") {
+    documentId
+    Cena
+    Email
+    Nazov
+    Popis
+    Prevadzka
+    Prevadzkovatel
+    Telefon
+    createdAt
+    locale
+    publishedAt
+    updatedAt
   }
 }
     `;
@@ -1978,16 +2141,12 @@ export const useLinkyPomociQuery = <
 export const FixpointyDocument = `
     query Fixpointy($locale: I18NLocaleCode!) {
   fixpoints(locale: $locale) {
-    data {
-      id
-      attributes {
-        Adresa
-        Latitude
-        Longitude
-        Nazov
-        createdAt
-      }
-    }
+    documentId
+    Adresa
+    Latitude
+    Longitude
+    Nazov
+    createdAt
   }
 }
     `;
@@ -2005,19 +2164,15 @@ export const useFixpointyQuery = <
     );
 export const TerenneSluzbyDocument = `
     query TerenneSluzby($locale: I18NLocaleCode!) {
-  terenneSluzbies(locale: $locale) {
-    data {
-      id
-      attributes {
-        Cena_kapacita
-        Dostupnost
-        Lokalita_posobnosti
-        Nazov
-        Poskytovatel
-        Sluzba
-        Telefon
-      }
-    }
+  terenneSluzbies(locale: $locale, sort: "Nazov:asc") {
+    documentId
+    Cena_kapacita
+    Dostupnost
+    Lokalita_posobnosti
+    Nazov
+    Poskytovatel
+    Sluzba
+    Telefon
   }
 }
     `;
@@ -2036,41 +2191,33 @@ export const useTerenneSluzbyQuery = <
 export const SluzbyPreLudiBezDomovaDocument = `
     query SluzbyPreLudiBezDomova($locale: I18NLocaleCode!) {
   sluzbyPreLudiBezDomovas(locale: $locale) {
-    data {
-      id
-      attributes {
-        Adresa
-        Cas
-        Email
-        Kontaktne_centrum
-        Hygiena_osatenie
-        Kultura
-        Latitude
-        Longitude
-        Mestska_cast
-        Navigacia
-        Navigovat
-        Nazov
-        Noclah_ubytovanie
-        Popis
-        Poskytovatel
-        Socialne_pravne_poradenstvo
-        Strava
-        Subor {
-          data {
-            id
-            attributes {
-              url
-            }
-          }
-        }
-        Tagy
-        Telefon
-        Telefon_popis
-        Web
-        Zdravotne_osetrenie
-      }
+    documentId
+    Adresa
+    Cas
+    Email
+    Kontaktne_centrum
+    Hygiena_osatenie
+    Kultura
+    Latitude
+    Longitude
+    Mestska_cast
+    Navigacia
+    Navigovat
+    Nazov
+    Noclah_ubytovanie
+    Popis
+    Poskytovatel
+    Socialne_pravne_poradenstvo
+    Strava
+    Subor {
+      documentId
+      url
     }
+    Tagy
+    Telefon
+    Telefon_popis
+    Web
+    Zdravotne_osetrenie
   }
 }
     `;
@@ -2089,26 +2236,18 @@ export const useSluzbyPreLudiBezDomovaQuery = <
 export const PitneFontankyDocument = `
     query PitneFontanky($locale: I18NLocaleCode!) {
   pitneFontankies(locale: $locale) {
-    data {
-      id
-      attributes {
-        Fotky {
-          data {
-            id
-            attributes {
-              url
-            }
-          }
-        }
-        Latitude
-        Longitude
-        Nazov
-        Rok_spustenia
-        Spravca
-        Stav
-        Typ
-      }
+    documentId
+    Fotky {
+      documentId
+      url
     }
+    Latitude
+    Longitude
+    Nazov
+    Rok_spustenia
+    Spravca
+    Stav
+    Typ
   }
 }
     `;

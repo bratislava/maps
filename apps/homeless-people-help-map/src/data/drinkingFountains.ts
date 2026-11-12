@@ -6,25 +6,26 @@ export const useDrinkingFountains = () => {
   const { i18n } = useTranslation();
   const { data, isLoading, error } = usePitneFontankyQuery({ locale: i18n.language });
 
-  const processedFeatures = data?.pitneFontankies?.data.map((fountain) => {
+  const processedFeatures = data?.pitneFontankies.map((fountain) => {
     return {
       // id needs to be different for each Marker on map otherwise it will interact with each other
       // https://github.com/bratislava/private-maps/issues/14#issuecomment-2003846920
-      id: "fountain-" + fountain.id,
+      id: "fountain-" + fountain?.documentId,
       type: "Feature",
       geometry: {
         type: "Point",
-        coordinates: [fountain.attributes?.Longitude, fountain.attributes?.Latitude],
+        coordinates: [fountain?.Longitude, fountain?.Latitude],
       },
       properties: {
-        photo: fountain.attributes?.Fotky || "",
-        latitude: fountain.attributes?.Latitude || "",
-        longitude: fountain.attributes?.Longitude || "",
-        name: fountain.attributes?.Nazov || "",
-        buildSince: fountain.attributes?.Rok_spustenia || "",
-        maintainer: fountain.attributes?.Spravca || "",
-        state: fountain.attributes?.Stav || "",
-        type: fountain.attributes?.Typ || "",
+        // Strapi 5 types list items as nullable; drop nulls so the detail schema parses
+        photo: fountain?.Fotky?.filter(Boolean) ?? [],
+        latitude: fountain?.Latitude || "",
+        longitude: fountain?.Longitude || "",
+        name: fountain?.Nazov || "",
+        buildSince: fountain?.Rok_spustenia || "",
+        maintainer: fountain?.Spravca || "",
+        state: fountain?.Stav || "",
+        type: fountain?.Typ || "",
       },
     };
   });
