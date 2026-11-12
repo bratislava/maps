@@ -1,5 +1,5 @@
 
-interface IPoolAttributes {
+export interface IPool {
     nazov: string;
     popis: string;
     kategoriaSportoviska: string;
@@ -19,11 +19,7 @@ interface IPoolAttributes {
     fotka: any;
 }
 
-export interface IPool {
-    attributes: IPoolAttributes;
-}
-
-interface IWorkoutAttributes {
+export interface IWorkout {
     nazov: string;
     kategoriaSportoviska: string;
     sport: string;
@@ -34,9 +30,6 @@ interface IWorkoutAttributes {
     longitude: number;
     createdAt: Date;
     fotka: any;
-}
-export interface IWorkout {
-    attributes: IWorkoutAttributes;
 }
 
 export type TSportGround = "zimný štadión"

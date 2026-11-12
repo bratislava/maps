@@ -6,8 +6,7 @@ export const generateRawWorkoutData = (workouts: Array<IWorkout>): FeatureCollec
     type: "FeatureCollection",
     features: []
   }
-  poolData.features = workouts.map(w => {
-    const workout = w.attributes;
+  poolData.features = workouts.map(workout => {
     return {
       type: "Feature",
       geometry: {
@@ -21,7 +20,7 @@ export const generateRawWorkoutData = (workouts: Array<IWorkout>): FeatureCollec
         location: workout.umiestnenie,
         website: workout.webLink,
         wantToWorkout: "https://cvicko.sk",
-        photo: workout.fotka?.data?.attributes?.formats?.small.url,
+        photo: workout.fotka?.formats?.small?.url,
         navigate: workout.navigovatLink,
       },
     }

@@ -6,8 +6,7 @@ export const generateRawPoolData = (poolList: Array<IPool>): FeatureCollection =
     type: "FeatureCollection",
     features: []
   }
-  poolData.features = poolList.map(p => {
-    const pool = p.attributes;
+  poolData.features = poolList.map(pool => {
     return {
       type: "Feature",
       geometry: {
@@ -25,7 +24,7 @@ export const generateRawPoolData = (poolList: Array<IPool>): FeatureCollection =
         email: pool.email,
         website: pool.webLink,
         buyOnline: pool.listokLink,
-        photo: pool.fotka?.data?.attributes?.formats?.small.url,
+        photo: pool.fotka?.formats?.small?.url,
         navigate: pool.navigovatLink,
         note: pool.oznam,
       },
